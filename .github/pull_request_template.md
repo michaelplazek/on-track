@@ -1,4 +1,4 @@
-## Desription
+## Description
 Add a brief description of the pull request.
 
 ## Changes
