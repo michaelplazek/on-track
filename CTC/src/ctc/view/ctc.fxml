@@ -80,24 +80,23 @@
                           <content>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="281.0" prefWidth="202.0">
                                  <children>
-                                    <Button layoutX="33.0" layoutY="14.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="135.0" text="Import Schedule" />
+                                    <Button fx:id="importButton" layoutX="33.0" layoutY="14.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="135.0" text="Import Schedule" />
                                     <Label layoutX="87.0" layoutY="64.0" text="- or -">
                                        <font>
                                           <Font size="12.0" />
                                        </font>
                                     </Label>
-                                    <TextField layoutX="5.0" layoutY="89.0" prefHeight="26.0" prefWidth="189.0" promptText="Train name" />
-                                    <TextField layoutX="6.0" layoutY="121.0" prefHeight="26.0" prefWidth="113.0" promptText="Departing time" />
+                                    <TextField fx:id="trainNameField" layoutX="5.0" layoutY="89.0" prefHeight="26.0" prefWidth="189.0" promptText="Train name" />
+                                    <TextField fx:id="departingTimeField" layoutX="6.0" layoutY="121.0" prefHeight="26.0" prefWidth="113.0" promptText="Departing time" />
                                     <ChoiceBox fx:id="blocks2" layoutX="125.0" layoutY="121.0" prefHeight="26.0" prefWidth="71.0" value="Green" />
-                                    <TableView editable="true" layoutX="6.0" layoutY="154.0" prefHeight="118.0" prefWidth="189.0">
+                                    <TableView fx:id="trainTable" editable="true" layoutX="6.0" layoutY="154.0" prefHeight="118.0" prefWidth="189.0">
                                       <columns>
-                                        <TableColumn prefWidth="61.0" text="Stop" />
-                                        <TableColumn prefWidth="52.0" text="Dwell" />
-                                          <TableColumn prefWidth="75.0" text="Time" />
+                                        <TableColumn fx:id="stopColumn" prefWidth="94.0" text="Stop" />
+                                        <TableColumn fx:id="dwellColumn" prefWidth="93.0" text="Dwell" />
                                       </columns>
                                     </TableView>
                                     <Button layoutX="6.0" layoutY="282.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="67.0" text="Reset" />
-                                    <Button layoutX="79.0" layoutY="282.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="114.0" text="Add Train" />
+                                    <Button fx:id="addTrainButton" layoutX="79.0" layoutY="282.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="114.0" text="Add Train" />
                                  </children>
                               </AnchorPane>
                           </content>
@@ -113,22 +112,21 @@
                           <content>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="281.0" prefWidth="181.0">
                                  <children>
-                                    <TableView layoutX="7.0" layoutY="7.0" prefHeight="121.0" prefWidth="204.0">
+                                    <TableView fx:id="trainQueueTable" layoutX="7.0" layoutY="7.0" prefHeight="121.0" prefWidth="204.0">
                                       <columns>
-                                        <TableColumn prefWidth="101.0" text="Train" />
-                                        <TableColumn prefWidth="102.0" text="Departure" />
+                                        <TableColumn fx:id="trainColumn" prefWidth="101.0" text="Train" />
+                                        <TableColumn fx:id="departureColumn" prefWidth="102.0" text="Departure" />
                                       </columns>
                                     </TableView>
-                                    <TableView layoutX="7.0" layoutY="153.0" prefHeight="119.0" prefWidth="204.0">
+                                    <TableView fx:id="selectedScheduleTable" layoutX="7.0" layoutY="153.0" prefHeight="119.0" prefWidth="204.0">
                                       <columns>
-                                        <TableColumn prefWidth="66.0" text="Stop" />
-                                        <TableColumn prefWidth="67.0" text="Dwell" />
-                                          <TableColumn prefWidth="70.0" text="Time" />
+                                        <TableColumn fx:id="selectedStopColumn" prefWidth="103.0" text="Stop" />
+                                        <TableColumn fx:id="selectedDwellColumn" prefWidth="99.0" text="Dwell" />
                                       </columns>
                                     </TableView>
                                     <Label layoutX="51.0" layoutY="133.0" text="Selected Schedule" />
                                     <Button layoutX="7.0" layoutY="282.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="71.0" text="Delete" />
-                                    <Button layoutX="86.0" layoutY="282.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="121.0" text="Dispatch" />
+                                    <Button fx:id="dispatchButton" layoutX="86.0" layoutY="282.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="121.0" text="Dispatch" />
                                  </children>
                               </AnchorPane>
                           </content>
@@ -144,21 +142,21 @@
                           <content>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="281.0" prefWidth="219.0">
                                  <children>
-                                    <TableView layoutX="-1.0" prefHeight="245.0" prefWidth="425.0">
+                                    <TableView fx:id="dispatchTable" layoutX="-1.0" prefHeight="245.0" prefWidth="425.0">
                                       <columns>
-                                        <TableColumn prefWidth="84.0" text="Train" />
-                                        <TableColumn prefWidth="94.0" text="Location" />
-                                          <TableColumn minWidth="0.0" prefWidth="99.0" text="Authority" />
-                                          <TableColumn prefWidth="56.0" text="Speed" />
-                                          <TableColumn prefWidth="91.0" text="Passengers" />
+                                        <TableColumn fx:id="dispatchTrainColumn" prefWidth="84.0" text="Train" />
+                                        <TableColumn fx:id="dispatchLocationColumn" prefWidth="94.0" text="Location" />
+                                          <TableColumn fx:id="dispatchAuthorityColumn" minWidth="0.0" prefWidth="99.0" text="Authority" />
+                                          <TableColumn fx:id="dispatchSpeedColumn" prefWidth="56.0" text="Speed" />
+                                          <TableColumn fx:id="dispatchPassengersColumn" prefWidth="91.0" text="Passengers" />
                                       </columns>
                                     </TableView>
-                                    <TextField layoutX="14.0" layoutY="252.0" prefHeight="26.0" prefWidth="105.0" promptText="mph" />
+                                    <TextField fx:id="suggestedSpeedField" layoutX="14.0" layoutY="252.0" prefHeight="26.0" prefWidth="105.0" promptText="mph" />
                                     <Button layoutX="125.0" layoutY="252.0" mnemonicParsing="false" text="Set Suggested Speed" />
                                     <Button layoutX="125.0" layoutY="282.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="150.0" text="Set Authority" />
                                     <Circle fill="#24c51b" layoutX="314.0" layoutY="278.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
                                     <Label layoutX="328.0" layoutY="270.0" text="Train Status" />
-                                    <TextField layoutX="14.0" layoutY="282.0" prefHeight="26.0" prefWidth="105.0" promptText="km" />
+                                    <TextField fx:id="authorityField" layoutX="14.0" layoutY="282.0" prefHeight="26.0" prefWidth="105.0" promptText="km" />
                                  </children>
                               </AnchorPane>
                           </content>
