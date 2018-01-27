@@ -45,12 +45,4 @@ public class Controller {
     actions.setValue("Select action");
     actions.setItems(action);
   }
-
-  @FXML
-  private void someFunction(){
-
-  }
-
-  @FXML
-  private boolean someBoolean;
 }
