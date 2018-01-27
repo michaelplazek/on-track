@@ -18,5 +18,6 @@ public class UserInterface extends Application {
 
   public static void main(String[] args) {
     launch(args);
+
   }
 }

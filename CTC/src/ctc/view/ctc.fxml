@@ -15,7 +15,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<SplitPane dividerPositions="0.22613065326633167" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="500.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
+<SplitPane dividerPositions="0.22613065326633167" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="500.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ctc.controller.Controller">
   <items>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="50.0" prefWidth="798.0">
          <children>
@@ -88,7 +88,7 @@
                                     </Label>
                                     <TextField layoutX="5.0" layoutY="89.0" prefHeight="26.0" prefWidth="189.0" promptText="Train name" />
                                     <TextField layoutX="6.0" layoutY="121.0" prefHeight="26.0" prefWidth="113.0" promptText="Departing time" />
-                                    <ChoiceBox layoutX="125.0" layoutY="121.0" prefHeight="26.0" prefWidth="71.0" value="Green" />
+                                    <ChoiceBox fx:id="blocks2" layoutX="125.0" layoutY="121.0" prefHeight="26.0" prefWidth="71.0" value="Green" />
                                     <TableView editable="true" layoutX="6.0" layoutY="154.0" prefHeight="118.0" prefWidth="189.0">
                                       <columns>
                                         <TableColumn prefWidth="61.0" text="Stop" />
@@ -153,12 +153,12 @@
                                           <TableColumn prefWidth="91.0" text="Passengers" />
                                       </columns>
                                     </TableView>
-                                    <TextField layoutX="14.0" layoutY="252.0" prefHeight="26.0" prefWidth="105.0" />
+                                    <TextField layoutX="14.0" layoutY="252.0" prefHeight="26.0" prefWidth="105.0" promptText="mph" />
                                     <Button layoutX="125.0" layoutY="252.0" mnemonicParsing="false" text="Set Suggested Speed" />
                                     <Button layoutX="125.0" layoutY="282.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="150.0" text="Set Authority" />
                                     <Circle fill="#24c51b" layoutX="314.0" layoutY="278.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
                                     <Label layoutX="328.0" layoutY="270.0" text="Train Status" />
-                                    <ChoiceBox layoutX="16.0" layoutY="282.0" prefHeight="26.0" prefWidth="103.0" />
+                                    <TextField layoutX="14.0" layoutY="282.0" prefHeight="26.0" prefWidth="105.0" promptText="km" />
                                  </children>
                               </AnchorPane>
                           </content>
@@ -181,22 +181,22 @@
                                     <Font name="System Bold" size="14.0" />
                                  </font>
                               </Label>
-                              <ChoiceBox fx:id="trackMaintenance" layoutX="6.0" layoutY="36.0" prefHeight="26.0" prefWidth="86.0" />
-                              <ChoiceBox layoutX="98.0" layoutY="36.0" prefHeight="26.0" prefWidth="52.0" />
-                              <Circle fill="#24c51b" layoutX="175.0" layoutY="36.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
-                              <Circle fill="#24c51b" layoutX="175.0" layoutY="55.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
-                              <Label layoutX="188.0" layoutY="30.0" text="Status">
+                              <ChoiceBox fx:id="tracks" layoutX="6.0" layoutY="36.0" prefHeight="26.0" prefWidth="101.0" />
+                              <ChoiceBox fx:id="blocks1" layoutX="109.0" layoutY="36.0" prefHeight="26.0" prefWidth="64.0" />
+                              <Circle fill="#24c51b" layoutX="184.0" layoutY="36.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
+                              <Circle fill="#24c51b" layoutX="184.0" layoutY="55.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
+                              <Label layoutX="194.0" layoutY="30.0" text="Status">
                                  <font>
                                     <Font size="10.0" />
                                  </font>
                               </Label>
-                              <Label layoutX="188.0" layoutY="49.0" text="Occupied">
+                              <Label layoutX="192.0" layoutY="48.0" text="Occupied">
                                  <font>
                                     <Font size="10.0" />
                                  </font>
                               </Label>
-                              <ChoiceBox layoutX="6.0" layoutY="75.0" prefHeight="26.0" prefWidth="144.0" />
-                              <Button layoutX="161.0" layoutY="75.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="71.0" text="Submit">
+                              <ChoiceBox fx:id="actions" layoutX="6.0" layoutY="75.0" prefHeight="26.0" prefWidth="162.0" />
+                              <Button layoutX="171.0" layoutY="75.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="61.0" text="Submit">
                                  <font>
                                     <Font size="12.0" />
                                  </font>
