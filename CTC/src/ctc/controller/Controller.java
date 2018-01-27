@@ -105,6 +105,7 @@ public class Controller {
   private void importSchedule(ActionEvent event) {
     trainNameField.setText("Train1");
     departingTimeField.setText("2:00:00");
+    blocks2.setValue("A3");
     trainTable.setItems(trainList);
   }
 
