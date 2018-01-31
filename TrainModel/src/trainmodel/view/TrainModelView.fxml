@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckMenuItem?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="trainmodel.view.TrainModelController">
+   <center>
+      <VBox BorderPane.alignment="CENTER">
+         <children>
+            <TitledPane animated="false" collapsible="false" text="Failures">
+               <content>
+                  <VBox alignment="CENTER" spacing="15.0">
+                     <children>
+                        <HBox alignment="CENTER" spacing="30.0">
+                           <children>
+                              <HBox alignment="CENTER_LEFT" spacing="5.0">
+                                 <children>
+                                    <Circle fx:id="engineFailureStatusIcon" fill="#199015" radius="8.0" stroke="WHITE" strokeType="INSIDE" />
+                                    <Label fx:id="engineFailureStatus" mnemonicParsing="false" text="Engine Failure" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" spacing="5.0">
+                                 <children>
+                                    <Circle fx:id="brakeFailureStatusIcon" fill="#199015" radius="8.0" stroke="WHITE" strokeType="INSIDE" />
+                                    <Label fx:id="brakeFailureStatus" mnemonicParsing="false" text="Brake Failure" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" spacing="5.0">
+                                 <children>
+                                    <Circle fx:id="signalFailureStatusIcon" fill="#199015" radius="8.0" stroke="WHITE" strokeType="INSIDE" />
+                                    <Label fx:id="signalFailureStatus" mnemonicParsing="false" text="Signal Failure" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" spacing="15.0">
+                           <children>
+                              <MenuButton mnemonicParsing="false" text="Failures">
+                                <items>
+                                    <CheckMenuItem mnemonicParsing="false" text="Engine Failure" />
+                                    <CheckMenuItem mnemonicParsing="false" text="Brake Failure" />
+                                    <CheckMenuItem mnemonicParsing="false" text="Signal Failure" />
+                                </items>
+                              </MenuButton>
+                              <Button fx:id="startButton" mnemonicParsing="false" text="START" />
+                              <Button fx:id="endButton" mnemonicParsing="false" onAction="#end_failure_mode" text="END" />
+                           </children>
+                        </HBox>
+                        <Button fx:id="emergencyBrakeButton" mnemonicParsing="false" onAction="#emergency_Brake_Engaged" text="EMERGENCY BRAKE" />
+                     </children>
+                  </VBox>
+               </content>
+            </TitledPane>
+            <HBox alignment="TOP_CENTER" fillHeight="false" spacing="5.0">
+               <children>
+                  <TitledPane animated="false" collapsible="false" text="Train Spec">
+                     <content>
+                        <VBox alignment="CENTER">
+                           <children>
+                              <HBox alignment="TOP_CENTER" spacing="10.0">
+                                 <children>
+                                    <Label text="Weight:" />
+                                    <Label fx:id="weight" text="Label" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_CENTER" spacing="10.0">
+                                 <children>
+                                    <Label text="Length:" />
+                                    <Label fx:id="length" text="Label" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_CENTER" spacing="10.0">
+                                 <children>
+                                    <Label text="Width:" />
+                                    <Label fx:id="width" text="Label" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_CENTER" spacing="10.0">
+                                 <children>
+                                    <Label text="Height:" />
+                                    <Label fx:id="height" text="Label" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_CENTER" spacing="10.0">
+                                 <children>
+                                    <Label text="Capacity:" />
+                                    <Label fx:id="capacity" text="Label" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_CENTER" spacing="10.0">
+                                 <children>
+                                    <Label text="Cars #" />
+                                    <Label fx:id="numberOfCars" text="Label" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </content>
+                  </TitledPane>
+                  <TitledPane animated="false" collapsible="false" text="Velocity">
+                     <content>
+                        <VBox alignment="CENTER">
+                           <children>
+                              <HBox alignment="TOP_CENTER" spacing="10.0">
+                                 <children>
+                                    <Label text="Set Speed:" />
+                                    <Label fx:id="setSpeedStatus" text="Label" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_CENTER" spacing="10.0">
+                                 <children>
+                                    <Label text="Current Speed:" />
+                                    <Label fx:id="currentSpeedStatus" text="Label" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_CENTER" spacing="10.0">
+                                 <children>
+                                    <Label text="Set Authority:" />
+                                    <Label fx:id="setAuthorityStatus" text="Label" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_CENTER" spacing="10.0">
+                                 <children>
+                                    <Label text="Power Output:" />
+                                    <Label fx:id="powerOutputStatus" text="Label" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_CENTER" spacing="10.0">
+                                 <children>
+                                    <Label text="Emergency Brake:" />
+                                    <Label fx:id="emergencyBrakeStatus" text="Label" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_CENTER" spacing="10.0">
+                                 <children>
+                                    <Label text="Service:" />
+                                    <Label fx:id="serviceStatus" text="Label" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_CENTER" spacing="10.0">
+                                 <children>
+                                    <Label text="Current Block:" />
+                                    <Label fx:id="currentBlockStatus" text="Label" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_CENTER" spacing="10.0">
+                                 <children>
+                                    <Label text="Track:" />
+                                    <Label fx:id="currentTrackStatus" text="Label" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </content>
+                  </TitledPane>
+                  <TitledPane animated="false" collapsible="false" text="Station">
+                     <content>
+                        <VBox alignment="CENTER">
+                           <children>
+                              <HBox alignment="TOP_CENTER" spacing="10.0">
+                                 <children>
+                                    <Label text="Passengers:" />
+                                    <Label fx:id="numberOfPassengers" text="Label" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_CENTER" spacing="10.0">
+                                 <children>
+                                    <Label text="Next Station:" />
+                                    <Label fx:id="nextStation" text="Label" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_CENTER" spacing="10.0">
+                                 <children>
+                                    <Label text="Time:" />
+                                    <Label fx:id="time" text="Label" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_CENTER" spacing="10.0">
+                                 <children>
+                                    <Label text="Status:" />
+                                    <Label fx:id="stationStatus" text="Label" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </content>
+                  </TitledPane>
+                  <TitledPane animated="false" collapsible="false" text="Operations">
+                     <content>
+                        <VBox alignment="CENTER">
+                           <children>
+                              <HBox alignment="TOP_CENTER" spacing="10.0">
+                                 <children>
+                                    <Label text="Left Door:" />
+                                    <Label fx:id="leftDoorStatus" text="Label" textAlignment="RIGHT" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_CENTER" spacing="10.0">
+                                 <children>
+                                    <Label text="Right Door:" />
+                                    <Label fx:id="rightDoorStatus" text="Label" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_CENTER" spacing="10.0">
+                                 <children>
+                                    <Label text="Light:" />
+                                    <Label fx:id="lightStatus" text="Label" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_CENTER" spacing="10.0">
+                                 <children>
+                                    <Label text="Beacon" />
+                                    <Label fx:id="beaconStatus" text="Label" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_CENTER" spacing="10.0">
+                                 <children>
+                                    <Label text="GPS Antena:" />
+                                    <Label fx:id="gpsAntenaStatus" text="Label" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_CENTER" spacing="10.0">
+                                 <children>
+                                    <Label text="MBO Antena:" />
+                                    <Label fx:id="mboAntenaStatus" text="Label" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_CENTER" spacing="10.0">
+                                 <children>
+                                    <Label text="Temp:" />
+                                    <Label fx:id="cabinTemp" text="Label" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </content>
+                  </TitledPane>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </center>
+</BorderPane>
