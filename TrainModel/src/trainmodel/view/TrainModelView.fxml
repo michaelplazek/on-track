@@ -3,38 +3,14 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckMenuItem?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuButton?>
-<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="trainmodel.view.TrainModelUIController">
-   <top>
-      <MenuBar BorderPane.alignment="CENTER">
-        <menus>
-          <Menu mnemonicParsing="false" text="File">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Close" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Select">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Delete" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Help">
-            <items>
-              <MenuItem mnemonicParsing="false" text="About" />
-            </items>
-          </Menu>
-        </menus>
-      </MenuBar>
-   </top>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="trainmodel.view.TrainModelController">
    <center>
       <VBox BorderPane.alignment="CENTER">
          <children>
@@ -46,20 +22,20 @@
                            <children>
                               <HBox alignment="CENTER_LEFT" spacing="5.0">
                                  <children>
-                                    <Circle fx:id="engineFailure_StatusIcon" fill="#199015" radius="8.0" stroke="WHITE" strokeType="INSIDE" />
-                                    <Label fx:id="engineFailure_Status" mnemonicParsing="false" text="Engine Failure" />
+                                    <Circle fx:id="engineFailureStatusIcon" fill="#199015" radius="8.0" stroke="WHITE" strokeType="INSIDE" />
+                                    <Label fx:id="engineFailureStatus" mnemonicParsing="false" text="Engine Failure" />
                                  </children>
                               </HBox>
                               <HBox alignment="CENTER_LEFT" spacing="5.0">
                                  <children>
-                                    <Circle fx:id="brakeFailure_StatusIcon" fill="#199015" radius="8.0" stroke="WHITE" strokeType="INSIDE" />
-                                    <Label fx:id="brakeFailure_Status" mnemonicParsing="false" text="Brake Failure" />
+                                    <Circle fx:id="brakeFailureStatusIcon" fill="#199015" radius="8.0" stroke="WHITE" strokeType="INSIDE" />
+                                    <Label fx:id="brakeFailureStatus" mnemonicParsing="false" text="Brake Failure" />
                                  </children>
                               </HBox>
                               <HBox alignment="CENTER_LEFT" spacing="5.0">
                                  <children>
-                                    <Circle fx:id="signalFailure_StatusIcon" fill="#199015" radius="8.0" stroke="WHITE" strokeType="INSIDE" />
-                                    <Label fx:id="signalFailure_Status" mnemonicParsing="false" text="Signal Failure" />
+                                    <Circle fx:id="signalFailureStatusIcon" fill="#199015" radius="8.0" stroke="WHITE" strokeType="INSIDE" />
+                                    <Label fx:id="signalFailureStatus" mnemonicParsing="false" text="Signal Failure" />
                                  </children>
                               </HBox>
                            </children>
@@ -73,11 +49,11 @@
                                     <CheckMenuItem mnemonicParsing="false" text="Signal Failure" />
                                 </items>
                               </MenuButton>
-                              <Button fx:id="start_Button" mnemonicParsing="false" text="START" />
-                              <Button fx:id="end_Button" mnemonicParsing="false" onAction="#end_failure_mode" text="END" />
+                              <Button fx:id="startButton" mnemonicParsing="false" text="START" />
+                              <Button fx:id="endButton" mnemonicParsing="false" onAction="#end_failure_mode" text="END" />
                            </children>
                         </HBox>
-                        <Button fx:id="emergencyBrake_Button" mnemonicParsing="false" onAction="#emergency_Brake_Engaged" text="EMERGENCY BRAKE" />
+                        <Button fx:id="emergencyBrakeButton" mnemonicParsing="false" onAction="#emergency_Brake_Engaged" text="EMERGENCY BRAKE" />
                      </children>
                   </VBox>
                </content>
@@ -135,49 +111,49 @@
                               <HBox alignment="TOP_CENTER" spacing="10.0">
                                  <children>
                                     <Label text="Set Speed:" />
-                                    <Label fx:id="setSpeed_Status" text="Label" />
+                                    <Label fx:id="setSpeedStatus" text="Label" />
                                  </children>
                               </HBox>
                               <HBox alignment="TOP_CENTER" spacing="10.0">
                                  <children>
                                     <Label text="Current Speed:" />
-                                    <Label fx:id="currentSpeed_Status" text="Label" />
+                                    <Label fx:id="currentSpeedStatus" text="Label" />
                                  </children>
                               </HBox>
                               <HBox alignment="TOP_CENTER" spacing="10.0">
                                  <children>
                                     <Label text="Set Authority:" />
-                                    <Label fx:id="setAuthority_Status" text="Label" />
+                                    <Label fx:id="setAuthorityStatus" text="Label" />
                                  </children>
                               </HBox>
                               <HBox alignment="TOP_CENTER" spacing="10.0">
                                  <children>
                                     <Label text="Power Output:" />
-                                    <Label fx:id="powerOutput_Status" text="Label" />
+                                    <Label fx:id="powerOutputStatus" text="Label" />
                                  </children>
                               </HBox>
                               <HBox alignment="TOP_CENTER" spacing="10.0">
                                  <children>
                                     <Label text="Emergency Brake:" />
-                                    <Label fx:id="emergencyBrake_Status" text="Label" />
+                                    <Label fx:id="emergencyBrakeStatus" text="Label" />
                                  </children>
                               </HBox>
                               <HBox alignment="TOP_CENTER" spacing="10.0">
                                  <children>
                                     <Label text="Service:" />
-                                    <Label fx:id="service_Status" text="Label" />
+                                    <Label fx:id="serviceStatus" text="Label" />
                                  </children>
                               </HBox>
                               <HBox alignment="TOP_CENTER" spacing="10.0">
                                  <children>
                                     <Label text="Current Block:" />
-                                    <Label fx:id="currentBlock_Status" text="Label" />
+                                    <Label fx:id="currentBlockStatus" text="Label" />
                                  </children>
                               </HBox>
                               <HBox alignment="TOP_CENTER" spacing="10.0">
                                  <children>
                                     <Label text="Track:" />
-                                    <Label fx:id="currentTrack_Status" text="Label" />
+                                    <Label fx:id="currentTrackStatus" text="Label" />
                                  </children>
                               </HBox>
                            </children>
@@ -209,7 +185,7 @@
                               <HBox alignment="TOP_CENTER" spacing="10.0">
                                  <children>
                                     <Label text="Status:" />
-                                    <Label fx:id="station_Status" text="Label" />
+                                    <Label fx:id="stationStatus" text="Label" />
                                  </children>
                               </HBox>
                            </children>
@@ -223,37 +199,37 @@
                               <HBox alignment="TOP_CENTER" spacing="10.0">
                                  <children>
                                     <Label text="Left Door:" />
-                                    <Label fx:id="leftDoor_Status" text="Label" textAlignment="RIGHT" />
+                                    <Label fx:id="leftDoorStatus" text="Label" textAlignment="RIGHT" />
                                  </children>
                               </HBox>
                               <HBox alignment="TOP_CENTER" spacing="10.0">
                                  <children>
                                     <Label text="Right Door:" />
-                                    <Label fx:id="rightDoor_Status" text="Label" />
+                                    <Label fx:id="rightDoorStatus" text="Label" />
                                  </children>
                               </HBox>
                               <HBox alignment="TOP_CENTER" spacing="10.0">
                                  <children>
                                     <Label text="Light:" />
-                                    <Label fx:id="light_Status" text="Label" />
+                                    <Label fx:id="lightStatus" text="Label" />
                                  </children>
                               </HBox>
                               <HBox alignment="TOP_CENTER" spacing="10.0">
                                  <children>
                                     <Label text="Beacon" />
-                                    <Label fx:id="beacon_Status" text="Label" />
+                                    <Label fx:id="beaconStatus" text="Label" />
                                  </children>
                               </HBox>
                               <HBox alignment="TOP_CENTER" spacing="10.0">
                                  <children>
                                     <Label text="GPS Antena:" />
-                                    <Label fx:id="GPSAntena_Status" text="Label" />
+                                    <Label fx:id="gpsAntenaStatus" text="Label" />
                                  </children>
                               </HBox>
                               <HBox alignment="TOP_CENTER" spacing="10.0">
                                  <children>
                                     <Label text="MBO Antena:" />
-                                    <Label fx:id="MBOAntena_Status" text="Label" />
+                                    <Label fx:id="mboAntenaStatus" text="Label" />
                                  </children>
                               </HBox>
                               <HBox alignment="TOP_CENTER" spacing="10.0">
