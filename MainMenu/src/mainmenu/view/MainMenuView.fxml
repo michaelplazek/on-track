@@ -7,54 +7,72 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="550.0" prefWidth="350.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mainmenu.view.MainMenuController">
+<AnchorPane xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mainmenu.view.MainMenuController">
    <children>
-      <Label layoutX="31.0" layoutY="38.0" prefHeight="67.0" prefWidth="289.0" text="On-Track Train Simulator">
-         <font>
-            <Font name="Thonburi" size="24.0" />
-         </font>
-      </Label>
-      <Button layoutX="73.0" layoutY="123.0" mnemonicParsing="false" text="Central Traffic Control" AnchorPane.leftAnchor="25.0">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Button>
-      <Button layoutX="74.0" layoutY="183.0" mnemonicParsing="false" text="Moving Block Overlay" AnchorPane.leftAnchor="25.0">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Button>
-      <Button layoutX="74.0" layoutY="243.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="203.0" text="Track Controller" AnchorPane.leftAnchor="25.0">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Button>
-      <Button layoutX="73.0" layoutY="303.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="205.0" text="Train Controller" AnchorPane.leftAnchor="25.0">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Button>
-      <Button layoutX="73.0" layoutY="363.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="205.0" text="Track Model" AnchorPane.leftAnchor="25.0">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Button>
-      <Button layoutX="74.0" layoutY="423.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="205.0" text="Train Model" AnchorPane.leftAnchor="25.0">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Button>
-      <Label layoutX="107.0" layoutY="530.0" text="On-Track Development | 2018">
+      <VBox layoutX="25.0" layoutY="38.0" spacing="25.0" AnchorPane.bottomAnchor="27.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="30.0">
+         <children>
+            <Label prefHeight="67.0" prefWidth="289.0" text="On-Track Train Simulator">
+               <font>
+                  <Font name="Thonburi" size="24.0" />
+               </font>
+            </Label>
+            <Button mnemonicParsing="false" prefWidth="220.0" text="Central Traffic Control">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Button>
+            <Button mnemonicParsing="false" prefWidth="220.0" text="Moving Block Overlay">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Button>
+            <HBox alignment="CENTER_LEFT" spacing="20.0">
+               <children>
+                  <Button fx:id="trackController_Button" mnemonicParsing="false" prefHeight="35.0" prefWidth="220.0" text="Track Controller">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Button>
+                  <ChoiceBox fx:id="trackController_ChoiceBox" prefHeight="26.0" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" spacing="20.0">
+               <children>
+                  <Button fx:id="trainController_Button" mnemonicParsing="false" prefHeight="35.0" prefWidth="220.0" text="Train Controller">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Button>
+                  <ChoiceBox fx:id="trainController_ChoiceBox" prefHeight="26.0" />
+               </children>
+            </HBox>
+            <Button mnemonicParsing="false" prefHeight="35.0" prefWidth="220.0" text="Track Model">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Button>
+            <HBox alignment="CENTER_LEFT" spacing="20.0">
+               <children>
+                  <Button fx:id="trainModel_Button" mnemonicParsing="false" prefHeight="35.0" prefWidth="220.0" text="Train Model">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Button>
+                  <ChoiceBox fx:id="trainModel_ChoiceBox" prefHeight="26.0" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+      <Label layoutX="107.0" layoutY="530.0" text="On-Track Development | 2018" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="125.0" AnchorPane.rightAnchor="125.0">
          <font>
             <Font name="System Italic" size="10.0" />
          </font>
       </Label>
-      <ChoiceBox fx:id="trackController_ChoiceBox" layoutX="244.0" layoutY="248.0" prefHeight="26.0" prefWidth="83.0" />
-      <ChoiceBox fx:id="trainController_ChoiceBox" layoutX="244.0" layoutY="308.0" prefHeight="26.0" prefWidth="83.0" />
-      <ChoiceBox fx:id="trainModel_ChoiceBox" layoutX="244.0" layoutY="428.0" prefHeight="26.0" prefWidth="83.0" />
-      <MenuBar prefHeight="29.0" prefWidth="350.0">
+      <MenuBar prefHeight="29.0" prefWidth="350.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>

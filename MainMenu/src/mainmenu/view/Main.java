@@ -12,7 +12,7 @@ public class Main extends Application {
   public void start(Stage primaryStage) throws Exception {
     Parent root = FXMLLoader.load(getClass().getResource("MainMenuView.fxml"));
     primaryStage.setTitle("On-Track Train Simulator");
-    primaryStage.setScene(new Scene(root, 350, 550));
+    primaryStage.setScene(new Scene(root, 450, 550));
     primaryStage.show();
   }
 
