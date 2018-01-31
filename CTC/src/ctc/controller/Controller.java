@@ -21,9 +21,9 @@ public class Controller {
   @FXML
   private ChoiceBox tracks;
   @FXML
-  private ChoiceBox blocks1;
+  private ChoiceBox maintenanceBlocks;
   @FXML
-  private ChoiceBox blocks2;
+  private ChoiceBox scheduleBlocks;
   @FXML
   private ChoiceBox actions;
 
@@ -75,9 +75,9 @@ public class Controller {
 
   // MOCK DATA FOR TABLES
   private ObservableList<TrainStopRow> trainList = FXCollections.observableArrayList(
-      new TrainStopRow("A3", "2:00:00"),
-      new TrainStopRow("B2", "3:00:00"),
-      new TrainStopRow("C1", "2:00:00")
+      new TrainStopRow("Edgebrook", "00:02:00"),
+      new TrainStopRow("Glenbury", "00:04:00"),
+      new TrainStopRow("Dormont", "00:02:00")
   );
 
   private ObservableList<TrainQueueRow> queueList = FXCollections.observableArrayList(
@@ -105,7 +105,7 @@ public class Controller {
   private void importSchedule(ActionEvent event) {
     trainNameField.setText("Train1");
     departingTimeField.setText("2:00:00");
-    blocks2.setValue("A3");
+    scheduleBlocks.setValue("A3");
     trainTable.setItems(trainList);
   }
 
@@ -116,6 +116,7 @@ public class Controller {
   private void addTrain(ActionEvent event) {
     trainNameField.setText("");
     departingTimeField.setText("");
+    scheduleBlocks.setValue("Block");
     trainTable.setItems(FXCollections.observableArrayList());
     selectedScheduleTable.setItems(trainList);
     trainQueueTable.setItems(queueList);
@@ -145,10 +146,10 @@ public class Controller {
         "A1", "A2", "A3",
         "B1", "B2", "B3",
         "C1", "C2", "C3");
-    blocks1.setValue("Block");
-    blocks1.setItems(block);
-    blocks2.setValue("Block");
-    blocks2.setItems(block);
+    maintenanceBlocks.setValue("Block");
+    maintenanceBlocks.setItems(block);
+    scheduleBlocks.setValue("Block");
+    scheduleBlocks.setItems(block);
 
     ObservableList<String> action = FXCollections.observableArrayList(
         "Select action", "Close block", "Repair block", "Toggle switch");
@@ -171,9 +172,9 @@ public class Controller {
    */
   private void populateQueue() {
     selectedDwellColumn.setCellValueFactory(
-        new PropertyValueFactory<TrainStopRow, String>("stop"));
-    selectedStopColumn.setCellValueFactory(
         new PropertyValueFactory<TrainStopRow, String>("dwell"));
+    selectedStopColumn.setCellValueFactory(
+        new PropertyValueFactory<TrainStopRow, String>("stop"));
     trainColumn.setCellValueFactory(
         new PropertyValueFactory<TrainQueueRow, String>("train"));
     departureColumn.setCellValueFactory(
