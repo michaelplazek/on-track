@@ -32,22 +32,22 @@
             </Button>
             <HBox alignment="CENTER_LEFT" spacing="20.0">
                <children>
-                  <Button fx:id="trackController_Button" mnemonicParsing="false" prefHeight="35.0" prefWidth="220.0" text="Track Controller">
+                  <Button fx:id="trackControllerButton" mnemonicParsing="false" prefHeight="35.0" prefWidth="220.0" text="Track Controller">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </Button>
-                  <ChoiceBox fx:id="trackController_ChoiceBox" prefHeight="26.0" />
+                  <ChoiceBox fx:id="trackControllerChoiceBox" prefHeight="26.0" />
                </children>
             </HBox>
             <HBox alignment="CENTER_LEFT" spacing="20.0">
                <children>
-                  <Button fx:id="trainController_Button" mnemonicParsing="false" prefHeight="35.0" prefWidth="220.0" text="Train Controller">
+                  <Button fx:id="trainControllerButton" mnemonicParsing="false" prefHeight="35.0" prefWidth="220.0" text="Train Controller">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </Button>
-                  <ChoiceBox fx:id="trainController_ChoiceBox" prefHeight="26.0" />
+                  <ChoiceBox fx:id="trainControllerChoiceBox" prefHeight="26.0" />
                </children>
             </HBox>
             <Button mnemonicParsing="false" prefHeight="35.0" prefWidth="220.0" text="Track Model">
@@ -57,12 +57,12 @@
             </Button>
             <HBox alignment="CENTER_LEFT" spacing="20.0">
                <children>
-                  <Button fx:id="trainModel_Button" mnemonicParsing="false" prefHeight="35.0" prefWidth="220.0" text="Train Model">
+                  <Button fx:id="trainModelButton" mnemonicParsing="false" prefHeight="35.0" prefWidth="220.0" text="Train Model">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </Button>
-                  <ChoiceBox fx:id="trainModel_ChoiceBox" prefHeight="26.0" />
+                  <ChoiceBox fx:id="trainModelChoiceBox" prefHeight="26.0" />
                </children>
             </HBox>
          </children>

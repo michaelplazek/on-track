@@ -1,45 +1,45 @@
 package mainmenu.view;
 
+import java.net.URL;
+import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 
-import java.net.URL;
-import java.util.ResourceBundle;
 
 /**
  * Created by jeremyzang on 1/30/18.
- *
- * This class is the controller class for MainMenuView.fxml
+ * This class is the controller class for mainmenuview.fxml
  */
-public class MainMenuController implements Initializable{
+public class MainMenuController implements Initializable {
+  @FXML
+  private ChoiceBox<String> trackControllerChoiceBox = new ChoiceBox<>();
+  @FXML
+  private ChoiceBox<String> trainControllerChoiceBox = new ChoiceBox<>();
+  @FXML
+  private ChoiceBox<String> trainModelChoiceBox = new ChoiceBox<>();
+  
+  @FXML
+  private Button trackControllerButton;
+  @FXML
+  private Button trainControllerButton;
+  @FXML
+  private Button trainModelButton;
 
-    @FXML
-    private ChoiceBox<String> trackController_ChoiceBox  = new ChoiceBox<>();
-    @FXML
-    private ChoiceBox<String> trainController_ChoiceBox  = new ChoiceBox<>();
-    @FXML
-    private ChoiceBox<String> trainModel_ChoiceBox = new ChoiceBox<>();
+  @Override
+  public void initialize(URL location, ResourceBundle resources) {
 
-    @FXML
-    private Button trackController_Button;
-    @FXML
-    private Button trainController_Button;
-    @FXML
-    private Button trainModel_Button;
+    //Dummy Data for UI Presentation
+    trainControllerChoiceBox.getItems().addAll("Select Train", "Train 1", "Train 2", "Train 3");
+    trainModelChoiceBox.getItems().addAll("Select Train", "Train 1", "Train 2", "Train 3");
+    trackControllerChoiceBox.getItems().addAll(
+        "Select Wayside", "Wayside 1", "Wayside  2", "Wayside  3");
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    trainControllerChoiceBox.setValue("Select Train");
+    trainModelChoiceBox.setValue("Select Train");
+    trackControllerChoiceBox.setValue("Select Wayside");
 
-        //Dummy Data for UI Presentation
-        trainController_ChoiceBox.getItems().addAll("Select Train", "Train 1", "Train 2" , "Train 3");
-        trainModel_ChoiceBox.getItems().addAll("Select Train", "Train 1", "Train 2" , "Train 3");
-        trackController_ChoiceBox.getItems().addAll("Select Wayside", "Wayside 1" , "Wayside  2", "Wayside  3");
-
-        trainController_ChoiceBox.setValue("Select Train");
-        trainModel_ChoiceBox.setValue("Select Train");
-        trackController_ChoiceBox.setValue("Select Wayside");
-
-    }
+  }
 }
