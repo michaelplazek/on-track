@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="550.0" prefWidth="350.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mainmenu.view.UserInterface">
+<AnchorPane prefHeight="550.0" prefWidth="350.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mainmenu.view.MainMenuController">
    <children>
       <Label layoutX="31.0" layoutY="38.0" prefHeight="67.0" prefWidth="289.0" text="On-Track Train Simulator">
          <font>
@@ -51,9 +51,9 @@
             <Font name="System Italic" size="10.0" />
          </font>
       </Label>
-      <ChoiceBox layoutX="244.0" layoutY="248.0" prefHeight="26.0" prefWidth="83.0" />
-      <ChoiceBox layoutX="244.0" layoutY="308.0" prefHeight="26.0" prefWidth="83.0" />
-      <ChoiceBox layoutX="244.0" layoutY="428.0" prefHeight="26.0" prefWidth="83.0" />
+      <ChoiceBox fx:id="trackController_ChoiceBox" layoutX="244.0" layoutY="248.0" prefHeight="26.0" prefWidth="83.0" />
+      <ChoiceBox fx:id="trainController_ChoiceBox" layoutX="244.0" layoutY="308.0" prefHeight="26.0" prefWidth="83.0" />
+      <ChoiceBox fx:id="trainModel_ChoiceBox" layoutX="244.0" layoutY="428.0" prefHeight="26.0" prefWidth="83.0" />
       <MenuBar prefHeight="29.0" prefWidth="350.0">
         <menus>
           <Menu mnemonicParsing="false" text="File">
