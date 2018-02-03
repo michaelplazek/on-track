@@ -72,6 +72,8 @@ public class Controller {
   private TableColumn<TrainDispatchRow, String> dispatchSpeedColumn;
   @FXML
   private TableColumn<TrainDispatchRow, String> dispatchPassengersColumn;
+  @FXML
+  private ChoiceBox setAuthority;
 
   // MOCK DATA FOR TABLES
   private ObservableList<TrainStopRow> trainList = FXCollections.observableArrayList(
@@ -150,6 +152,8 @@ public class Controller {
     maintenanceBlocks.setItems(block);
     scheduleBlocks.setValue("Block");
     scheduleBlocks.setItems(block);
+    setAuthority.setValue("Block");
+    setAuthority.setItems(block);
 
     ObservableList<String> action = FXCollections.observableArrayList(
         "Select action", "Close block", "Repair block", "Toggle switch");

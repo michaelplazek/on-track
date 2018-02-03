@@ -12,13 +12,15 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<SplitPane dividerPositions="0.22613065326633167" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="500.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ctc.controller.Controller">
+<SplitPane dividerPositions="0.23092369477911648" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="500.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ctc.controller.Controller">
   <items>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="50.0" prefWidth="798.0">
          <children>
@@ -65,18 +67,18 @@
                   <Font size="14.0" />
                </font>
             </Label>
-            <Label layoutX="956.0" layoutY="15.0" text="Throughput:">
+            <Label layoutX="1006.0" layoutY="15.0" text="Throughput:">
                <font>
                   <Font name="System Italic" size="12.0" />
                </font>
             </Label>
-            <Label layoutX="1027.0" layoutY="16.0" text="27 trains/hr">
+            <Label layoutX="1000.0" layoutY="34.0" text="27 passengers/hr">
                <font>
                   <Font name="System Italic" size="10.0" />
                </font>
             </Label>
          </children></AnchorPane>
-    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="364.0" prefWidth="1098.0">
          <children>
             <HBox layoutX="247.0" layoutY="35.0" prefHeight="342.0" prefWidth="848.0">
                <children>
@@ -103,8 +105,9 @@
                                                       <ChoiceBox fx:id="scheduleBlocks" layoutX="125.0" layoutY="121.0" prefHeight="26.0" prefWidth="71.0" value="Green" />
                                                       <TableView fx:id="trainTable" editable="true" layoutX="5.0" layoutY="154.0" prefHeight="86.0" prefWidth="189.0">
                                                         <columns>
-                                                          <TableColumn fx:id="stopColumn" prefWidth="94.0" text="Stop" />
-                                                          <TableColumn fx:id="dwellColumn" prefWidth="93.0" text="Dwell" />
+                                                          <TableColumn fx:id="stopColumn" prefWidth="64.0" text="Stop" />
+                                                          <TableColumn fx:id="dwellColumn" prefWidth="68.0" text="Dwell" />
+                                                            <TableColumn prefWidth="57.0" text="Time" />
                                                         </columns>
                                                       </TableView>
                                                       <Button layoutX="6.0" layoutY="244.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="69.0" text="Reset" />
@@ -132,8 +135,9 @@
                                                       </TableView>
                                                       <TableView fx:id="selectedScheduleTable" layoutX="4.0" layoutY="155.0" prefHeight="84.0" prefWidth="211.0">
                                                         <columns>
-                                                          <TableColumn fx:id="selectedStopColumn" prefWidth="103.0" text="Stop" />
-                                                          <TableColumn fx:id="selectedDwellColumn" prefWidth="106.0" text="Dwell" />
+                                                          <TableColumn fx:id="selectedStopColumn" prefWidth="68.0" text="Stop" />
+                                                          <TableColumn fx:id="selectedDwellColumn" prefWidth="68.0" text="Dwell" />
+                                                            <TableColumn prefWidth="75.0" text="Time" />
                                                         </columns>
                                                       </TableView>
                                                       <Label layoutX="54.0" layoutY="136.0" text="Selected Schedule" />
@@ -159,7 +163,6 @@
                                                       <Button layoutX="125.0" layoutY="234.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="150.0" text="Set Authority" />
                                                       <Circle fill="#24c51b" layoutX="298.0" layoutY="231.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
                                                       <Label layoutX="312.0" layoutY="223.0" text="Train Status" />
-                                                      <TextField fx:id="authorityField" layoutX="14.0" layoutY="234.0" prefHeight="26.0" prefWidth="105.0" promptText="km" />
                                                       <TableView fx:id="dispatchTable" prefHeight="193.0" prefWidth="407.0">
                                                         <columns>
                                                           <TableColumn fx:id="dispatchTrainColumn" prefWidth="69.0" text="Train" />
@@ -169,6 +172,7 @@
                                                             <TableColumn fx:id="dispatchPassengersColumn" prefWidth="102.0" text="Passengers" />
                                                         </columns>
                                                       </TableView>
+                                                      <ChoiceBox fx:id="setAuthority" layoutX="14.0" layoutY="234.0" prefHeight="26.0" prefWidth="105.0" />
                                                    </children>
                                                 </AnchorPane>
                                             </content>
@@ -204,14 +208,14 @@
                               </Label>
                               <ChoiceBox fx:id="tracks" layoutX="9.0" layoutY="36.0" prefHeight="26.0" prefWidth="156.0" />
                               <ChoiceBox fx:id="maintenanceBlocks" layoutX="169.0" layoutY="36.0" prefHeight="26.0" prefWidth="61.0" />
-                              <Circle fill="#24c51b" layoutX="50.0" layoutY="99.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
-                              <Circle fill="#24c51b" layoutX="50.0" layoutY="118.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
-                              <Label layoutX="60.0" layoutY="93.0" text="Status">
+                              <Circle fill="#24c51b" layoutX="51.0" layoutY="96.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
+                              <Circle fill="#24c51b" layoutX="51.0" layoutY="115.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
+                              <Label layoutX="61.0" layoutY="90.0" text="Status">
                                  <font>
                                     <Font size="10.0" />
                                  </font>
                               </Label>
-                              <Label layoutX="58.0" layoutY="111.0" text="Occupied">
+                              <Label layoutX="59.0" layoutY="108.0" text="Occupied">
                                  <font>
                                     <Font size="10.0" />
                                  </font>
@@ -222,26 +226,21 @@
                                     <Font size="12.0" />
                                  </font>
                               </Button>
-                              <Label disable="true" layoutX="130.0" layoutY="76.0" text="Switch State">
+                              <Label layoutX="136.0" layoutY="68.0" text="Switch State">
                                  <font>
                                     <Font size="12.0" />
                                  </font>
                               </Label>
-                              <Label disable="true" layoutX="152.0" layoutY="95.0" text="Altered">
-                                 <font>
-                                    <Font size="10.0" />
-                                 </font>
-                              </Label>
-                              <Label disable="true" layoutX="153.0" layoutY="109.0" text="Straight">
-                                 <font>
-                                    <Font size="10.0" />
-                                 </font>
-                              </Label>
-                              <Label layoutX="42.0" layoutY="75.0" text="Track State">
+                              <Label layoutX="43.0" layoutY="68.0" text="Track State">
                                  <font>
                                     <Font size="12.0" />
                                  </font>
                               </Label>
+                              <ImageView fitHeight="40.0" fitWidth="47.0" layoutX="150.0" layoutY="88.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@images/switch_stay.png" />
+                                 </image>
+                              </ImageView>
                            </children>
                         </AnchorPane>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="178.0" prefWidth="240.0">
