@@ -124,25 +124,30 @@ public class TrainModelController implements Initializable {
   public void initializeStatusLabels() {
     //Initialize status labels. If connection fails use default ("N/A").
     //TODO: Initialize labels with real data
-    weight.textProperty().setValue(Constants.LABEL_STATUS_UNAVAILABLE);
-    setSpeedStatus.textProperty().setValue(Constants.LABEL_STATUS_UNAVAILABLE);
-    currentSpeedStatus.textProperty().setValue(Constants.LABEL_STATUS_UNAVAILABLE);
-    setAuthorityStatus.textProperty().setValue(Constants.LABEL_STATUS_UNAVAILABLE);
-    powerOutputStatus.textProperty().setValue(Constants.LABEL_STATUS_UNAVAILABLE);
-    serviceStatus.textProperty().setValue(Constants.LABEL_STATUS_UNAVAILABLE);
-    currentBlockStatus.textProperty().setValue(Constants.LABEL_STATUS_UNAVAILABLE);
-    currentTrackStatus.textProperty().setValue(Constants.LABEL_STATUS_UNAVAILABLE);
-    numberOfPassengers.textProperty().setValue(Constants.LABEL_STATUS_UNAVAILABLE);
-    nextStation.textProperty().setValue(Constants.LABEL_STATUS_UNAVAILABLE);
-    time.textProperty().setValue(Constants.LABEL_STATUS_UNAVAILABLE);
-    stationStatus.textProperty().setValue(Constants.LABEL_STATUS_UNAVAILABLE);
-    leftDoorStatus.textProperty().setValue(Constants.LABEL_STATUS_UNAVAILABLE);
-    rightDoorStatus.textProperty().setValue(Constants.LABEL_STATUS_UNAVAILABLE);
-    lightStatus.textProperty().setValue(Constants.LABEL_STATUS_UNAVAILABLE);
-    beaconStatus.textProperty().setValue(Constants.LABEL_STATUS_UNAVAILABLE);
-    gpsAntenaStatus.textProperty().setValue(Constants.LABEL_STATUS_UNAVAILABLE);
-    mboAntenaStatus.textProperty().setValue(Constants.LABEL_STATUS_UNAVAILABLE);
-    cabinTemp.textProperty().setValue(Constants.LABEL_STATUS_UNAVAILABLE);
-    emergencyBrakeStatus.textProperty().setValue(Constants.LABEL_EMERGENCY_BRAKE_NOT_ENGAGED);
+    weight.textProperty().setValue("56,234 lbs");
+    setSpeedStatus.textProperty().setValue("45 MPH");
+    currentSpeedStatus.textProperty().setValue("43 MPH");
+    setAuthorityStatus.textProperty().setValue("1000 yds");
+    powerOutputStatus.textProperty().setValue("24,596 Watts");
+    serviceStatus.textProperty().setValue("OK");
+    currentBlockStatus.textProperty().setValue("WAITING");
+    currentTrackStatus.textProperty().setValue("OK");
+    numberOfPassengers.textProperty().setValue("63");
+    nextStation.textProperty().setValue("Downtown");
+    time.textProperty().setValue("12:45 PM");
+    stationStatus.textProperty().setValue("IN ROUTE");
+    leftDoorStatus.textProperty().setValue("CLOSED");
+    rightDoorStatus.textProperty().setValue("CLOSED");
+    lightStatus.textProperty().setValue("OFF");
+    beaconStatus.textProperty().setValue("ON");
+    gpsAntenaStatus.textProperty().setValue("ON");
+    mboAntenaStatus.textProperty().setValue("ON");
+    cabinTemp.textProperty().setValue("72 degrees");
+    emergencyBrakeStatus.textProperty().setValue("ENGAGED");
+    length.textProperty().setValue("105.64 ft");
+    width.textProperty().setValue("8.69 ft");
+    height.textProperty().set("11.22 ft");
+    capacity.textProperty().setValue("148"); //148 capacity
+    numberOfCars.textProperty().setValue("1");
   }
 }
