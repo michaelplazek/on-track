@@ -58,188 +58,320 @@
                   </VBox>
                </content>
             </TitledPane>
-            <HBox alignment="TOP_CENTER" fillHeight="false" spacing="5.0">
+            <HBox alignment="TOP_CENTER" fillHeight="false">
                <children>
-                  <TitledPane animated="false" collapsible="false" text="Train Spec">
+                  <TitledPane animated="false" collapsible="false" prefHeight="190.0" text="Train Spec">
                      <content>
-                        <VBox alignment="CENTER">
+                        <HBox spacing="10.0">
                            <children>
-                              <HBox alignment="TOP_CENTER" spacing="10.0">
+                              <VBox alignment="TOP_CENTER">
                                  <children>
-                                    <Label text="Weight:" />
-                                    <Label fx:id="weight" text="Label" />
+                                    <HBox alignment="CENTER_LEFT">
+                                       <children>
+                                          <Label text="Weight:" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT">
+                                       <children>
+                                          <Label text="Length:" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT">
+                                       <children>
+                                          <Label text="Width:" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT">
+                                       <children>
+                                          <Label text="Height:" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT">
+                                       <children>
+                                          <Label text="Capacity:" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT">
+                                       <children>
+                                          <Label text="# of Cars:" />
+                                       </children>
+                                    </HBox>
                                  </children>
-                              </HBox>
-                              <HBox alignment="TOP_CENTER" spacing="10.0">
+                              </VBox>
+                              <VBox alignment="TOP_CENTER">
                                  <children>
-                                    <Label text="Length:" />
-                                    <Label fx:id="length" text="Label" />
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label fx:id="weight" text="Label" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label fx:id="length" text="Label" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label fx:id="width" text="Label" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label fx:id="height" text="Label" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label fx:id="capacity" text="Label" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label fx:id="numberOfCars" text="Label" />
+                                       </children>
+                                    </HBox>
                                  </children>
-                              </HBox>
-                              <HBox alignment="TOP_CENTER" spacing="10.0">
-                                 <children>
-                                    <Label text="Width:" />
-                                    <Label fx:id="width" text="Label" />
-                                 </children>
-                              </HBox>
-                              <HBox alignment="TOP_CENTER" spacing="10.0">
-                                 <children>
-                                    <Label text="Height:" />
-                                    <Label fx:id="height" text="Label" />
-                                 </children>
-                              </HBox>
-                              <HBox alignment="TOP_CENTER" spacing="10.0">
-                                 <children>
-                                    <Label text="Capacity:" />
-                                    <Label fx:id="capacity" text="Label" />
-                                 </children>
-                              </HBox>
-                              <HBox alignment="TOP_CENTER" spacing="10.0">
-                                 <children>
-                                    <Label text="Cars #" />
-                                    <Label fx:id="numberOfCars" text="Label" />
-                                 </children>
-                              </HBox>
+                              </VBox>
                            </children>
-                        </VBox>
+                        </HBox>
                      </content>
                   </TitledPane>
-                  <TitledPane animated="false" collapsible="false" text="Velocity">
+                  <TitledPane animated="false" collapsible="false" prefHeight="190.0" text="Velocity">
                      <content>
-                        <VBox alignment="CENTER">
+                        <HBox spacing="10.0">
                            <children>
-                              <HBox alignment="TOP_CENTER" spacing="10.0">
+                              <VBox alignment="TOP_CENTER">
                                  <children>
-                                    <Label text="Set Speed:" />
-                                    <Label fx:id="setSpeedStatus" text="Label" />
+                                    <HBox alignment="CENTER_LEFT">
+                                       <children>
+                                          <Label text="Set Speed:" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT">
+                                       <children>
+                                          <Label text="Current Speed:" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT">
+                                       <children>
+                                          <Label text="Set Authority:" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT">
+                                       <children>
+                                          <Label text="Power Output:" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT">
+                                       <children>
+                                          <Label text="Emergency Brake:" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT">
+                                       <children>
+                                          <Label text="Service:" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT">
+                                       <children>
+                                          <Label text="Current Block:" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT">
+                                       <children>
+                                          <Label text="Track:" />
+                                       </children>
+                                    </HBox>
                                  </children>
-                              </HBox>
-                              <HBox alignment="TOP_CENTER" spacing="10.0">
+                              </VBox>
+                              <VBox alignment="TOP_CENTER">
                                  <children>
-                                    <Label text="Current Speed:" />
-                                    <Label fx:id="currentSpeedStatus" text="Label" />
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label fx:id="setSpeedStatus" text="Label" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label fx:id="currentSpeedStatus" text="Label" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label fx:id="setAuthorityStatus" text="Label" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label fx:id="powerOutputStatus" text="Label" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label fx:id="emergencyBrakeStatus" text="Label" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label fx:id="serviceStatus" text="Label" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label fx:id="currentBlockStatus" text="Label" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label fx:id="currentTrackStatus" text="Label" />
+                                       </children>
+                                    </HBox>
                                  </children>
-                              </HBox>
-                              <HBox alignment="TOP_CENTER" spacing="10.0">
-                                 <children>
-                                    <Label text="Set Authority:" />
-                                    <Label fx:id="setAuthorityStatus" text="Label" />
-                                 </children>
-                              </HBox>
-                              <HBox alignment="TOP_CENTER" spacing="10.0">
-                                 <children>
-                                    <Label text="Power Output:" />
-                                    <Label fx:id="powerOutputStatus" text="Label" />
-                                 </children>
-                              </HBox>
-                              <HBox alignment="TOP_CENTER" spacing="10.0">
-                                 <children>
-                                    <Label text="Emergency Brake:" />
-                                    <Label fx:id="emergencyBrakeStatus" text="Label" />
-                                 </children>
-                              </HBox>
-                              <HBox alignment="TOP_CENTER" spacing="10.0">
-                                 <children>
-                                    <Label text="Service:" />
-                                    <Label fx:id="serviceStatus" text="Label" />
-                                 </children>
-                              </HBox>
-                              <HBox alignment="TOP_CENTER" spacing="10.0">
-                                 <children>
-                                    <Label text="Current Block:" />
-                                    <Label fx:id="currentBlockStatus" text="Label" />
-                                 </children>
-                              </HBox>
-                              <HBox alignment="TOP_CENTER" spacing="10.0">
-                                 <children>
-                                    <Label text="Track:" />
-                                    <Label fx:id="currentTrackStatus" text="Label" />
-                                 </children>
-                              </HBox>
+                              </VBox>
                            </children>
-                        </VBox>
+                        </HBox>
                      </content>
                   </TitledPane>
-                  <TitledPane animated="false" collapsible="false" text="Station">
+                  <TitledPane animated="false" collapsible="false" prefHeight="190.0" text="Station">
                      <content>
-                        <VBox alignment="CENTER">
+                        <HBox spacing="10.0">
                            <children>
-                              <HBox alignment="TOP_CENTER" spacing="10.0">
+                              <VBox alignment="TOP_CENTER">
                                  <children>
-                                    <Label text="Passengers:" />
-                                    <Label fx:id="numberOfPassengers" text="Label" />
+                                    <HBox alignment="CENTER_LEFT">
+                                       <children>
+                                          <Label text="Passengers:" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT">
+                                       <children>
+                                          <Label text="Next Station:" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT">
+                                       <children>
+                                          <Label text="Time:" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT">
+                                       <children>
+                                          <Label text="Status:" />
+                                       </children>
+                                    </HBox>
                                  </children>
-                              </HBox>
-                              <HBox alignment="TOP_CENTER" spacing="10.0">
+                              </VBox>
+                              <VBox alignment="TOP_CENTER">
                                  <children>
-                                    <Label text="Next Station:" />
-                                    <Label fx:id="nextStation" text="Label" />
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label fx:id="numberOfPassengers" text="Label" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label fx:id="nextStation" text="Label" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label fx:id="time" text="Label" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label fx:id="stationStatus" text="Label" />
+                                       </children>
+                                    </HBox>
                                  </children>
-                              </HBox>
-                              <HBox alignment="TOP_CENTER" spacing="10.0">
-                                 <children>
-                                    <Label text="Time:" />
-                                    <Label fx:id="time" text="Label" />
-                                 </children>
-                              </HBox>
-                              <HBox alignment="TOP_CENTER" spacing="10.0">
-                                 <children>
-                                    <Label text="Status:" />
-                                    <Label fx:id="stationStatus" text="Label" />
-                                 </children>
-                              </HBox>
+                              </VBox>
                            </children>
-                        </VBox>
+                        </HBox>
                      </content>
                   </TitledPane>
-                  <TitledPane animated="false" collapsible="false" text="Operations">
+                  <TitledPane animated="false" collapsible="false" prefHeight="190.0" text="Operations">
                      <content>
-                        <VBox alignment="CENTER">
+                        <HBox spacing="10.0">
                            <children>
-                              <HBox alignment="TOP_CENTER" spacing="10.0">
+                              <VBox alignment="TOP_CENTER">
                                  <children>
-                                    <Label text="Left Door:" />
-                                    <Label fx:id="leftDoorStatus" text="Label" textAlignment="RIGHT" />
+                                    <HBox alignment="CENTER_LEFT">
+                                       <children>
+                                          <Label text="Left Door:" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT">
+                                       <children>
+                                          <Label text="Right Door:" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT">
+                                       <children>
+                                          <Label text="Light:" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT">
+                                       <children>
+                                          <Label text="Beacon:" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT">
+                                       <children>
+                                          <Label text="GPS Antenna:" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT">
+                                       <children>
+                                          <Label text="MBO Antenna:" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT">
+                                       <children>
+                                          <Label text="Temp:" />
+                                       </children>
+                                    </HBox>
                                  </children>
-                              </HBox>
-                              <HBox alignment="TOP_CENTER" spacing="10.0">
+                              </VBox>
+                              <VBox alignment="TOP_CENTER">
                                  <children>
-                                    <Label text="Right Door:" />
-                                    <Label fx:id="rightDoorStatus" text="Label" />
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label fx:id="leftDoorStatus" text="Label" textAlignment="RIGHT" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label fx:id="rightDoorStatus" text="Label" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label fx:id="lightStatus" text="Label" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label fx:id="beaconStatus" text="Label" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label fx:id="gpsAntenaStatus" text="Label" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label fx:id="mboAntenaStatus" text="Label" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label fx:id="cabinTemp" text="Label" />
+                                       </children>
+                                    </HBox>
                                  </children>
-                              </HBox>
-                              <HBox alignment="TOP_CENTER" spacing="10.0">
-                                 <children>
-                                    <Label text="Light:" />
-                                    <Label fx:id="lightStatus" text="Label" />
-                                 </children>
-                              </HBox>
-                              <HBox alignment="TOP_CENTER" spacing="10.0">
-                                 <children>
-                                    <Label text="Beacon" />
-                                    <Label fx:id="beaconStatus" text="Label" />
-                                 </children>
-                              </HBox>
-                              <HBox alignment="TOP_CENTER" spacing="10.0">
-                                 <children>
-                                    <Label text="GPS Antena:" />
-                                    <Label fx:id="gpsAntenaStatus" text="Label" />
-                                 </children>
-                              </HBox>
-                              <HBox alignment="TOP_CENTER" spacing="10.0">
-                                 <children>
-                                    <Label text="MBO Antena:" />
-                                    <Label fx:id="mboAntenaStatus" text="Label" />
-                                 </children>
-                              </HBox>
-                              <HBox alignment="TOP_CENTER" spacing="10.0">
-                                 <children>
-                                    <Label text="Temp:" />
-                                    <Label fx:id="cabinTemp" text="Label" />
-                                 </children>
-                              </HBox>
+                              </VBox>
                            </children>
-                        </VBox>
+                        </HBox>
                      </content>
                   </TitledPane>
                </children>
