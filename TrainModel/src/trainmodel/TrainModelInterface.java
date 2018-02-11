@@ -1,32 +1,54 @@
 package trainmodel;
 
-import trainmodel.TrainModelEnums;
+import utils.TrainModelEnums.AntennaStatus;
+import utils.TrainModelEnums.BrakeStatus;
+import utils.TrainModelEnums.DoorStatus;
+import utils.TrainModelEnums.LightStatus;
+import utils.TrainModelEnums.TrackLineStatus;
+
 
 /**
  * Created by jeremyzang on 2/11/18.
+ * This Interface is used for interaction with a TrainModel.
  */
-public interface Train {
+public interface TrainModelInterface {
 
   //Getters
   double getCurrentSpeed();
-  TrainModelEnums.BrakeStatus getEmergencyBrakeStatus();
-  TrainModelEnums.BrakeStatus getServiceBrakeStatus();
-  TrainModelEnums.TrackLineStatus getTrackLineStatus();
-  TrainModelEnums.AntennaStatus getAntennaStatus();
-  TrainModelEnums.DoorStatus getLeftDoorStatus();
-  TrainModelEnums.DoorStatus getRightDoorStatus();
-  TrainModelEnums.LightStatus getLightStatus();
+
+  BrakeStatus getEmergencyBrakeStatus();
+
+  BrakeStatus getServiceBrakeStatus();
+
+  TrackLineStatus getTrackLineStatus();
+
+  AntennaStatus getAntennaStatus();
+
+  DoorStatus getLeftDoorStatus();
+
+  DoorStatus getRightDoorStatus();
+
+  LightStatus getLightStatus();
+
   double getCurrentTemp();
 
   //Setters
   void setCurrentSpeed(double currentSpeed);
-  void setEmergencyBrakeStatus(TrainModelEnums.BrakeStatus brakeStatus);
-  void setServiceBrakeStatus(TrainModelEnums.BrakeStatus brakeStatus);
-  void setTrackLineStatus(TrainModelEnums.TrackLineStatus trackLineStatus);
-  void setAntennaStatus(TrainModelEnums.AntennaStatus antennaStatus);
-  void setLeftDoorStatus(TrainModelEnums.DoorStatus leftDoorStatus);
-  void setRightDoorStatus(TrainModelEnums.DoorStatus rightDoorStatus);
-  void setLightStatus(TrainModelEnums.LightStatus lightStatus);
+
+  void setEmergencyBrakeStatus(BrakeStatus brakeStatus);
+
+  void setServiceBrakeStatus(BrakeStatus brakeStatus);
+
+  void setTrackLineStatus(TrackLineStatus trackLineStatus);
+
+  void setAntennaStatus(AntennaStatus antennaStatus);
+
+  void setLeftDoorStatus(DoorStatus leftDoorStatus);
+
+  void setRightDoorStatus(DoorStatus rightDoorStatus);
+
+  void setLightStatus(LightStatus lightStatus);
+
   void setCurrentTemp(double currentTemp);
 
 

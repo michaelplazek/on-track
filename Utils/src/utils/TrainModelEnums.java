@@ -1,28 +1,32 @@
+package utils;
+
 /**
  * Created by jeremyzang on 2/11/18.
+ * This class contains the Enums used for the TrainModel.
  */
 public final class TrainModelEnums {
-  enum BrakeStatus {
+
+  public enum BrakeStatus {
     ON,
     OFF
   }
 
-  enum DoorStatus {
+  public enum DoorStatus {
     OPEN,
     CLOSED
   }
 
-  enum TrackLineStatus {
+  public enum TrackLineStatus {
     CONNECTED,
     DISCONNECTED
   }
 
-  enum AntennaStatus {
+  public enum AntennaStatus {
     CONNECTED,
     DISCONNECTED
   }
 
-  enum LightStatus{
+  public enum LightStatus {
     ON,
     OFF
   }
