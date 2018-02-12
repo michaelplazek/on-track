@@ -15,65 +15,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 
-public class Controller {
-
-  // DROPDOWNS
-  @FXML
-  private ChoiceBox tracks;
-  @FXML
-  private ChoiceBox maintenanceBlocks;
-  @FXML
-  private ChoiceBox scheduleBlocks;
-  @FXML
-  private ChoiceBox actions;
-
-  // ADD TRAIN COMPONENTS
-  @FXML
-  private Button importButton;
-  @FXML
-  private TextField trainNameField;
-  @FXML
-  private TextField departingTimeField;
-  @FXML
-  private TableView<TrainStopRow> trainTable;
-  @FXML
-  private TableColumn<TrainStopRow, String> stopColumn;
-  @FXML
-  private TableColumn<TrainStopRow, String> dwellColumn;
-  @FXML
-  private Button addTrainButton;
-
-  // QUEUE COMPONENTS
-  @FXML
-  private TableView<TrainQueueRow> trainQueueTable;
-  @FXML
-  private TableView<TrainStopRow> selectedScheduleTable;
-  @FXML
-  private TableColumn<TrainQueueRow, String> trainColumn;
-  @FXML
-  private TableColumn<TrainQueueRow, String> departureColumn;
-  @FXML
-  private TableColumn<TrainStopRow, String> selectedStopColumn;
-  @FXML
-  private TableColumn<TrainStopRow, String> selectedDwellColumn;
-  @FXML
-  private Button dispatchButton;
-
-  // DISPATCH COMPONENTS
-  @FXML
-  private TableView<TrainDispatchRow> dispatchTable;
-  @FXML
-  private TableColumn<TrainDispatchRow, String> dispatchTrainColumn;
-  @FXML
-  private TableColumn<TrainDispatchRow, String> dispatchLocationColumn;
-  @FXML
-  private TableColumn<TrainDispatchRow, String> dispatchAuthorityColumn;
-  @FXML
-  private TableColumn<TrainDispatchRow, String> dispatchSpeedColumn;
-  @FXML
-  private TableColumn<TrainDispatchRow, String> dispatchPassengersColumn;
-  @FXML
-  private ChoiceBox setAuthority;
+public class CentralTrafficControlController {
 
   // MOCK DATA FOR TABLES
   private ObservableList<TrainStopRow> trainList = FXCollections.observableArrayList(

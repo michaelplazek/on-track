@@ -1,4 +1,4 @@
-package ctc;
+package ctc.utils;
 
 public interface ClockInterface {
 
@@ -26,8 +26,7 @@ public interface ClockInterface {
   void setMultiplier(int multiplier);
 
   /**
-   * Use to tick the clock for a set period of time.
-   * @param ms the time in milliseconds
+   * Use to tick the clock for a 10ms.
    */
-  void tick(int ms);
+  void tick();
 }
