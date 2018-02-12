@@ -32,7 +32,7 @@
                     <items>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                             <children>
-                                <Button fx:id="uploadTrack" layoutX="83.0" layoutY="6.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="112.0" text="UPLOAD TRACK">
+                                <Button layoutX="83.0" layoutY="6.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="112.0" text="UPLOAD TRACK">
                            <font>
                               <Font size="13.0" />
                            </font></Button>
@@ -64,16 +64,16 @@
                                        <children>
                                           <AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="208.0" prefWidth="419.0">
                                              <children>
-                                                <Label prefHeight="17.0" prefWidth="72.0" text="Length (m):" />
+                                                <Label prefHeight="17.0" prefWidth="72.0" text="Length (yd):" />
                                                 <Label layoutY="17.0" prefHeight="17.0" prefWidth="69.0" text="Grade (%):" />
-                                                <Label layoutX="1.0" layoutY="34.0" prefHeight="17.0" prefWidth="78.0" text="Elevation (m): " />
+                                                <Label layoutX="1.0" layoutY="34.0" prefHeight="17.0" prefWidth="78.0" text="Elevation (yd): " />
                                                 <Label layoutX="1.0" layoutY="51.0" prefHeight="17.0" prefWidth="75.0" text="Cum Elev (m):" />
                                                 <Label layoutX="1.0" layoutY="67.0" prefHeight="17.0" prefWidth="108.0" text="Speed Limit (MPH):" />
-                                                <Label fx:id="lengthValue" alignment="CENTER_RIGHT" layoutX="118.0" prefHeight="17.0" prefWidth="72.0" text="100" textAlignment="RIGHT" />
-                                                <Label fx:id="gradeValue" alignment="CENTER_RIGHT" layoutX="119.0" layoutY="17.0" prefHeight="17.0" prefWidth="69.0" text="2.5" />
-                                                <Label fx:id="elevationValue" alignment="CENTER_RIGHT" layoutX="119.0" layoutY="34.0" prefHeight="17.0" prefWidth="69.0" text="3.28" />
-                                                <Label fx:id="cumulativeElevationValue" alignment="CENTER_RIGHT" layoutX="119.0" layoutY="51.0" prefHeight="17.0" prefWidth="69.0" text=".70" />
-                                                <Label fx:id="speedLimitValue" alignment="CENTER_RIGHT" layoutX="119.0" layoutY="67.0" prefHeight="17.0" prefWidth="69.0" text="35" />
+                                                <Label alignment="CENTER_RIGHT" layoutX="118.0" prefHeight="17.0" prefWidth="72.0" text="100" textAlignment="RIGHT" />
+                                                <Label alignment="CENTER_RIGHT" layoutX="119.0" layoutY="17.0" prefHeight="17.0" prefWidth="69.0" text="2.5" />
+                                                <Label alignment="CENTER_RIGHT" layoutX="119.0" layoutY="34.0" prefHeight="17.0" prefWidth="69.0" text="3.28" />
+                                                <Label alignment="CENTER_RIGHT" layoutX="119.0" layoutY="51.0" prefHeight="17.0" prefWidth="69.0" text=".70" />
+                                                <Label alignment="CENTER_RIGHT" layoutX="119.0" layoutY="67.0" prefHeight="17.0" prefWidth="69.0" text="35" />
                                                 <Label layoutX="2.0" layoutY="84.0" prefHeight="17.0" prefWidth="77.0" text="Switch Status: " />
                                                 <Label layoutX="309.0" prefHeight="17.0" prefWidth="77.0" text="Occupied" />
                                                 <Label layoutX="309.0" layoutY="17.0" prefHeight="17.0" prefWidth="77.0" text="Underground" />
@@ -86,24 +86,24 @@
                                                 <Label layoutX="64.0" layoutY="146.0" prefHeight="17.0" prefWidth="77.0" text="Power" />
                                                 <Label layoutX="64.0" layoutY="163.0" prefHeight="17.0" prefWidth="77.0" text="Track Circuit" />
                                                 <Label layoutX="227.0" layoutY="112.0" prefHeight="17.0" prefWidth="112.0" text="SIMULATE FAILURES" />
-                                                <Button fx:id="toggleFailures" layoutX="251.0" layoutY="164.0" mnemonicParsing="false" text="TOGGLE" />
-                                                <Label fx:id="switchStatus" alignment="CENTER_RIGHT" layoutX="119.0" layoutY="83.0" prefHeight="17.0" prefWidth="69.0" text="None" />
-                                                <MenuButton fx:id="failuresSelect" layoutX="232.0" layoutY="132.0" mnemonicParsing="false" text="Select Failure">
+                                                <Button layoutX="251.0" layoutY="164.0" mnemonicParsing="false" text="TOGGLE" />
+                                                <Label alignment="CENTER_RIGHT" layoutX="119.0" layoutY="83.0" prefHeight="17.0" prefWidth="69.0" text="None" />
+                                                <MenuButton layoutX="232.0" layoutY="132.0" mnemonicParsing="false" text="Select Failure">
                                                   <items>
-                                                      <CheckMenuItem fx:id="railCheck" mnemonicParsing="false" text="Green" />
-                                                      <CheckMenuItem fx:id="powerCheck" mnemonicParsing="false" text="Red" />
-                                                      <CheckMenuItem fx:id="circuitCheck" mnemonicParsing="false" text="Track Circuit" />
+                                                      <CheckMenuItem mnemonicParsing="false" text="Rail" />
+                                                      <CheckMenuItem mnemonicParsing="false" text="Power" />
+                                                      <CheckMenuItem mnemonicParsing="false" text="Track Circuit" />
                                                   </items>
                                                 </MenuButton>
-                                                <Circle fx:id="railIndicator" fill="#389423" layoutX="52.0" layoutY="138.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
-                                                <Circle fx:id="powerIndicator" fill="WHITE" layoutX="52.0" layoutY="155.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
-                                                <Circle fx:id="trackCircuitIndicator" fill="WHITE" layoutX="52.0" layoutY="172.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
-                                                <Circle fx:id="beaconIndicator" fill="WHITE" layoutX="295.0" layoutY="60.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
-                                                <Circle fx:id="railCrossingIndicator" fill="WHITE" layoutX="295.0" layoutY="43.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
-                                                <Circle fx:id="undergroundIndicator" fill="#389423" layoutX="295.0" layoutY="26.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
-                                                <Circle fx:id="occupiedIndicator" fill="WHITE" layoutX="295.0" layoutY="9.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
-                                                <Circle fx:id="trackHeatingIndicator" fill="WHITE" layoutX="295.0" layoutY="77.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
-                                                <Circle fx:id="stationIndicator" fill="WHITE" layoutX="295.0" layoutY="94.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
+                                                <Circle fill="#32ad2a" layoutX="52.0" layoutY="138.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
+                                                <Circle fill="WHITE" layoutX="52.0" layoutY="155.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
+                                                <Circle fill="WHITE" layoutX="52.0" layoutY="172.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
+                                                <Circle fill="WHITE" layoutX="295.0" layoutY="60.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
+                                                <Circle fill="WHITE" layoutX="295.0" layoutY="43.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
+                                                <Circle fill="#32ad2a" layoutX="295.0" layoutY="26.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
+                                                <Circle fill="WHITE" layoutX="295.0" layoutY="9.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
+                                                <Circle fill="WHITE" layoutX="295.0" layoutY="77.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
+                                                <Circle fill="WHITE" layoutX="295.0" layoutY="94.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
                                              </children>
                                           </AnchorPane>
                                        </children>
