@@ -8,7 +8,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 
-
 /**
  * Created by jeremyzang on 1/30/18.
  * This class is the controller class for mainmenuview.fxml
@@ -31,7 +30,7 @@ public class MainMenuController implements Initializable {
   @Override
   public void initialize(URL location, ResourceBundle resources) {
 
-    //Dummy Data for UI Presentation
+    // TODO: populate this with real data
     trainControllerChoiceBox.getItems().addAll("Select Train", "Train 1", "Train 2", "Train 3");
     trainModelChoiceBox.getItems().addAll("Select Train", "Train 1", "Train 2", "Train 3");
     trackControllerChoiceBox.getItems().addAll(
