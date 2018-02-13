@@ -5,15 +5,11 @@ import ctc.model.TrainDispatchRow;
 import ctc.model.TrainQueueRow;
 import ctc.model.TrainStopRow;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.converter.NumberStringConverter;
 import mainmenu.Clock;
@@ -26,6 +22,7 @@ public class MainController {
   /* MAIN COMPONENTS */
   @FXML private RadioButton fixedBlockRadio;
   @FXML private RadioButton movingBlockRadio;
+  @FXML private ToggleGroup mode;
   @FXML private Label throughput;
   @FXML private Label time;
   @FXML private Button startButton;
@@ -87,18 +84,15 @@ public class MainController {
 
   private void connect() {
 
-    connectMaintenance();
-    connectAddTrain();
-    connectQueue();
-    connectDispatch();
-    connectHeader();
+    bindClock();
+    bindThroughput();
+    connectDropdowns();
+    connectTables();
     connectButtons();
-
-    // TODO: hook up text fields
+    connectOthers();
   }
 
-  private void connectMaintenance() {
-
+  private void connectDropdowns() {
     maintenanceTracks.setItems(ctc.getTrackList());
     maintenanceBlocks.setItems(ctc.getBlockList());
     maintenanceActions.setItems(ctc.getActionList());
@@ -106,19 +100,21 @@ public class MainController {
     maintenanceTracks.setValue(ctc.getTrackList().get(0));
     maintenanceBlocks.setValue(ctc.getBlockList().get(0));
     maintenanceActions.setValue(ctc.getActionList().get(0));
-  }
-
-  private void connectAddTrain() {
-
-    stopColumn.setCellValueFactory(new PropertyValueFactory<TrainStopRow, String>("stop"));
-    dwellColumn.setCellValueFactory(new PropertyValueFactory<TrainStopRow, String>("dwell"));
-    timeColumn.setCellValueFactory(new PropertyValueFactory<TrainStopRow, String>("time"));
 
     scheduleBlocks.setItems(ctc.getBlockList());
     scheduleBlocks.setValue(ctc.getBlockList().get(0));
+
+    setAuthorityBlocks.setItems(ctc.getBlockList());
+    setAuthorityBlocks.setValue(ctc.getBlockList().get(0));
   }
 
-  private void connectQueue() {
+  private void connectTables() {
+    stopColumn.setCellValueFactory(
+        new PropertyValueFactory<TrainStopRow, String>("stop"));
+    dwellColumn.setCellValueFactory(
+        new PropertyValueFactory<TrainStopRow, String>("dwell"));
+    timeColumn.setCellValueFactory(
+        new PropertyValueFactory<TrainStopRow, String>("time"));
 
     selectedDwellColumn.setCellValueFactory(
         new PropertyValueFactory<TrainStopRow, String>("dwell"));
@@ -130,9 +126,6 @@ public class MainController {
         new PropertyValueFactory<TrainQueueRow, String>("train"));
     departureColumn.setCellValueFactory(
         new PropertyValueFactory<TrainQueueRow, String>("departure"));
-  }
-
-  private void connectDispatch() {
 
     dispatchTrainColumn.setCellValueFactory(
         new PropertyValueFactory<TrainDispatchRow, String>("train"));
@@ -144,15 +137,6 @@ public class MainController {
         new PropertyValueFactory<TrainDispatchRow, String>("speed"));
     dispatchPassengersColumn.setCellValueFactory(
         new PropertyValueFactory<TrainDispatchRow, String>("passengers"));
-
-    setAuthorityBlocks.setItems(ctc.getBlockList());
-    setAuthorityBlocks.setValue(ctc.getBlockList().get(0));
-  }
-
-  private void connectHeader() {
-    time.textProperty().bind(ctc.getDisplayTime());
-    // multiplier.textProperty().bind(
-    // ctc.getDisplayMultiplier().asString());
   }
 
   private void connectButtons() {
@@ -170,6 +154,29 @@ public class MainController {
     dispatchButton.setOnAction(this::handleButtonPress);
     setSpeedButton.setOnAction(this::handleButtonPress);
     setAuthorityButton.setOnAction(this::handleButtonPress);
+  }
+
+  private void connectOthers() {
+
+    mode.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+      public void changed(ObservableValue<? extends Toggle> ov, Toggle oldToggle, Toggle newToggle) {
+
+        if (mode.getSelectedToggle() != null) {
+          changeMode(mode.getSelectedToggle().getUserData().toString());
+          // Do something here with the userData of newly selected radioButton
+        }
+      }
+    });
+  }
+
+  private void bindClock() {
+    time.textProperty().bind(ctc.getDisplayTime());
+    // multiplier.textProperty().bind(
+    // ctc.getDisplayMultiplier().asString());
+  }
+
+  private void bindThroughput() {
+    throughput.textProperty().bind(ctc.getThroughput());
   }
 
   private void handleButtonPress(ActionEvent event) {
@@ -256,5 +263,7 @@ public class MainController {
   private void setSuggestedSpeed(){}
 
   private void setAuthority(){}
+
+  private void changeMode(String mode){}
 
 }

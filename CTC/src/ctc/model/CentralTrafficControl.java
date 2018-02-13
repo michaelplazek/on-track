@@ -20,6 +20,7 @@ public class CentralTrafficControl {
   private double exactAuthority;
   private long exactTime;
   private StringProperty displayTime = new SimpleStringProperty();
+  private String throughput = "17.4 passenger/s";
 
   /**
    * Base constructor can only be access via the getInstance() method.
@@ -68,6 +69,10 @@ public class CentralTrafficControl {
 
   public ObservableList<String> getActionList() {
     return this.maintenance.getActionsList();
+  }
+
+  public StringProperty getThroughput() {
+    return new SimpleStringProperty(throughput);
   }
 
   /* ---- PRIVATE INNER CLASSES ---- */
