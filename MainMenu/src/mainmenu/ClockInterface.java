@@ -1,4 +1,4 @@
-package ctc.utils;
+package mainmenu;
 
 public interface ClockInterface {
 
