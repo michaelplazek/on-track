@@ -12,7 +12,7 @@ public class Main extends Application {
   public void start(Stage primaryStage) throws Exception {
     Parent root = FXMLLoader.load(getClass().getResource("ctc.fxml"));
     primaryStage.setTitle("Centralized Traffic Control");
-    primaryStage.setScene(new Scene(root, 1100, 500));
+    primaryStage.setScene(new Scene(root, 1400, 600));
     primaryStage.show();
   }
 
