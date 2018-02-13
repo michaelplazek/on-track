@@ -44,7 +44,7 @@ public class Runner extends Application {
     // function above to test with the clock
     Parent root = FXMLLoader.load(getClass().getResource("ctc.fxml"));
     primaryStage.setTitle("Centralized Traffic Control");
-    primaryStage.setScene(new Scene(root, 1100, 500));
+    primaryStage.setScene(new Scene(root, 1400, 600));
     primaryStage.show();
   }
 
