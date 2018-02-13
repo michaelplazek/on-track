@@ -11,7 +11,7 @@ public class TrainStopRow {
    * @param stop the name of the stop
    * @param dwell the time stayed at that stop
    */
-  public TrainStopRow(String stop, String dwell) {
+  public TrainStopRow(String stop, String dwell, String time) {
     this.stop = stop;
     this.dwell = dwell;
     this.time = time;

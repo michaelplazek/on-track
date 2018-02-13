@@ -77,7 +77,6 @@ public class CentralTrafficControl {
 
   /* ---- PRIVATE INNER CLASSES ---- */
 
-
   private class Maintenance {
 
     // private Block block;
