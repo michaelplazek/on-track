@@ -73,7 +73,7 @@ public class MainController {
   @FXML private TableColumn<TrainDispatchRow, String> dispatchSpeedColumn;
   @FXML private TableColumn<TrainDispatchRow, String> dispatchPassengersColumn;
   @FXML private TextField suggestedSpeedField;
-  @FXML private Button setSuggestedSpeedButton;
+  @FXML private Button setSpeedButton;
   @FXML private ChoiceBox<String> setAuthorityBlocks;
   @FXML private Button setAuthorityButton;
 
@@ -91,9 +91,10 @@ public class MainController {
     connectAddTrain();
     connectQueue();
     connectDispatch();
-    connectTime();
+    connectHeader();
+    connectButtons();
 
-    // TODO: hook up buttons and text fields
+    // TODO: hook up text fields
   }
 
   private void connectMaintenance() {
@@ -148,21 +149,112 @@ public class MainController {
     setAuthorityBlocks.setValue(ctc.getBlockList().get(0));
   }
 
-  private void connectTime() {
+  private void connectHeader() {
     time.textProperty().bind(ctc.getDisplayTime());
     // multiplier.textProperty().bind(
     // ctc.getDisplayMultiplier().asString());
-    incrementButton.setOnAction(this::incrementMultiplier);
-    decrementButton.setOnAction(this::decrementMultiplier);
   }
 
-  private void incrementMultiplier(ActionEvent event) {
+  private void connectButtons() {
+    incrementButton.setOnAction(this::handleButtonPress);
+    decrementButton.setOnAction(this::handleButtonPress);
+    startButton.setOnAction(this::handleButtonPress);
+    stopButton.setOnAction(this::handleButtonPress);
+    submitMaintenance.setOnAction(this::handleButtonPress);
+    testGreenButton.setOnAction(this::handleButtonPress);
+    testRedButton.setOnAction(this::handleButtonPress);
+    importScheduleButton.setOnAction(this::handleButtonPress);
+    resetButton.setOnAction(this::handleButtonPress);
+    addTrainButton.setOnAction(this::handleButtonPress);
+    deleteButton.setOnAction(this::handleButtonPress);
+    dispatchButton.setOnAction(this::handleButtonPress);
+    setSpeedButton.setOnAction(this::handleButtonPress);
+    setAuthorityButton.setOnAction(this::handleButtonPress);
+  }
+
+  private void handleButtonPress(ActionEvent event) {
+    Button btn = (Button) event.getSource();
+    switch (btn.getId()) {
+      case "incrementButton":
+        incrementMultiplier();
+        break;
+      case "decrementButton":
+        decrementMultiplier();
+        break;
+      case "startButton":
+        startClock();
+        break;
+      case "stopButton":
+        stopClock();
+        break;
+      case "submitMaintenance":
+        submitMaintenance();
+        break;
+      case "testGreenButton":
+        testGreen();
+        break;
+      case "testRedButton":
+        testRed();
+        break;
+      case "importScheduleButton":
+        importSchedule();
+        break;
+      case "resetButton":
+        resetSchedule();
+        break;
+      case "addTrainButton":
+        addTrainToQueue();
+        break;
+      case "deleteButton":
+        deleteTrainFromQueue();
+        break;
+      case "dispatchButton":
+        dispatchTrain();
+        break;
+      case "setSpeedButton":
+        setSuggestedSpeed();
+        break;
+      case "setAuthorityButton":
+        setAuthority();
+        break;
+      default:
+        break;
+    }
+  }
+
+  private void incrementMultiplier() {
     clock.setMultiplier(clock.getMultiplier() + 1);
     multiplier.textProperty().setValue(Integer.toString(clock.getMultiplier()).concat("x"));
   }
 
-  private void decrementMultiplier(ActionEvent event) {
+  private void decrementMultiplier() {
     clock.setMultiplier(clock.getMultiplier() - 1);
     multiplier.textProperty().setValue(Integer.toString(clock.getMultiplier()).concat("x"));
   }
+
+  // TODO: complete these functions
+  private void startClock(){}
+
+  private void stopClock(){}
+
+  private void submitMaintenance(){}
+
+  private void testGreen(){}
+
+  private void testRed(){}
+
+  private void importSchedule(){}
+
+  private void resetSchedule(){}
+
+  private void addTrainToQueue(){}
+
+  private void deleteTrainFromQueue(){}
+
+  private void dispatchTrain(){}
+
+  private void setSuggestedSpeed(){}
+
+  private void setAuthority(){}
+
 }
