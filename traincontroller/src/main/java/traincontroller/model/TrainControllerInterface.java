@@ -1,5 +1,7 @@
 package traincontroller.model;
 
+import java.util.HashMap;
+
 public interface TrainControllerInterface {
 
   void setAntennaSignal(Byte[] signal);
@@ -7,8 +9,5 @@ public interface TrainControllerInterface {
   void setBeaconSignal(Byte[] signal);
 
   void setTrackCircuitSignal(Byte[] signal);
-
-  /** CTC Signal to start the train. */
-  void start(String trainId);
 
 }
