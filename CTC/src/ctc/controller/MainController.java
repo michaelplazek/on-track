@@ -5,15 +5,11 @@ import ctc.model.TrainDispatchRow;
 import ctc.model.TrainQueueRow;
 import ctc.model.TrainStopRow;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.converter.NumberStringConverter;
 import mainmenu.Clock;
@@ -26,6 +22,7 @@ public class MainController {
   /* MAIN COMPONENTS */
   @FXML private RadioButton fixedBlockRadio;
   @FXML private RadioButton movingBlockRadio;
+  @FXML private ToggleGroup mode;
   @FXML private Label throughput;
   @FXML private Label time;
   @FXML private Button startButton;
@@ -73,7 +70,7 @@ public class MainController {
   @FXML private TableColumn<TrainDispatchRow, String> dispatchSpeedColumn;
   @FXML private TableColumn<TrainDispatchRow, String> dispatchPassengersColumn;
   @FXML private TextField suggestedSpeedField;
-  @FXML private Button setSuggestedSpeedButton;
+  @FXML private Button setSpeedButton;
   @FXML private ChoiceBox<String> setAuthorityBlocks;
   @FXML private Button setAuthorityButton;
 
@@ -87,17 +84,15 @@ public class MainController {
 
   private void connect() {
 
-    connectMaintenance();
-    connectAddTrain();
-    connectQueue();
-    connectDispatch();
-    connectTime();
-
-    // TODO: hook up buttons and text fields
+    bindClock();
+    bindThroughput();
+    connectDropdowns();
+    connectTables();
+    connectButtons();
+    connectOthers();
   }
 
-  private void connectMaintenance() {
-
+  private void connectDropdowns() {
     maintenanceTracks.setItems(ctc.getTrackList());
     maintenanceBlocks.setItems(ctc.getBlockList());
     maintenanceActions.setItems(ctc.getActionList());
@@ -105,19 +100,21 @@ public class MainController {
     maintenanceTracks.setValue(ctc.getTrackList().get(0));
     maintenanceBlocks.setValue(ctc.getBlockList().get(0));
     maintenanceActions.setValue(ctc.getActionList().get(0));
-  }
-
-  private void connectAddTrain() {
-
-    stopColumn.setCellValueFactory(new PropertyValueFactory<TrainStopRow, String>("stop"));
-    dwellColumn.setCellValueFactory(new PropertyValueFactory<TrainStopRow, String>("dwell"));
-    timeColumn.setCellValueFactory(new PropertyValueFactory<TrainStopRow, String>("time"));
 
     scheduleBlocks.setItems(ctc.getBlockList());
     scheduleBlocks.setValue(ctc.getBlockList().get(0));
+
+    setAuthorityBlocks.setItems(ctc.getBlockList());
+    setAuthorityBlocks.setValue(ctc.getBlockList().get(0));
   }
 
-  private void connectQueue() {
+  private void connectTables() {
+    stopColumn.setCellValueFactory(
+        new PropertyValueFactory<TrainStopRow, String>("stop"));
+    dwellColumn.setCellValueFactory(
+        new PropertyValueFactory<TrainStopRow, String>("dwell"));
+    timeColumn.setCellValueFactory(
+        new PropertyValueFactory<TrainStopRow, String>("time"));
 
     selectedDwellColumn.setCellValueFactory(
         new PropertyValueFactory<TrainStopRow, String>("dwell"));
@@ -129,9 +126,6 @@ public class MainController {
         new PropertyValueFactory<TrainQueueRow, String>("train"));
     departureColumn.setCellValueFactory(
         new PropertyValueFactory<TrainQueueRow, String>("departure"));
-  }
-
-  private void connectDispatch() {
 
     dispatchTrainColumn.setCellValueFactory(
         new PropertyValueFactory<TrainDispatchRow, String>("train"));
@@ -143,26 +137,137 @@ public class MainController {
         new PropertyValueFactory<TrainDispatchRow, String>("speed"));
     dispatchPassengersColumn.setCellValueFactory(
         new PropertyValueFactory<TrainDispatchRow, String>("passengers"));
-
-    setAuthorityBlocks.setItems(ctc.getBlockList());
-    setAuthorityBlocks.setValue(ctc.getBlockList().get(0));
   }
 
-  private void connectTime() {
+  private void connectButtons() {
+    incrementButton.setOnAction(this::handleButtonPress);
+    decrementButton.setOnAction(this::handleButtonPress);
+    startButton.setOnAction(this::handleButtonPress);
+    stopButton.setOnAction(this::handleButtonPress);
+    submitMaintenance.setOnAction(this::handleButtonPress);
+    testGreenButton.setOnAction(this::handleButtonPress);
+    testRedButton.setOnAction(this::handleButtonPress);
+    importScheduleButton.setOnAction(this::handleButtonPress);
+    resetButton.setOnAction(this::handleButtonPress);
+    addTrainButton.setOnAction(this::handleButtonPress);
+    deleteButton.setOnAction(this::handleButtonPress);
+    dispatchButton.setOnAction(this::handleButtonPress);
+    setSpeedButton.setOnAction(this::handleButtonPress);
+    setAuthorityButton.setOnAction(this::handleButtonPress);
+  }
+
+  private void connectOthers() {
+
+    mode.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+      public void changed(ObservableValue<? extends Toggle> ov, Toggle oldToggle, Toggle newToggle) {
+
+        if (mode.getSelectedToggle() != null) {
+          changeMode(mode.getSelectedToggle().getUserData().toString());
+          // Do something here with the userData of newly selected radioButton
+        }
+      }
+    });
+  }
+
+  private void bindClock() {
     time.textProperty().bind(ctc.getDisplayTime());
     // multiplier.textProperty().bind(
     // ctc.getDisplayMultiplier().asString());
-    incrementButton.setOnAction(this::incrementMultiplier);
-    decrementButton.setOnAction(this::decrementMultiplier);
   }
 
-  private void incrementMultiplier(ActionEvent event) {
+  private void bindThroughput() {
+    throughput.textProperty().bind(ctc.getThroughput());
+  }
+
+  private void handleButtonPress(ActionEvent event) {
+    Button btn = (Button) event.getSource();
+    switch (btn.getId()) {
+      case "incrementButton":
+        incrementMultiplier();
+        break;
+      case "decrementButton":
+        decrementMultiplier();
+        break;
+      case "startButton":
+        startClock();
+        break;
+      case "stopButton":
+        stopClock();
+        break;
+      case "submitMaintenance":
+        submitMaintenance();
+        break;
+      case "testGreenButton":
+        testGreen();
+        break;
+      case "testRedButton":
+        testRed();
+        break;
+      case "importScheduleButton":
+        importSchedule();
+        break;
+      case "resetButton":
+        resetSchedule();
+        break;
+      case "addTrainButton":
+        addTrainToQueue();
+        break;
+      case "deleteButton":
+        deleteTrainFromQueue();
+        break;
+      case "dispatchButton":
+        dispatchTrain();
+        break;
+      case "setSpeedButton":
+        setSuggestedSpeed();
+        break;
+      case "setAuthorityButton":
+        setAuthority();
+        break;
+      default:
+        break;
+    }
+  }
+
+  private void incrementMultiplier() {
     clock.setMultiplier(clock.getMultiplier() + 1);
     multiplier.textProperty().setValue(Integer.toString(clock.getMultiplier()).concat("x"));
   }
 
-  private void decrementMultiplier(ActionEvent event) {
+  private void decrementMultiplier() {
     clock.setMultiplier(clock.getMultiplier() - 1);
     multiplier.textProperty().setValue(Integer.toString(clock.getMultiplier()).concat("x"));
   }
+
+  // TODO: complete these functions
+  private void startClock() {
+    ctc.setActive(true);
+  }
+
+  private void stopClock() {
+    ctc.setActive(false);
+  }
+
+  private void submitMaintenance(){}
+
+  private void testGreen(){}
+
+  private void testRed(){}
+
+  private void importSchedule(){}
+
+  private void resetSchedule(){}
+
+  private void addTrainToQueue(){}
+
+  private void deleteTrainFromQueue(){}
+
+  private void dispatchTrain(){}
+
+  private void setSuggestedSpeed(){}
+
+  private void setAuthority(){}
+
+  private void changeMode(String mode){}
+
 }

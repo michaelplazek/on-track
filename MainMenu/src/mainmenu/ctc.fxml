@@ -159,7 +159,7 @@
                                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="315.0" prefWidth="407.0">
                                                    <children>
                                                       <TextField fx:id="suggestedSpeedField" layoutX="8.0" layoutY="316.0" prefHeight="26.0" prefWidth="121.0" promptText="mph" />
-                                                      <Button fx:id="setSuggestSpeedButton" layoutX="133.0" layoutY="316.0" mnemonicParsing="false" text="Set Suggested Speed" />
+                                                      <Button fx:id="setSpeedButton" layoutX="133.0" layoutY="316.0" mnemonicParsing="false" text="Set Suggested Speed" />
                                                       <Button fx:id="setAuthorityButton" layoutX="133.0" layoutY="345.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="147.5" text="Set Authority" />
                                                       <Circle fill="#24c51b" layoutX="328.0" layoutY="345.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
                                                       <Label layoutX="342.0" layoutY="337.0" text="Train Status" />
@@ -236,9 +236,9 @@
                                     <Font size="12.0" />
                                  </font>
                               </Label>
-                              <ImageView fitHeight="40.0" fitWidth="47.0" layoutX="150.0" layoutY="88.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fitHeight="40.0" fitWidth="47.0" layoutX="179.0" layoutY="105.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@images/switch_stay.png" />
+                                    <Image url="@../../../CTC/src/ctc/view/images/switch_stay.png" />
                                  </image>
                               </ImageView>
                            </children>
