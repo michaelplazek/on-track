@@ -16,6 +16,7 @@ public class CentralTrafficControl {
   private Maintenance maintenance;
   private Schedule schedule;
   private Clock clock;
+  private boolean isActive = false;
 
   private double exactAuthority;
   private long exactTime;
@@ -41,6 +42,10 @@ public class CentralTrafficControl {
       instance = new CentralTrafficControl();
     }
     return instance;
+  }
+
+  public void initialize() {
+    updateDisplayTime();
   }
 
   /**
@@ -73,6 +78,14 @@ public class CentralTrafficControl {
 
   public StringProperty getThroughput() {
     return new SimpleStringProperty(throughput);
+  }
+
+  public boolean isActive() {
+    return isActive;
+  }
+
+  public void setActive(boolean active) {
+    isActive = active;
   }
 
   /* ---- PRIVATE INNER CLASSES ---- */

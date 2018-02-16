@@ -240,9 +240,13 @@ public class MainController {
   }
 
   // TODO: complete these functions
-  private void startClock(){}
+  private void startClock() {
+    ctc.setActive(true);
+  }
 
-  private void stopClock(){}
+  private void stopClock() {
+    ctc.setActive(false);
+  }
 
   private void submitMaintenance(){}
 

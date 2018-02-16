@@ -238,7 +238,7 @@
                               </Label>
                               <ImageView fitHeight="40.0" fitWidth="47.0" layoutX="150.0" layoutY="88.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@images/switch_stay.png" />
+                                    <Image url="@../../../CTC/src/ctc/view/images/switch_stay.png" />
                                  </image>
                               </ImageView>
                            </children>

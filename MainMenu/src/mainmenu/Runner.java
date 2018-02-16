@@ -15,22 +15,27 @@ import javafx.util.Duration;
 
 public class Runner extends Application {
 
+  // create instances of modules
+  CentralTrafficControl ctc = CentralTrafficControl.getInstance();
+  Clock clk = Clock.getInstance();
+
   @Override
   public void start(Stage primaryStage) throws Exception {
 
-    // create instances of modules
-    CentralTrafficControl ctc = CentralTrafficControl.getInstance();
-    Clock clk = Clock.getInstance();
-    clk.setInitialTime();
+    // use to initialize all modules
+    initialize();
 
     // this Timeline will be the basis off of which we will run all the modules
     Timeline timeline = new Timeline(
         new KeyFrame(Duration.seconds(0),
             new EventHandler<ActionEvent>() {
               @Override public void handle(ActionEvent actionEvent) {
+
                 // TODO: add other module run() functions inside this event handler
-                clk.tick();
-                ctc.run();
+                if (ctc.isActive()) {
+                  clk.tick();
+                  ctc.run();
+                }
               }
             }
         ),
@@ -54,5 +59,8 @@ public class Runner extends Application {
 
   private void initialize() {
 
+    clk.setInitialTime();
+    clk.tick();
+    ctc.initialize();
   }
 }
