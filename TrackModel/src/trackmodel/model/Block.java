@@ -22,8 +22,29 @@ public class Block implements BlockInterface {
   private boolean powerFailure;
   private boolean trackCircuitFailure;
 
-  public Block(){
-
+  /**
+   * This is the constructor for a block.
+   * @param block The block id for a track
+   */
+  public Block(int block) {
+    this.line = "blue";
+    this.section = "A";
+    this.block = block;
+    this.length = 10;
+    this.grade = .1;
+    this.speedLimit = 25;
+    this.stationName = "None";
+    this.elevation = .25;
+    this.cumulativeElevation = .3;
+    this.occupied = false;
+    this.underground = false;
+    this.railCrossing = false;
+    this.beacon = false;
+    this.trackHeating = false;
+    this.station = false;
+    this.railFailure = false;
+    this.powerFailure = false;
+    this.trackCircuitFailure = false;
   }
 
   /**
