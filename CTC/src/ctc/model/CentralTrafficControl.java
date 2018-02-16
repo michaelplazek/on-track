@@ -92,8 +92,27 @@ public class CentralTrafficControl {
     return schedule.trainTable;
   }
 
+  public void setTrainTable(ObservableList<TrainStopRow> table) {
+    schedule.trainTable = table;
+  }
+
+  public void clearTrainTable() {
+    schedule.trainTable = FXCollections.observableArrayList(
+        new TrainStopRow("","",""),
+        new TrainStopRow("","",""),
+        new TrainStopRow("","",""),
+        new TrainStopRow("","",""),
+        new TrainStopRow("","",""),
+        new TrainStopRow("","","")
+    );
+  }
+
   public ObservableList<TrainQueueRow> getTrainQueueTable() {
     return schedule.trainQueueTable;
+  }
+
+  public void setTrainQueueTable(ObservableList<TrainQueueRow> table) {
+    schedule.trainQueueTable = table;
   }
 
   /* ---- PRIVATE INNER CLASSES ---- */

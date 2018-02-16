@@ -7,6 +7,8 @@ import ctc.model.TrainStopRow;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -14,6 +16,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.converter.NumberStringConverter;
 import mainmenu.Clock;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainController {
 
@@ -155,14 +160,6 @@ public class MainController {
           ).setDwell(t.getNewValue());
         });
 
-    timeColumn.setCellFactory(TextFieldTableCell.<TrainStopRow>forTableColumn());
-    timeColumn.setOnEditCommit(
-        (TableColumn.CellEditEvent<TrainStopRow, String> t) -> {
-          ((TrainStopRow) t.getTableView().getItems().get(
-              t.getTablePosition().getRow())
-          ).setTime(t.getNewValue());
-        });
-
     addTrainTable.setItems(ctc.getTrainTable());
 
   }
@@ -284,11 +281,62 @@ public class MainController {
 
   private void importSchedule(){}
 
-  private void resetSchedule(){}
+  private void resetSchedule() {
+    ctc.clearTrainTable();
+    ObservableList<TrainStopRow> blank = FXCollections.observableArrayList(
+        new TrainStopRow("","",""),
+        new TrainStopRow("","",""),
+        new TrainStopRow("","",""),
+        new TrainStopRow("","",""),
+        new TrainStopRow("","",""),
+        new TrainStopRow("","","")
+    );
+    addTrainTable.setItems(blank);
+    trainNameField.setText("");
+    departingTimeField.setText("");
+    scheduleBlocks.setValue(ctc.getBlockList().get(0));
+  }
 
-  private void addTrainToQueue(){}
+  private void addTrainToQueue() {
+    String name = trainNameField.getText();
+    String departingTime = departingTimeField.getText();
+    String block = scheduleBlocks.getSelectionModel().getSelectedItem();
 
-  private void deleteTrainFromQueue(){}
+    // TODO: add error handling if fields aren't filled
+
+    // get train stop info
+    List<String> stopData = new ArrayList<>();
+    for (TrainStopRow item : addTrainTable.getItems()) {
+      stopData.add(stopColumn.getCellObservableValue(item).getValue());
+    }
+
+    // get train dwell info
+    List<String> dwellData = new ArrayList<>();
+    for (TrainStopRow item : addTrainTable.getItems()) {
+      dwellData.add(dwellColumn.getCellObservableValue(item).getValue());
+    }
+
+    // create schedule
+    ObservableList<TrainStopRow> schedule =  FXCollections.observableArrayList();
+    for (int i = 0; i < addTrainTable.getItems().size(); i++) {
+      schedule.add(new TrainStopRow(stopData.get(i), dwellData.get(i), ""));
+    }
+
+    ObservableList<TrainQueueRow> queue = FXCollections.observableArrayList(
+        new TrainQueueRow(name, departingTime, schedule)
+    );
+
+    // create item in queue
+    ctc.setTrainQueueTable(queue);
+    trainQueueTable.setItems(queue);
+    resetSchedule();
+
+    // create train
+  }
+
+  private void deleteTrainFromQueue() {
+    trainQueueTable.setItems(FXCollections.observableArrayList());
+  }
 
   private void dispatchTrain(){}
 
@@ -297,5 +345,4 @@ public class MainController {
   private void setAuthority(){}
 
   private void changeMode(String mode){}
-
 }
