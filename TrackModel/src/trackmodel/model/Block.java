@@ -4,7 +4,7 @@ public class Block implements BlockInterface {
 
   private String line;
   private String section;
-  private String block;
+  private int block;
   private double length;
   private double grade;
   private double speedLimit;
@@ -22,6 +22,9 @@ public class Block implements BlockInterface {
   private boolean powerFailure;
   private boolean trackCircuitFailure;
 
+  public Block(){
+
+  }
 
   /**
    * This is the constructor for a block.
@@ -44,7 +47,7 @@ public class Block implements BlockInterface {
    * @param railFailure Indication if there is a rail failure
    * @param trackCircuitFailure Indication if there is a track circuit failure
    */
-  public Block(String line, String section, String block, double length,
+  public Block(String line, String section, int block, double length,
                     double grade, double speedLimit, String stationName, double elevation,
                     double cumulativeElevation, boolean occupied, boolean underground,
                     boolean railCrossing, boolean beacon, boolean trackHeating,
@@ -78,7 +81,7 @@ public class Block implements BlockInterface {
     return section;
   }
 
-  public String getBlock() {
+  public int getBlock() {
     return block;
   }
 

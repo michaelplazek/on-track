@@ -6,7 +6,7 @@ public interface BlockInterface {
 
   public String getSection();
 
-  public String getBlock();
+  public int getBlock();
 
   public double getLength();
 
