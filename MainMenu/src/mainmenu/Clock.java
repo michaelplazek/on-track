@@ -17,8 +17,8 @@ public class Clock implements ClockInterface {
   private long lastTimestamp;
   private int multiplier = 1;
 
-//  private boolean isPaused = false;
-//  private long pausedOn;
+  //private boolean isPaused = false;
+  //private long pausedOn;
 
   /**
    * The main constructor for the Clock class.
@@ -90,19 +90,19 @@ public class Clock implements ClockInterface {
   /**
    * Use to maintain system time when the clock is paused.
    */
-//  public void pause() {
-//    isPaused = true;
-//
-//    calendar = Calendar.getInstance();
-//    pausedOn = calendar.getTimeInMillis();
-//  }
+  //public void pause() {
+  //  isPaused = true;
+
+  //  calendar = Calendar.getInstance();
+  //  pausedOn = calendar.getTimeInMillis();
+  //}
 
   /**
    * Use to allow system time to continue as usual.
    */
-//  public void unpause() {
-//    isPaused = false;
-//  }
+  //public void unpause() {
+  // isPaused = false;
+  //}
 
   /**
    * Use this function to get the multiplier for speeding up or slowing down the clock.

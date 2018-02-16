@@ -127,7 +127,7 @@
                                             <content>
                                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="381.0" prefWidth="256.0">
                                                    <children>
-                                                      <TableView fx:id="trainQueueTable" layoutX="5.0" layoutY="7.0" prefHeight="172.0" prefWidth="305.0">
+                                                      <TableView fx:id="trainQueueTable" editable="true" layoutX="5.0" layoutY="7.0" prefHeight="172.0" prefWidth="305.0">
                                                         <columns>
                                                           <TableColumn fx:id="trainColumn" prefWidth="150.9158935546875" text="Train" />
                                                           <TableColumn fx:id="departureColumn" prefWidth="151.0841064453125" text="Departure" />
