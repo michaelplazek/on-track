@@ -96,6 +96,9 @@ public class CentralTrafficControl {
     schedule.trainTable = table;
   }
 
+  /**
+   * Use to clear the train table of stops.
+   */
   public void clearTrainTable() {
     schedule.trainTable = FXCollections.observableArrayList(
         new TrainStopRow("","",""),

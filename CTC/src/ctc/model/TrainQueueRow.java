@@ -7,6 +7,12 @@ public class TrainQueueRow {
   private String departure;
   private ObservableList<TrainStopRow> selectedSchedule;
 
+  /**
+   * Constructor for the train queue rows.
+   * @param train String for train name
+   * @param departure String for departure time
+   * @param schedule list to populate lower table
+   */
   public TrainQueueRow(String train, String departure, ObservableList<TrainStopRow> schedule) {
     this.train = train;
     this.departure = departure;
