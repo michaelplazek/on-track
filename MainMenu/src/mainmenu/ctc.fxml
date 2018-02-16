@@ -236,7 +236,7 @@
                                     <Font size="12.0" />
                                  </font>
                               </Label>
-                              <ImageView fitHeight="40.0" fitWidth="47.0" layoutX="150.0" layoutY="88.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fitHeight="40.0" fitWidth="47.0" layoutX="179.0" layoutY="105.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../../../CTC/src/ctc/view/images/switch_stay.png" />
                                  </image>
