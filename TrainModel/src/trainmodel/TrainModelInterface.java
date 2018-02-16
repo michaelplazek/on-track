@@ -13,6 +13,9 @@ import utils.TrainModelEnums.TrackLineStatus;
  */
 public interface TrainModelInterface {
 
+  /**
+   * The following methods are getters/setters for data going to the Train Controller
+   */
   //Getters
   double getCurrentSpeed();
 
@@ -31,7 +34,6 @@ public interface TrainModelInterface {
   LightStatus getLightStatus();
 
   double getCurrentTemp();
-
   //Setters
   void setCurrentSpeed(double currentSpeed);
 
@@ -50,6 +52,11 @@ public interface TrainModelInterface {
   void setLightStatus(LightStatus lightStatus);
 
   void setCurrentTemp(double currentTemp);
+
+  /**
+   * The following methods are getters/setters for data going to the Moving Block Overlay.
+   */
+
 
 
 }
