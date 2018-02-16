@@ -65,15 +65,15 @@ public class CentralTrafficControl {
   }
 
   public ObservableList<String> getTrackList() {
-    return this.maintenance.getTrackList();
+    return this.maintenance.trackList;
   }
 
   public ObservableList<String> getBlockList() {
-    return this.maintenance.getBlockList();
+    return this.maintenance.blockList;
   }
 
   public ObservableList<String> getActionList() {
-    return this.maintenance.getActionsList();
+    return this.maintenance.actionsList;
   }
 
   public StringProperty getThroughput() {
@@ -86,6 +86,14 @@ public class CentralTrafficControl {
 
   public void setActive(boolean active) {
     isActive = active;
+  }
+
+  public ObservableList<TrainStopRow> getTrainTable() {
+    return schedule.trainTable;
+  }
+
+  public ObservableList<TrainQueueRow> getTrainQueueTable() {
+    return schedule.trainQueueTable;
   }
 
   /* ---- PRIVATE INNER CLASSES ---- */
@@ -115,30 +123,6 @@ public class CentralTrafficControl {
       this.actionsList = FXCollections.observableArrayList(
           "Select action", "Close block", "Repair block", "Toggle switch");
     }
-
-    public ObservableList<String> getTrackList() {
-      return trackList;
-    }
-
-    public void setTrackList(ObservableList<String> trackList) {
-      this.trackList = trackList;
-    }
-
-    public ObservableList<String> getBlockList() {
-      return blockList;
-    }
-
-    public void setBlockList(ObservableList<String> blockList) {
-      this.blockList = blockList;
-    }
-
-    public ObservableList<String> getActionsList() {
-      return actionsList;
-    }
-
-    public void setActionsList(ObservableList<String> actionsList) {
-      this.actionsList = actionsList;
-    }
   }
 
   private class Schedule {
@@ -165,46 +149,16 @@ public class CentralTrafficControl {
           "A1", "A2", "A3",
           "B1", "B2", "B3",
           "C1", "C2", "C3");
-    }
 
-    public ObservableList<String> getBlockList() {
-      return blockList;
-    }
-
-    public void setBlockList(ObservableList<String> blockList) {
-      this.blockList = blockList;
-    }
-
-    public ObservableList<TrainStopRow> getTrainTable() {
-      return trainTable;
-    }
-
-    public void setTrainTable(ObservableList<TrainStopRow> trainTable) {
-      this.trainTable = trainTable;
-    }
-
-    public ObservableList<TrainQueueRow> getTrainQueueTable() {
-      return trainQueueTable;
-    }
-
-    public void setTrainQueueTable(ObservableList<TrainQueueRow> trainQueueTable) {
-      this.trainQueueTable = trainQueueTable;
-    }
-
-    public ObservableList<TrainStopRow> getSelectedScheduleTable() {
-      return selectedScheduleTable;
-    }
-
-    public void setSelectedScheduleTable(ObservableList<TrainStopRow> selectedScheduleTable) {
-      this.selectedScheduleTable = selectedScheduleTable;
-    }
-
-    public ObservableList<TrainDispatchRow> getDispatchTable() {
-      return dispatchTable;
-    }
-
-    public void setDispatchTable(ObservableList<TrainDispatchRow> dispatchTable) {
-      this.dispatchTable = dispatchTable;
+      // TODO: get rid of this mock data
+      this.trainTable = FXCollections.observableArrayList(
+          new TrainStopRow("","",""),
+          new TrainStopRow("","",""),
+          new TrainStopRow("","",""),
+          new TrainStopRow("","",""),
+          new TrainStopRow("","",""),
+          new TrainStopRow("","","")
+          );
     }
   }
 

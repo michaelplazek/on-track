@@ -11,6 +11,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.converter.NumberStringConverter;
 import mainmenu.Clock;
 
@@ -137,6 +138,33 @@ public class MainController {
         new PropertyValueFactory<TrainDispatchRow, String>("speed"));
     dispatchPassengersColumn.setCellValueFactory(
         new PropertyValueFactory<TrainDispatchRow, String>("passengers"));
+
+    stopColumn.setCellFactory(TextFieldTableCell.<TrainStopRow>forTableColumn());
+    stopColumn.setOnEditCommit(
+        (TableColumn.CellEditEvent<TrainStopRow, String> t) -> {
+          ((TrainStopRow) t.getTableView().getItems().get(
+              t.getTablePosition().getRow())
+          ).setStop(t.getNewValue());
+        });
+
+    dwellColumn.setCellFactory(TextFieldTableCell.<TrainStopRow>forTableColumn());
+    dwellColumn.setOnEditCommit(
+        (TableColumn.CellEditEvent<TrainStopRow, String> t) -> {
+          ((TrainStopRow) t.getTableView().getItems().get(
+              t.getTablePosition().getRow())
+          ).setDwell(t.getNewValue());
+        });
+
+    timeColumn.setCellFactory(TextFieldTableCell.<TrainStopRow>forTableColumn());
+    timeColumn.setOnEditCommit(
+        (TableColumn.CellEditEvent<TrainStopRow, String> t) -> {
+          ((TrainStopRow) t.getTableView().getItems().get(
+              t.getTablePosition().getRow())
+          ).setTime(t.getNewValue());
+        });
+
+    addTrainTable.setItems(ctc.getTrainTable());
+
   }
 
   private void connectButtons() {
