@@ -10,4 +10,12 @@ public class TrainControllerFactory {
     TrainController.addTrain(trainController);
     return trainController;
   }
+
+  public static void startTrainController(String id) {
+    TrainController.start(id);
+  }
+
+  public static void delete(String id) {
+    TrainController.delete(id);
+  }
 }
