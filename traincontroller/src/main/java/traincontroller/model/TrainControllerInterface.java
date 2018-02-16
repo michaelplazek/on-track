@@ -2,7 +2,7 @@ package traincontroller.model;
 
 public interface TrainControllerInterface {
 
-  void setAetennaSignal(Byte[] signal);
+  void setAntennaSignal(Byte[] signal);
 
   void setBeaconSignal(Byte[] signal);
 
