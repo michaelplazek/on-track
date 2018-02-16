@@ -34,6 +34,7 @@ public interface TrainModelInterface {
   LightStatus getLightStatus();
 
   double getCurrentTemp();
+
   //Setters
   void setCurrentSpeed(double currentSpeed);
 
@@ -56,6 +57,7 @@ public interface TrainModelInterface {
   /**
    * The following methods are getters/setters for data going to the Moving Block Overlay.
    */
+  double getGPSLocation();
 
 
 
