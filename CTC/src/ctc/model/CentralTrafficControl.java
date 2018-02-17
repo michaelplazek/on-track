@@ -18,7 +18,7 @@ public class CentralTrafficControl {
   private Clock clock;
 
   private boolean isActive = false;
-  private ArrayList<TrainListItem> trainList;
+  private ObservableList<TrainListItem> trainList;
   private double exactAuthority;
   private long exactTime;
   private StringProperty displayTime = new SimpleStringProperty();
@@ -31,7 +31,7 @@ public class CentralTrafficControl {
     clock = Clock.getInstance();
     maintenance = new Maintenance();
     schedule = new Schedule();
-    trainList = new ArrayList<>();
+    trainList = FXCollections.observableArrayList();
   }
 
   /**
@@ -97,7 +97,7 @@ public class CentralTrafficControl {
     schedule.trainTable = table;
   }
 
-  public ArrayList<TrainListItem> getTrainList() {
+  public ObservableList<TrainListItem> getTrainList() {
     return trainList;
   }
 
@@ -122,6 +122,10 @@ public class CentralTrafficControl {
 
   public ObservableList<TrainListItem> getTrainQueueTable() {
     return schedule.trainQueueTable;
+  }
+
+  public ObservableList<TrainListItem> getDispatchTable() {
+    return schedule.dispatchTable;
   }
 
   /* ---- PRIVATE INNER CLASSES ---- */
@@ -161,10 +165,9 @@ public class CentralTrafficControl {
 
     /* Queue */
     private ObservableList<TrainListItem> trainQueueTable;
-    private ObservableList<TrainStopRow> selectedScheduleTable;
 
     /* Dispatch */
-    private ObservableList<TrainDispatchRow> dispatchTable;
+    private ObservableList<TrainListItem> dispatchTable;
 
     /**
      * Base constructor.
@@ -189,6 +192,7 @@ public class CentralTrafficControl {
           );
 
       this.trainQueueTable = FXCollections.observableArrayList();
+      this.dispatchTable = FXCollections.observableArrayList();
     }
   }
 }

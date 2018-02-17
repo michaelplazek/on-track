@@ -13,8 +13,13 @@ public class TrainListItem {
   private ObservableList<TrainStopRow> schedule;
   private String name;
   private String departure;
-  // add Block authority here
-  // add Route here
+  private boolean isDispatched;
+  private double speed;
+  private int passengers;
+  private double authority;
+  private double distanceTravelled;
+  // private Block location;
+  // private Route route;
 
   /**
    * Base constructor for the TrainList items.
@@ -31,6 +36,10 @@ public class TrainListItem {
     this.name = id;
     this.departure = departure;
     this.schedule = schedule;
+    this.isDispatched = false;
+    this.speed = 0.0;
+    this.passengers = 0;
+    this.authority = 0;
   }
 
   public TrainController getTrain() {
@@ -59,5 +68,37 @@ public class TrainListItem {
 
   public void setDeparture(String departure) {
     this.departure = departure;
+  }
+
+  public boolean isDispatched() {
+    return isDispatched;
+  }
+
+  public void setDispatched(boolean dispatched) {
+    isDispatched = dispatched;
+  }
+
+  public double getSpeed() {
+    return speed;
+  }
+
+  public void setSpeed(double speed) {
+    this.speed = speed;
+  }
+
+  public int getPassengers() {
+    return passengers;
+  }
+
+  public void setPassengers(int passengers) {
+    this.passengers = passengers;
+  }
+
+  public double getAuthority() {
+    return authority;
+  }
+
+  public void setAuthority(double authority) {
+    this.authority = authority;
   }
 }

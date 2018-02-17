@@ -67,12 +67,12 @@ public class MainController {
   @FXML private Button dispatchButton;
 
   /* DISPATCH COMPONENTS */
-  @FXML private TableView<TrainDispatchRow> dispatchTable;
-  @FXML private TableColumn<TrainDispatchRow, String> dispatchTrainColumn;
-  @FXML private TableColumn<TrainDispatchRow, String> dispatchLocationColumn;
-  @FXML private TableColumn<TrainDispatchRow, String> dispatchAuthorityColumn;
-  @FXML private TableColumn<TrainDispatchRow, String> dispatchSpeedColumn;
-  @FXML private TableColumn<TrainDispatchRow, String> dispatchPassengersColumn;
+  @FXML private TableView<TrainListItem> dispatchTable;
+  @FXML private TableColumn<TrainListItem, String> dispatchTrainColumn;
+  @FXML private TableColumn<TrainListItem, String> dispatchLocationColumn;
+  @FXML private TableColumn<TrainListItem, String> dispatchAuthorityColumn;
+  @FXML private TableColumn<TrainListItem, String> dispatchSpeedColumn;
+  @FXML private TableColumn<TrainListItem, String> dispatchPassengersColumn;
   @FXML private TextField suggestedSpeedField;
   @FXML private Button setSpeedButton;
   @FXML private ChoiceBox<String> setAuthorityBlocks;
@@ -132,15 +132,15 @@ public class MainController {
         new PropertyValueFactory<TrainListItem, String>("departure"));
 
     dispatchTrainColumn.setCellValueFactory(
-        new PropertyValueFactory<TrainDispatchRow, String>("train"));
+        new PropertyValueFactory<TrainListItem, String>("name"));
     dispatchLocationColumn.setCellValueFactory(
-        new PropertyValueFactory<TrainDispatchRow, String>("location"));
+        new PropertyValueFactory<TrainListItem, String>("location"));
     dispatchAuthorityColumn.setCellValueFactory(
-        new PropertyValueFactory<TrainDispatchRow, String>("authority"));
+        new PropertyValueFactory<TrainListItem, String>("authority"));
     dispatchSpeedColumn.setCellValueFactory(
-        new PropertyValueFactory<TrainDispatchRow, String>("speed"));
+        new PropertyValueFactory<TrainListItem, String>("speed"));
     dispatchPassengersColumn.setCellValueFactory(
-        new PropertyValueFactory<TrainDispatchRow, String>("passengers"));
+        new PropertyValueFactory<TrainListItem, String>("passengers"));
 
     stopColumn.setCellFactory(TextFieldTableCell.<TrainStopRow>forTableColumn());
     stopColumn.setOnEditCommit(
@@ -345,10 +345,36 @@ public class MainController {
   }
 
   private void deleteTrainFromQueue() {
-    trainQueueTable.setItems(FXCollections.observableArrayList());
+    TrainListItem selected = trainQueueTable.getSelectionModel().getSelectedItem();
+    for (int i = 0; i < ctc.getTrainQueueTable().size(); i++) {
+      if (ctc.getTrainQueueTable().get(i).getName().equals(selected.getName())) {
+        ctc.getTrainQueueTable().remove(i);
+        ctc.getTrainList().remove(i);
+      }
+    }
+
+    trainQueueTable.setItems(ctc.getTrainQueueTable());
+    // selectedScheduleTable.setItems(FXCollections.observableArrayList());
   }
 
-  private void dispatchTrain(){}
+  private void dispatchTrain() {
+
+    // remove selected train from queue
+    TrainListItem selected = trainQueueTable.getSelectionModel().getSelectedItem();
+    if (selected != null) {
+      for (int i = 0; i < ctc.getTrainQueueTable().size(); i++) {
+        if (ctc.getTrainQueueTable().get(i).getName().equals(selected.getName())) {
+          ctc.getTrainQueueTable().remove(i);
+        }
+      }
+
+      ctc.getDispatchTable().add(selected);
+      dispatchTable.setItems(ctc.getDispatchTable());
+      if (ctc.getTrainQueueTable().size() == 0) {
+        selectedScheduleTable.setItems(FXCollections.observableArrayList());
+      }
+    }
+  }
 
   private void setSuggestedSpeed(){}
 
