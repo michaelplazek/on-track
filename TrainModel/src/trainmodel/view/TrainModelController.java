@@ -114,7 +114,6 @@ public class TrainModelController implements Initializable {
 
   @FXML
   private void toggleSelectedFailures(ActionEvent event) {
-    System.out.println("Printshit");
     Button btn = (Button) event.getSource();
 
     for (MenuItem item : failures.getItems()) {
@@ -122,26 +121,20 @@ public class TrainModelController implements Initializable {
         System.out.println(item.getId());
         if (item.getId().equals(brakeFailure.getId())) {
           if (btn.getId().equals(startButton.getId())) {
-            System.out.println("Brake Failure Started.");
             startBrakeFailure();
           } else {
-            System.out.println("Brake Failure Ended.");
             endBrakeFailure();
           }
         } else if (item.getId().equals(engineFailure.getId())) {
           if (btn.getId().equals(startButton.getId())) {
-            System.out.println("Engine Failure Started.");
             startEngineFailure();
           } else {
-            System.out.println("Engine Failure Ended.");
             endEngineFailure();
           }
         } else if (item.getId().equals(signalFailure.getId())) {
           if (btn.getId().equals(startButton.getId())) {
-            System.out.println("Signal Failure Started.");
             startSignalFailure();
           } else {
-            System.out.println("Signal Failure Ended.");
             endSignalFailure();
           }
         }
@@ -153,8 +146,7 @@ public class TrainModelController implements Initializable {
 
   @FXML
   private void emergency_Brake_Engaged() {
-    emergencyBrakeStatus.textProperty().setValue("ENGAGED");
-    //Also change Brake failure image to a red light.
+    emergencyBrakeStatus.textProperty().setValue(Constants.ON);
   }
 
   @FXML
@@ -226,6 +218,7 @@ public class TrainModelController implements Initializable {
 
   private void startBrakeFailure() {
     brakeFailureStatusIcon.setFill(Paint.valueOf(Constants.RED));
+    emergencyBrakeStatus.setText(Constants.ON);
   }
 
   private void startSignalFailure() {
@@ -238,6 +231,7 @@ public class TrainModelController implements Initializable {
 
   private void endBrakeFailure() {
     brakeFailureStatusIcon.setFill(Paint.valueOf(Constants.GREEN));
+    emergencyBrakeStatus.setText(Constants.OFF);
   }
 
   private void endSignalFailure() {

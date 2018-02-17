@@ -12,6 +12,8 @@ public class Constants {
   public static String RED = Paint.valueOf("Red").toString();
 
   public static String LABEL_EMERGENCY_BRAKE_NOT_ENGAGED = "NOT ENGAGED";
+  public static String OFF = "OFF";
+  public static String ON = "ON";
   public static String LABEL_STATUS_UNAVAILABLE = "N/A";
   public static String TRAIN_LENGTH = "";
   public static String TRAIN_WIDTH = "";
