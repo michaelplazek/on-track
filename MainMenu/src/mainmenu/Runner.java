@@ -39,7 +39,7 @@ public class Runner extends Application {
               }
             }
         ),
-        new KeyFrame(Duration.millis(50))
+        new KeyFrame(Duration.millis(5))
     );
     timeline.setCycleCount(Animation.INDEFINITE);
     timeline.play(); // initialize feedback loop

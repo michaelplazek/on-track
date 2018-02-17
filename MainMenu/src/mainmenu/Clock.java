@@ -16,9 +16,8 @@ public class Clock implements ClockInterface {
   private long simulatedTime;
   private long lastTimestamp;
   private int multiplier = 1;
-
-  //private boolean isPaused = false;
-  //private long pausedOn;
+  private long timedPaused = 0;
+  private boolean isPaused = true;
 
   /**
    * The main constructor for the Clock class.
@@ -40,11 +39,14 @@ public class Clock implements ClockInterface {
    * Use to tick the clock.
    */
   public void tick() {
-    calendar = Calendar.getInstance();
-    long delta = calendar.getTimeInMillis() - lastTimestamp;
-    timeSinceLastTick = delta * (long) multiplier;
-    lastTimestamp += delta;
-    simulatedTime += timeSinceLastTick;
+
+    if (!isPaused) {
+      calendar = Calendar.getInstance();
+      long delta = calendar.getTimeInMillis() - lastTimestamp - timedPaused;
+      timeSinceLastTick = delta * (long) multiplier;
+      lastTimestamp += delta;
+      simulatedTime += timeSinceLastTick;
+    }
   }
 
   /**
@@ -90,19 +92,29 @@ public class Clock implements ClockInterface {
   /**
    * Use to maintain system time when the clock is paused.
    */
-  //public void pause() {
-  //  isPaused = true;
+  public void pause() {
 
-  //  calendar = Calendar.getInstance();
-  //  pausedOn = calendar.getTimeInMillis();
-  //}
+    if (!isPaused) {
+      isPaused = true;
+      timedPaused = simulatedTime;
+    }
+  }
 
   /**
    * Use to allow system time to continue as usual.
    */
-  //public void unpause() {
-  // isPaused = false;
-  //}
+  public void unpause() {
+
+    if (isPaused) {
+      isPaused = false;
+
+      if (timedPaused != 0) {
+        calendar = Calendar.getInstance();
+        long initial = timedPaused;
+        timedPaused = calendar.getTimeInMillis() - initial;
+      }
+    }
+  }
 
   /**
    * Use this function to get the multiplier for speeding up or slowing down the clock.

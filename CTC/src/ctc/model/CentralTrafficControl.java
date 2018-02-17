@@ -85,7 +85,17 @@ public class CentralTrafficControl {
     return isActive;
   }
 
+  /**
+   * Sets the display time on and off.
+   * @param active boolean to determine whether the clock is on or off.
+   */
   public void setActive(boolean active) {
+
+    if (active) {
+      clock.unpause();
+    } else {
+      clock.pause();
+    }
     isActive = active;
   }
 
