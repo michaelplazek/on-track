@@ -14,7 +14,7 @@ import utils.TrainModelEnums.TrackLineStatus;
 public interface TrainModelInterface {
 
   /**
-   * The following methods are getters/setters for data going to the Train Controller
+   * The following methods are getters/setters for data going to the Train Controller.
    */
   //Getters
   double getCurrentSpeed();
