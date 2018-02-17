@@ -1,9 +1,7 @@
 package ctc.controller;
 
-import ctc.model.CentralTrafficControl;
-import ctc.model.TrainDispatchRow;
-import ctc.model.TrainQueueRow;
-import ctc.model.TrainStopRow;
+import ctc.model.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import javafx.beans.value.ChangeListener;
@@ -12,17 +10,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Toggle;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.input.MouseEvent;
 import mainmenu.Clock;
 
 
@@ -65,9 +56,9 @@ public class MainController {
   @FXML private Button addTrainButton;
 
   /* QUEUE COMPONENTS */
-  @FXML private TableView<TrainQueueRow> trainQueueTable;
-  @FXML private TableColumn<TrainQueueRow, String> trainColumn;
-  @FXML private TableColumn<TrainQueueRow, String> departureColumn;
+  @FXML private TableView<TrainListItem> trainQueueTable;
+  @FXML private TableColumn<TrainListItem, String> trainColumn;
+  @FXML private TableColumn<TrainListItem, String> departureColumn;
   @FXML private TableView<TrainStopRow> selectedScheduleTable;
   @FXML private TableColumn<TrainStopRow, String> selectedStopColumn;
   @FXML private TableColumn<TrainStopRow, String> selectedDwellColumn;
@@ -136,9 +127,9 @@ public class MainController {
     selectedTimeColumn.setCellValueFactory(
         new PropertyValueFactory<TrainStopRow, String>("time"));
     trainColumn.setCellValueFactory(
-        new PropertyValueFactory<TrainQueueRow, String>("train"));
+        new PropertyValueFactory<TrainListItem, String>("name"));
     departureColumn.setCellValueFactory(
-        new PropertyValueFactory<TrainQueueRow, String>("departure"));
+        new PropertyValueFactory<TrainListItem, String>("departure"));
 
     dispatchTrainColumn.setCellValueFactory(
         new PropertyValueFactory<TrainDispatchRow, String>("train"));
@@ -190,6 +181,7 @@ public class MainController {
 
   private void connectOthers() {
 
+    // connect the toggle buttons for mode of operation
     mode.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
       public void changed(
           ObservableValue<? extends Toggle> ov, Toggle oldToggle, Toggle newToggle) {
@@ -200,6 +192,14 @@ public class MainController {
         }
       }
     });
+
+    trainQueueTable.getSelectionModel().selectedItemProperty()
+          .addListener((observableValue, oldValue, newValue) -> {
+            if (trainQueueTable.getSelectionModel().getSelectedItem() != null) {
+              TrainListItem selected = trainQueueTable.getSelectionModel().getSelectedItem();
+              selectedScheduleTable.setItems(selected.getSchedule());
+            }
+          });
   }
 
   private void bindClock() {
@@ -308,6 +308,7 @@ public class MainController {
   private void addTrainToQueue() {
 
     // TODO: add error handling if fields aren't filled
+    // TODO: create route and add it to TrainListItem
 
     // get train stop info
     List<String> stopData = new ArrayList<>();
@@ -331,16 +332,16 @@ public class MainController {
     String name = trainNameField.getText();
     String departingTime = departingTimeField.getText();
 
-    ObservableList<TrainQueueRow> queue = FXCollections.observableArrayList(
-        new TrainQueueRow(name, departingTime, schedule)
-    );
+    TrainListItem train = new TrainListItem(name, departingTime, "red", schedule);
 
     // create item in queue
-    ctc.setTrainQueueTable(queue);
-    trainQueueTable.setItems(queue);
+    trainQueueTable.setItems(ctc.getTrainQueueTable());
+    // trainQueueTable.getSelectionModel().select(0);
+
     resetSchedule();
 
     // create train
+    ctc.addTrain(train);
   }
 
   private void deleteTrainFromQueue() {
@@ -354,4 +355,5 @@ public class MainController {
   private void setAuthority(){}
 
   private void changeMode(String mode){}
+
 }
