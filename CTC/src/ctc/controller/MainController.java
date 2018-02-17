@@ -124,8 +124,6 @@ public class MainController {
         new PropertyValueFactory<TrainStopRow, String>("stop"));
     dwellColumn.setCellValueFactory(
         new PropertyValueFactory<TrainStopRow, String>("dwell"));
-    timeColumn.setCellValueFactory(
-        new PropertyValueFactory<TrainStopRow, String>("time"));
 
     selectedDwellColumn.setCellValueFactory(
         new PropertyValueFactory<TrainStopRow, String>("dwell"));
@@ -188,6 +186,9 @@ public class MainController {
 
   private void connectOthers() {
 
+    TableView.TableViewSelectionModel<TrainStopRow> defaultModel =
+        addTrainTable.getSelectionModel();
+
     // connect the toggle buttons for mode of operation
     mode.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
       public void changed(
@@ -195,7 +196,7 @@ public class MainController {
 
         if (mode.getSelectedToggle() != null) {
           RadioButton btn = (RadioButton) newToggle.getToggleGroup().getSelectedToggle();
-          changeMode(btn.getText());
+          changeMode(btn.getText(), defaultModel);
           // Do something here with the userData of newly selected radioButton
         }
       }
@@ -390,7 +391,9 @@ public class MainController {
 
   private void setAuthority(){}
 
-  private void changeMode(String mode) {
+  private void changeMode(
+      String mode,
+      TableView.TableViewSelectionModel<TrainStopRow> defaultModel) {
 
     // disable buttons
     if (mode.equals("Moving Block Mode")) {
@@ -406,6 +409,9 @@ public class MainController {
       decrementButton.setDisable(true);
       scheduleBlocks.setDisable(true);
       setAuthorityBlocks.setDisable(true);
+      testRedButton.setDisable(true);
+      testGreenButton.setDisable(true);
+      addTrainTable.setSelectionModel(null);
     } else { // re-enable buttons
       resetButton.setDisable(false);
       addTrainButton.setDisable(false);
@@ -419,6 +425,9 @@ public class MainController {
       decrementButton.setDisable(false);
       scheduleBlocks.setDisable(false);
       setAuthorityBlocks.setDisable(false);
+      testRedButton.setDisable(false);
+      testGreenButton.setDisable(false);
+      addTrainTable.setSelectionModel(defaultModel);
     }
   }
 }
