@@ -6,6 +6,13 @@ class SwitchBlock extends Block {
   private int destination2;
   private int currentDestination;
 
+  public SwitchBlock(int block) {
+    super(block);
+    destination1 = 3;
+    destination2 = 2;
+    currentDestination = 2;
+  }
+
   public SwitchBlock(String line, String section, int block, double length,
                     double grade, double speedLimit, String stationName, double elevation,
                     double cumulativeElevation, boolean occupied, boolean underground,
@@ -22,9 +29,6 @@ class SwitchBlock extends Block {
     this.destination2 = destination2;
     this.currentDestination = currentDestination;
 
-
-
   }
 
-  public SwitchBlock(){}
 }
