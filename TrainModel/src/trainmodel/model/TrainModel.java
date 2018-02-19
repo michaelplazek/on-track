@@ -3,7 +3,6 @@ package trainmodel.model;
 import traincontroller.model.TrainControllerInterface;
 import trainmodel.TrainModelInterface;
 import utils.TrainModelEnums;
-import traincontroller.model.TrainController;
 
 /**
  * Created by jeremyzang on 2/16/18.
