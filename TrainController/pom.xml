@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>on-track</groupId>
-    <artifactId>train-controller</artifactId>
+    <artifactId>TrainController</artifactId>
     <version>1.0-SNAPSHOT</version>
     <build>
         <plugins>
