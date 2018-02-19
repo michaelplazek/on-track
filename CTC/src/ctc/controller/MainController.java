@@ -124,8 +124,6 @@ public class MainController {
         new PropertyValueFactory<TrainStopRow, String>("stop"));
     dwellColumn.setCellValueFactory(
         new PropertyValueFactory<TrainStopRow, String>("dwell"));
-    timeColumn.setCellValueFactory(
-        new PropertyValueFactory<TrainStopRow, String>("time"));
 
     selectedDwellColumn.setCellValueFactory(
         new PropertyValueFactory<TrainStopRow, String>("dwell"));
@@ -188,13 +186,17 @@ public class MainController {
 
   private void connectOthers() {
 
+    TableView.TableViewSelectionModel<TrainStopRow> defaultModel =
+        addTrainTable.getSelectionModel();
+
     // connect the toggle buttons for mode of operation
     mode.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
       public void changed(
           ObservableValue<? extends Toggle> ov, Toggle oldToggle, Toggle newToggle) {
 
         if (mode.getSelectedToggle() != null) {
-          changeMode(mode.getSelectedToggle().getUserData().toString());
+          RadioButton btn = (RadioButton) newToggle.getToggleGroup().getSelectedToggle();
+          changeMode(btn.getText(), defaultModel);
           // Do something here with the userData of newly selected radioButton
         }
       }
@@ -389,6 +391,43 @@ public class MainController {
 
   private void setAuthority(){}
 
-  private void changeMode(String mode){}
+  private void changeMode(
+      String mode,
+      TableView.TableViewSelectionModel<TrainStopRow> defaultModel) {
 
+    // disable buttons
+    if (mode.equals("Moving Block Mode")) {
+      resetButton.setDisable(true);
+      addTrainButton.setDisable(true);
+      deleteButton.setDisable(true);
+      dispatchButton.setDisable(true);
+      setAuthorityButton.setDisable(true);
+      setSpeedButton.setDisable(true);
+      startButton.setDisable(true);
+      stopButton.setDisable(true);
+      incrementButton.setDisable(true);
+      decrementButton.setDisable(true);
+      scheduleBlocks.setDisable(true);
+      setAuthorityBlocks.setDisable(true);
+      testRedButton.setDisable(true);
+      testGreenButton.setDisable(true);
+      addTrainTable.setSelectionModel(null);
+    } else { // re-enable buttons
+      resetButton.setDisable(false);
+      addTrainButton.setDisable(false);
+      deleteButton.setDisable(false);
+      dispatchButton.setDisable(false);
+      setAuthorityButton.setDisable(false);
+      setSpeedButton.setDisable(false);
+      startButton.setDisable(false);
+      stopButton.setDisable(false);
+      incrementButton.setDisable(false);
+      decrementButton.setDisable(false);
+      scheduleBlocks.setDisable(false);
+      setAuthorityBlocks.setDisable(false);
+      testRedButton.setDisable(false);
+      testGreenButton.setDisable(false);
+      addTrainTable.setSelectionModel(defaultModel);
+    }
+  }
 }

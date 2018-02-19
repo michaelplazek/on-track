@@ -57,6 +57,7 @@ public class Clock implements ClockInterface {
     lastTimestamp = calendar.getTimeInMillis();
     simulatedTime = calendar.getTimeInMillis();
     timeSinceLastTick = 0;
+    timedPaused = simulatedTime;
   }
 
   /**
@@ -96,7 +97,7 @@ public class Clock implements ClockInterface {
 
     if (!isPaused) {
       isPaused = true;
-      timedPaused = simulatedTime;
+      timedPaused = lastTimestamp;
     }
   }
 
@@ -111,7 +112,7 @@ public class Clock implements ClockInterface {
       if (timedPaused != 0) {
         calendar = Calendar.getInstance();
         long initial = timedPaused;
-        timedPaused = calendar.getTimeInMillis() - initial;
+        timedPaused = (calendar.getTimeInMillis() - initial);
       }
     }
   }
