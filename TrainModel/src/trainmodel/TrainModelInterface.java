@@ -54,6 +54,10 @@ public interface TrainModelInterface {
 
   void setCurrentTemp(double currentTemp);
 
+  void setPowerCommand(double powerCommand);
+
+  void setAntennaSignal(Byte[] speedAuth);
+
   /**
    * The following methods are getters/setters for data going to the Moving Block Overlay.
    */

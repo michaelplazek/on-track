@@ -1,14 +1,15 @@
 package trainmodel.model;
 
+import traincontroller.model.TrainControllerInterface;
 import trainmodel.TrainModelInterface;
 import utils.TrainModelEnums;
+import traincontroller.model.TrainController;
 
 /**
  * Created by jeremyzang on 2/16/18.
  */
 public class TrainModel implements TrainModelInterface {
 
-  
 
   private double currentSpeed;
   private TrainModelEnums.BrakeStatus emergencyBrakeStatus;
@@ -18,6 +19,31 @@ public class TrainModel implements TrainModelInterface {
   private TrainModelEnums.DoorStatus leftDoorStatus;
   private TrainModelEnums.DoorStatus rightDoorStatus;
   private TrainModelEnums.LightStatus lightStatus;
+
+  //set by TrainController.
+  private double powerCommand;
+
+
+  private TrainControllerInterface controller;
+  private String id; //Train id
+  private String line; //Train line (green or red)
+
+
+  //Constructor that takes
+  //String id
+  //String line (trackline)
+  //TrainControllerInterface.
+
+  //Factory Class will call the constructor in the createTrain() method.
+
+
+  public TrainModel(TrainControllerInterface controller, String id, String line) {
+    this.controller = controller;
+    this.id = id;
+    this.line = line;
+  }
+
+
 
   @Override
   public double getCurrentSpeed() {
@@ -109,8 +135,21 @@ public class TrainModel implements TrainModelInterface {
 
   }
 
+  //Will be called by TrainController to give TrainModel the power command.
   @Override
-  public double getGPSLocation() {
+  public void setPowerCommand(double powerCommand) {
+
+  }
+
+  //Will get called by MBO to send speed and authority over antenna and pass to TrainController.
+  @Override
+  public void setAntennaSignal(Byte[] speedAuth) {
+
+  }
+
+  @Override
+  public double getGpsLocation() {
     return 0;
   }
+
 }
