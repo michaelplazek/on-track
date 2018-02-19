@@ -9,9 +9,15 @@ public class TrainController implements TrainControllerInterface, Runnable {
   private String line;
   private boolean running;
 
+  /**
+   * Base constructor for TrainController.
+   * @param id String for name of train
+   * @param line String for line that train in running on
+   */
   public TrainController(String id, String line) {
     this.id = id;
     this.line = line;
+    listOfTrains = new HashMap<>();
   }
 
   public void setAntennaSignal(Byte[] signal) {

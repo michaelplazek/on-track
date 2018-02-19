@@ -1,5 +1,6 @@
 package ctc.model;
 
+import java.util.ArrayList;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -12,12 +13,12 @@ public class CentralTrafficControl {
 
   private static CentralTrafficControl instance = null;
 
-  private Header header;
   private Maintenance maintenance;
   private Schedule schedule;
   private Clock clock;
-  private boolean isActive = false;
 
+  private boolean isActive = false;
+  private ObservableList<TrainListItem> trainList;
   private double exactAuthority;
   private long exactTime;
   private StringProperty displayTime = new SimpleStringProperty();
@@ -28,9 +29,9 @@ public class CentralTrafficControl {
    */
   private CentralTrafficControl() {
     clock = Clock.getInstance();
-    header = new Header();
     maintenance = new Maintenance();
     schedule = new Schedule();
+    trainList = FXCollections.observableArrayList();
   }
 
   /**
@@ -84,7 +85,17 @@ public class CentralTrafficControl {
     return isActive;
   }
 
+  /**
+   * Sets the display time on and off.
+   * @param active boolean to determine whether the clock is on or off.
+   */
   public void setActive(boolean active) {
+
+    if (active) {
+      clock.unpause();
+    } else {
+      clock.pause();
+    }
     isActive = active;
   }
 
@@ -94,6 +105,15 @@ public class CentralTrafficControl {
 
   public void setTrainTable(ObservableList<TrainStopRow> table) {
     schedule.trainTable = table;
+  }
+
+  public ObservableList<TrainListItem> getTrainList() {
+    return trainList;
+  }
+
+  public void addTrain(TrainListItem train) {
+    this.trainList.add(train);
+    schedule.trainQueueTable.add(train);
   }
 
   /**
@@ -110,12 +130,12 @@ public class CentralTrafficControl {
     );
   }
 
-  public ObservableList<TrainQueueRow> getTrainQueueTable() {
+  public ObservableList<TrainListItem> getTrainQueueTable() {
     return schedule.trainQueueTable;
   }
 
-  public void setTrainQueueTable(ObservableList<TrainQueueRow> table) {
-    schedule.trainQueueTable = table;
+  public ObservableList<TrainListItem> getDispatchTable() {
+    return schedule.dispatchTable;
   }
 
   /* ---- PRIVATE INNER CLASSES ---- */
@@ -154,11 +174,10 @@ public class CentralTrafficControl {
     private ObservableList<TrainStopRow> trainTable;
 
     /* Queue */
-    private ObservableList<TrainQueueRow> trainQueueTable;
-    private ObservableList<TrainStopRow> selectedScheduleTable;
+    private ObservableList<TrainListItem> trainQueueTable;
 
     /* Dispatch */
-    private ObservableList<TrainDispatchRow> dispatchTable;
+    private ObservableList<TrainListItem> dispatchTable;
 
     /**
      * Base constructor.
@@ -181,10 +200,9 @@ public class CentralTrafficControl {
           new TrainStopRow("","",""),
           new TrainStopRow("","","")
           );
+
+      this.trainQueueTable = FXCollections.observableArrayList();
+      this.dispatchTable = FXCollections.observableArrayList();
     }
-  }
-
-  private class Header {
-
   }
 }

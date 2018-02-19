@@ -105,9 +105,8 @@
                                                       <ChoiceBox fx:id="scheduleBlocks" layoutX="222.0" layoutY="94.0" prefHeight="26.0" prefWidth="91.0" value="Green" />
                                                       <TableView fx:id="addTrainTable" editable="true" layoutX="5.0" layoutY="125.0" prefHeight="219.0" prefWidth="308.0">
                                                         <columns>
-                                                          <TableColumn fx:id="stopColumn" prefWidth="134.42266845703125" text="Stop" />
-                                                          <TableColumn fx:id="dwellColumn" prefWidth="89.57730102539062" text="Dwell" />
-                                                            <TableColumn fx:id="timeColumn" prefWidth="81.81851196289062" text="Time" />
+                                                          <TableColumn fx:id="stopColumn" prefWidth="155.5" text="Stop" />
+                                                          <TableColumn fx:id="dwellColumn" prefWidth="150.0" text="Dwell" />
                                                         </columns>
                                                       </TableView>
                                                       <Button fx:id="resetButton" layoutX="8.0" layoutY="349.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="99.0" text="Reset" />
@@ -169,7 +168,7 @@
                                                           <TableColumn fx:id="dispatchLocationColumn" prefWidth="106.5496826171875" text="Location" />
                                                             <TableColumn fx:id="dispatchAuthorityColumn" minWidth="0.0" prefWidth="78.4503173828125" text="Authority" />
                                                             <TableColumn fx:id="dispatchSpeedColumn" prefWidth="58.3656005859375" text="Speed" />
-                                                            <TableColumn fx:id="dispatchPassengersColumn" prefWidth="88.79541015625" text="Passengers" />
+                                                            <TableColumn fx:id="dispatchPassengersColumn" prefWidth="86.0" text="Passengers" />
                                                         </columns>
                                                       </TableView>
                                                       <ChoiceBox fx:id="setAuthorityBlocks" layoutX="8.0" layoutY="345.0" prefHeight="26.0" prefWidth="121.0" />
@@ -238,7 +237,7 @@
                               </Label>
                               <ImageView fitHeight="40.0" fitWidth="47.0" layoutX="179.0" layoutY="105.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../../CTC/src/ctc/view/images/switch_stay.png" />
+                                    <Image url="@images/switch_stay.png" />
                                  </image>
                               </ImageView>
                            </children>
