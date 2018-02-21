@@ -118,7 +118,6 @@ public class TrainModelController implements Initializable {
 
     for (MenuItem item : failures.getItems()) {
       if (CheckMenuItem.class.isInstance(item) && CheckMenuItem.class.cast(item).isSelected()) {
-        System.out.println(item.getId());
         if (item.getId().equals(brakeFailure.getId())) {
           if (btn.getId().equals(startButton.getId())) {
             startBrakeFailure();
