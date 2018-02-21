@@ -2,6 +2,7 @@ package trainmodel.model;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import mainmenu.Clock;
 import traincontroller.model.TrainControllerInterface;
 import trainmodel.TrainModelInterface;
 import utils.TrainModelEnums;
@@ -14,7 +15,7 @@ public class TrainModel implements TrainModelInterface {
 
 //  private double currentSpeed; //Actual Speed in mph.
 
-  //Actual Speed in mph. Will be bound with  UI and TrainController values.
+  //Actual Speed in mph. Will be bound with  UI and Calculated from the power command.
   private DoubleProperty actualSpeed = new SimpleDoubleProperty(0);
 
   //Current temp inside the train.
