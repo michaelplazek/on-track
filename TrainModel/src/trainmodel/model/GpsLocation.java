@@ -2,8 +2,9 @@ package trainmodel.model;
 
 /**
  * Created by jeremyzang on 2/19/18.
- * This file as of 2/21/18 located in TrainModel module for testing. Later development will require this file be
- * located in the Utils package for every module to share.
+ * This file as of 2/21/18 located in TrainModel module for testing.
+ * Later development will require this file be located in the Utils
+ * package for every module to share.
  */
 public class GpsLocation {
 

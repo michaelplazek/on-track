@@ -11,10 +11,6 @@ import utils.TrainModelEnums;
  * Created by jeremyzang on 2/16/18.
  */
 public class TrainModel implements TrainModelInterface {
-
-
-//  private double currentSpeed; //Actual Speed in mph.
-
   //Actual Speed in mph. Will be bound with  UI and Calculated from the power command.
   private DoubleProperty actualSpeed = new SimpleDoubleProperty(0);
 
@@ -31,28 +27,27 @@ public class TrainModel implements TrainModelInterface {
 
   private GpsLocation gpsLocation;
 
-  private Byte[] mboSpeedAuth; //Speed and Authority from MBO gets passed to TrainController in MBO mode.
+  //Speed and Authority from MBO gets passed to TrainController in MBO mode.
+  private Byte[] mboSpeedAuth;
 
-  private Byte[] trackModelSpeedAuth; //Speed and Authority from trackModel gets passed to TrainController in Manual Mode
+  //Speed and Authority from trackModel gets passed to TrainController in Manual Mode
+  private Byte[] trackModelSpeedAuth;
   private Byte[] beaconSignal;
 
   //set by TrainController.
   private double powerCommand;
 
-
-
   private TrainControllerInterface controller;
   private String id; //Train id
   private String line; //Train line (green or red)
 
-
-
-
-  //Constructor that takes
-  //String id
-  //String line (trackline)
-  //TrainControllerInterface.
-  //Factory Class will call the constructor in the createTrain() method.
+  /**
+   * Constructor that takes an id, line and TrainControllerInterface.
+   * Factory Class will call this constructor in the createTrain() method. 2/21/19.
+   * @param controller the TrainController for the created instance.
+   * @param id id for the train must be unique.
+   * @param line the line this train will be on at time of construction.
+   */
   public TrainModel(TrainControllerInterface controller, String id, String line) {
     this.controller = controller;
     this.id = id;
@@ -104,11 +99,6 @@ public class TrainModel implements TrainModelInterface {
     return currentTemp.getValue();
   }
 
-//  @Override
-//  public void setCurrentSpeed(double currentSpeed) {
-//    actualSpeed.setValue(currentSpeed);
-//  }
-
   @Override
   public void setEmergencyBrakeStatus(TrainModelEnums.BrakeStatus brakeStatus) {
     this.emergencyBrakeStatus = brakeStatus;
@@ -155,7 +145,8 @@ public class TrainModel implements TrainModelInterface {
     this.powerCommand = powerCommand;
   }
 
-  //Will get called by MBO (or TrackModel?) to send speed and authority over antenna and pass to TrainController.
+  //Will get called by MBO (or TrackModel?)
+  // - to send speed and authority over antenna and pass to TrainController.
   @Override
   public void setAntennaSignal(Byte[] speedAuth) {
 
@@ -163,7 +154,7 @@ public class TrainModel implements TrainModelInterface {
     this.controller.setAntennaSignal(speedAuth);
 
     //if MBO mode call this
-   // this.controller.setAntennaSignal(mboSpeedAuth);
+    // this.controller.setAntennaSignal(mboSpeedAuth);
 
   }
 

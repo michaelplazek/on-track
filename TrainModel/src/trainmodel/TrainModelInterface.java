@@ -38,7 +38,7 @@ public interface TrainModelInterface {
 
   //Setters
 
-//  void setCurrentSpeed(double currentSpeed); shouldn't be able to set current speed 2/19/18
+  //  void setCurrentSpeed(double currentSpeed); shouldn't be able to set current speed 2/19/18
 
   void setEmergencyBrakeStatus(BrakeStatus brakeStatus);
 
