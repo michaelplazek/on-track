@@ -145,7 +145,7 @@ public class TrainModelController implements Initializable {
 
   @FXML
   private void emergency_Brake_Engaged() {
-    if (emergencyBrakeStatus.textProperty().getValue().equals(Constants.ON)){
+    if (emergencyBrakeStatus.textProperty().getValue().equals(Constants.ON)) {
       emergencyBrakeStatus.textProperty().setValue(Constants.OFF);
     } else {
       emergencyBrakeStatus.textProperty().setValue(Constants.ON);
