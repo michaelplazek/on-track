@@ -146,7 +146,12 @@ public class TrainModelController implements Initializable {
 
   @FXML
   private void emergency_Brake_Engaged() {
-    emergencyBrakeStatus.textProperty().setValue(Constants.ON);
+    if (emergencyBrakeStatus.textProperty().getValue().equals(Constants.ON)){
+      emergencyBrakeStatus.textProperty().setValue(Constants.OFF);
+    } else {
+      emergencyBrakeStatus.textProperty().setValue(Constants.ON);
+    }
+
   }
 
   @FXML
@@ -190,7 +195,7 @@ public class TrainModelController implements Initializable {
     gpsAntenaStatus.textProperty().setValue("ON");
     mboAntenaStatus.textProperty().setValue("ON");
     cabinTemp.textProperty().setValue("72 degrees");
-    emergencyBrakeStatus.textProperty().setValue("ENGAGED");
+    emergencyBrakeStatus.textProperty().setValue(Constants.OFF);
     length.textProperty().setValue("105.64 ft");
     width.textProperty().setValue("8.69 ft");
     height.textProperty().set("11.22 ft");
