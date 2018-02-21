@@ -1,5 +1,6 @@
 package ctc.model;
 
+import java.util.ArrayList;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -12,12 +13,12 @@ public class CentralTrafficControl {
 
   private static CentralTrafficControl instance = null;
 
-  private Header header;
   private Maintenance maintenance;
   private Schedule schedule;
   private Clock clock;
-  private boolean isActive = false;
 
+  private boolean isActive = false;
+  private ObservableList<TrainListItem> trainList;
   private double exactAuthority;
   private long exactTime;
   private StringProperty displayTime = new SimpleStringProperty();
@@ -28,9 +29,9 @@ public class CentralTrafficControl {
    */
   private CentralTrafficControl() {
     clock = Clock.getInstance();
-    header = new Header();
     maintenance = new Maintenance();
     schedule = new Schedule();
+    trainList = FXCollections.observableArrayList();
   }
 
   /**
@@ -65,15 +66,15 @@ public class CentralTrafficControl {
   }
 
   public ObservableList<String> getTrackList() {
-    return this.maintenance.getTrackList();
+    return this.maintenance.trackList;
   }
 
   public ObservableList<String> getBlockList() {
-    return this.maintenance.getBlockList();
+    return this.maintenance.blockList;
   }
 
   public ObservableList<String> getActionList() {
-    return this.maintenance.getActionsList();
+    return this.maintenance.actionsList;
   }
 
   public StringProperty getThroughput() {
@@ -84,8 +85,57 @@ public class CentralTrafficControl {
     return isActive;
   }
 
+  /**
+   * Sets the display time on and off.
+   * @param active boolean to determine whether the clock is on or off.
+   */
   public void setActive(boolean active) {
+
+    if (active) {
+      clock.unpause();
+    } else {
+      clock.pause();
+    }
     isActive = active;
+  }
+
+  public ObservableList<TrainStopRow> getTrainTable() {
+    return schedule.trainTable;
+  }
+
+  public void setTrainTable(ObservableList<TrainStopRow> table) {
+    schedule.trainTable = table;
+  }
+
+  public ObservableList<TrainListItem> getTrainList() {
+    return trainList;
+  }
+
+  public void addTrain(TrainListItem train) {
+    this.trainList.add(train);
+    schedule.trainQueueTable.add(train);
+  }
+
+  /**
+   * Use to clear the train table of stops.
+   */
+  public void clearTrainTable() {
+    schedule.trainTable = FXCollections.observableArrayList(
+        new TrainStopRow("","",""),
+        new TrainStopRow("","",""),
+        new TrainStopRow("","",""),
+        new TrainStopRow("","",""),
+        new TrainStopRow("","",""),
+        new TrainStopRow("","","")
+    );
+  }
+
+  public ObservableList<TrainListItem> getTrainQueueTable() {
+    return schedule.trainQueueTable;
+  }
+
+  public ObservableList<TrainListItem> getDispatchTable() {
+    return schedule.dispatchTable;
   }
 
   /* ---- PRIVATE INNER CLASSES ---- */
@@ -115,30 +165,6 @@ public class CentralTrafficControl {
       this.actionsList = FXCollections.observableArrayList(
           "Select action", "Close block", "Repair block", "Toggle switch");
     }
-
-    public ObservableList<String> getTrackList() {
-      return trackList;
-    }
-
-    public void setTrackList(ObservableList<String> trackList) {
-      this.trackList = trackList;
-    }
-
-    public ObservableList<String> getBlockList() {
-      return blockList;
-    }
-
-    public void setBlockList(ObservableList<String> blockList) {
-      this.blockList = blockList;
-    }
-
-    public ObservableList<String> getActionsList() {
-      return actionsList;
-    }
-
-    public void setActionsList(ObservableList<String> actionsList) {
-      this.actionsList = actionsList;
-    }
   }
 
   private class Schedule {
@@ -148,11 +174,10 @@ public class CentralTrafficControl {
     private ObservableList<TrainStopRow> trainTable;
 
     /* Queue */
-    private ObservableList<TrainQueueRow> trainQueueTable;
-    private ObservableList<TrainStopRow> selectedScheduleTable;
+    private ObservableList<TrainListItem> trainQueueTable;
 
     /* Dispatch */
-    private ObservableList<TrainDispatchRow> dispatchTable;
+    private ObservableList<TrainListItem> dispatchTable;
 
     /**
      * Base constructor.
@@ -165,50 +190,19 @@ public class CentralTrafficControl {
           "A1", "A2", "A3",
           "B1", "B2", "B3",
           "C1", "C2", "C3");
+
+      // TODO: get rid of this mock data
+      this.trainTable = FXCollections.observableArrayList(
+          new TrainStopRow("","",""),
+          new TrainStopRow("","",""),
+          new TrainStopRow("","",""),
+          new TrainStopRow("","",""),
+          new TrainStopRow("","",""),
+          new TrainStopRow("","","")
+          );
+
+      this.trainQueueTable = FXCollections.observableArrayList();
+      this.dispatchTable = FXCollections.observableArrayList();
     }
-
-    public ObservableList<String> getBlockList() {
-      return blockList;
-    }
-
-    public void setBlockList(ObservableList<String> blockList) {
-      this.blockList = blockList;
-    }
-
-    public ObservableList<TrainStopRow> getTrainTable() {
-      return trainTable;
-    }
-
-    public void setTrainTable(ObservableList<TrainStopRow> trainTable) {
-      this.trainTable = trainTable;
-    }
-
-    public ObservableList<TrainQueueRow> getTrainQueueTable() {
-      return trainQueueTable;
-    }
-
-    public void setTrainQueueTable(ObservableList<TrainQueueRow> trainQueueTable) {
-      this.trainQueueTable = trainQueueTable;
-    }
-
-    public ObservableList<TrainStopRow> getSelectedScheduleTable() {
-      return selectedScheduleTable;
-    }
-
-    public void setSelectedScheduleTable(ObservableList<TrainStopRow> selectedScheduleTable) {
-      this.selectedScheduleTable = selectedScheduleTable;
-    }
-
-    public ObservableList<TrainDispatchRow> getDispatchTable() {
-      return dispatchTable;
-    }
-
-    public void setDispatchTable(ObservableList<TrainDispatchRow> dispatchTable) {
-      this.dispatchTable = dispatchTable;
-    }
-  }
-
-  private class Header {
-
   }
 }

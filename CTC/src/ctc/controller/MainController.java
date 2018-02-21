@@ -1,17 +1,28 @@
 package ctc.controller;
 
 import ctc.model.CentralTrafficControl;
-import ctc.model.TrainDispatchRow;
-import ctc.model.TrainQueueRow;
+import ctc.model.TrainListItem;
 import ctc.model.TrainStopRow;
-import javafx.beans.property.SimpleStringProperty;
+
+import java.util.ArrayList;
+import java.util.List;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Toggle;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.util.converter.NumberStringConverter;
+import javafx.scene.control.cell.TextFieldTableCell;
 import mainmenu.Clock;
 
 public class MainController {
@@ -52,9 +63,9 @@ public class MainController {
   @FXML private Button addTrainButton;
 
   /* QUEUE COMPONENTS */
-  @FXML private TableView<TrainQueueRow> trainQueueTable;
-  @FXML private TableColumn<TrainQueueRow, String> trainColumn;
-  @FXML private TableColumn<TrainQueueRow, String> departureColumn;
+  @FXML private TableView<TrainListItem> trainQueueTable;
+  @FXML private TableColumn<TrainListItem, String> trainColumn;
+  @FXML private TableColumn<TrainListItem, String> departureColumn;
   @FXML private TableView<TrainStopRow> selectedScheduleTable;
   @FXML private TableColumn<TrainStopRow, String> selectedStopColumn;
   @FXML private TableColumn<TrainStopRow, String> selectedDwellColumn;
@@ -63,12 +74,12 @@ public class MainController {
   @FXML private Button dispatchButton;
 
   /* DISPATCH COMPONENTS */
-  @FXML private TableView<TrainDispatchRow> dispatchTable;
-  @FXML private TableColumn<TrainDispatchRow, String> dispatchTrainColumn;
-  @FXML private TableColumn<TrainDispatchRow, String> dispatchLocationColumn;
-  @FXML private TableColumn<TrainDispatchRow, String> dispatchAuthorityColumn;
-  @FXML private TableColumn<TrainDispatchRow, String> dispatchSpeedColumn;
-  @FXML private TableColumn<TrainDispatchRow, String> dispatchPassengersColumn;
+  @FXML private TableView<TrainListItem> dispatchTable;
+  @FXML private TableColumn<TrainListItem, String> dispatchTrainColumn;
+  @FXML private TableColumn<TrainListItem, String> dispatchLocationColumn;
+  @FXML private TableColumn<TrainListItem, String> dispatchAuthorityColumn;
+  @FXML private TableColumn<TrainListItem, String> dispatchSpeedColumn;
+  @FXML private TableColumn<TrainListItem, String> dispatchPassengersColumn;
   @FXML private TextField suggestedSpeedField;
   @FXML private Button setSpeedButton;
   @FXML private ChoiceBox<String> setAuthorityBlocks;
@@ -113,8 +124,6 @@ public class MainController {
         new PropertyValueFactory<TrainStopRow, String>("stop"));
     dwellColumn.setCellValueFactory(
         new PropertyValueFactory<TrainStopRow, String>("dwell"));
-    timeColumn.setCellValueFactory(
-        new PropertyValueFactory<TrainStopRow, String>("time"));
 
     selectedDwellColumn.setCellValueFactory(
         new PropertyValueFactory<TrainStopRow, String>("dwell"));
@@ -123,20 +132,39 @@ public class MainController {
     selectedTimeColumn.setCellValueFactory(
         new PropertyValueFactory<TrainStopRow, String>("time"));
     trainColumn.setCellValueFactory(
-        new PropertyValueFactory<TrainQueueRow, String>("train"));
+        new PropertyValueFactory<TrainListItem, String>("name"));
     departureColumn.setCellValueFactory(
-        new PropertyValueFactory<TrainQueueRow, String>("departure"));
+        new PropertyValueFactory<TrainListItem, String>("departure"));
 
     dispatchTrainColumn.setCellValueFactory(
-        new PropertyValueFactory<TrainDispatchRow, String>("train"));
+        new PropertyValueFactory<TrainListItem, String>("name"));
     dispatchLocationColumn.setCellValueFactory(
-        new PropertyValueFactory<TrainDispatchRow, String>("location"));
+        new PropertyValueFactory<TrainListItem, String>("location"));
     dispatchAuthorityColumn.setCellValueFactory(
-        new PropertyValueFactory<TrainDispatchRow, String>("authority"));
+        new PropertyValueFactory<TrainListItem, String>("authority"));
     dispatchSpeedColumn.setCellValueFactory(
-        new PropertyValueFactory<TrainDispatchRow, String>("speed"));
+        new PropertyValueFactory<TrainListItem, String>("speed"));
     dispatchPassengersColumn.setCellValueFactory(
-        new PropertyValueFactory<TrainDispatchRow, String>("passengers"));
+        new PropertyValueFactory<TrainListItem, String>("passengers"));
+
+    stopColumn.setCellFactory(TextFieldTableCell.<TrainStopRow>forTableColumn());
+    stopColumn.setOnEditCommit(
+        (TableColumn.CellEditEvent<TrainStopRow, String> t) -> {
+          ((TrainStopRow) t.getTableView().getItems().get(
+              t.getTablePosition().getRow())
+          ).setStop(t.getNewValue());
+        });
+
+    dwellColumn.setCellFactory(TextFieldTableCell.<TrainStopRow>forTableColumn());
+    dwellColumn.setOnEditCommit(
+        (TableColumn.CellEditEvent<TrainStopRow, String> t) -> {
+          ((TrainStopRow) t.getTableView().getItems().get(
+              t.getTablePosition().getRow())
+          ).setDwell(t.getNewValue());
+        });
+
+    addTrainTable.setItems(ctc.getTrainTable());
+
   }
 
   private void connectButtons() {
@@ -158,15 +186,29 @@ public class MainController {
 
   private void connectOthers() {
 
+    TableView.TableViewSelectionModel<TrainStopRow> defaultModel =
+        addTrainTable.getSelectionModel();
+
+    // connect the toggle buttons for mode of operation
     mode.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
-      public void changed(ObservableValue<? extends Toggle> ov, Toggle oldToggle, Toggle newToggle) {
+      public void changed(
+          ObservableValue<? extends Toggle> ov, Toggle oldToggle, Toggle newToggle) {
 
         if (mode.getSelectedToggle() != null) {
-          changeMode(mode.getSelectedToggle().getUserData().toString());
+          RadioButton btn = (RadioButton) newToggle.getToggleGroup().getSelectedToggle();
+          changeMode(btn.getText(), defaultModel);
           // Do something here with the userData of newly selected radioButton
         }
       }
     });
+
+    trainQueueTable.getSelectionModel().selectedItemProperty()
+          .addListener((observableValue, oldValue, newValue) -> {
+            if (trainQueueTable.getSelectionModel().getSelectedItem() != null) {
+              TrainListItem selected = trainQueueTable.getSelectionModel().getSelectedItem();
+              selectedScheduleTable.setItems(selected.getSchedule());
+            }
+          });
   }
 
   private void bindClock() {
@@ -241,10 +283,12 @@ public class MainController {
 
   // TODO: complete these functions
   private void startClock() {
+
     ctc.setActive(true);
   }
 
   private void stopClock() {
+
     ctc.setActive(false);
   }
 
@@ -256,18 +300,134 @@ public class MainController {
 
   private void importSchedule(){}
 
-  private void resetSchedule(){}
+  private void resetSchedule() {
+    ctc.clearTrainTable();
+    ObservableList<TrainStopRow> blank = FXCollections.observableArrayList(
+        new TrainStopRow("","",""),
+        new TrainStopRow("","",""),
+        new TrainStopRow("","",""),
+        new TrainStopRow("","",""),
+        new TrainStopRow("","",""),
+        new TrainStopRow("","","")
+    );
+    addTrainTable.setItems(blank);
+    trainNameField.setText("");
+    departingTimeField.setText("");
+    scheduleBlocks.setValue(ctc.getBlockList().get(0));
+  }
 
-  private void addTrainToQueue(){}
+  private void addTrainToQueue() {
 
-  private void deleteTrainFromQueue(){}
+    // TODO: add error handling if fields aren't filled
+    // TODO: create route and add it to TrainListItem
 
-  private void dispatchTrain(){}
+    // get train stop info
+    List<String> stopData = new ArrayList<>();
+    for (TrainStopRow item : addTrainTable.getItems()) {
+      stopData.add(stopColumn.getCellObservableValue(item).getValue());
+    }
+
+    // get train dwell info
+    List<String> dwellData = new ArrayList<>();
+    for (TrainStopRow item : addTrainTable.getItems()) {
+      dwellData.add(dwellColumn.getCellObservableValue(item).getValue());
+    }
+
+    // create schedule
+    ObservableList<TrainStopRow> schedule =  FXCollections.observableArrayList();
+    for (int i = 0; i < addTrainTable.getItems().size(); i++) {
+      schedule.add(new TrainStopRow(stopData.get(i), dwellData.get(i), ""));
+    }
+
+    String block = scheduleBlocks.getSelectionModel().getSelectedItem();
+    String name = trainNameField.getText();
+    String departingTime = departingTimeField.getText();
+
+    TrainListItem train = new TrainListItem(name, departingTime, "red", schedule);
+
+    // create item in queue
+    trainQueueTable.setItems(ctc.getTrainQueueTable());
+    // trainQueueTable.getSelectionModel().select(0);
+
+    resetSchedule();
+
+    // create train
+    ctc.addTrain(train);
+  }
+
+  private void deleteTrainFromQueue() {
+    TrainListItem selected = trainQueueTable.getSelectionModel().getSelectedItem();
+    for (int i = 0; i < ctc.getTrainQueueTable().size(); i++) {
+      if (ctc.getTrainQueueTable().get(i).getName().equals(selected.getName())) {
+        ctc.getTrainQueueTable().remove(i);
+        ctc.getTrainList().remove(i);
+      }
+    }
+
+    trainQueueTable.setItems(ctc.getTrainQueueTable());
+    // selectedScheduleTable.setItems(FXCollections.observableArrayList());
+  }
+
+  private void dispatchTrain() {
+
+    // remove selected train from queue
+    TrainListItem selected = trainQueueTable.getSelectionModel().getSelectedItem();
+    if (selected != null) {
+      for (int i = 0; i < ctc.getTrainQueueTable().size(); i++) {
+        if (ctc.getTrainQueueTable().get(i).getName().equals(selected.getName())) {
+          ctc.getTrainQueueTable().remove(i);
+        }
+      }
+
+      ctc.getDispatchTable().add(selected);
+      dispatchTable.setItems(ctc.getDispatchTable());
+      if (ctc.getTrainQueueTable().size() == 0) {
+        selectedScheduleTable.setItems(FXCollections.observableArrayList());
+      }
+    }
+  }
 
   private void setSuggestedSpeed(){}
 
   private void setAuthority(){}
 
-  private void changeMode(String mode){}
+  private void changeMode(
+      String mode,
+      TableView.TableViewSelectionModel<TrainStopRow> defaultModel) {
 
+    // disable buttons
+    if (mode.equals("Moving Block Mode")) {
+      resetButton.setDisable(true);
+      addTrainButton.setDisable(true);
+      deleteButton.setDisable(true);
+      dispatchButton.setDisable(true);
+      setAuthorityButton.setDisable(true);
+      setSpeedButton.setDisable(true);
+      startButton.setDisable(true);
+      stopButton.setDisable(true);
+      incrementButton.setDisable(true);
+      decrementButton.setDisable(true);
+      scheduleBlocks.setDisable(true);
+      setAuthorityBlocks.setDisable(true);
+      testRedButton.setDisable(true);
+      testGreenButton.setDisable(true);
+      addTrainTable.setSelectionModel(null);
+    } else { // re-enable buttons
+      resetButton.setDisable(false);
+      addTrainButton.setDisable(false);
+      deleteButton.setDisable(false);
+      dispatchButton.setDisable(false);
+      setAuthorityButton.setDisable(false);
+      setSpeedButton.setDisable(false);
+      startButton.setDisable(false);
+      stopButton.setDisable(false);
+      incrementButton.setDisable(false);
+      decrementButton.setDisable(false);
+      scheduleBlocks.setDisable(false);
+      setAuthorityBlocks.setDisable(false);
+      testRedButton.setDisable(false);
+      testGreenButton.setDisable(false);
+      addTrainTable.setSelectionModel(defaultModel);
+    }
+  }
 }

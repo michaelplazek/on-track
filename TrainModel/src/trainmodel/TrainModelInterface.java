@@ -57,7 +57,7 @@ public interface TrainModelInterface {
   /**
    * The following methods are getters/setters for data going to the Moving Block Overlay.
    */
-  double getGPSLocation();
+  double getGpsLocation();
 
 
 
