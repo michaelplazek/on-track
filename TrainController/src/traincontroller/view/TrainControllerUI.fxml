@@ -135,7 +135,7 @@
                                                   </rowConstraints>
                                                    <children>
                                                       <Label id="authority" fx:id="authority" text="528" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
-                                                      <Label text="Authority (m):" />
+                                                      <Label text="Authority (yd):" />
                                                    </children>
                                                 </GridPane>
                                                 <GridPane GridPane.columnIndex="1" GridPane.rowIndex="2">
@@ -259,9 +259,9 @@
                                                                     </rowConstraints>
                                                                      <children>
                                                                         <Label text="Kp:" GridPane.rowIndex="1" />
-                                                                        <Label id="kP" fx:id="kP" text="5" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+                                                                        <Label id="kP" fx:id="kp" text="5" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
                                                                         <Label text="Ki:" GridPane.rowIndex="2" />
-                                                                        <Label id="kI" fx:id="kI" text="5" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+                                                                        <Label id="kI" fx:id="ki" text="5" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
                                                                         <Label text="Power Command (kW):" />
                                                                         <Label id="powerCommand" fx:id="powerCommand" text="10" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
                                                                      </children>
