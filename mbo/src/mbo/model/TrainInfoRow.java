@@ -75,8 +75,4 @@ public class TrainInfoRow {
     return authority;
   }
 
-  @Override
-  public String toString() {
-    return super.toString();
-  }
 }
