@@ -2,7 +2,6 @@ package trainmodel.model;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import mainmenu.Clock;
 import traincontroller.model.TrainControllerInterface;
 import trainmodel.TrainModelInterface;
 import utils.TrainModelEnums;
