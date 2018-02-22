@@ -23,19 +23,16 @@
                            <children>
                               <HBox alignment="CENTER_LEFT" spacing="5.0">
                                  <children>
-                                    <Circle fx:id="engineFailureStatusIcon" fill="#199015" radius="8.0" stroke="WHITE" strokeType="INSIDE" />
                                     <Label fx:id="engineFailureStatus" mnemonicParsing="false" text="Engine Failure" />
                                  </children>
                               </HBox>
                               <HBox alignment="CENTER_LEFT" spacing="5.0">
                                  <children>
-                                    <Circle fx:id="brakeFailureStatusIcon" fill="#199015" radius="8.0" stroke="WHITE" strokeType="INSIDE" />
                                     <Label fx:id="brakeFailureStatus" mnemonicParsing="false" text="Brake Failure" />
                                  </children>
                               </HBox>
                               <HBox alignment="CENTER_LEFT" spacing="5.0">
                                  <children>
-                                    <Circle fx:id="signalFailureStatusIcon" fill="#199015" radius="8.0" stroke="WHITE" strokeType="INSIDE" />
                                     <Label fx:id="signalFailureStatus" mnemonicParsing="false" text="Signal Failure" />
                                  </children>
                               </HBox>
@@ -43,15 +40,10 @@
                         </HBox>
                         <HBox alignment="CENTER" spacing="15.0">
                            <children>
-                              <MenuButton mnemonicParsing="false" text="Failures">
                                 <items>
-                                    <CheckMenuItem mnemonicParsing="false" text="Engine Failure" />
-                                    <CheckMenuItem mnemonicParsing="false" text="Brake Failure" />
-                                    <CheckMenuItem mnemonicParsing="false" text="Signal Failure" />
                                 </items>
                               </MenuButton>
                               <Button fx:id="startButton" mnemonicParsing="false" text="START" />
-                              <Button fx:id="endButton" mnemonicParsing="false" onAction="#end_failure_mode" text="END" />
                            </children>
                         </HBox>
                         <Button fx:id="emergencyBrakeButton" mnemonicParsing="false" onAction="#emergency_Brake_Engaged" text="EMERGENCY BRAKE" />
