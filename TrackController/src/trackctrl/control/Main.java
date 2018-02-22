@@ -10,7 +10,7 @@ public class Main extends Application {
 
   @Override
   public void start(Stage primaryStage) throws Exception {
-    Parent root = FXMLLoader.load(getClass().getResource("../view/trackCtrl.fxml"));
+    Parent root = FXMLLoader.load(getClass().getResource("../view/trackctrl.fxml"));
     primaryStage.setTitle("Track Controller");
     primaryStage.setScene(new Scene(root, 375, 375));
     primaryStage.setResizable(false);
