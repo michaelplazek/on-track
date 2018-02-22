@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import trainmodel.view.TrainModelController;
 
 public class Main extends Application {
 
@@ -12,7 +13,7 @@ public class Main extends Application {
   public void start(Stage primaryStage) throws Exception {
     Parent root = FXMLLoader.load(getClass().getResource("view/TrainModelView.fxml"));
     primaryStage.setTitle("Train 1");
-    primaryStage.setScene(new Scene(root, 800, 400));
+    primaryStage.setScene(new Scene(root, 800, 450));
     primaryStage.show();
   }
 

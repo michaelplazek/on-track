@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckMenuItem?>
 <?import javafx.scene.control.Label?>
@@ -100,34 +100,39 @@
                               </VBox>
                               <VBox alignment="TOP_CENTER">
                                  <children>
-                                    <HBox alignment="CENTER_RIGHT">
+                                    <HBox alignment="CENTER_RIGHT" spacing="5.0">
                                        <children>
                                           <Label fx:id="weight" text="Label" />
+                                          <Label layoutX="10.0" layoutY="10.0" text="(lbs)" />
                                        </children>
                                     </HBox>
-                                    <HBox alignment="CENTER_RIGHT">
+                                    <HBox alignment="CENTER_RIGHT" spacing="5.0">
                                        <children>
                                           <Label fx:id="length" text="Label" />
+                                          <Label layoutX="44.0" layoutY="10.0" text="(ft)" />
                                        </children>
                                     </HBox>
-                                    <HBox alignment="CENTER_RIGHT">
+                                    <HBox alignment="CENTER_RIGHT" spacing="5.0">
                                        <children>
                                           <Label fx:id="width" text="Label" />
+                                          <Label layoutX="44.0" layoutY="10.0" text="(ft)" />
                                        </children>
                                     </HBox>
-                                    <HBox alignment="CENTER_RIGHT">
+                                    <HBox alignment="CENTER_RIGHT" spacing="5.0">
                                        <children>
                                           <Label fx:id="height" text="Label" />
+                                          <Label layoutX="44.0" layoutY="10.0" text="(ft)" />
                                        </children>
                                     </HBox>
-                                    <HBox alignment="CENTER_RIGHT">
+                                    <HBox alignment="CENTER_RIGHT" spacing="5.0">
                                        <children>
                                           <Label fx:id="capacity" text="Label" />
                                        </children>
                                     </HBox>
-                                    <HBox alignment="CENTER_RIGHT">
+                                    <HBox alignment="CENTER_RIGHT" spacing="5.0">
                                        <children>
                                           <Label fx:id="numberOfCars" text="Label" />
+                                          <Label fx:id="numberOfCars1" layoutX="44.0" layoutY="10.0" text="Label" />
                                        </children>
                                     </HBox>
                                  </children>
@@ -376,6 +381,35 @@
                   </TitledPane>
                </children>
             </HBox>
+            <TitledPane text="Demo/Simulation Controls ">
+               <content>
+                  <HBox alignment="TOP_CENTER" spacing="5.0">
+                     <children>
+                        <VBox spacing="5.0">
+                           <children>
+                              <Button fx:id="demo_button" mnemonicParsing="false" onAction="#demoClicked" text="Demo Acceleration" />
+                              <Button fx:id="toggleLights" mnemonicParsing="false" onAction="#toggleLights" text="Toggle Lights" />
+                           </children>
+                        </VBox>
+                        <VBox spacing="5.0">
+                           <children>
+                              <Button fx:id="toggleLeftDoor" mnemonicParsing="false" onAction="#toggleLeftDoor" text="Toggle Left Door" />
+                              <Button fx:id="toggleRightDoor" mnemonicParsing="false" onAction="#toggleRightDoor" text="Toggle Right Door" />
+                           </children>
+                        </VBox>
+                        <VBox spacing="5.0">
+                           <children>
+                              <Button fx:id="addPassenger" mnemonicParsing="false" onAction="#addPassenger" text="Add Passenger" />
+                              <Button fx:id="removePassenger" mnemonicParsing="false" onAction="#removePassenger" text="Remove Passenger" />
+                           </children>
+                        </VBox>
+                     </children>
+                     <padding>
+                        <Insets bottom="5.0" top="5.0" />
+                     </padding>
+                  </HBox>
+               </content>
+            </TitledPane>
          </children>
       </VBox>
    </center>
