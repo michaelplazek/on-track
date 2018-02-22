@@ -18,6 +18,7 @@ public class TrainListItem {
   private int passengers;
   private double authority;
   private double distanceTravelled;
+  private String location;
   // private Block location;
   // private Route route;
 
@@ -40,6 +41,7 @@ public class TrainListItem {
     this.speed = 0.0;
     this.passengers = 0;
     this.authority = 0;
+    this.location = "A1";
   }
 
   public TrainController getTrain() {
@@ -100,5 +102,13 @@ public class TrainListItem {
 
   public void setAuthority(double authority) {
     this.authority = authority;
+  }
+
+  public String getLocation() {
+    return location;
+  }
+
+  public void setLocation(String location) {
+    this.location = location;
   }
 }
