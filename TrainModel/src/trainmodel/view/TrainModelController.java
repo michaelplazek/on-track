@@ -218,7 +218,7 @@ public class TrainModelController implements Initializable {
     length.textProperty().setValue("105.64");
     width.textProperty().setValue("8.69");
     height.textProperty().set("11.22");
-    emergencyBrakeStatus.textProperty().setValue(Constants.OFF);
+    emergencyBrakeStatus.textProperty().setValue(Constants.ON);
     capacity.textProperty().setValue("148"); //148 capacity
     numberOfCars.textProperty().setValue("1");
   }
