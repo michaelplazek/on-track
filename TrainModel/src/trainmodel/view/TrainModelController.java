@@ -2,11 +2,15 @@ package trainmodel.view;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import trainmodel.controller.Constants;
 
@@ -22,6 +26,15 @@ public class TrainModelController implements Initializable {
   private Button startButton;
   @FXML
   private Button endButton;
+  @FXML
+  private MenuButton failures;
+
+  @FXML
+  private CheckMenuItem engineFailure;
+  @FXML
+  private CheckMenuItem brakeFailure;
+  @FXML
+  private CheckMenuItem signalFailure;
 
   //Status Icons
   @FXML
@@ -100,9 +113,44 @@ public class TrainModelController implements Initializable {
 
 
   @FXML
+  private void toggleSelectedFailures(ActionEvent event) {
+    Button btn = (Button) event.getSource();
+
+    for (MenuItem item : failures.getItems()) {
+      if (CheckMenuItem.class.isInstance(item) && CheckMenuItem.class.cast(item).isSelected()) {
+        if (item.getId().equals(brakeFailure.getId())) {
+          if (btn.getId().equals(startButton.getId())) {
+            startBrakeFailure();
+          } else {
+            endBrakeFailure();
+          }
+        } else if (item.getId().equals(engineFailure.getId())) {
+          if (btn.getId().equals(startButton.getId())) {
+            startEngineFailure();
+          } else {
+            endEngineFailure();
+          }
+        } else if (item.getId().equals(signalFailure.getId())) {
+          if (btn.getId().equals(startButton.getId())) {
+            startSignalFailure();
+          } else {
+            endSignalFailure();
+          }
+        }
+      }
+    }
+
+
+  }
+
+  @FXML
   private void emergency_Brake_Engaged() {
-    emergencyBrakeStatus.textProperty().setValue("ENGAGED");
-    //Also change Brake failure image to a red light.
+    if (emergencyBrakeStatus.textProperty().getValue().equals(Constants.ON)) {
+      emergencyBrakeStatus.textProperty().setValue(Constants.OFF);
+    } else {
+      emergencyBrakeStatus.textProperty().setValue(Constants.ON);
+    }
+
   }
 
   @FXML
@@ -117,6 +165,8 @@ public class TrainModelController implements Initializable {
   @Override
   public void initialize(URL location, ResourceBundle resources) {
     initializeStatusLabels();
+    initializeStatusIcons();
+    initializeButtonHandlers();
   }
 
   /**
@@ -144,11 +194,53 @@ public class TrainModelController implements Initializable {
     gpsAntenaStatus.textProperty().setValue("ON");
     mboAntenaStatus.textProperty().setValue("ON");
     cabinTemp.textProperty().setValue("72 degrees");
-    emergencyBrakeStatus.textProperty().setValue("ENGAGED");
+    emergencyBrakeStatus.textProperty().setValue(Constants.OFF);
     length.textProperty().setValue("105.64 ft");
     width.textProperty().setValue("8.69 ft");
     height.textProperty().set("11.22 ft");
     capacity.textProperty().setValue("148"); //148 capacity
     numberOfCars.textProperty().setValue("1");
   }
+
+  /**
+   * Initializes Status icons for failure modes.
+   */
+  private void initializeStatusIcons() {
+    engineFailureStatusIcon.setFill(Paint.valueOf(Constants.GREEN));
+    brakeFailureStatusIcon.setFill(Paint.valueOf(Constants.GREEN));
+    signalFailureStatusIcon.setFill(Paint.valueOf(Constants.GREEN));
+  }
+
+  private void initializeButtonHandlers() {
+    startButton.setOnAction(this::toggleSelectedFailures);
+    endButton.setOnAction(this::toggleSelectedFailures);
+  }
+
+  private void startEngineFailure() {
+    engineFailureStatusIcon.setFill(Paint.valueOf(Constants.RED));
+  }
+
+  private void startBrakeFailure() {
+    brakeFailureStatusIcon.setFill(Paint.valueOf(Constants.RED));
+    emergencyBrakeStatus.setText(Constants.ON);
+  }
+
+  private void startSignalFailure() {
+    signalFailureStatusIcon.setFill(Paint.valueOf(Constants.RED));
+  }
+
+  private void endEngineFailure() {
+    engineFailureStatusIcon.setFill(Paint.valueOf(Constants.GREEN));
+  }
+
+  private void endBrakeFailure() {
+    brakeFailureStatusIcon.setFill(Paint.valueOf(Constants.GREEN));
+    emergencyBrakeStatus.setText(Constants.OFF);
+  }
+
+  private void endSignalFailure() {
+    signalFailureStatusIcon.setFill(Paint.valueOf(Constants.GREEN));
+  }
+
+
 }
