@@ -1,5 +1,6 @@
 package trackctrl.view;
 
+import java.io.File;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -15,6 +16,9 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import trackctrl.control.Main;
 
 public class Controller {
 
@@ -155,6 +159,14 @@ public class Controller {
     } else {
       setSwitchAlter();
     }
+  }
+
+  private void handleImportLogic(ActionEvent event) {
+    FileChooser fC = new FileChooser();
+    fC.setTitle("Choose a PLC  file");
+    fC.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("PLC Files", ".plc", ".csv"));
+
+     File inFile = fC.showOpenDialog((Stage) importLogic.getScene().getWindow());
   }
 
   private void setSpinnerBounds() {
@@ -301,6 +313,7 @@ public class Controller {
     groupRadioButtons();
     setOpen();
     setSwitchInactive();
+    importLogic.setOnAction(this::handleImportLogic);
   }
 
 

@@ -13,6 +13,7 @@ public class Main extends Application {
     Parent root = FXMLLoader.load(getClass().getResource("../view/trackCtrl.fxml"));
     primaryStage.setTitle("Track Controller");
     primaryStage.setScene(new Scene(root, 375, 375));
+    primaryStage.setResizable(false);
     primaryStage.show();
   }
 
@@ -20,3 +21,4 @@ public class Main extends Application {
     launch(args);
   }
 }
+
