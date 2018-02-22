@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<TitledPane fx:id="mboMain" alignment="CENTER" animated="false" blendMode="MULTIPLY" collapsible="false" opacity="1.0" prefHeight="663.0" prefWidth="1006.0" text="Moving Block Overlay" textAlignment="CENTER" wrapText="true" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Mbo">
+   <content>
+      <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="792.0" prefWidth="1007.0">
+         <children>
+            <SplitPane dividerPositions="0.1505073280721533" layoutX="427.0" layoutY="245.0" orientation="VERTICAL" prefHeight="969.3333333333334" prefWidth="1356.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <items>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="211.0" prefWidth="1322.0">
+                     <children>
+                        <Circle fx:id="mboModeEnabled" fill="#28c10d" layoutX="56.0" layoutY="41.0" radius="5.0" stroke="BLACK" strokeType="INSIDE" />
+                        <Text layoutX="70.0" layoutY="45.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Moving Block Mode">
+                           <font>
+                              <Font name="Arial" size="12.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="439.0" layoutY="47.0" strokeType="OUTSIDE" strokeWidth="0.0" text="00:00:00" textAlignment="CENTER">
+                           <font>
+                              <Font name="Arial" size="24.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                     <children>
+                        <TabPane layoutX="196.0" layoutY="127.0" prefHeight="736.6666666666666" prefWidth="1322.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <tabs>
+                              <Tab fx:id="trainInfoTab" closable="false" text="Train Information">
+                                 <content>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <TableView fx:id="trainInfoTable" layoutX="180.0" layoutY="67.0" prefHeight="443.0" prefWidth="867.0" stylesheets="@mbo.css" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <columns>
+                                                <TableColumn fx:id="trainID" prefWidth="113.33338415622711" resizable="false" text="Train ID" />
+                                                <TableColumn fx:id="line" prefWidth="91.33332061767578" resizable="false" text="Line" />
+                                                <TableColumn fx:id="passengerCount1" prefWidth="142.6666259765625" resizable="false" text="Coordinates (mi, mi)" />
+                                                <TableColumn fx:id="passengerCount" prefWidth="126.0" resizable="false" text="Passenger Count" />
+                                                <TableColumn fx:id="velocity" prefWidth="133.33346557617188" resizable="false" text="Velocity (mi/h)" />
+                                                <TableColumn fx:id="authority" prefWidth="156.666748046875" resizable="false" text="Authority (mi)" />
+                                                <TableColumn fx:id="safeBrakeDist" prefWidth="211.99993896484375" resizable="false" text="Safe Braking Distance (mi)" />
+                                             </columns>
+                                             <columnResizePolicy>
+                                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                             </columnResizePolicy>
+                                          </TableView>
+                                       </children>
+                                    </AnchorPane>
+                                 </content>
+                              </Tab>
+                              <Tab fx:id="schedulerTab" closable="false" text="Scheduler">
+                                 <content>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <TextField fx:id="scheduleName" layoutX="179.0" layoutY="107.0" />
+                                          <Label layoutX="53.0" layoutY="116.0" text="Schedule Name" />
+                                          <Label layoutX="50.0" layoutY="164.0" text="Desired Throughput" />
+                                          <TextField fx:id="desiredThroughput" layoutX="178.0" layoutY="155.0" />
+                                          <Button fx:id="generateSchedule" layoutX="50.0" layoutY="238.0" mnemonicParsing="false" text="Generate schedule" />
+                                          <TableView fx:id="schedulerTrainSchedule" layoutX="394.0" layoutY="10.0" prefHeight="199.0" prefWidth="547.0" stylesheets="@mbo.css">
+                                            <columns>
+                                              <TableColumn fx:id="schedTrainID" prefWidth="99.11111450195312" text="Train ID" />
+                                              <TableColumn fx:id="schedLine" prefWidth="65.55548095703125" text="Line" />
+                                                <TableColumn fx:id="schedStation" prefWidth="94.6666259765625" text="Station" />
+                                                <TableColumn fx:id="schedTotalTime" prefWidth="155.55560302734375" text="Total Time to Station (min)" />
+                                                <TableColumn fx:id="schedArrival" prefWidth="129.99995930989587" text="Arrival Time" />
+                                            </columns>
+                                          </TableView>
+                                          <TableView fx:id="schedulerDriverSchedule" layoutX="398.0" layoutY="229.0" prefHeight="199.0" prefWidth="543.0" stylesheets="@mbo.css">
+                                             <columns>
+                                                <TableColumn fx:id="schedDriver" editable="false" prefWidth="116.44454956054688" text="Driver Name" />
+                                                <TableColumn fx:id="schedDriverTrainID" editable="false" prefWidth="69.99993896484375" text="Train ID" />
+                                                <TableColumn fx:id="schedShiftStart" editable="false" prefWidth="75.3333740234375" text="Shift Start" />
+                                                <TableColumn fx:id="schedBreakStart" editable="false" prefWidth="82.6666259765625" text="Break Start" />
+                                                <TableColumn fx:id="schedBreakEnd" prefWidth="83.77783203125" text="Break End" />
+                                                <TableColumn fx:id="schedShiftEnd" prefWidth="113.99995930989587" text="Shift End" />
+                                             </columns>
+                                          </TableView>
+                                          <Button fx:id="exportSchedule" layoutX="227.0" layoutY="238.0" mnemonicParsing="false" text="Export schedule" />
+                                       </children>
+                                    </AnchorPane>
+                                 </content>
+                              </Tab>
+                           </tabs>
+                        </TabPane>
+                     </children>
+                  </AnchorPane>
+               </items>
+            </SplitPane>
+         </children>
+      </AnchorPane>
+   </content>
+   <font>
+      <Font name="Arial" size="20.0" />
+   </font>
+</TitledPane>
