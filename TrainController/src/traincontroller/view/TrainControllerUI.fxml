@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.shape.Circle?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" >
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="traincontroller.view.TrainControllerController">
    <children>
       <SplitPane dividerPositions="0.3417085427135678" layoutX="220.0" layoutY="100.0" orientation="VERTICAL" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
@@ -79,7 +79,7 @@
                                                    </rowConstraints>
                                                    <children>
                                                       <Label text="Current Speed:" />
-                                                      <Label text="20" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
+                                                      <Label fx:id="currentSpeed" text="20" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
                                                    </children>
                                                 </GridPane>
                                                 <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1">
@@ -91,12 +91,12 @@
                                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                   </rowConstraints>
                                                    <children>
-                                                      <TextField alignment="CENTER_RIGHT" editable="false" prefHeight="25.0" prefWidth="96.0">
+                                                      <TextField fx:id="setSpeedField" alignment="CENTER_RIGHT" prefHeight="25.0" prefWidth="96.0">
                                                          <padding>
                                                             <Insets right="5.0" />
                                                          </padding>
                                                       </TextField>
-                                                      <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="134.0" text="Set Speed" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
+                                                      <Button fx:id="setSpeedButton" mnemonicParsing="false" prefHeight="25.0" prefWidth="134.0" text="Set Speed" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
                                                    </children>
                                                 </GridPane>
                                                 <GridPane GridPane.columnIndex="1">
@@ -109,7 +109,7 @@
                                                   </rowConstraints>
                                                    <children>
                                                       <Label text="Driver Set Speed (MPH):" />
-                                                      <Label text="15" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
+                                                      <Label id="driverSetSpeed" fx:id="driverSetSpeed" text="15" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
                                                    </children>
                                                 </GridPane>
                                                 <GridPane GridPane.rowIndex="1">
@@ -121,8 +121,8 @@
                                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                   </rowConstraints>
                                                    <children>
-                                                      <Label text="CTC Set Speed (MPH):" />
-                                                      <Label text="20" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
+                                                      <Label text="Set Speed (MPH):" />
+                                                      <Label id="setSpeed" fx:id="setSpeed" text="20" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
                                                    </children>
                                                 </GridPane>
                                                 <GridPane GridPane.rowIndex="2">
@@ -134,7 +134,7 @@
                                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                   </rowConstraints>
                                                    <children>
-                                                      <Label text="528" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
+                                                      <Label id="authority" fx:id="authority" text="528" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
                                                       <Label text="Authority (m):" />
                                                    </children>
                                                 </GridPane>
@@ -147,7 +147,7 @@
                                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                   </rowConstraints>
                                                    <children>
-                                                      <ToggleButton mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" text="OFF" GridPane.columnIndex="1" />
+                                                      <ToggleButton fx:id="serviceBrakeButton" mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" text="OFF" GridPane.columnIndex="1" />
                                                       <Label text="Service Brake:" />
                                                    </children>
                                                 </GridPane>
@@ -192,14 +192,14 @@
                                                 <Label text="Right Doors:" GridPane.rowIndex="1" />
                                                 <Label text="Left Doors:" GridPane.rowIndex="2" />
                                                 <Label text="Temperature:" GridPane.rowIndex="3" />
-                                                <ToggleButton mnemonicParsing="false" prefHeight="25.0" prefWidth="78.0" text="OFF" GridPane.columnIndex="1" />
-                                                <ToggleButton mnemonicParsing="false" prefHeight="25.0" prefWidth="132.0" text="CLOSED" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                <ToggleButton mnemonicParsing="false" prefHeight="25.0" prefWidth="78.0" text="CLOSED" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                <Label text="68" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+                                                <ToggleButton fx:id="ligtsButton" mnemonicParsing="false" prefHeight="25.0" prefWidth="78.0" text="OFF" GridPane.columnIndex="1" />
+                                                <ToggleButton fx:id="rightDoorButton" mnemonicParsing="false" prefHeight="25.0" prefWidth="132.0" text="CLOSED" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                <ToggleButton fx:id="leftDoorButton" mnemonicParsing="false" prefHeight="25.0" prefWidth="78.0" text="CLOSED" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                <Label id="temperature" fx:id="temperature" text="68" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
                                                 <Label text="Set Temp:" GridPane.rowIndex="4" />
-                                                <Label text="68" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
-                                                <TextField disable="true" GridPane.rowIndex="5" />
-                                                <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="113.0" text="Set Temp" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                                <Label id="setTemperature" fx:id="setTemperature" text="68" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
+                                                <TextField fx:id="setTemperatureField" alignment="CENTER_RIGHT" GridPane.rowIndex="5" />
+                                                <Button fx:id="setTemperatureButton" mnemonicParsing="false" prefHeight="25.0" prefWidth="113.0" text="Set Temp" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                                              </children>
                                           </GridPane>
                                        </children>
@@ -227,8 +227,8 @@
                                                   </rowConstraints>
                                                    <children>
                                                       <Label text="Current Station:" />
-                                                      <Label text="Mt. Lebanon" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
-                                                      <Label text="Greenview" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+                                                      <Label id="currentStation" fx:id="currentStation" text="Mt. Lebanon" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
+                                                      <Label id="nextStation" fx:id="nextStation" text="Greenview" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
                                                       <Label text="Next Station:" GridPane.rowIndex="1" />
                                                    </children>
                                                 </GridPane>
@@ -259,11 +259,11 @@
                                                                     </rowConstraints>
                                                                      <children>
                                                                         <Label text="Kp:" GridPane.rowIndex="1" />
-                                                                        <Label text="5" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+                                                                        <Label id="kP" fx:id="kP" text="5" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
                                                                         <Label text="Ki:" GridPane.rowIndex="2" />
-                                                                        <Label text="5" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+                                                                        <Label id="kI" fx:id="kI" text="5" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
                                                                         <Label text="Power Command (kW):" />
-                                                                        <Label text="10" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
+                                                                        <Label id="powerCommand" fx:id="powerCommand" text="10" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
                                                                      </children>
                                                                   </GridPane>
                                                                </children>
@@ -290,7 +290,7 @@
                                                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                     </rowConstraints>
                                                                      <children>
-                                                                        <ToggleButton mnemonicParsing="false" prefHeight="25.0" prefWidth="167.0" text="EMERGENCY BRAKE OFF" GridPane.rowIndex="3" />
+                                                                        <ToggleButton fx:id="emergencyBrakeButton" mnemonicParsing="false" onAction="#toggleEmergencyBrakes" prefHeight="25.0" prefWidth="167.0" text="EMERGENCY BRAKE OFF" GridPane.rowIndex="3" />
                                                                         <GridPane>
                                                                           <columnConstraints>
                                                                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="128.99999237060547" minWidth="9.0" prefWidth="20.0" />
