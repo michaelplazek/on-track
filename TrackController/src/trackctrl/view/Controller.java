@@ -162,11 +162,12 @@ public class Controller {
   }
 
   private void handleImportLogic(ActionEvent event) {
-    FileChooser fC = new FileChooser();
-    fC.setTitle("Choose a PLC  file");
-    fC.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("PLC Files", ".plc", ".csv"));
+    FileChooser fileChooser = new FileChooser();
+    fileChooser.setTitle("Choose a PLC  file");
+    fileChooser.getExtensionFilters()
+        .addAll(new FileChooser.ExtensionFilter("PLC Files", ".plc", ".csv"));
 
-     File inFile = fC.showOpenDialog((Stage) importLogic.getScene().getWindow());
+    File inFile = fileChooser.showOpenDialog((Stage) importLogic.getScene().getWindow());
   }
 
   private void setSpinnerBounds() {
