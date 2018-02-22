@@ -207,7 +207,7 @@
                            </children>
                         </Group>
                         <Separator layoutX="128.0" layoutY="8.0" orientation="VERTICAL" prefHeight="113.0" prefWidth="8.0" />
-                        <Button layoutX="4.0" layoutY="82.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="122.0" text="Import PLC" />
+                        <Button fx:id="importLogic" layoutX="4.0" layoutY="82.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="122.0" text="Import PLC" />
                      </children>
                   </AnchorPane>
               </content>
