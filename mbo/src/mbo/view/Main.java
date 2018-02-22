@@ -13,7 +13,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("mbo.fxml"));
         primaryStage.setTitle("Moving Block Overlay");
-        primaryStage.setScene(new Scene(root, 955, 969));
+        primaryStage.setScene(new Scene(root, 970, 969));
         primaryStage.show();
     }
 
