@@ -19,9 +19,12 @@ import mbo.controller.Constants;
 import javafx.beans.binding.Bindings;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.io.*;
 
 
 public class Controller implements Initializable{
+
+  String name;
 
   private ObservableList<TrainInfoItem> trainData = FXCollections.observableArrayList();
   private ObservableList<TrainScheduleItem> trainSchedule = FXCollections.observableArrayList();
@@ -93,12 +96,13 @@ public class Controller implements Initializable{
     initializeStatus();
     initializeTrainInfo();
     connectButtons();
+
     generateSchedule.setOnAction(event ->  {
       makeSchedule();
     });
 
     exportSchedule.setOnAction(event -> {
-      exportCSV();
+      exportCSV(name);
     });
   }
 
@@ -132,6 +136,8 @@ public class Controller implements Initializable{
         Bindings.isEmpty(schedulerDriverSchedule.getItems())
         .and(Bindings.isEmpty(schedulerTrainSchedule.getItems()))
     );
+
+    name = setScheduleName.getText();
 }
 
   private void makeSchedule() {
@@ -186,9 +192,20 @@ public class Controller implements Initializable{
     driverSchedule.addAll(Mike, Julissa, Joseph);
   }
 
-  private void exportCSV() {
+  private static void exportCSV(String name) {
+    FileWriter writer = null;
+    try {
+      writer = new FileWriter(name);
+    } catch (IOException e) {
+      e.printStackTrace();
+    } finally {
+      try {
+        writer.flush();
+        writer.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
 
   }
-
-
 }
