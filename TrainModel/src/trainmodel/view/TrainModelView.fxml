@@ -387,7 +387,7 @@
                      <children>
                         <VBox spacing="5.0">
                            <children>
-                              <Button fx:id="demo_button" mnemonicParsing="false" onAction="#demoClicked" text="Demo Acceleration" />
+                              <Button fx:id="demoButton" mnemonicParsing="false" onAction="#demoClicked" text="Demo Acceleration" />
                               <Button fx:id="toggleLights" mnemonicParsing="false" onAction="#toggleLights" text="Toggle Lights" />
                            </children>
                         </VBox>

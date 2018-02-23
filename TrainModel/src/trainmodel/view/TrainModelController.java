@@ -27,7 +27,7 @@ public class TrainModelController implements Initializable {
 
   //Demo Buttons
   @FXML
-  private Button demo_button;
+  private Button demoButton;
   @FXML
   private Button toggleLights;
   @FXML
@@ -231,8 +231,8 @@ public class TrainModelController implements Initializable {
 
 
   @FXML
-  private void toggleLights(){
-    if (lightStatus.getText().equals("ON")){
+  private void toggleLights() {
+    if (lightStatus.getText().equals("ON")) {
       lightStatus.setText("OFF");
     } else {
       lightStatus.setText("ON");
@@ -240,8 +240,8 @@ public class TrainModelController implements Initializable {
   }
 
   @FXML
-  private void toggleLeftDoor(){
-    if (leftDoorStatus.getText().equals("OPEN")){
+  private void toggleLeftDoor() {
+    if (leftDoorStatus.getText().equals("OPEN")) {
       leftDoorStatus.setText("CLOSED");
     } else {
       leftDoorStatus.setText("OPEN");
@@ -249,8 +249,8 @@ public class TrainModelController implements Initializable {
   }
 
   @FXML
-  private void toggleRightDoor(){
-    if (rightDoorStatus.getText().equals("OPEN")){
+  private void toggleRightDoor() {
+    if (rightDoorStatus.getText().equals("OPEN")) {
       rightDoorStatus.setText("CLOSED");
     } else {
       rightDoorStatus.setText("OPEN");
@@ -258,7 +258,7 @@ public class TrainModelController implements Initializable {
   }
 
   @FXML
-  private void addPassenger(){
+  private void addPassenger() {
     int passengerCount = Integer.valueOf(numberOfPassengers.getText());
     passengerCount++;
     numberOfPassengers.setText(String.valueOf(passengerCount));
@@ -273,7 +273,7 @@ public class TrainModelController implements Initializable {
   }
 
   @FXML
-  private void removePassenger(){
+  private void removePassenger() {
     int passengerCount = Integer.valueOf(numberOfPassengers.getText());
     passengerCount--;
     numberOfPassengers.setText(String.valueOf(passengerCount));
@@ -291,14 +291,10 @@ public class TrainModelController implements Initializable {
 
     Timeline timeline = new Timeline();
     List<KeyValue> values = new ArrayList<KeyValue>();
-//    timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(0), new KeyValue(currentSpeedStatus.textProperty(), "50 MPH")));
-//    timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1), new KeyValue(currentSpeedStatus.textProperty(), "40 MPH")));
-//    timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(2), new KeyValue(currentSpeedStatus.textProperty(), "30 MPH")));
-//    timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(3), new KeyValue(currentSpeedStatus.textProperty(), "20 MPH")));
-//    timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(4), new KeyValue(currentSpeedStatus.textProperty(), "10 MPH")));
 
-    for (int i = 0; i<45; i++){
-      timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(i), new KeyValue(currentSpeedStatus.textProperty(), i + " MPH")));
+    for (int i = 0; i < 45; i++) {
+      timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(i),
+          new KeyValue(currentSpeedStatus.textProperty(), i + " MPH")));
     }
 
 
