@@ -6,18 +6,19 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class Main extends Application {
+import java.io.IOException;
 
-  @Override
-  public void start(Stage primaryStage) throws Exception {
-    //Parent root = FXMLLoader.load(getClass().getResource("../controller/ctc.fxml"));
-    //primaryStage.setTitle("Centralized Traffic Control");
-    //primaryStage.setScene(new Scene(root, 1400, 600));
-    //primaryStage.show();
-  }
+public class Main {
 
   public static void main(String[] args) {
 
-    launch(args);
+    try {
+      Parent root1 = (Parent) FXMLLoader.load(Main.class.getResource("../controller/ctc.fxml"));
+      Stage stage = new Stage();
+      stage.setScene(new Scene(root1));
+      stage.show();
+    } catch (IOException e) {
+      System.out.println(e);
+    }
   }
 }
