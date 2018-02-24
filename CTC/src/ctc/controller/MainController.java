@@ -17,20 +17,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Toggle;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Stage;
 import mainmenu.Clock;
 
+import javax.security.auth.callback.Callback;
 import javax.xml.soap.Text;
 
 public class MainController {
@@ -171,6 +164,15 @@ public class MainController {
           ).setDwell(t.getNewValue());
         });
 
+    trainQueueTable.setOnKeyPressed(event -> {
+
+      TablePosition<TrainStopRow, String> focusedCell = trainQueueTable.getFocusModel().getFocusedCell();
+      if (focusedCell != null && focusedCell.toString().length() == 2) {
+//        trainQueueTable.getItems().get(focusedCell.getRow()).get(focusedCell.getColumn()).set(event.getCharacter());
+//        trainQueueTable.edit(focusedCell.getRow(), focusedCell.getTableColumn());
+      }
+    });
+
     addTrainTable.setItems(ctc.getTrainTable());
 
   }
@@ -219,10 +221,41 @@ public class MainController {
           });
   }
 
+//  public void formatTableCell() {
+//
+//    dwellColumn.setOnEditStart(
+//        (TableColumn.CellEditEvent<TrainStopRow, String> t) -> {
+//
+//          ((TrainStopRow) t.getTableView().getItems().get(
+//              t.getTablePosition().getRow())
+//          ).setTime(t.getNewValue());
+//
+//        });
+//  }
+
+  public void formatTrainName() {
+
+    trainNameField.textProperty().addListener(new ChangeListener<String>() {
+      private boolean ignore;
+
+      @Override
+      public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
+
+        // set the max length for the text field
+        if (ignore || newValue == null)
+          return;
+        if (newValue.length() > 14) {
+          ignore = true;
+          trainNameField.setText(newValue.substring(0, 14));
+          ignore = false;
+        }
+      }
+    });
+  }
+
   public void formatTimeInput() {
 
     departingTimeField.textProperty().addListener(new ChangeListener<String>() {
-
       private boolean ignore;
 
       @Override
@@ -240,6 +273,27 @@ public class MainController {
         }
       }
     });
+
+
+
+//    dwellColumn.getCellFactory().textProperty().addListener(new ChangeListener<String>() {
+//      private boolean ignore;
+//
+//      @Override
+//      public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
+//
+//        // set the max length for the text field
+//        if (ignore || newValue == null)
+//          return;
+//        if (newValue.length() > 8) {
+//          ignore = true;
+//          departingTimeField.setText(newValue.substring(0, 8));
+//          ignore = false;
+//        } else if (newValue.length() == 2 || newValue.length() == 5) {
+//          departingTimeField.setText(newValue + ":");
+//        }
+//      }
+//    });
   }
 
 //  public void formatTimeInput(Event event) {
