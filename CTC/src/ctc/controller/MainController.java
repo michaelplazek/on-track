@@ -4,6 +4,7 @@ import ctc.model.CentralTrafficControl;
 import ctc.model.TrainListItem;
 import ctc.model.TrainStopRow;
 
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.beans.value.ChangeListener;
@@ -11,6 +12,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -28,6 +30,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Stage;
 import mainmenu.Clock;
+
+import javax.xml.soap.Text;
 
 public class MainController {
 
@@ -215,6 +219,47 @@ public class MainController {
           });
   }
 
+  public void formatTimeInput() {
+
+    departingTimeField.textProperty().addListener(new ChangeListener<String>() {
+
+      private boolean ignore;
+
+      @Override
+      public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
+
+        // set the max length for the text field
+        if (ignore || newValue == null)
+          return;
+        if (newValue.length() > 8) {
+          ignore = true;
+          departingTimeField.setText(newValue.substring(0, 8));
+          ignore = false;
+        } else if (newValue.length() == 2 || newValue.length() == 5) {
+          departingTimeField.setText(newValue + ":");
+        }
+      }
+    });
+  }
+
+//  public void formatTimeInput(Event event) {
+//
+//    String typed;
+//    TextField field = (TextField) event.getSource();
+//    typed = field.getText();
+//
+//    if (field.getText().length() > 8) {
+//      String s = field.getText().substring(0, 8);
+//      field.setText(s);
+//    }
+//
+//    if (typed.length() == 2) {
+//      field.setText(typed + ":");
+//      field.positionCaret(typed.length() + 1);
+//    }
+//
+//  }
+
   private void bindClock() {
     time.textProperty().bind(ctc.getDisplayTime());
     // multiplier.textProperty().bind(
@@ -305,6 +350,7 @@ public class MainController {
   private void importSchedule(){}
 
   private void resetSchedule() {
+
     ctc.clearTrainTable();
     ObservableList<TrainStopRow> blank = FXCollections.observableArrayList(
         new TrainStopRow("","",""),

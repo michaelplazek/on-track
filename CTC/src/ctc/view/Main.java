@@ -1,6 +1,5 @@
 package ctc.view;
 
-import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -13,7 +12,7 @@ public class Main {
   public static void main(String[] args) {
 
     try {
-      Parent root1 = (Parent) FXMLLoader.load(Main.class.getResource("../controller/ctc.fxml"));
+      Parent root1 = (Parent) FXMLLoader.load(Main.class.getResource("ctc.fxml"));
       Stage stage = new Stage();
       stage.setScene(new Scene(root1));
       stage.show();
