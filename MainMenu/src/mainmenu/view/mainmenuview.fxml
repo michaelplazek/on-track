@@ -23,7 +23,7 @@
             </Label>
             <HBox>
                <children>
-                  <Button mnemonicParsing="false" onAction="#pressButton" prefWidth="220.0" text="Central Traffic Control">
+                  <Button mnemonicParsing="false" onAction="#openCentralTrafficControl" prefWidth="220.0" text="Central Traffic Control">
                      <font>
                         <Font size="18.0" />
                      </font>

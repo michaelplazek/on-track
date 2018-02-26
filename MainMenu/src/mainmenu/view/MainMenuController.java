@@ -1,26 +1,17 @@
 package mainmenu.view;
 
-import ctc.view.*;
-
+import ctc.view.CentralTrafficControlUserInterface;
 import java.net.URL;
 import java.util.ResourceBundle;
-
-import ctc.view.Main;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
-import javafx.stage.Stage;
-
 
 /**
- * Created by jeremyzang on 1/30/18.
- * This class is the controller class for mainmenuview.fxml
+ * Main controller class for the Main Menu.
+ * All the user interfaces will be called and opened from handlers in this class.
  */
 public class MainMenuController implements Initializable {
 
@@ -54,14 +45,18 @@ public class MainMenuController implements Initializable {
 
   }
 
-  public void pressButton(ActionEvent event) {
+  /**
+   * Handler to open to CTC.
+   * @param event event from the button
+   */
+  public void openCentralTrafficControl(ActionEvent event) {
     try {
-      Main.main(new String[0]);
+      CentralTrafficControlUserInterface.main(new String[0]);
 
-//      Parent root1 = (Parent) FXMLLoader.load(getClass().getResource("ctc.fxml"));
-//      Stage stage = new Stage();
-//      stage.setScene(new Scene(root1));
-//      stage.show();
+      //Parent root1 = (Parent) FXMLLoader.load(getClass().getResource("ctc.fxml"));
+      //Stage stage = new Stage();
+      //stage.setScene(new Scene(root1));
+      //stage.show();
     } catch (Exception e) {
       e.printStackTrace();
     }

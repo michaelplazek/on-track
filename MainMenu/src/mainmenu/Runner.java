@@ -1,7 +1,7 @@
 package mainmenu;
 
-
 import ctc.model.CentralTrafficControl;
+
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -17,8 +17,8 @@ import javafx.util.Duration;
 public class Runner extends Application {
 
   // create instances of modules
-  CentralTrafficControl ctc = CentralTrafficControl.getInstance();
-  Clock clk = Clock.getInstance();
+  private CentralTrafficControl ctc = CentralTrafficControl.getInstance();
+  private Clock clk = Clock.getInstance();
 
   @Override
   public void start(Stage primaryStage) throws Exception {
