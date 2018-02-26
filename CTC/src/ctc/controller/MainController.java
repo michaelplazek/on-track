@@ -256,7 +256,7 @@ public class MainController {
         // use Platform.runLater() hack to get around JavaFX being stupid
         if (ignore || newValue == null || oldValue == null) {
           return;
-        } else if (!isInteger(newValue.charAt(newValue.length() - 1))) {
+        } else if (!newValue.equals("") && !isInteger(newValue.charAt(newValue.length() - 1))) {
           Platform.runLater(() -> {
             departingTimeField.setText(oldValue);
             departingTimeField.positionCaret(newValue.length() + 1);
