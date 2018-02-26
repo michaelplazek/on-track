@@ -32,7 +32,7 @@
             </HBox>
             <HBox>
                <children>
-                  <Button mnemonicParsing="false" prefWidth="220.0" text="Moving Block Overlay">
+                  <Button mnemonicParsing="false" onAction="#openMovingBlockOverlay" prefWidth="220.0" text="Moving Block Overlay">
                      <font>
                         <Font size="18.0" />
                      </font>
@@ -61,7 +61,7 @@
             </HBox>
             <HBox>
                <children>
-                  <Button mnemonicParsing="false" prefHeight="35.0" prefWidth="220.0" text="Track Model">
+                  <Button mnemonicParsing="false" onAction="#openTrackModel" prefHeight="35.0" prefWidth="220.0" text="Track Model">
                      <font>
                         <Font size="18.0" />
                      </font>

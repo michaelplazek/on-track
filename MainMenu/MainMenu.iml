@@ -7,6 +7,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="CTC" />
+    <orderEntry type="module" module-name="CTC" exported="" />
+    <orderEntry type="module" module-name="MBO" exported="" />
+    <orderEntry type="module" module-name="TrackModel" exported="" />
   </component>
 </module>

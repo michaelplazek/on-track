@@ -8,6 +8,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import mbo.view.MovingBlockOverlayUserInterface;
+import trackmodel.view.TrackModelUserInterface;
 
 /**
  * Main controller class for the Main Menu.
@@ -52,11 +54,30 @@ public class MainMenuController implements Initializable {
   public void openCentralTrafficControl(ActionEvent event) {
     try {
       CentralTrafficControlUserInterface.main(new String[0]);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
 
-      //Parent root1 = (Parent) FXMLLoader.load(getClass().getResource("ctc.fxml"));
-      //Stage stage = new Stage();
-      //stage.setScene(new Scene(root1));
-      //stage.show();
+  /**
+   * Handler to open to CTC.
+   * @param event event from the button
+   */
+  public void openMovingBlockOverlay(ActionEvent event) {
+    try {
+      MovingBlockOverlayUserInterface.main(new String[0]);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * Handler to open Track Model.
+   * @param event event from button
+   */
+  public void openTrackModel(ActionEvent event) {
+    try {
+      TrackModelUserInterface.main(new String[0]);
     } catch (Exception e) {
       e.printStackTrace();
     }
