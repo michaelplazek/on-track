@@ -1,18 +1,21 @@
 package mainmenu.view;
 
+import ctc.view.CentralTrafficControlUserInterface;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 
 /**
- * Created by jeremyzang on 1/30/18.
- * This class is the controller class for mainmenuview.fxml
+ * Main controller class for the Main Menu.
+ * All the user interfaces will be called and opened from handlers in this class.
  */
 public class MainMenuController implements Initializable {
+
+
   @FXML
   private ChoiceBox<String> trackControllerChoiceBox = new ChoiceBox<>();
   @FXML
@@ -40,5 +43,22 @@ public class MainMenuController implements Initializable {
     trainModelChoiceBox.setValue("Select Train");
     trackControllerChoiceBox.setValue("Select Wayside");
 
+  }
+
+  /**
+   * Handler to open to CTC.
+   * @param event event from the button
+   */
+  public void openCentralTrafficControl(ActionEvent event) {
+    try {
+      CentralTrafficControlUserInterface.main(new String[0]);
+
+      //Parent root1 = (Parent) FXMLLoader.load(getClass().getResource("ctc.fxml"));
+      //Stage stage = new Stage();
+      //stage.setScene(new Scene(root1));
+      //stage.show();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 }

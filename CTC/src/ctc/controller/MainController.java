@@ -6,21 +6,15 @@ import ctc.model.TrainStopRow;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Toggle;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import mainmenu.Clock;
@@ -211,10 +205,107 @@ public class MainController {
           });
   }
 
+  /**
+   * This function deals with formatting for TextFields related to naming trains.
+   * It gives a max length for the name.
+   */
+  public void formatTrainName() {
+
+    trainNameField.textProperty().addListener(new ChangeListener<String>() {
+      private boolean ignore;
+
+      @Override
+      public void changed(
+          ObservableValue<? extends String> observableValue,
+          String oldValue,
+          String newValue) {
+
+        // set the max length for the text field
+        if (ignore || newValue == null) {
+          return;
+        }
+
+        if (newValue.length() > 13) {
+          ignore = true;
+          trainNameField.setText(newValue.substring(0, 13));
+          ignore = false;
+        }
+      }
+    });
+  }
+
+  private boolean isInteger(char ch) {
+    return Character.isDigit(ch) || ch == ':';
+  }
+
+  /**
+   * This function deals with all formatting and error handling in the TextFields that are
+   * responsible for inputting times given by the user.
+   */
+  public void formatTimeInput() {
+
+    departingTimeField.textProperty().addListener(new ChangeListener<String>() {
+      private boolean ignore;
+
+      @Override
+      public void changed(
+          ObservableValue<? extends String> observableValue,
+          String oldValue,
+          String newValue) {
+
+        // use Platform.runLater() hack to get around JavaFX being stupid
+        if (ignore || newValue == null || oldValue == null) {
+          return;
+        } else if (!newValue.equals("") && !isInteger(newValue.charAt(newValue.length() - 1))) {
+          Platform.runLater(() -> {
+            departingTimeField.setText(oldValue);
+            departingTimeField.positionCaret(newValue.length() + 1);
+          });
+        } else if (newValue.length() > 8) {
+          ignore = true;
+          departingTimeField.setText(newValue.substring(0, 8));
+          ignore = false;
+        } else if (oldValue.length() < newValue.length()) {
+          if (newValue.length() == 2 || newValue.length() == 5) {
+            departingTimeField.setText(newValue + ":");
+          } else if (oldValue.length() == 5
+              && newValue.length() == 6
+              && newValue.charAt(newValue.length() - 1) != ':') {
+            departingTimeField.setText(oldValue + ":" + newValue.charAt(newValue.length() - 1));
+          } else if (oldValue.length() == 2
+              && newValue.length() == 3
+              && newValue.charAt(newValue.length() - 1) != ':') {
+            departingTimeField.setText(oldValue + ":" + newValue.charAt(newValue.length() - 1));
+          }
+        } else if (oldValue.length() > newValue.length()) {
+          if (newValue.length() == 5 && oldValue.charAt(oldValue.length() - 1) != ':') {
+            Platform.runLater(() -> {
+              departingTimeField.setText(newValue.substring(0, newValue.length() - 1));
+              departingTimeField.positionCaret(newValue.length() + 1);
+            });
+          } else if (newValue.length() == 2 && oldValue.charAt(oldValue.length() - 1) != ':') {
+            Platform.runLater(() -> {
+              departingTimeField.setText(newValue.substring(0, newValue.length() - 1));
+              departingTimeField.positionCaret(newValue.length() + 1);
+            });
+          } else if (newValue.length() == 2 && oldValue.charAt(oldValue.length() - 1) == ':') {
+            Platform.runLater(() -> {
+              departingTimeField.setText(newValue.substring(0, newValue.length() - 1));
+              departingTimeField.positionCaret(newValue.length() + 1);
+            });
+          } else if (newValue.length() == 5 && oldValue.charAt(oldValue.length() - 1) == ':') {
+            Platform.runLater(() -> {
+              departingTimeField.setText(newValue.substring(0, newValue.length() - 1));
+              departingTimeField.positionCaret(newValue.length() + 1);
+            });
+          }
+        }
+      }
+    });
+  }
+
   private void bindClock() {
     time.textProperty().bind(ctc.getDisplayTime());
-    // multiplier.textProperty().bind(
-    // ctc.getDisplayMultiplier().asString());
   }
 
   private void bindThroughput() {
@@ -301,6 +392,7 @@ public class MainController {
   private void importSchedule(){}
 
   private void resetSchedule() {
+
     ctc.clearTrainTable();
     ObservableList<TrainStopRow> blank = FXCollections.observableArrayList(
         new TrainStopRow("","",""),

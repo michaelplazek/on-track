@@ -100,8 +100,8 @@
                                                             <Font size="12.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField fx:id="trainNameField" layoutX="4.0" layoutY="94.0" prefHeight="26.0" prefWidth="106.0" promptText="Train name" />
-                                                      <TextField fx:id="departingTimeField" layoutX="112.0" layoutY="94.0" prefHeight="26.0" prefWidth="108.0" promptText="Departing time" />
+                                                      <TextField fx:id="trainNameField" layoutX="4.0" layoutY="94.0" onKeyReleased="#formatTrainName" prefHeight="26.0" prefWidth="106.0" promptText="Train name" />
+                                                      <TextField fx:id="departingTimeField" layoutX="112.0" layoutY="94.0" onKeyReleased="#formatTimeInput" prefHeight="26.0" prefWidth="108.0" promptText="Departure time" />
                                                       <ChoiceBox fx:id="scheduleBlocks" layoutX="222.0" layoutY="94.0" prefHeight="26.0" prefWidth="91.0" value="Green" />
                                                       <TableView fx:id="addTrainTable" editable="true" layoutX="5.0" layoutY="125.0" prefHeight="219.0" prefWidth="308.0">
                                                         <columns>
