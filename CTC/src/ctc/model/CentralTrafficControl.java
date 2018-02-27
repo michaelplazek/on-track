@@ -1,13 +1,11 @@
 package ctc.model;
 
-import java.util.ArrayList;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import mainmenu.Clock;
+
 
 public class CentralTrafficControl {
 
@@ -23,6 +21,7 @@ public class CentralTrafficControl {
   private long exactTime;
   private StringProperty displayTime = new SimpleStringProperty();
   private String throughput = "17.4 passenger/s";
+
 
   /**
    * Base constructor can only be access via the getInstance() method.
@@ -49,15 +48,7 @@ public class CentralTrafficControl {
     updateDisplayTime();
   }
 
-  /**
-   * Main run function to be called the Runner. This will handle the operations
-   * each tick of the clock.
-   */
-  public void run() {
-    updateDisplayTime();
-  }
-
-  private void updateDisplayTime() {
+  public void updateDisplayTime() {
     displayTime.setValue(clock.getFormattedTime());
   }
 
