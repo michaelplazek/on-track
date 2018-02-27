@@ -20,6 +20,12 @@ public class MainMenuController implements Initializable {
   private CentralTrafficControlUserInterface ctcui =
       CentralTrafficControlUserInterface.getInstance();
 
+  private MovingBlockOverlayUserInterface mboui =
+      MovingBlockOverlayUserInterface.getInstance();
+
+  private TrackModelUserInterface tmui =
+      TrackModelUserInterface.getInstance();
+
   @FXML private ChoiceBox<String> trackControllerChoiceBox = new ChoiceBox<>();
   @FXML private ChoiceBox<String> trainControllerChoiceBox = new ChoiceBox<>();
   @FXML private ChoiceBox<String> trainModelChoiceBox = new ChoiceBox<>();
@@ -61,7 +67,7 @@ public class MainMenuController implements Initializable {
    */
   public void openMovingBlockOverlay(ActionEvent event) {
     try {
-      MovingBlockOverlayUserInterface.main(new String[0]);
+      mboui.load();
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -73,7 +79,7 @@ public class MainMenuController implements Initializable {
    */
   public void openTrackModel(ActionEvent event) {
     try {
-      TrackModelUserInterface.main(new String[0]);
+      tmui.load();
     } catch (Exception e) {
       e.printStackTrace();
     }
