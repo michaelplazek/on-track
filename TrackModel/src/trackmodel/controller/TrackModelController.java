@@ -23,7 +23,7 @@ import javafx.stage.Stage;
 
 import trackmodel.model.Block;
 
-public class Controller {
+public class TrackModelController {
   //DROPDOWNS
   @FXML
   private ChoiceBox trackSelection;

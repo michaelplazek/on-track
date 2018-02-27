@@ -22,7 +22,7 @@ import java.util.ResourceBundle;
 import java.io.*;
 
 
-public class Controller implements Initializable{
+public class MovingBlockOverlayController implements Initializable {
 
   String name;
 

@@ -1,5 +1,6 @@
 package ctc.view;
 
+import ctc.controller.CentralTrafficControlController;
 import java.io.IOException;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -8,20 +9,44 @@ import javafx.stage.Stage;
 
 public class CentralTrafficControlUserInterface {
 
-  /**
-   * Main method to  be called from the Main Menu to open window.
-   * @param args String[] needed to make Java happy
-   */
-  public static void main(String[] args) {
+  private static CentralTrafficControlUserInterface instance = null;
+  private CentralTrafficControlController controller;
+  private Parent root;
+
+  private CentralTrafficControlUserInterface() {
+
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("ctc.fxml"));
 
     try {
-      Parent root1 = (Parent) FXMLLoader.load(
-          CentralTrafficControlUserInterface.class.getResource("ctc.fxml"));
-      Stage stage = new Stage();
-      stage.setScene(new Scene(root1));
-      stage.show();
+      this.root = loader.load();
+      this.controller = loader.getController();
     } catch (IOException e) {
       System.out.println(e);
     }
+  }
+
+  /**
+   * This is the logic to maintain a single instance of a CTC UI object.
+   * @return the single instance of the CTC UI
+   */
+  public static CentralTrafficControlUserInterface getInstance() {
+    if (instance == null) {
+      instance = new CentralTrafficControlUserInterface();
+    }
+    return instance;
+  }
+
+  /**
+   * Called by Main Menu to load the window for the CTC UI.
+   */
+  public void load() {
+
+    Stage stage = new Stage();
+    stage.setScene(new Scene(root));
+    stage.show();
+  }
+
+  public CentralTrafficControlController getController() {
+    return controller;
   }
 }

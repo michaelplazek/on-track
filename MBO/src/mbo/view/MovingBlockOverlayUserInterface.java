@@ -8,20 +8,46 @@ import javafx.stage.Stage;
 
 public class MovingBlockOverlayUserInterface {
 
-  /**
-   * Main method to be called from the Main Menu.
-   * @param args necessary String array because Java.
-   * @throws IOException for IO problems!
-   */
-  public static void main(String[] args) throws IOException {
+  private static MovingBlockOverlayUserInterface instance = null;
+  private MovingBlockOverlayController controller;
+  private Parent root;
+
+  private MovingBlockOverlayUserInterface() {
+
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("mbo.fxml"));
+
     try {
-      Parent root1 = (Parent) FXMLLoader.load(
-          MovingBlockOverlayUserInterface.class.getResource("mbo.fxml"));
-      Stage stage = new Stage();
-      stage.setScene(new Scene(root1));
-      stage.show();
+      this.root = loader.load();
+      this.controller = loader.getController();
     } catch (IOException e) {
       System.out.println(e);
     }
+  }
+
+  /**
+   * (mlp)
+   * This is the logic to maintain a single instance of a MBO UI object.
+   * @return the single instance of the MBO UI
+   */
+  public static MovingBlockOverlayUserInterface getInstance() {
+    if (instance == null) {
+      instance = new MovingBlockOverlayUserInterface();
+    }
+    return instance;
+  }
+
+  /**
+   * (mlp)
+   * Called by Main Menu to load the window for the CTC UI.
+   */
+  public void load() {
+
+    Stage stage = new Stage();
+    stage.setScene(new Scene(root));
+    stage.show();
+  }
+
+  public MovingBlockOverlayController getController() {
+    return controller;
   }
 }

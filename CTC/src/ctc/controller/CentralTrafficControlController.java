@@ -19,7 +19,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import mainmenu.Clock;
 
-public class MainController {
+public class CentralTrafficControlController {
 
   private CentralTrafficControl ctc = CentralTrafficControl.getInstance();
   private Clock clock = Clock.getInstance();
@@ -85,6 +85,19 @@ public class MainController {
    */
   public void initialize() {
     connect();
+  }
+
+  /**
+   * Main run function to be called the Runner. This will handle the operations
+   * each tick of the clock.
+   */
+  public void run() {
+    ctc.updateDisplayTime();
+    dispatch();
+  }
+
+  public CentralTrafficControl getCtc() {
+    return ctc;
   }
 
   private void connect() {
@@ -445,6 +458,7 @@ public class MainController {
 
     // create train
     ctc.addTrain(train);
+//    ctc.getTrainQueueTable().addAll(train);
   }
 
   private void deleteTrainFromQueue() {
@@ -457,7 +471,6 @@ public class MainController {
     }
 
     trainQueueTable.setItems(ctc.getTrainQueueTable());
-    // selectedScheduleTable.setItems(FXCollections.observableArrayList());
   }
 
   private void dispatchTrain() {
@@ -482,6 +495,31 @@ public class MainController {
   private void setSuggestedSpeed(){}
 
   private void setAuthority(){}
+
+  private void dispatch() {
+
+    ObservableList<TrainListItem> trains = ctc.getTrainQueueTable();
+    for (int i = 0; i < trains.size(); i++) {
+      if (trains.get(i).getDeparture().equals(clock.getFormattedTime())
+          && !ctc.getDispatchTable().contains(trains.get(i))) {
+        autoDispatchTrain(i);
+      }
+    }
+  }
+
+  private void autoDispatchTrain(int index) {
+
+    TrainListItem train = ctc.getTrainQueueTable().get(index);
+
+    // remove selected train from queue
+    ctc.getTrainQueueTable().remove(index);
+    ctc.getDispatchTable().add(train);
+
+    dispatchTable.setItems(ctc.getDispatchTable());
+    if (ctc.getTrainQueueTable().size() == 0) {
+      selectedScheduleTable.setItems(FXCollections.observableArrayList());
+    }
+  }
 
   private void changeMode(
       String mode,

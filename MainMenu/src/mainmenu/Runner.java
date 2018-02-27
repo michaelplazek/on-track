@@ -1,7 +1,9 @@
 package mainmenu;
 
-import ctc.model.CentralTrafficControl;
+import ctc.controller.CentralTrafficControlController;
 
+import ctc.model.CentralTrafficControl;
+import ctc.view.CentralTrafficControlUserInterface;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -17,6 +19,8 @@ import javafx.util.Duration;
 public class Runner extends Application {
 
   // create instances of modules
+  private CentralTrafficControlController ctcc =
+      CentralTrafficControlUserInterface.getInstance().getController();
   private CentralTrafficControl ctc = CentralTrafficControl.getInstance();
   private Clock clk = Clock.getInstance();
 
@@ -35,7 +39,7 @@ public class Runner extends Application {
                 // TODO: add other module run() functions inside this event handler
                 if (ctc.isActive()) {
                   clk.tick();
-                  ctc.run();
+                  ctcc.run();
                 }
               }
             }

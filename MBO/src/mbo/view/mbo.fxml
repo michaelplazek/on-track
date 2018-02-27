@@ -13,7 +13,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<SplitPane dividerPositions="0.1158" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="969.0" minWidth="938.0" orientation="VERTICAL" prefHeight="969.0" prefWidth="938.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mbo.view.Controller">
+<SplitPane dividerPositions="0.1158" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="969.0" minWidth="938.0" orientation="VERTICAL" prefHeight="969.0" prefWidth="938.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mbo.view.MovingBlockOverlayController">
    <items>
       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="211.0" prefWidth="1322.0">
          <children>
