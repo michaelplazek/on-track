@@ -12,6 +12,7 @@ public class CentralTrafficControlUserInterface {
   private static CentralTrafficControlUserInterface instance = null;
   private CentralTrafficControlController controller;
   private Parent root;
+  private Scene scene;
 
   private CentralTrafficControlUserInterface() {
 
@@ -20,6 +21,7 @@ public class CentralTrafficControlUserInterface {
     try {
       this.root = loader.load();
       this.controller = loader.getController();
+      this.scene = new Scene(root);
     } catch (IOException e) {
       System.out.println(e);
     }
@@ -42,7 +44,7 @@ public class CentralTrafficControlUserInterface {
   public void load() {
 
     Stage stage = new Stage();
-    stage.setScene(new Scene(root));
+    stage.setScene(this.scene);
     stage.show();
   }
 
