@@ -11,6 +11,7 @@ public class MovingBlockOverlayUserInterface {
   private static MovingBlockOverlayUserInterface instance = null;
   private MovingBlockOverlayController controller;
   private Parent root;
+  private Scene scene;
 
   private MovingBlockOverlayUserInterface() {
 
@@ -19,6 +20,7 @@ public class MovingBlockOverlayUserInterface {
     try {
       this.root = loader.load();
       this.controller = loader.getController();
+      this.scene = new Scene(root);
     } catch (IOException e) {
       System.out.println(e);
     }
@@ -43,7 +45,7 @@ public class MovingBlockOverlayUserInterface {
   public void load() {
 
     Stage stage = new Stage();
-    stage.setScene(new Scene(root));
+    stage.setScene(this.scene);
     stage.show();
   }
 

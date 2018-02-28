@@ -12,6 +12,7 @@ public class TrackModelUserInterface {
   private static TrackModelUserInterface instance = null;
   private TrackModelController controller;
   private Parent root;
+  private Scene scene;
 
   private TrackModelUserInterface() {
 
@@ -20,6 +21,7 @@ public class TrackModelUserInterface {
     try {
       this.root = loader.load();
       this.controller = loader.getController();
+      this.scene = new Scene(root);
     } catch (IOException e) {
       System.out.println(e);
     }
@@ -42,7 +44,7 @@ public class TrackModelUserInterface {
   public void load() {
 
     Stage stage = new Stage();
-    stage.setScene(new Scene(root));
+    stage.setScene(scene);
     stage.show();
   }
 
