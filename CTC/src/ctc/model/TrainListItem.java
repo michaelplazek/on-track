@@ -19,6 +19,7 @@ public class TrainListItem {
   private double authority;
   private double distanceTravelled;
   private String location;
+  private String track;
   // private Block location;
   // private Route route;
 
@@ -110,5 +111,13 @@ public class TrainListItem {
 
   public void setLocation(String location) {
     this.location = location;
+  }
+
+  public String getTrack() {
+    return track;
+  }
+
+  public void setTrack(String track) {
+    this.track = track;
   }
 }

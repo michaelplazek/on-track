@@ -37,6 +37,7 @@ public class CentralTrafficControlController {
   @FXML private Label multiplier;
   @FXML private Button testGreenButton;
   @FXML private Button testRedButton;
+  @FXML private ChoiceBox<String> trackSelect;
 
   /* MAINTENANCE COMPONENTS */
   @FXML private ChoiceBox<String> maintenanceTracks;
@@ -124,6 +125,9 @@ public class CentralTrafficControlController {
 
     setAuthorityBlocks.setItems(ctc.getBlockList());
     setAuthorityBlocks.setValue(ctc.getBlockList().get(0));
+
+    trackSelect.setItems(ctc.getTrackList());
+    trackSelect.setValue(ctc.getTrackList().get(1));
   }
 
   private void connectTables() {
@@ -210,12 +214,19 @@ public class CentralTrafficControlController {
     });
 
     trainQueueTable.getSelectionModel().selectedItemProperty()
-          .addListener((observableValue, oldValue, newValue) -> {
-            if (trainQueueTable.getSelectionModel().getSelectedItem() != null) {
-              TrainListItem selected = trainQueueTable.getSelectionModel().getSelectedItem();
-              selectedScheduleTable.setItems(selected.getSchedule());
-            }
-          });
+        .addListener((observableValue, oldValue, newValue) -> {
+          if (trainQueueTable.getSelectionModel().getSelectedItem() != null) {
+            TrainListItem selected = trainQueueTable.getSelectionModel().getSelectedItem();
+            selectedScheduleTable.setItems(selected.getSchedule());
+          }
+        });
+
+    trackSelect.getSelectionModel().selectedItemProperty()
+        .addListener((observableValue, oldValue, newValue) -> {
+          if (newValue != "Select track") {
+            ctc.setTrack(newValue);
+          }
+        });
   }
 
   /**
@@ -449,16 +460,15 @@ public class CentralTrafficControlController {
     String departingTime = departingTimeField.getText();
 
     TrainListItem train = new TrainListItem(name, departingTime, "red", schedule);
+    train.setTrack(ctc.getTrack()); // set the track that is current set
 
     // create item in queue
     trainQueueTable.setItems(ctc.getTrainQueueTable());
-    // trainQueueTable.getSelectionModel().select(0);
 
     resetSchedule();
 
     // create train
     ctc.addTrain(train);
-//    ctc.getTrainQueueTable().addAll(train);
   }
 
   private void deleteTrainFromQueue() {

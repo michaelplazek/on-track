@@ -20,6 +20,7 @@ public class CentralTrafficControl {
   private double exactAuthority;
   private long exactTime;
   private StringProperty displayTime = new SimpleStringProperty();
+  private String track;
   private String throughput = "17.4 passenger/s";
 
 
@@ -31,6 +32,7 @@ public class CentralTrafficControl {
     maintenance = new Maintenance();
     schedule = new Schedule();
     trainList = FXCollections.observableArrayList();
+    track = "Green";
   }
 
   /**
@@ -127,6 +129,14 @@ public class CentralTrafficControl {
 
   public ObservableList<TrainListItem> getDispatchTable() {
     return schedule.dispatchTable;
+  }
+
+  public String getTrack() {
+    return track;
+  }
+
+  public void setTrack(String track) {
+    this.track = track;
   }
 
   /* ---- PRIVATE INNER CLASSES ---- */
