@@ -225,6 +225,8 @@ public class CentralTrafficControlController {
         .addListener((observableValue, oldValue, newValue) -> {
           if (newValue != "Select track") {
             ctc.setTrack(newValue);
+          } else {
+            trackSelect.setValue(oldValue);
           }
         });
   }
