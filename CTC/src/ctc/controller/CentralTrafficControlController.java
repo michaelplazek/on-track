@@ -223,7 +223,7 @@ public class CentralTrafficControlController {
 
     trackSelect.getSelectionModel().selectedItemProperty()
         .addListener((observableValue, oldValue, newValue) -> {
-          if (newValue != "Select track") {
+          if (!newValue.equals("Select track")) {
             ctc.setTrack(newValue);
           } else {
             trackSelect.setValue(oldValue);
