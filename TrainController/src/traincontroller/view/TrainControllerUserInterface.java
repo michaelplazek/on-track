@@ -1,4 +1,4 @@
-package traincontroller;
+package traincontroller.view;
 
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -14,7 +14,7 @@ import javafx.util.Duration;
 import traincontroller.model.TrainController;
 import traincontroller.view.TrainControllerController;
 
-public class Main extends Application {
+public class TrainControllerUserInterface extends Application {
 
   public static void main(String[] args) {
     launch(args);
