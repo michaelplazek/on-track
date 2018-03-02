@@ -1,11 +1,16 @@
 package mainmenu.controller;
 
+import ctc.controller.CentralTrafficControlController;
 import ctc.view.CentralTrafficControlUserInterface;
+
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import mainmenu.model.MainMenuModel;
@@ -20,6 +25,8 @@ public class MainMenuController implements Initializable {
 
   private MainMenuModel mmm = MainMenuModel.getInstance();
 
+  private static MainMenuController instance;
+
   private CentralTrafficControlUserInterface ctcui =
       CentralTrafficControlUserInterface.getInstance();
 
@@ -29,14 +36,27 @@ public class MainMenuController implements Initializable {
   private TrackModelUserInterface tmui =
       TrackModelUserInterface.getInstance();
 
-  @FXML private ChoiceBox<String> trackControllerChoiceBox = new ChoiceBox<>();
-  @FXML private ChoiceBox<String> trainControllerChoiceBox = new ChoiceBox<>();
-  @FXML private ChoiceBox<String> trainModelChoiceBox = new ChoiceBox<>();
+  @FXML private ChoiceBox<String> trackControllerChoiceBox;
+  @FXML private ChoiceBox<String> trainControllerChoiceBox;
+  @FXML private ChoiceBox<String> trainModelChoiceBox;
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
 
     // TODO: initialize lists here
+  }
+
+  private MainMenuController() { }
+
+  /**
+   * This is the logic to maintain a single instance of a CTC object.
+   * @return the single instance of the CTC
+   */
+  public static MainMenuController getInstance() {
+    if (instance == null) {
+      instance = new MainMenuController();
+    }
+    return instance;
   }
 
   /**
