@@ -1,4 +1,4 @@
-package mainmenu;
+package mainmenu.view;
 
 import ctc.controller.CentralTrafficControlController;
 
@@ -15,6 +15,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import mainmenu.Clock;
 
 public class Runner extends Application {
 
@@ -49,7 +50,7 @@ public class Runner extends Application {
     timeline.setCycleCount(Animation.INDEFINITE);
     timeline.play(); // initialize feedback loop
 
-    Parent root = FXMLLoader.load(getClass().getResource("view/mainmenuview.fxml"));
+    Parent root = FXMLLoader.load(getClass().getResource("mainmenuview.fxml"));
     primaryStage.setTitle("On-Track Train Simulator");
     primaryStage.setScene(new Scene(root, 450, 442));
     primaryStage.show();

@@ -7,6 +7,11 @@ public class TrainStopRow {
   private String time;
 
   /**
+   * Default constructor.
+   */
+  public TrainStopRow() {}
+
+  /**
    * Base constructor.
    * @param stop the name of the stop
    * @param dwell the time stayed at that stop
