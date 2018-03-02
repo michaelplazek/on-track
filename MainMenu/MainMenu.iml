@@ -10,5 +10,6 @@
     <orderEntry type="module" module-name="CTC" exported="" />
     <orderEntry type="module" module-name="MBO" exported="" />
     <orderEntry type="module" module-name="TrackModel" exported="" />
+    <orderEntry type="module" module-name="TrainController" />
   </component>
 </module>

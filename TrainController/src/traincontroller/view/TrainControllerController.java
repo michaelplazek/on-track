@@ -61,7 +61,7 @@ public class TrainControllerController implements Initializable {
   private void setSpeedAction(ActionEvent event) {
     try {
       int newSpeed = Integer.parseInt(setSpeedField.getText());
-      if(newSpeed > Integer.parseInt(setSpeed.getText())) {
+      if (newSpeed > Integer.parseInt(setSpeed.getText())) {
         return;
       }
       driverSetSpeed.setText(Integer.toString(newSpeed));
@@ -167,57 +167,6 @@ public class TrainControllerController implements Initializable {
   public void initialize(URL location, ResourceBundle resources) {
     initializeStatusLabels();
     initializeEventHandlers();
-  }
-
-  public void run() {
-    double current = Double.parseDouble(currentSpeed.getText());
-    double difference = 0;
-    if (emergencyBrakeButton.isSelected() && current > 0) {
-      System.out.println("here");
-      difference = -2;
-    } else if (serviceBrakeButton.isSelected() && current > 0) {
-      difference = -1;
-    } else if (current < Integer.parseInt(driverSetSpeed.getText())) {
-      difference = Integer.parseInt(powerCommand.getText()) / 10000.0;
-    } else {
-      difference = 0;
-    }
-    int travelled = (int) ((current + (current + difference < 0 ? 0 : current + difference)) * .5 * 1760 / 3600 / 2);
-    authority.setText(Integer.toString(Integer.parseInt(authority.getText()) - travelled));
-    current = (current + difference < 0) ? 0 : current + difference;
-    currentSpeed.setText(Integer.toString((int)Math.ceil(current)));
-    int remaining = Integer.parseInt(authority.getText());
-    double power = (Integer.parseInt(driverSetSpeed.getText()) - current) * .8 * 10000;
-    power = power > 10000 ? 10000 : power;
-    if (remaining < Math.pow((current + 1) / 2, 2)) {
-      if (serviceBrakeButton.isSelected()) {
-        serviceBrakeButton.fire();
-      }
-    } else if(serviceBrakeButton.isSelected() || emergencyBrakeButton.isSelected()) {
-      //do nothing
-    } else if (Integer.parseInt(driverSetSpeed.getText()) > 0) {
-      if (Integer.parseInt(driverSetSpeed.getText()) > current) {
-        powerCommand.setText(Integer.toString((int) power));
-        if (serviceBrakeButton.isSelected()) {
-          serviceBrakeButton.fire();
-        }
-      } else if (Integer.parseInt(driverSetSpeed.getText()) < current) {
-        System.out.printf("here");
-        powerCommand.setText("0");
-        if (!serviceBrakeButton.isSelected()) {
-          serviceBrakeButton.fire();
-        }
-      }
-    } else {
-      powerCommand.setText("0");
-      if (!serviceBrakeButton.isSelected()) {
-        serviceBrakeButton.fire();
-      }
-    }
-  }
-
-  public static void runInstances() {
-    tcc.run();
   }
 
   public TrainControllerController() {

@@ -22,24 +22,7 @@ public class Main extends Application {
 
   @Override
   public void start(Stage primaryStage) throws Exception {
-    // this Timeline will be the basis off of which we will run all the module
-    Timeline timeline = new Timeline(
-        new KeyFrame(Duration.seconds(0),
-            new EventHandler<ActionEvent>() {
-              @Override public void handle(ActionEvent actionEvent) {
-                TrainControllerController.runInstances();
-              }
-            }
-        ),
-        new KeyFrame(Duration.millis(500))
-    );
-    timeline.setCycleCount(Animation.INDEFINITE);
-    timeline.play(); // initialize feedback loop
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("view/TrainControllerUI.fxml"));
-    Parent root = loader.load();
-    primaryStage.setTitle("Train 1");
-    primaryStage.setScene(new Scene(root, 600, 400));
-    primaryStage.show();
+    //TODO
 
   }
 }

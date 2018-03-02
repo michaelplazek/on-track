@@ -16,12 +16,16 @@ import javafx.scene.control.ChoiceBox;
 import mainmenu.model.MainMenuModel;
 import mbo.view.MovingBlockOverlayUserInterface;
 import trackmodel.view.TrackModelUserInterface;
+import traincontroller.model.TrainController;
+import traincontroller.model.TrainControllerFactory;
 
 /**
  * Main controller class for the Main Menu.
  * All the user interfaces will be called and opened from handlers in this class.
  */
 public class MainMenuController implements Initializable {
+
+  private static int id = 0;
 
   private MainMenuModel mmm = MainMenuModel.getInstance();
 
@@ -93,5 +97,19 @@ public class MainMenuController implements Initializable {
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
+
+  /**
+   * Handler to open Track Model.
+   * @param event event from button
+   */
+  @FXML
+  private void openTrainController(ActionEvent event) {
+    System.out.println("here");
+    TrainControllerFactory.createTrainController("Train " + id++, "green");
+  }
+
+  public void updateTrainControllerDropdown() {
+    trainControllerChoiceBox.setItems(TrainController.getListOfTrains());
   }
 }

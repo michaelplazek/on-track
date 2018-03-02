@@ -18,13 +18,7 @@ import javafx.util.Duration;
 import mainmenu.Clock;
 import mainmenu.controller.MainMenuController;
 
-import java.io.IOException;
-
 public class Runner extends Application {
-
-  private Parent root;
-  private Scene scene;
-  private MainMenuController controller;
 
   // create instances of modules
   private CentralTrafficControlController ctcc =
@@ -59,18 +53,11 @@ public class Runner extends Application {
     timeline.play(); // initialize feedback loop
 
     FXMLLoader loader = new FXMLLoader(getClass().getResource("mainmenuview.fxml"));
-
-    try {
-      this.root = loader.load();
-      this.controller = loader.getController();
-      this.scene = new Scene(root);
-    } catch (IOException e) {
-      System.out.println(e);
-    }
-
-    Stage stage = new Stage();
-    stage.setScene(this.scene);
-    stage.show();
+    loader.setController(mmc);
+    Parent root = loader.load();
+    primaryStage.setTitle("On-Track Train Simulator");
+    primaryStage.setScene(new Scene(root, 450, 442));
+    primaryStage.show();
   }
 
   public static void main(String[] args) {

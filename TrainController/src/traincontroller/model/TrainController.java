@@ -1,10 +1,16 @@
 package traincontroller.model;
 
 import java.util.HashMap;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import mainmenu.controller.MainMenuController;
+import trainmodel.TrainModelInterface;
+import trainmodel.model.TrainModel;
 
 public class TrainController implements TrainControllerInterface, Runnable {
-  private static HashMap<String, TrainController> listOfTrains;
+  private static HashMap<String, TrainController> listOfTrains = new HashMap<>();
 
+  private TrainModelInterface trainModel;
   private String id;
   private String line;
   private boolean running;
@@ -17,7 +23,6 @@ public class TrainController implements TrainControllerInterface, Runnable {
   public TrainController(String id, String line) {
     this.id = id;
     this.line = line;
-    listOfTrains = new HashMap<>();
   }
 
   public void setAntennaSignal(Byte[] signal) {
@@ -49,15 +54,33 @@ public class TrainController implements TrainControllerInterface, Runnable {
   }
 
   private void start() {
+    trainModel = new TrainModel(this, id, line);
     running = true;
   }
 
-  public static void start(String trainId) {
-    listOfTrains.get(trainId).start();
+  /**
+   * Starts a train.
+   * */
+  public static boolean start(String trainId) {
+    TrainController temp = listOfTrains.get(trainId);
+    if (temp == null) {
+      return false;
+    }
+    temp.start();
+    return true;
   }
 
-  public static void delete(String trainId) {
+  /**
+   * Removes a train from the list.
+   * */
+  public static boolean delete(String trainId) {
+    TrainController temp = listOfTrains.get(trainId);
+    if (temp == null) {
+      return false;
+    }
     listOfTrains.remove(trainId);
+    MainMenuController.getInstance().updateTrainControllerDropdown();
+    return true;
   }
 
   public void run() {
@@ -66,6 +89,7 @@ public class TrainController implements TrainControllerInterface, Runnable {
 
   protected static void addTrain(TrainController train) {
     listOfTrains.put(train.getId(), train);
+    MainMenuController.getInstance().updateTrainControllerDropdown();
   }
 
   /** Run all instances of the train controller. */
@@ -73,5 +97,13 @@ public class TrainController implements TrainControllerInterface, Runnable {
     for (String key : listOfTrains.keySet()) {
       listOfTrains.get(key).run();
     }
+  }
+
+  public static ObservableList<String> getListOfTrains() {
+    return FXCollections.observableArrayList(listOfTrains.keySet());
+  }
+
+  public static HashMap<String, TrainController> getTrainControllers() {
+    return listOfTrains;
   }
 }
