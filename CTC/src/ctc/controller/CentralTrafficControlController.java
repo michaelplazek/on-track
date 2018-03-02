@@ -450,6 +450,7 @@ public class CentralTrafficControlController {
         // set line
         String[] row = line.split(splitBy);
         train.setTrack(row[0]);
+        trackSelect.setValue(row[0]);
 
         // determine station
         word = row[1].split(": ");
@@ -612,10 +613,6 @@ public class CentralTrafficControlController {
       dispatchButton.setDisable(true);
       setAuthorityButton.setDisable(true);
       setSpeedButton.setDisable(true);
-      startButton.setDisable(true);
-      stopButton.setDisable(true);
-      incrementButton.setDisable(true);
-      decrementButton.setDisable(true);
       scheduleBlocks.setDisable(true);
       setAuthorityBlocks.setDisable(true);
       testRedButton.setDisable(true);
@@ -628,10 +625,6 @@ public class CentralTrafficControlController {
       dispatchButton.setDisable(false);
       setAuthorityButton.setDisable(false);
       setSpeedButton.setDisable(false);
-      startButton.setDisable(false);
-      stopButton.setDisable(false);
-      incrementButton.setDisable(false);
-      decrementButton.setDisable(false);
       scheduleBlocks.setDisable(false);
       setAuthorityBlocks.setDisable(false);
       testRedButton.setDisable(false);
