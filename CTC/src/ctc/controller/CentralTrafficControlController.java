@@ -4,6 +4,7 @@ import ctc.model.CentralTrafficControl;
 import ctc.model.TrainListItem;
 import ctc.model.TrainStopRow;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +18,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import mainmenu.Clock;
 
 public class CentralTrafficControlController {
@@ -400,12 +403,10 @@ public class CentralTrafficControlController {
 
   // TODO: complete these functions
   private void startClock() {
-
     ctc.setActive(true);
   }
 
   private void stopClock() {
-
     ctc.setActive(false);
   }
 
@@ -415,7 +416,71 @@ public class CentralTrafficControlController {
 
   private void testRed(){}
 
-  private void importSchedule(){}
+  private void importSchedule() {
+
+    // create file chooser
+    FileChooser fc = new FileChooser();
+    fc.setTitle("Choose schedule");
+
+    // open file and import
+    File file = fc.showOpenDialog((Stage) importScheduleButton.getScene().getWindow());
+    if (file != null) {
+      openFile(file);
+    }
+  }
+
+  private void openFile(File file) {
+
+    TrainListItem train = new TrainListItem();
+
+    BufferedReader br = null;
+    ObservableList<TrainStopRow> list = FXCollections.observableArrayList();
+    String line;
+    String splitBy = ",";
+    String word[];
+
+    try {
+
+      br = new BufferedReader(new FileReader(file));
+      while ((line = br.readLine()) != null) {
+
+        // new stop
+        TrainStopRow trainStop = new TrainStopRow();
+
+        // set line
+        String[] row = line.split(splitBy);
+        train.setTrack(row[0]);
+
+        // determine station
+        word = row[1].split(": ");
+        trainStop.setStop(word[1]);
+
+        // determine dwell
+        trainStop.setDwell(row[2]);
+        trainStop.setTime("");
+
+        // add stop to train
+        list.add(trainStop);
+      }
+
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    } finally {
+      if (br != null) {
+        try {
+          br.close();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+    }
+
+    train.setSchedule(list);
+    ctc.setTrainTable(list);
+    addTrainTable.setItems(list);
+  }
 
   private void resetSchedule() {
 
@@ -436,7 +501,6 @@ public class CentralTrafficControlController {
 
   private void addTrainToQueue() {
 
-    // TODO: add error handling if fields aren't filled
     // TODO: create route and add it to TrainListItem
 
     // get train stop info
@@ -461,16 +525,19 @@ public class CentralTrafficControlController {
     String name = trainNameField.getText();
     String departingTime = departingTimeField.getText();
 
-    TrainListItem train = new TrainListItem(name, departingTime, "red", schedule);
-    train.setTrack(ctc.getTrack()); // set the track that is current set
+    if (!name.equals("") && departingTime.length() == 8) {
 
-    // create item in queue
-    trainQueueTable.setItems(ctc.getTrainQueueTable());
+      TrainListItem train = new TrainListItem(name, departingTime, "red", schedule);
+      train.setTrack(ctc.getTrack()); // set the track that is current set
 
-    resetSchedule();
+      // create item in queue
+      trainQueueTable.setItems(ctc.getTrainQueueTable());
 
-    // create train
-    ctc.addTrain(train);
+      resetSchedule();
+
+      // create train
+      ctc.addTrain(train);
+    }
   }
 
   private void deleteTrainFromQueue() {
