@@ -1,4 +1,4 @@
-package mainmenu.view;
+package mainmenu.controller;
 
 import ctc.view.CentralTrafficControlUserInterface;
 import java.net.URL;
@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import mainmenu.model.MainMenuModel;
 import mbo.view.MovingBlockOverlayUserInterface;
 import trackmodel.view.TrackModelUserInterface;
 
@@ -16,6 +17,8 @@ import trackmodel.view.TrackModelUserInterface;
  * All the user interfaces will be called and opened from handlers in this class.
  */
 public class MainMenuController implements Initializable {
+
+  private MainMenuModel mmm = MainMenuModel.getInstance();
 
   private CentralTrafficControlUserInterface ctcui =
       CentralTrafficControlUserInterface.getInstance();
@@ -29,24 +32,11 @@ public class MainMenuController implements Initializable {
   @FXML private ChoiceBox<String> trackControllerChoiceBox = new ChoiceBox<>();
   @FXML private ChoiceBox<String> trainControllerChoiceBox = new ChoiceBox<>();
   @FXML private ChoiceBox<String> trainModelChoiceBox = new ChoiceBox<>();
-  
-  @FXML private Button trackControllerButton;
-  @FXML private Button trainControllerButton;
-  @FXML private Button trainModelButton;
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
 
-    // TODO: populate this with real data
-    trainControllerChoiceBox.getItems().addAll("Select Train", "Train 1", "Train 2", "Train 3");
-    trainModelChoiceBox.getItems().addAll("Select Train", "Train 1", "Train 2", "Train 3");
-    trackControllerChoiceBox.getItems().addAll(
-        "Select Wayside", "Wayside 1", "Wayside  2", "Wayside  3");
-
-    trainControllerChoiceBox.setValue("Select Train");
-    trainModelChoiceBox.setValue("Select Train");
-    trackControllerChoiceBox.setValue("Select Wayside");
-
+    // TODO: initialize lists here
   }
 
   /**
