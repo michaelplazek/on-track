@@ -1,31 +1,38 @@
 package mainmenu.view;
 
+import ctc.view.CentralTrafficControlUserInterface;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
+import mbo.view.MovingBlockOverlayUserInterface;
+import trackmodel.view.TrackModelUserInterface;
 
 /**
- * Created by jeremyzang on 1/30/18.
- * This class is the controller class for mainmenuview.fxml
+ * Main controller class for the Main Menu.
+ * All the user interfaces will be called and opened from handlers in this class.
  */
 public class MainMenuController implements Initializable {
-  @FXML
-  private ChoiceBox<String> trackControllerChoiceBox = new ChoiceBox<>();
-  @FXML
-  private ChoiceBox<String> trainControllerChoiceBox = new ChoiceBox<>();
-  @FXML
-  private ChoiceBox<String> trainModelChoiceBox = new ChoiceBox<>();
+
+  private CentralTrafficControlUserInterface ctcui =
+      CentralTrafficControlUserInterface.getInstance();
+
+  private MovingBlockOverlayUserInterface mboui =
+      MovingBlockOverlayUserInterface.getInstance();
+
+  private TrackModelUserInterface tmui =
+      TrackModelUserInterface.getInstance();
+
+  @FXML private ChoiceBox<String> trackControllerChoiceBox = new ChoiceBox<>();
+  @FXML private ChoiceBox<String> trainControllerChoiceBox = new ChoiceBox<>();
+  @FXML private ChoiceBox<String> trainModelChoiceBox = new ChoiceBox<>();
   
-  @FXML
-  private Button trackControllerButton;
-  @FXML
-  private Button trainControllerButton;
-  @FXML
-  private Button trainModelButton;
+  @FXML private Button trackControllerButton;
+  @FXML private Button trainControllerButton;
+  @FXML private Button trainModelButton;
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
@@ -40,5 +47,41 @@ public class MainMenuController implements Initializable {
     trainModelChoiceBox.setValue("Select Train");
     trackControllerChoiceBox.setValue("Select Wayside");
 
+  }
+
+  /**
+   * Handler to open to CTC.
+   * @param event event from the button
+   */
+  public void openCentralTrafficControl(ActionEvent event) {
+    try {
+      ctcui.load();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * Handler to open to CTC.
+   * @param event event from the button
+   */
+  public void openMovingBlockOverlay(ActionEvent event) {
+    try {
+      mboui.load();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * Handler to open Track Model.
+   * @param event event from button
+   */
+  public void openTrackModel(ActionEvent event) {
+    try {
+      tmui.load();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 }

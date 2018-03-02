@@ -18,7 +18,6 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import trackctrl.control.Main;
 
 public class Controller {
 

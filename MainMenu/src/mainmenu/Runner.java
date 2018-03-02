@@ -1,6 +1,9 @@
 package mainmenu;
 
+import ctc.controller.CentralTrafficControlController;
+
 import ctc.model.CentralTrafficControl;
+import ctc.view.CentralTrafficControlUserInterface;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -16,8 +19,10 @@ import javafx.util.Duration;
 public class Runner extends Application {
 
   // create instances of modules
-  CentralTrafficControl ctc = CentralTrafficControl.getInstance();
-  Clock clk = Clock.getInstance();
+  private CentralTrafficControlController ctcc =
+      CentralTrafficControlUserInterface.getInstance().getController();
+  private CentralTrafficControl ctc = CentralTrafficControl.getInstance();
+  private Clock clk = Clock.getInstance();
 
   @Override
   public void start(Stage primaryStage) throws Exception {
@@ -34,7 +39,7 @@ public class Runner extends Application {
                 // TODO: add other module run() functions inside this event handler
                 if (ctc.isActive()) {
                   clk.tick();
-                  ctc.run();
+                  ctcc.run();
                 }
               }
             }
@@ -44,12 +49,9 @@ public class Runner extends Application {
     timeline.setCycleCount(Animation.INDEFINITE);
     timeline.play(); // initialize feedback loop
 
-    // TODO: change this to MainMenu GUI and instantiate other windows onClick
-    // for now - just add your module loading commands here and replace run()
-    // function above to test with the clock
-    Parent root = FXMLLoader.load(getClass().getResource("ctc.fxml"));
-    primaryStage.setTitle("Centralized Traffic Control");
-    primaryStage.setScene(new Scene(root, 1400, 600));
+    Parent root = FXMLLoader.load(getClass().getResource("view/mainmenuview.fxml"));
+    primaryStage.setTitle("On-Track Train Simulator");
+    primaryStage.setScene(new Scene(root, 450, 442));
     primaryStage.show();
   }
 
