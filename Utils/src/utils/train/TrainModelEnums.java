@@ -1,4 +1,4 @@
-package utils;
+package utils.train;
 
 /**
  * Created by jeremyzang on 2/11/18.

@@ -16,7 +16,7 @@ public class Block {
   private int number;
 
   //Parameters
-  private float size;
+  private float size; //in meters
   private float grade;
   private float speedLimit;
   private float elevation;

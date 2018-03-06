@@ -1,11 +1,11 @@
 package trainmodel;
 
 import trainmodel.model.GpsLocation;
-import utils.TrainModelEnums.AntennaStatus;
-import utils.TrainModelEnums.BrakeStatus;
-import utils.TrainModelEnums.DoorStatus;
-import utils.TrainModelEnums.LightStatus;
-import utils.TrainModelEnums.TrackLineStatus;
+import utils.train.TrainModelEnums.AntennaStatus;
+import utils.train.TrainModelEnums.BrakeStatus;
+import utils.train.TrainModelEnums.DoorStatus;
+import utils.train.TrainModelEnums.LightStatus;
+import utils.train.TrainModelEnums.TrackLineStatus;
 
 
 /**
