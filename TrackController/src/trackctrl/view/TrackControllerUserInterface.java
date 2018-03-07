@@ -1,4 +1,4 @@
-package trackctrl.control;
+package trackctrl.view;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -10,7 +10,7 @@ public class TrackControllerUserInterface extends Application {
 
   @Override
   public void start(Stage primaryStage) throws Exception {
-    Parent root = FXMLLoader.load(getClass().getResource("../view/trackctrl.fxml"));
+    Parent root = FXMLLoader.load(getClass().getResource("trackctrl.fxml"));
     primaryStage.setTitle("Track Controller");
     primaryStage.setScene(new Scene(root, 375, 375));
     primaryStage.setResizable(false);
