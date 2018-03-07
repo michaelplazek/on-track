@@ -1,20 +1,20 @@
 package trackctrl.model;
 
-import java.util.ArrayList;
+import java.io.File;
+import java.util.HashMap;
 import trackmodel.model.Block;
 
 public class TrackController implements TrackControllerInterface {
 
-  private int id;
+  private String id;
   private final int CAPACITY = 64;
-  private ArrayList<Block> myZone = new ArrayList<Block>(CAPACITY);
+  private HashMap<Integer, Block> myZone = new HashMap<Integer, Block>(CAPACITY);
   private TrackController neighborCtrlr1 = new TrackController();
   private TrackController neighborCtrlr2 = new TrackController();
 
-
   public TrackController() {
-    //Negative Id indicates Controller is not initialized
-    this.id = -1;
+    //Zero Id indicates Controller is not initialized
+    this.id = "0";
   }
 
   public TrackController(TrackController tc) {
@@ -25,38 +25,45 @@ public class TrackController implements TrackControllerInterface {
   }
 
   @Override
-  public Boolean setAuthority(String section, int block, float authority) {
+  public Boolean setAuthority(int block, float authority) {
     return null;
   }
 
   @Override
-  public Boolean setSuggestedSpeed(String section, int block, float setSpeed) {
+  public Boolean setSuggestedSpeed(int block, float setSpeed) {
     return null;
   }
 
   @Override
-  public Boolean relayAuthority(String section, int block, double authority) {
+  public Boolean relayAuthority(int block, double authority) {
     return null;
   }
 
   @Override
-  public Boolean relaySetSpeed(String section, int block, double setSpeed) {
+  public Boolean relaySetSpeed(int block, double setSpeed) {
     return null;
   }
 
   @Override
-  public Boolean setInfrastructureState(String section, int block, Boolean state) {
+  public Boolean setInfrastructureState(int block, Boolean state) {
     return null;
   }
 
   @Override
   public Boolean setId(String Id) {
+    this.id = Id;
     return null;
   }
 
   @Override
-  public Boolean setZone(ArrayList<Block> blocks) {
-    return null;
+  public void setZone(HashMap<Integer, Block> blocks) {
+    if (myZone == null) {
+      myZone = new HashMap<Integer, Block>(blocks);
+    } else {
+      //Adds key-value pairs.
+      //Will duplicate...
+      myZone.putAll(blocks);
+    }
   }
 
   @Override
@@ -64,16 +71,9 @@ public class TrackController implements TrackControllerInterface {
     return null;
   }
 
-
-
   @Override
-  public Boolean hasBlock(String section, int block) {
-    return null;
-  }
-
-  @Override
-  public Boolean hasBlock(Block block) {
-    return null;
+  public Boolean hasBlock(int block) {
+    return myZone.containsKey(block);
   }
 
   @Override
@@ -82,7 +82,7 @@ public class TrackController implements TrackControllerInterface {
   }
 
   @Override
-  public Boolean importLogic() {
+  public Boolean importLogic(File myplc) {
     return null;
   }
 }

@@ -1,6 +1,7 @@
 package trackctrl.model;
 
 //import trackmodel.model.Track;
+import java.util.ArrayList;
 import trackctrl.model.TrackController;
 
 public interface TrackControllerLineManagerInterface {
@@ -13,7 +14,7 @@ public interface TrackControllerLineManagerInterface {
 
   public int[][] getInfrastructure();
 
-  public TrackControllerLineManager getInstance(String line);
+  public Boolean addController(TrackController newCtrl);
 
   //public Boolean createInstances(Track line);
 }

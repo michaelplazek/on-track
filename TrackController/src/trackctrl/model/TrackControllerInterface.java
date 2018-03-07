@@ -1,38 +1,36 @@
 package trackctrl.model;
 
 import java.io.*;
-import java.util.ArrayList;
+import java.util.HashMap;
 import trackmodel.model.Block;
 
 public interface TrackControllerInterface {
 
   //To be set by the CTC
-  Boolean setAuthority(String section, int block, float authority);
+  Boolean setAuthority(int block, float authority);
 
-  Boolean setSuggestedSpeed(String section, int block, float setSpeed);
+  Boolean setSuggestedSpeed(int block, float setSpeed);
 
   //To be relayed to the Track model
-  Boolean relayAuthority(String section, int block, double authority);
+  Boolean relayAuthority(int block, double authority);
 
-  Boolean relaySetSpeed(String section, int block, double setSpeed);
+  Boolean relaySetSpeed(int block, double setSpeed);
 
   //To be called by TrackController and/or CTC
-  Boolean setInfrastructureState(String section, int block, Boolean state);
+  Boolean setInfrastructureState(int block, Boolean state);
 
   //To be called by TrackControllerLineManager
   Boolean setId(String Id);
 
-  Boolean setZone(ArrayList<Block> blocks);
+  void setZone(HashMap<Integer, Block> blocks);
 
   Boolean addBlock(Block newBlock);
 
-  Boolean hasBlock(String section, int block);
-
-  Boolean hasBlock(Block block);
+  Boolean hasBlock(int block);
 
   int getId();
 
   //To be called within TrackController
-  Boolean importLogic();
+  Boolean importLogic(File myplc);
 
 }
