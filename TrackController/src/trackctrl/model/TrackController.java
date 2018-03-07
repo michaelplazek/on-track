@@ -7,8 +7,8 @@ import trackmodel.model.Block;
 public class TrackController implements TrackControllerInterface {
 
   private String id;
-  private final int CAPACITY = 64;
-  private HashMap<Integer, Block> myZone = new HashMap<Integer, Block>(CAPACITY);
+  private final int capacity = 64;
+  private HashMap<Integer, Block> myZone = new HashMap<Integer, Block>(capacity);
   private TrackController neighborCtrlr1 = new TrackController();
   private TrackController neighborCtrlr2 = new TrackController();
 
@@ -17,6 +17,10 @@ public class TrackController implements TrackControllerInterface {
     this.id = "0";
   }
 
+  /**
+   * Constructor for a new TrackController based on a previous one.
+   * @param tc accepts a TrackController object as an argument for cloning
+   */
   public TrackController(TrackController tc) {
     this.id = tc.id;
     this.myZone = tc.myZone;
@@ -50,8 +54,8 @@ public class TrackController implements TrackControllerInterface {
   }
 
   @Override
-  public Boolean setId(String Id) {
-    this.id = Id;
+  public Boolean setId(String id) {
+    this.id = id;
     return null;
   }
 

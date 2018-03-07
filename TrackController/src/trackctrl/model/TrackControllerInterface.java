@@ -1,6 +1,6 @@
 package trackctrl.model;
 
-import java.io.*;
+import java.io.File;
 import java.util.HashMap;
 import trackmodel.model.Block;
 
@@ -20,7 +20,7 @@ public interface TrackControllerInterface {
   Boolean setInfrastructureState(int block, Boolean state);
 
   //To be called by TrackControllerLineManager
-  Boolean setId(String Id);
+  Boolean setId(String id);
 
   void setZone(HashMap<Integer, Block> blocks);
 

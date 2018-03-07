@@ -12,6 +12,12 @@ public class TrackControllerLineManager implements TrackControllerLineManagerInt
 
   private static ArrayList<TrackControllerLineManager> lines = null;
 
+  /**
+   * Constructor for a TrackControllerLineManager
+   * The line argument should be formatted as a line
+   * should be displayed. i.e. "Blue", "Red", etc.
+   * @param line a string containing a name for the Track Line, usually a color
+   */
   public TrackControllerLineManager(String line) {
     this.line = line;
     if (lines != null) {
@@ -71,6 +77,12 @@ public class TrackControllerLineManager implements TrackControllerLineManagerInt
     }
   }
 
+  /**
+   * Returns an instance of a TrackControllerLineManager based on the
+   * line name.
+   * @param line a string that should correspond to a line created on initialization
+   * @return returns a TrackControllerLineManager object that oversees a particular line
+   */
   public static TrackControllerLineManager getInstance(String line) {
 
     //TODO: make sure no duplicate controllers exist?
@@ -83,6 +95,10 @@ public class TrackControllerLineManager implements TrackControllerLineManagerInt
     return null;
   }
 
+  /**
+   * Gives all Line Managers created via a Java ArrayList.
+   * @return returns an ArrayList of the created instances
+   */
   public static ArrayList<TrackControllerLineManager> getLines() {
     if (lines != null) {
       return lines;
