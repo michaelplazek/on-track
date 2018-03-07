@@ -1,4 +1,4 @@
-package trackctrl.view;
+package trackctrl.control;
 
 import java.io.File;
 import javafx.collections.FXCollections;
