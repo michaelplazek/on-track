@@ -19,12 +19,18 @@ public class TrainListItem {
   private double authority;
   private double distanceTravelled;
   private String location;
+  private String station;
   private String track;
   // private Block location;
   // private Route route;
 
   /**
-   * Base constructor for the TrainList items.
+   * Default constructor.
+   */
+  public TrainListItem(){}
+
+  /**
+   * Constructor for the TrainList items.
    * @param departure String for initial departure time of train
    * @param id String for name of train
    * @param line String for name of line train is running on
@@ -119,5 +125,13 @@ public class TrainListItem {
 
   public void setTrack(String track) {
     this.track = track;
+  }
+
+  public String getStation() {
+    return station;
+  }
+
+  public void setStation(String station) {
+    this.station = station;
   }
 }

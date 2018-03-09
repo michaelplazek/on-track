@@ -1,4 +1,4 @@
-package trackctrl.view;
+package trackctrl.control;
 
 import java.io.File;
 import javafx.collections.FXCollections;
@@ -19,7 +19,7 @@ import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-public class Controller {
+public class TrackControllerController {
 
   //Toggles
   @FXML

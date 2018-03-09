@@ -15,6 +15,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+
 import mainmenu.Clock;
 import mainmenu.controller.MainMenuController;
 import traincontroller.model.TrainController;
@@ -54,9 +55,7 @@ public class Runner extends Application {
     timeline.setCycleCount(Animation.INDEFINITE);
     timeline.play(); // initialize feedback loop
 
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("mainmenuview.fxml"));
-    loader.setController(mmc);
-    Parent root = loader.load();
+    Parent root = FXMLLoader.load(getClass().getResource("mainmenuview.fxml"));
     primaryStage.setTitle("On-Track Train Simulator");
     primaryStage.setScene(new Scene(root, 450, 442));
     primaryStage.show();
