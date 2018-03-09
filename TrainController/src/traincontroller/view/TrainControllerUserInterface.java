@@ -1,28 +1,30 @@
 package traincontroller.view;
 
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import java.io.IOException;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.util.Duration;
-import traincontroller.model.TrainController;
-import traincontroller.view.TrainControllerController;
 
-public class TrainControllerUserInterface extends Application {
+public class TrainControllerUserInterface {
 
-  public static void main(String[] args) {
-    launch(args);
-  }
 
-  @Override
-  public void start(Stage primaryStage) throws Exception {
-    //TODO
-
+  /**
+   * Opens the Train Controller user interface for the specified train.
+   * @param trainId Id of a train
+   */
+  public static void openTrainController(String trainId) {
+    FXMLLoader loader = new FXMLLoader(
+        TrainControllerUserInterface.class.getResource("TrainControllerUI.fxml"));
+    loader.setController(new TrainControllerController(trainId));
+    try {
+      Parent root = loader.load();
+      Stage stage = new Stage();
+      stage.setTitle(trainId);
+      stage.setScene(new Scene(root, 600, 400));
+      stage.show();
+    } catch (IOException e) {
+      System.out.println(e);
+    }
   }
 }

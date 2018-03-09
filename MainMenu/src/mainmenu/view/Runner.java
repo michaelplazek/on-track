@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import mainmenu.Clock;
 import mainmenu.controller.MainMenuController;
+import traincontroller.model.TrainController;
 
 public class Runner extends Application {
 
@@ -43,6 +44,7 @@ public class Runner extends Application {
                 if (ctc.isActive()) {
                   clk.tick();
                   ctcc.run();
+                  TrainController.runAllInstances();
                 }
               }
             }

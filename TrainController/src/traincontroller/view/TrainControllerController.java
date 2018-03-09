@@ -1,6 +1,8 @@
 package traincontroller.view;
 
 import java.net.URL;
+import java.text.DecimalFormat;
+import java.text.Format;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -9,6 +11,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
+import traincontroller.model.TrainController;
+import utils.TrainModelEnums;
 
 public class TrainControllerController implements Initializable {
 
@@ -24,7 +28,7 @@ public class TrainControllerController implements Initializable {
   @FXML
   private ToggleButton emergencyBrakeButton;
   @FXML
-  private ToggleButton ligtsButton;
+  private ToggleButton lightsButton;
   @FXML
   private ToggleButton rightDoorButton;
   @FXML
@@ -55,7 +59,11 @@ public class TrainControllerController implements Initializable {
   @FXML
   private Label ki;
 
-  private static TrainControllerController tcc;
+  private TrainController trainController;
+
+  public TrainControllerController(String trainId) {
+    trainController = TrainController.getTrainController(trainId);
+  }
 
   @FXML
   private void setSpeedAction(ActionEvent event) {
@@ -102,10 +110,10 @@ public class TrainControllerController implements Initializable {
 
   @FXML
   private void toggleLights(ActionEvent event) {
-    if (!ligtsButton.isSelected()) {
-      ligtsButton.textProperty().setValue("OFF");
+    if (!lightsButton.isSelected()) {
+      lightsButton.textProperty().setValue("OFF");
     } else {
-      ligtsButton.textProperty().setValue("ON");
+      lightsButton.textProperty().setValue("ON");
     }
   }
 
@@ -117,8 +125,10 @@ public class TrainControllerController implements Initializable {
     }
     if (!rightDoorButton.isSelected()) {
       rightDoorButton.textProperty().setValue("CLOSE");
+      trainController.getTrainModel().setRightDoorStatus(TrainModelEnums.DoorStatus.CLOSED);
     } else {
       rightDoorButton.textProperty().setValue("OPEN");
+      trainController.getTrainModel().setRightDoorStatus(TrainModelEnums.DoorStatus.OPEN);
     }
   }
 
@@ -130,46 +140,45 @@ public class TrainControllerController implements Initializable {
     }
     if (!leftDoorButton.isSelected()) {
       leftDoorButton.textProperty().setValue("CLOSE");
+      trainController.getTrainModel().setLeftDoorStatus(TrainModelEnums.DoorStatus.CLOSED);
     } else {
       leftDoorButton.textProperty().setValue("OPEN");
+      trainController.getTrainModel().setLeftDoorStatus(TrainModelEnums.DoorStatus.OPEN);
     }
   }
 
   /**
    * This function initalizes Status Labels on UI.
    */
-  public void initializeStatusLabels() {
-    currentSpeed.textProperty().setValue("0");
-    setSpeed.textProperty().setValue("50");
-    authority.textProperty().setValue("1000");
-    driverSetSpeed.textProperty().setValue("0");
-    temperature.textProperty().setValue("68");
-    setTemperature.textProperty().setValue("68");
-    currentStation.textProperty().setValue("Mt. Lebanon");
-    nextStation.textProperty().setValue("Greenview");
-    powerCommand.textProperty().setValue("0");
-    kp.textProperty().setValue("5");
-    ki.textProperty().setValue("5");
-  }
-
-  /** Initializes the event handlers needed for TrainController. */
-  public void initializeEventHandlers() {
-    emergencyBrakeButton.setOnAction(this::toggleEmergencyBrakes);
-    leftDoorButton.setOnAction(this::toggleLeftDoors);
-    rightDoorButton.setOnAction(this::toggleRightDoors);
-    ligtsButton.setOnAction(this::toggleLights);
-    serviceBrakeButton.setOnAction(this::toggleServiceBrakes);
-    setSpeedButton.setOnAction(this::setSpeedAction);
-    setTemperatureButton.setOnAction(this::setTemperatureAction);
+  private void initializeStatusLabels() {
+    temperature.textProperty().setValue(trainController.getTrainModel() == null ? "0" :
+        Double.toString(trainController.getTrainModel().getCurrentTemp()));
+    currentStation.textProperty().setValue("N/A");
+    nextStation.textProperty().setValue("N/A");
+    authority.textProperty().bindBidirectional(trainController.getAuthorityProperty(),
+        new DecimalFormat("#0.00"));
+    currentSpeed.textProperty().bindBidirectional(trainController.getAuthorityProperty(),
+        new DecimalFormat("#0.00"));
+    powerCommand.textProperty().bindBidirectional(trainController.getPowerCommandProperty(),
+        new DecimalFormat("#0.00"));
+    currentSpeed.textProperty().bindBidirectional(trainController.getCurrentSpeedProperty(),
+        new DecimalFormat("0.00"));
+    setSpeed.textProperty().bindBidirectional(trainController.getSetSpeedProperty(),
+        new DecimalFormat("#0.00"));
+    driverSetSpeed.textProperty().bindBidirectional(trainController.getDriverSetSpeedProperty(),
+        new DecimalFormat("#0.00"));
+    setTemperature.textProperty().bindBidirectional(trainController.getSetTemperatureProperty(),
+        new DecimalFormat("#0.00"));
+    kp.textProperty().bindBidirectional(trainController.getKpProperty(),
+        new DecimalFormat("#0.00"));
+    ki.textProperty().bindBidirectional(trainController.getKiProperty(),
+        new DecimalFormat("#0.00"));
+    currentStation.textProperty().bindBidirectional(trainController.getCurrentStationProperty());
+    nextStation.textProperty().bindBidirectional(trainController.getNextStationProperty());
   }
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
     initializeStatusLabels();
-    initializeEventHandlers();
-  }
-
-  public TrainControllerController() {
-    tcc = this;
   }
 }

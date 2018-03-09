@@ -18,6 +18,7 @@ import mbo.view.MovingBlockOverlayUserInterface;
 import trackmodel.view.TrackModelUserInterface;
 import traincontroller.model.TrainController;
 import traincontroller.model.TrainControllerFactory;
+import traincontroller.view.TrainControllerUserInterface;
 
 /**
  * Main controller class for the Main Menu.
@@ -105,8 +106,7 @@ public class MainMenuController implements Initializable {
    */
   @FXML
   private void openTrainController(ActionEvent event) {
-    System.out.println("here");
-    TrainControllerFactory.createTrainController("Train " + id++, "green");
+    TrainControllerUserInterface.openTrainController(trainControllerChoiceBox.getSelectionModel().getSelectedItem());
   }
 
   public void updateTrainControllerDropdown() {
