@@ -55,7 +55,9 @@ public class Runner extends Application {
     timeline.setCycleCount(Animation.INDEFINITE);
     timeline.play(); // initialize feedback loop
 
-    Parent root = FXMLLoader.load(getClass().getResource("mainmenuview.fxml"));
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("mainmenuview.fxml"));
+    loader.setController(mmc);
+    Parent root = loader.load();
     primaryStage.setTitle("On-Track Train Simulator");
     primaryStage.setScene(new Scene(root, 450, 442));
     primaryStage.show();

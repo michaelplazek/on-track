@@ -11,9 +11,12 @@ import mainmenu.ClockInterface;
 import mainmenu.controller.MainMenuController;
 import trainmodel.TrainModelInterface;
 import trainmodel.model.TrainModel;
+import utils.TrainModelEnums;
 
 public class TrainController implements TrainControllerInterface {
   private static ClockInterface clock = Clock.getInstance();
+
+  private boolean automatic;
 
   private TrainModelInterface trainModel;
   private SimpleStringProperty id;
@@ -25,6 +28,7 @@ public class TrainController implements TrainControllerInterface {
   private SimpleDoubleProperty powerCommand;
   private SimpleDoubleProperty driverSetSpeed;
   private SimpleDoubleProperty setTemperature;
+  private SimpleDoubleProperty currentTemperature;
   private SimpleDoubleProperty kp;
   private SimpleDoubleProperty ki;
   private SimpleStringProperty currentStation;
@@ -46,6 +50,7 @@ public class TrainController implements TrainControllerInterface {
     this.powerCommand = new SimpleDoubleProperty(0);
     this.driverSetSpeed = new SimpleDoubleProperty(0);
     this.setTemperature = new SimpleDoubleProperty(68);
+    this.currentTemperature = new SimpleDoubleProperty(68);
     this.kp = new SimpleDoubleProperty(5);
     this.ki = new SimpleDoubleProperty(5);
     this.currentStation = new SimpleStringProperty("N/A");
@@ -82,10 +87,6 @@ public class TrainController implements TrainControllerInterface {
 
   public TrainModelInterface getTrainModel() {
     return trainModel;
-  }
-
-  public void setTrainModel(TrainModelInterface trainModel) {
-    this.trainModel = trainModel;
   }
 
   public boolean isRunning() {
@@ -168,6 +169,18 @@ public class TrainController implements TrainControllerInterface {
     this.setTemperature.set(setTemperature);
   }
 
+  public SimpleDoubleProperty getCurrentTemperatureProperty() {
+    return currentTemperature;
+  }
+
+  private Double getCurrentTemperature() {
+    return currentTemperature.getValue();
+  }
+
+  private void setCurrentTemperature(Double currentTemperature) {
+    this.currentTemperature.set(currentTemperature);
+  }
+
   public SimpleDoubleProperty getKpProperty() {
     return kp;
   }
@@ -216,6 +229,27 @@ public class TrainController implements TrainControllerInterface {
     this.nextStation.set(nextStation);
   }
 
+  public boolean isAutomatic() {
+    return automatic;
+  }
+
+  public void setAutomatic(boolean automatic) {
+    this.automatic = automatic;
+  }
+
+  public void setServiceBrake(TrainModelEnums.BrakeStatus brakeStatus) {
+    trainModel.setServiceBrakeStatus(brakeStatus);
+  }
+
+  public void setEmergencyBrake(TrainModelEnums.BrakeStatus brakeStatus) {
+    trainModel.setEmergencyBrakeStatus(brakeStatus);
+  }
+
+  @Override
+  public void activateEmergencyBrake() {
+    this.setEmergencyBrake(TrainModelEnums.BrakeStatus.ON);
+  }
+
   private void start() {
     trainModel = new TrainModel(this, id.getValue(), line.getValue());
     running = true;
@@ -250,6 +284,20 @@ public class TrainController implements TrainControllerInterface {
    * Updates the current train controller.
    */
   private void run() {
+    if (running) {
+      takeAction();
+      updateFields();
+    }
+  }
+
+  private void takeAction() {
+
+  }
+
+  private void updateFields() {
+    setCurrentTemperature(trainModel.getCurrentTemp());
+    setCurrentSpeed(trainModel.getCurrentSpeed());
+
   }
 
   protected static void addTrain(TrainController train) {

@@ -1,16 +1,14 @@
-package traincontroller.view;
+package traincontroller.controller;
 
 import java.net.URL;
 import java.text.DecimalFormat;
-import java.text.Format;
 import java.util.ResourceBundle;
+
+import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleButton;
+import javafx.scene.control.*;
 import traincontroller.model.TrainController;
 import utils.TrainModelEnums;
 
@@ -35,6 +33,8 @@ public class TrainControllerController implements Initializable {
   private ToggleButton leftDoorButton;
   @FXML
   private ToggleButton serviceBrakeButton;
+  @FXML
+  private ToggleGroup mode;
 
   @FXML
   private Label currentSpeed;
@@ -94,8 +94,10 @@ public class TrainControllerController implements Initializable {
   private void toggleEmergencyBrakes(ActionEvent event) {
     if (!emergencyBrakeButton.isSelected()) {
       emergencyBrakeButton.textProperty().setValue("EMERGENCY BRAKE OFF");
+      trainController.setEmergencyBrake(TrainModelEnums.BrakeStatus.OFF);
     } else {
       emergencyBrakeButton.textProperty().setValue("EMERGENCY BRAKE ON");
+      trainController.setEmergencyBrake(TrainModelEnums.BrakeStatus.ON);
     }
   }
 
@@ -103,8 +105,10 @@ public class TrainControllerController implements Initializable {
   private void toggleServiceBrakes(ActionEvent event) {
     if (!serviceBrakeButton.isSelected()) {
       serviceBrakeButton.textProperty().setValue("OFF");
+      trainController.setServiceBrake(TrainModelEnums.BrakeStatus.OFF);
     } else {
       serviceBrakeButton.textProperty().setValue("ON");
+      trainController.setServiceBrake(TrainModelEnums.BrakeStatus.ON);
     }
   }
 
@@ -112,6 +116,7 @@ public class TrainControllerController implements Initializable {
   private void toggleLights(ActionEvent event) {
     if (!lightsButton.isSelected()) {
       lightsButton.textProperty().setValue("OFF");
+
     } else {
       lightsButton.textProperty().setValue("ON");
     }
@@ -147,12 +152,18 @@ public class TrainControllerController implements Initializable {
     }
   }
 
+  @FXML
+  private void toggleMode(ActionEvent event) {
+    ObservableMap<Object, Object> map = mode.getProperties();
+    for(Object k : map.keySet()) {
+      System.out.println(k + ":" + map.get(k));
+    }
+  }
+
   /**
    * This function initalizes Status Labels on UI.
    */
   private void initializeStatusLabels() {
-    temperature.textProperty().setValue(trainController.getTrainModel() == null ? "0" :
-        Double.toString(trainController.getTrainModel().getCurrentTemp()));
     currentStation.textProperty().setValue("N/A");
     nextStation.textProperty().setValue("N/A");
     authority.textProperty().bindBidirectional(trainController.getAuthorityProperty(),
@@ -168,6 +179,8 @@ public class TrainControllerController implements Initializable {
     driverSetSpeed.textProperty().bindBidirectional(trainController.getDriverSetSpeedProperty(),
         new DecimalFormat("#0.00"));
     setTemperature.textProperty().bindBidirectional(trainController.getSetTemperatureProperty(),
+        new DecimalFormat("#0.00"));
+    temperature.textProperty().bindBidirectional(trainController.getCurrentTemperatureProperty(),
         new DecimalFormat("#0.00"));
     kp.textProperty().bindBidirectional(trainController.getKpProperty(),
         new DecimalFormat("#0.00"));

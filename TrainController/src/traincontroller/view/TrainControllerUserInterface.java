@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import traincontroller.controller.TrainControllerController;
 
 public class TrainControllerUserInterface {
 
@@ -24,6 +25,7 @@ public class TrainControllerUserInterface {
       stage.setScene(new Scene(root, 600, 400));
       stage.show();
     } catch (IOException e) {
+      e.printStackTrace();
       System.out.println(e);
     }
   }
