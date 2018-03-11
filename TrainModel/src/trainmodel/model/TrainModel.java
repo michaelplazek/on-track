@@ -58,6 +58,7 @@ public class TrainModel implements TrainModelInterface {
   private GpsLocation gpsLocation; //future development? 3/5/18
 
   private Double positionInBlock; //The number of meters from the border of the current block.
+  // Measured from the previous boarder to front of train.
 
   /**
    * Needs an instance of the TrackModel object.
@@ -195,6 +196,23 @@ public class TrainModel implements TrainModelInterface {
         updateVelocity();
         updateForce();
         updatePosition();
+        brake();
+        updateOccupancy();
+    }
+  }
+
+  /**
+   * Slows train down if brakes are engaged.
+   */
+  private void brake() {
+    double deceleration = 0;
+    if (emergencyBrakeStatus.equals(TrainModelEnums.BrakeStatus.ON)) {
+      deceleration = TrainData.EMERGENCY_BRAKE_ACCELERATION * clock.getChangeInTime();
+      velocity = velocity - deceleration;
+    } else if (emergencyBrakeStatus.equals(TrainModelEnums.BrakeStatus.OFF)
+        && serviceBrakeStatus.equals(TrainModelEnums.BrakeStatus.ON)) {
+      deceleration = TrainData.SERVICE_BRAKE_ACCELERATION * clock.getChangeInTime();
+      velocity = velocity - deceleration;
     }
   }
 
