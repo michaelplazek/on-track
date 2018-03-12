@@ -15,7 +15,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+
 import mainmenu.Clock;
+import mainmenu.controller.MainMenuController;
+import traincontroller.model.TrainController;
 
 public class Runner extends Application {
 
@@ -23,6 +26,7 @@ public class Runner extends Application {
   private CentralTrafficControlController ctcc =
       CentralTrafficControlUserInterface.getInstance().getController();
   private CentralTrafficControl ctc = CentralTrafficControl.getInstance();
+  private MainMenuController mmc = MainMenuController.getInstance();
   private Clock clk = Clock.getInstance();
 
   @Override
@@ -41,6 +45,7 @@ public class Runner extends Application {
                 if (ctc.isActive()) {
                   clk.tick();
                   ctcc.run();
+                  TrainController.runAllInstances();
                 }
               }
             }
@@ -50,7 +55,9 @@ public class Runner extends Application {
     timeline.setCycleCount(Animation.INDEFINITE);
     timeline.play(); // initialize feedback loop
 
-    Parent root = FXMLLoader.load(getClass().getResource("mainmenuview.fxml"));
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("mainmenuview.fxml"));
+    loader.setController(mmc);
+    Parent root = loader.load();
     primaryStage.setTitle("On-Track Train Simulator");
     primaryStage.setScene(new Scene(root, 450, 442));
     primaryStage.show();

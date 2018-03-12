@@ -10,4 +10,6 @@ public interface TrainControllerInterface {
 
   void setTrackCircuitSignal(Byte[] signal);
 
+  void activateEmergencyBrake();
+
 }
