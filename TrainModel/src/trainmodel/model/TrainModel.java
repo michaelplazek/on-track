@@ -19,11 +19,8 @@ import utils.unitconversion.UnitConversions;
  */
 public class TrainModel implements TrainModelInterface {
 
-  //======================================================================================
-
   //Current temp inside the train.
   private DoubleProperty currentTemp = new SimpleDoubleProperty(70);
-
   private Clock clock = Clock.getInstance();
 
   //===========================================
@@ -50,7 +47,8 @@ public class TrainModel implements TrainModelInterface {
   //set by TrainController.
   private SimpleDoubleProperty powerCommand = new SimpleDoubleProperty(0); //In kilo Watts.
   private SimpleIntegerProperty numPassengers = new SimpleIntegerProperty(0);
-  private SimpleIntegerProperty capacity = new SimpleIntegerProperty(148);
+  private SimpleIntegerProperty capacity
+      = new SimpleIntegerProperty(148); //passenger capacity of train.
 
   private double acceleration = 0.0000001; //in m/s^2
   private double force = 0; //in N
@@ -78,7 +76,7 @@ public class TrainModel implements TrainModelInterface {
   // Measured from the previous boarder to front of train.
 
   /**
-   * Needs an instance of the TrackModel object.
+   * TODO: Needs an instance of the TrackModel object.
    */
   // private TrackModel activeTrack;
   private Block currentBlock;

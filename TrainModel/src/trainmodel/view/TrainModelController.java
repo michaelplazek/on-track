@@ -24,7 +24,7 @@ import trainmodel.model.TrainModelFactory;
 import utils.train.TrainModelEnums;
 
 
-public class TrainModelUiController implements Initializable {
+public class TrainModelController implements Initializable {
 
   //Demo Buttons
   @FXML
@@ -137,7 +137,7 @@ public class TrainModelUiController implements Initializable {
    * Train model && controller associated with UI (use for testing as of 3/11/18).
    */
   private TrainModel trainModel;
-  private TrainController trainModelController;
+  private TrainController trainController;
 
   @FXML
   private void toggleSelectedFailures(ActionEvent event) {
@@ -197,11 +197,15 @@ public class TrainModelUiController implements Initializable {
     initializeButtonHandlers();
   }
 
+  /**
+   * Initialized TrainModel and TrainController instances.
+   * TODO: Get proper id and line names from CTC on creation. Maybe?
+   */
   private void initializeTrainModel() {
-    trainModelController = (TrainController) TrainControllerFactory
+    trainController = (TrainController) TrainControllerFactory
         .createTrainController("001", "RED");
     trainModel = (TrainModel) TrainModelFactory
-        .createTrainModel(trainModelController,"001", "RED");
+        .createTrainModel(trainController,"001", "RED");
   }
 
   /**
