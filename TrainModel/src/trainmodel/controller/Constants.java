@@ -1,6 +1,5 @@
 package trainmodel.controller;
 
-import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
 /**
@@ -8,18 +7,19 @@ import javafx.scene.paint.Paint;
  */
 public class Constants {
 
-  public static String GREEN = "0x23c51bff";
-  public static String RED = Paint.valueOf("Red").toString();
+  public static final String GREEN = "0x23c51bff";
+  public static final String RED = Paint.valueOf("Red").toString();
 
-  public static String LABEL_EMERGENCY_BRAKE_NOT_ENGAGED = "NOT ENGAGED";
-  public static String OFF = "OFF";
-  public static String ON = "ON";
-  public static String LABEL_STATUS_UNAVAILABLE = "N/A";
-  public static String TRAIN_LENGTH = "";
-  public static String TRAIN_WIDTH = "";
-  public static String TRAIN_HEIGHT = "";
-  public static String TRAIN_CAPACITY = "";
-  public static String NUMBER_OF_CARS = "";
+  public static final String OFF = "OFF";
+  public static final String ON = "ON";
 
+  public static final String LABEL_STATUS_UNAVAILABLE = "N/A";
 
+  public static double FRICTION_COEFFICIENT_STEEL = 0.6;
+  public static final double kgToLbsConversion = 2.20462262185; //1kg = 2.20462262185 lbs;
+  public static final double lbsTokgConversion = 0.45359237; //1lb = 0.45359237 kgs;
+
+  public static final double passengerAvgMassKg
+      = 150 * lbsTokgConversion; //assume each person is avg 150lbs
+  public static final double passengerAvgMassLbs = 150;
 }

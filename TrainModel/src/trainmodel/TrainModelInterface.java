@@ -1,11 +1,11 @@
 package trainmodel;
 
 import trainmodel.model.GpsLocation;
-import utils.TrainModelEnums.AntennaStatus;
-import utils.TrainModelEnums.BrakeStatus;
-import utils.TrainModelEnums.DoorStatus;
-import utils.TrainModelEnums.LightStatus;
-import utils.TrainModelEnums.TrackLineStatus;
+import utils.train.TrainModelEnums.AntennaStatus;
+import utils.train.TrainModelEnums.BrakeStatus;
+import utils.train.TrainModelEnums.DoorStatus;
+import utils.train.TrainModelEnums.LightStatus;
+import utils.train.TrainModelEnums.TrackLineStatus;
 
 
 /**
@@ -15,7 +15,8 @@ import utils.TrainModelEnums.TrackLineStatus;
 public interface TrainModelInterface {
 
   /**
-   * The following methods are getters/setters for data going to the Train MovingBlockOverlayController.
+   * The following methods are getters/setters for data going
+   * to the Train MovingBlockOverlayController.
    */
   //Getters
   double getCurrentSpeed();

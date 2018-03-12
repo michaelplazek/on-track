@@ -1,14 +1,11 @@
 package trainmodel;
 
-import java.io.IOException;
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import trainmodel.view.TrainModelController;
-
 
 
 public class TrainModelUserInterface extends Application {
@@ -45,11 +42,10 @@ public class TrainModelUserInterface extends Application {
   }
 
   /**
-   * The bellow methods will be used for testing TrainModel individually. Will be deleted in future development
-   * once the use case with multiple instances of TrainModelController are worked out.
-   *
+   * The bellow methods will be used for testing TrainModel individually.
+   * Will be deleted in future development once the use case with multiple
+   * instances of TrainModelController are worked out.
    */
-
   @Override
   public void start(Stage primaryStage) throws Exception {
     FXMLLoader loader = new FXMLLoader(getClass().getResource("view/trainModelView.fxml"));
