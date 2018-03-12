@@ -239,11 +239,11 @@ public class TrainModel implements TrainModelInterface {
    */
   private void brake() {
     double deceleration = 0;
-    if (emergencyBrakeStatus.equals(TrainModelEnums.BrakeStatus.ON)) {
+    if (emergencyBrakeStatus.toString().equals(TrainModelEnums.BrakeStatus.ON.toString())) {
       deceleration = TrainData.EMERGENCY_BRAKE_ACCELERATION * clock.getChangeInTime();
       velocity.set(velocity.get() - deceleration);
-    } else if (emergencyBrakeStatus.equals(TrainModelEnums.BrakeStatus.OFF)
-        && serviceBrakeStatus.equals(TrainModelEnums.BrakeStatus.ON)) {
+    } else if (emergencyBrakeStatus.toString().equals(TrainModelEnums.BrakeStatus.OFF.toString())
+        && serviceBrakeStatus.toString().equals(TrainModelEnums.BrakeStatus.ON.toString())) {
       deceleration = TrainData.SERVICE_BRAKE_ACCELERATION * clock.getChangeInTime();
       velocity.set(velocity.get() - deceleration);
     }

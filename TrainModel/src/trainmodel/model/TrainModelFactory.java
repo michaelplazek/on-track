@@ -18,8 +18,7 @@ public class TrainModelFactory {
    */
   public static TrainModelInterface createTrainModel(
       TrainControllerInterface trainControllerInterface, String id, String line) {
-    TrainModel trainModel = new TrainModel(trainControllerInterface, id, line);
-    return trainModel;
+    return new TrainModel(trainControllerInterface, id, line);
   }
 
 
