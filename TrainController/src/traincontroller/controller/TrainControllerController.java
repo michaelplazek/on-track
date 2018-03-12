@@ -10,7 +10,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import traincontroller.model.TrainController;
-import utils.TrainModelEnums;
+import utils.train.TrainModelEnums;
 
 public class TrainControllerController implements Initializable {
 

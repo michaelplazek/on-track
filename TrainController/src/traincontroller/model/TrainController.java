@@ -11,7 +11,7 @@ import mainmenu.ClockInterface;
 import mainmenu.controller.MainMenuController;
 import trainmodel.TrainModelInterface;
 import trainmodel.model.TrainModel;
-import utils.TrainModelEnums;
+import utils.train.TrainModelEnums;
 
 public class TrainController implements TrainControllerInterface {
   private static ClockInterface clock = Clock.getInstance();
