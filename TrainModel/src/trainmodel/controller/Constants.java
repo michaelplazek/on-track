@@ -19,6 +19,7 @@ public class Constants {
   public static final double kgToLbsConversion = 2.20462262185; //1kg = 2.20462262185 lbs;
   public static final double lbsTokgConversion = 0.45359237; //1lb = 0.45359237 kgs;
 
-  public static final double passengerAvgMassKg = 150 * lbsTokgConversion; //assume each person is avg 150lbs
+  public static final double passengerAvgMassKg
+      = 150 * lbsTokgConversion; //assume each person is avg 150lbs
   public static final double passengerAvgMassLbs = 150;
 }

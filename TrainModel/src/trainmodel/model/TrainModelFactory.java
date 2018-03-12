@@ -10,13 +10,14 @@ import trainmodel.TrainModelInterface;
 public class TrainModelFactory {
 
   /**
-   * Use this funciton to create a new TrainModel
+   * Use this funciton to create a new TrainModel instance.
    * @param trainControllerInterface an instance of a trainController.
    * @param id id of the new train.
    * @param line line the train will be on.
    * @return the created instance.
    */
-  public static TrainModelInterface createTrainModel(TrainControllerInterface trainControllerInterface, String id, String line){
+  public static TrainModelInterface createTrainModel(
+      TrainControllerInterface trainControllerInterface, String id, String line) {
     TrainModel trainModel = new TrainModel(trainControllerInterface, id, line);
     return trainModel;
   }

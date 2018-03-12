@@ -7,28 +7,88 @@ package utils.train;
 public final class TrainModelEnums {
 
   public enum BrakeStatus {
-    ON,
-    OFF
+    ON("ON"),
+    OFF("OFF");
+
+    private String status;
+
+    private BrakeStatus(String status) {
+      this.status = status;
+    }
+
+    @Override
+    public String toString(){
+      return status;
+    }
+
   }
 
   public enum DoorStatus {
-    OPEN,
-    CLOSED
+    OPEN("OPEN"),
+    CLOSED("CLOSED");
+
+    private String status;
+
+    private DoorStatus(String status) {
+      this.status = status;
+    }
+
+    @Override
+    public String toString(){
+      return status;
+    }
+
   }
 
   public enum TrackLineStatus {
-    CONNECTED,
-    DISCONNECTED
+    CONNECTED("CONNECTED"),
+    DISCONNECTED("DISCONNECTED");
+
+    private String status;
+
+    private TrackLineStatus(String status) {
+      this.status = status;
+    }
+
+    @Override
+    public String toString(){
+      return status;
+    }
+
   }
 
   public enum AntennaStatus {
-    CONNECTED,
-    DISCONNECTED
+    CONNECTED("CONNECTED"),
+    DISCONNECTED("DISCONNECTED");
+
+    private String status;
+
+    private AntennaStatus(String status) {
+      this.status = status;
+    }
+
+    @Override
+    public String toString(){
+      return status;
+    }
+
   }
 
   public enum LightStatus {
-    ON,
-    OFF
+    ON("ON"),
+    OFF("OFF");
+
+    private String status;
+
+    private LightStatus(String status) {
+      this.status = status;
+    }
+
+    @Override
+    public String toString(){
+      return status;
+    }
+
   }
 
 }

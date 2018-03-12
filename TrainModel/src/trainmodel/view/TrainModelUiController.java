@@ -1,12 +1,8 @@
 package trainmodel.view;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
+import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -17,13 +13,18 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
-import javafx.util.Duration;
+import javafx.util.StringConverter;
+import javafx.util.converter.NumberStringConverter;
+import mainmenu.Clock;
+import traincontroller.model.TrainController;
+import traincontroller.model.TrainControllerFactory;
 import trainmodel.controller.Constants;
+import trainmodel.model.TrainModel;
+import trainmodel.model.TrainModelFactory;
+import utils.train.TrainModelEnums;
 
 
-
-
-public class TrainModelController implements Initializable {
+public class TrainModelUiController implements Initializable {
 
   //Demo Buttons
   @FXML
@@ -132,6 +133,11 @@ public class TrainModelController implements Initializable {
   @FXML
   private Label cabinTemp;
 
+  /**
+   * Train model && controller associated with UI (use for testing as of 3/11/18).
+   */
+  private TrainModel trainModel;
+  private TrainController trainModelController;
 
   @FXML
   private void toggleSelectedFailures(ActionEvent event) {
@@ -185,9 +191,17 @@ public class TrainModelController implements Initializable {
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
+    initializeTrainModel();
     initializeStatusLabels();
     initializeStatusIcons();
     initializeButtonHandlers();
+  }
+
+  private void initializeTrainModel() {
+    trainModelController = (TrainController) TrainControllerFactory
+        .createTrainController("001", "RED");
+    trainModel = (TrainModel) TrainModelFactory
+        .createTrainModel(trainModelController,"001", "RED");
   }
 
   /**
@@ -196,31 +210,47 @@ public class TrainModelController implements Initializable {
   private void initializeStatusLabels() {
     //Initialize status labels. If connection fails use default ("N/A").
     //TODO: Initialize labels with real data
-    weight.textProperty().setValue("56234");
-    setSpeedStatus.textProperty().setValue("45 MPH");
-    currentSpeedStatus.textProperty().setValue("43 MPH");
-    setAuthorityStatus.textProperty().setValue("1000 yds");
-    powerOutputStatus.textProperty().setValue("24,596 Watts");
+    StringConverter<Number> numberStringConverter = new NumberStringConverter();
+    Bindings.bindBidirectional(numberOfPassengers.textProperty(),
+        trainModel.numPassengersProperty(), numberStringConverter);
+    Bindings.bindBidirectional(weight.textProperty(),
+        trainModel.massProperty(), numberStringConverter);
+    Bindings.bindBidirectional(powerOutputStatus.textProperty(),
+        trainModel.powerCommandProperty(), numberStringConverter);
+    Bindings.bindBidirectional(currentSpeedStatus.textProperty(),
+        trainModel.velocityProperty(), numberStringConverter);
+    Bindings.bindBidirectional(cabinTemp.textProperty(),
+        trainModel.currentTempProperty(), numberStringConverter);
+    Bindings.bindBidirectional(capacity.textProperty(),
+        trainModel.capacityProperty(), numberStringConverter);
+    Bindings.bindBidirectional(length.textProperty(),
+        trainModel.lengthOfTrainProperty(), numberStringConverter);
+    Bindings.bindBidirectional(width.textProperty(),
+        trainModel.widthProperty(), numberStringConverter);
+    Bindings.bindBidirectional(height.textProperty(),
+        trainModel.heightProperty(), numberStringConverter);
+    Bindings.bindBidirectional(numberOfCars.textProperty(),
+        trainModel.numberOfCarsProperty(), numberStringConverter);
+
+
+
+    setSpeedStatus.textProperty().setValue("45"); //Will be received from TrainController
+
+    setAuthorityStatus.textProperty().setValue("1000");
     serviceStatus.textProperty().setValue("OK");
     currentBlockStatus.textProperty().setValue("WAITING");
     currentTrackStatus.textProperty().setValue("OK");
-    numberOfPassengers.textProperty().setValue("63");
     nextStation.textProperty().setValue("Downtown");
-    time.textProperty().setValue("12:45 PM");
+    time.textProperty().setValue(Clock.getInstance().getFormattedTime());
     stationStatus.textProperty().setValue("IN ROUTE");
-    leftDoorStatus.textProperty().setValue("CLOSED");
-    rightDoorStatus.textProperty().setValue("CLOSED");
-    lightStatus.textProperty().setValue("OFF");
-    beaconStatus.textProperty().setValue("ON");
-    gpsAntenaStatus.textProperty().setValue("ON");
-    mboAntenaStatus.textProperty().setValue("ON");
-    cabinTemp.textProperty().setValue("72 degrees");
-    length.textProperty().setValue("105.64");
-    width.textProperty().setValue("8.69");
-    height.textProperty().set("11.22");
-    emergencyBrakeStatus.textProperty().setValue(Constants.ON);
-    capacity.textProperty().setValue("148"); //148 capacity
-    numberOfCars.textProperty().setValue("1");
+
+    beaconStatus.textProperty().bind(trainModel.trackLineStatusProperty().asString());
+    gpsAntenaStatus.textProperty().bind(trainModel.antennaStatusProperty().asString());
+    leftDoorStatus.textProperty().bind(trainModel.leftDoorStatusProperty().asString());
+    rightDoorStatus.textProperty().bind(trainModel.rightDoorStatusProperty().asString());
+    lightStatus.textProperty().bind(trainModel.lightStatusProperty().asString());
+    mboAntenaStatus.textProperty().bind(trainModel.antennaStatusProperty().asString());
+    emergencyBrakeStatus.textProperty().bind(trainModel.emergencyBrakeStatusProperty().asString());
   }
 
 
@@ -232,73 +262,43 @@ public class TrainModelController implements Initializable {
 
   @FXML
   private void toggleLights() {
-    if (lightStatus.getText().equals("ON")) {
-      lightStatus.setText("OFF");
+    if (lightStatus.getText().equals(TrainModelEnums.LightStatus.ON.toString())) {
+      trainModel.lightStatusProperty().set(TrainModelEnums.LightStatus.OFF);
     } else {
-      lightStatus.setText("ON");
+      trainModel.lightStatusProperty().set(TrainModelEnums.LightStatus.ON);
     }
   }
 
   @FXML
   private void toggleLeftDoor() {
-    if (leftDoorStatus.getText().equals("OPEN")) {
-      leftDoorStatus.setText("CLOSED");
+    if (leftDoorStatus.getText().equals(TrainModelEnums.DoorStatus.OPEN.toString())) {
+      trainModel.leftDoorStatusProperty().set(TrainModelEnums.DoorStatus.CLOSED);
     } else {
-      leftDoorStatus.setText("OPEN");
+      trainModel.leftDoorStatusProperty().set(TrainModelEnums.DoorStatus.OPEN);
     }
   }
 
   @FXML
   private void toggleRightDoor() {
-    if (rightDoorStatus.getText().equals("OPEN")) {
-      rightDoorStatus.setText("CLOSED");
+    if (rightDoorStatus.getText().equals(TrainModelEnums.DoorStatus.OPEN.toString())) {
+      trainModel.rightDoorStatusProperty().set(TrainModelEnums.DoorStatus.CLOSED);
     } else {
-      rightDoorStatus.setText("OPEN");
+      trainModel.rightDoorStatusProperty().set(TrainModelEnums.DoorStatus.OPEN);
     }
   }
 
   @FXML
   private void addPassenger() {
-    int passengerCount = Integer.valueOf(numberOfPassengers.getText());
-    passengerCount++;
-    numberOfPassengers.setText(String.valueOf(passengerCount));
-
-    int capacityCount = Integer.valueOf(capacity.getText());
-    capacityCount--;
-    capacity.setText(String.valueOf(capacityCount));
-
-    int weightCount = Integer.valueOf(weight.getText());
-    weightCount = weightCount + 150;
-    weight.setText(String.valueOf(weightCount));
+    this.trainModel.addPassengers(1);
   }
 
   @FXML
   private void removePassenger() {
-    int passengerCount = Integer.valueOf(numberOfPassengers.getText());
-    passengerCount--;
-    numberOfPassengers.setText(String.valueOf(passengerCount));
-
-    int capacityCount = Integer.valueOf(capacity.getText());
-    capacityCount++;
-    capacity.setText(String.valueOf(capacityCount));
-
-    int weightCount = Integer.valueOf(weight.getText());
-    weightCount = weightCount - 150;
-    weight.setText(String.valueOf(weightCount));
+    this.trainModel.removePassengers(1);
   }
 
   private void runDemo() throws InterruptedException {
-
-    Timeline timeline = new Timeline();
-    List<KeyValue> values = new ArrayList<KeyValue>();
-
-    for (int i = 0; i < 45; i++) {
-      timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(i),
-          new KeyValue(currentSpeedStatus.textProperty(), i + " MPH")));
-    }
-
-
-    timeline.play();
+    trainModel.run();
   }
 
   /**

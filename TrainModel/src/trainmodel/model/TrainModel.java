@@ -1,7 +1,10 @@
 package trainmodel.model;
 
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import mainmenu.Clock;
 import trackmodel.model.Block;
 import traincontroller.model.TrainControllerInterface;
@@ -9,6 +12,7 @@ import trainmodel.TrainModelInterface;
 import trainmodel.controller.Constants;
 import utils.train.TrainData;
 import utils.train.TrainModelEnums;
+import utils.unitconversion.UnitConversions;
 
 /**
  * Created by jeremyzang on 2/16/18.
@@ -16,12 +20,9 @@ import utils.train.TrainModelEnums;
 public class TrainModel implements TrainModelInterface {
 
   //======================================================================================
-  //Physics Parameters
-  //Actual Speed in mph. Will be bound with  UI and Calculated from the power command.
-  private DoubleProperty actualSpeed = new SimpleDoubleProperty(0);
 
   //Current temp inside the train.
-  private DoubleProperty currentTemp = new SimpleDoubleProperty();
+  private DoubleProperty currentTemp = new SimpleDoubleProperty(70);
 
   private Clock clock = Clock.getInstance();
 
@@ -35,29 +36,45 @@ public class TrainModel implements TrainModelInterface {
   //Empty Car Weight = 40.9tonnes (Metric ton) 1 metric ton = 1000kg
   //          40.9t = 40900kg
   //============================================
+  //Train Dimentions
+  private SimpleDoubleProperty height = new SimpleDoubleProperty(TrainData.HEIGHT_OF_TRAIN);
+  private SimpleDoubleProperty width = new SimpleDoubleProperty(TrainData.WIDTH_OF_TRAIN);
+  private SimpleDoubleProperty lengthOfTrain = new SimpleDoubleProperty(TrainData.LENGTH_OF_TRAIN);
+  private SimpleDoubleProperty numberOfCars = new SimpleDoubleProperty(TrainData.NUMBER_OF_CARS);
 
-  private double mass = TrainData.EMPTY_WEIGHT; //in kg
-  private double acceleration = 0.0000001; //in m/s^2
-  private double force = 0; //in N
-  private double velocity = 0; //in m/s
-  private boolean started = false;
+
+  //String Properties to be bound with UI.
+  private SimpleDoubleProperty mass = new SimpleDoubleProperty(TrainData.EMPTY_WEIGHT);
+  private SimpleDoubleProperty velocity = new SimpleDoubleProperty(0); //in m/s
 
   //set by TrainController.
-  private double powerCommand = 0; //In kilo Watts.
+  private SimpleDoubleProperty powerCommand = new SimpleDoubleProperty(0); //In kilo Watts.
+  private SimpleIntegerProperty numPassengers = new SimpleIntegerProperty(0);
+  private SimpleIntegerProperty capacity = new SimpleIntegerProperty(148);
 
-  private int numPassengers = 0;
+  private double acceleration = 0.0000001; //in m/s^2
+  private double force = 0; //in N
 
-  private TrainModelEnums.BrakeStatus emergencyBrakeStatus;
-  private TrainModelEnums.BrakeStatus serviceBrakeStatus;
-  private TrainModelEnums.TrackLineStatus trackLineStatus;
-  private TrainModelEnums.AntennaStatus antennaStatus;
-  private TrainModelEnums.DoorStatus leftDoorStatus;
-  private TrainModelEnums.DoorStatus rightDoorStatus;
-  private TrainModelEnums.LightStatus lightStatus;
+  private boolean started = false;
+
+  private ObjectProperty<TrainModelEnums.LightStatus> lightStatus
+      = new SimpleObjectProperty<>(TrainModelEnums.LightStatus.OFF);
+  private ObjectProperty<TrainModelEnums.DoorStatus> rightDoorStatus
+      = new SimpleObjectProperty<>(TrainModelEnums.DoorStatus.CLOSED);
+  private ObjectProperty<TrainModelEnums.DoorStatus> leftDoorStatus
+      = new SimpleObjectProperty<>(TrainModelEnums.DoorStatus.CLOSED);
+  private ObjectProperty<TrainModelEnums.AntennaStatus> antennaStatus
+      = new SimpleObjectProperty<>(TrainModelEnums.AntennaStatus.CONNECTED);
+  private ObjectProperty<TrainModelEnums.TrackLineStatus> trackLineStatus
+      = new SimpleObjectProperty<>(TrainModelEnums.TrackLineStatus.CONNECTED);
+  private ObjectProperty<TrainModelEnums.BrakeStatus> serviceBrakeStatus
+      = new SimpleObjectProperty<>(TrainModelEnums.BrakeStatus.OFF);
+  private ObjectProperty<TrainModelEnums.BrakeStatus> emergencyBrakeStatus
+      = new SimpleObjectProperty<>(TrainModelEnums.BrakeStatus.OFF);
 
   private GpsLocation gpsLocation; //future development? 3/5/18
 
-  private Double positionInBlock; //The number of meters from the border of the current block.
+  private double positionInBlock = 0; //The number of meters from the border of the current block.
   // Measured from the previous boarder to front of train.
 
   /**
@@ -91,17 +108,33 @@ public class TrainModel implements TrainModelInterface {
     this.line = line;
   }
 
+  /**
+   * Adds a number of passengers to the train.
+   * @param numberOfPassengers The number of passengers to add.
+   */
   public void addPassengers(int numberOfPassengers) {
-    if ((numberOfPassengers + this.numPassengers) < TrainData.MAX_PASSENGERS) {
-      this.numPassengers = numPassengers + numberOfPassengers;
-      this.mass = mass + (TrainData.PASSENGER_WEIGHT * numberOfPassengers);
+    if ((numberOfPassengers + this.numPassengers.get()) < TrainData.MAX_PASSENGERS) {
+      this.capacity.set(capacity.get() - numberOfPassengers);
+      this.numPassengers.set(numPassengers.get() + numberOfPassengers);
+      this.mass.set(mass.get() + (TrainData.PASSENGER_WEIGHT * numberOfPassengers));
     }
     //Handle case where to many passengers could possibly be added.
   }
 
+  /**
+   * Removes a number of passengers from the train.
+   * @param numberOfPassengers The number of passengers to be removed.
+   */
   public void removePassengers(int numberOfPassengers) {
-    this.numPassengers = numPassengers - numberOfPassengers;
-    this.mass = mass - (Constants.passengerAvgMassKg * numberOfPassengers);
+    if ((this.numPassengers.get() - numberOfPassengers) >= 0) {
+      this.capacity.set(capacity.get() + numberOfPassengers);
+      this.numPassengers.set(numPassengers.get() - numberOfPassengers);
+      this.mass.set(mass.get() - (Constants.passengerAvgMassKg * numberOfPassengers));
+    }
+  }
+  
+  private void setAndConvertMassToImperial(Double mass) {
+    this.mass.setValue(mass * UnitConversions.KGS_TO_LBS);
   }
 
   /**
@@ -109,10 +142,10 @@ public class TrainModel implements TrainModelInterface {
    */
   private void start() {
     started = true;
-    if (velocity == 0) {
+    if (velocity.get() == 0) {
       acceleration = .000001;
     } else {
-       acceleration = powerCommand / (mass * velocity);
+      acceleration = powerCommand.get() / (mass.get() * velocity.get());
     }
   }
 
@@ -151,53 +184,53 @@ public class TrainModel implements TrainModelInterface {
    * Updates occupancy of a block when train changes blocks.
    */
   private void updateOccupancy() {
-    currentBlock.setTrainPresent(1);
-    currentBlock.getPreviousBlock().setTrainPresent(0);
+    //Need TrackModel instance 3/11/18.
+  //  currentBlock.setTrainPresent(1);
+  //  currentBlock.getPreviousBlock().setTrainPresent(0);
   }
 
   /**
    * Updates velocity.
    */
   private void updateVelocity() {
-    velocity = powerCommand / (mass * acceleration);
+    velocity.set(powerCommand.get() / (mass.get() * acceleration));
   }
 
   /**
    * Updates acceleration.
    */
   private void updateAcceleration() {
-    acceleration = powerCommand / (mass * velocity);
+    acceleration = powerCommand.get() / (mass.get() * velocity.get());
   }
 
   /**
    * Updates force.
    */
   private void updateForce() {
-    force = mass * acceleration;
+    force = mass.get() * acceleration;
   }
 
   /**
-   *
+   * Calculates the change in distance from the velocity and change in time.
    * @return the change in distance based on velocity of train and change in time.
    */
   private double changeInDist() {
-    return velocity / clock.getChangeInTime();
+    return velocity.get() / clock.getChangeInTime();
   }
 
   /**
-   * Runs simulation
+   * Runs simulation. This will be called from main.
    */
   public void run() {
     if (!started) {
       start();
-    }
-    while (started) {
-        updateAcceleration();
-        updateVelocity();
-        updateForce();
-        updatePosition();
-        brake();
-        updateOccupancy();
+    } else {
+      updateAcceleration();
+      updateVelocity();
+      updateForce();
+      updatePosition();
+      brake();
+      updateOccupancy();
     }
   }
 
@@ -208,61 +241,60 @@ public class TrainModel implements TrainModelInterface {
     double deceleration = 0;
     if (emergencyBrakeStatus.equals(TrainModelEnums.BrakeStatus.ON)) {
       deceleration = TrainData.EMERGENCY_BRAKE_ACCELERATION * clock.getChangeInTime();
-      velocity = velocity - deceleration;
+      velocity.set(velocity.get() - deceleration);
     } else if (emergencyBrakeStatus.equals(TrainModelEnums.BrakeStatus.OFF)
         && serviceBrakeStatus.equals(TrainModelEnums.BrakeStatus.ON)) {
       deceleration = TrainData.SERVICE_BRAKE_ACCELERATION * clock.getChangeInTime();
-      velocity = velocity - deceleration;
+      velocity.set(velocity.get() - deceleration);
     }
   }
 
+  /**
+   * Helper method to return true if a change in distance crosses block boarders.
+   * @param distChange The distance the train moved.
+   * @return true if train crosses block boarder, false otherwise.
+   */
   private boolean crossingBlock(Double distChange) {
-    return ((positionInBlock + distChange) > currentBlock.getSize());
+    // return ((positionInBlock + distChange) > currentBlock.getSize());
+    return false;
   }
 
   /**
-   * Change in time comes from clock.
-   */
-//  public double changeInTime() {
-//    return clock.getChangeInTime();
-//  }
-
-  /**
-   * Setters
+   * Setters.
    */
   @Override
   public void setEmergencyBrakeStatus(TrainModelEnums.BrakeStatus brakeStatus) {
-    this.emergencyBrakeStatus = brakeStatus;
+    this.emergencyBrakeStatus.set(brakeStatus);
   }
 
   @Override
   public void setServiceBrakeStatus(TrainModelEnums.BrakeStatus brakeStatus) {
-    this.serviceBrakeStatus = brakeStatus;
+    this.serviceBrakeStatus.set(brakeStatus);
   }
 
   @Override
   public void setTrackLineStatus(TrainModelEnums.TrackLineStatus trackLineStatus) {
-    this.trackLineStatus = trackLineStatus;
+    this.trackLineStatus.set(trackLineStatus);
   }
 
   @Override
   public void setAntennaStatus(TrainModelEnums.AntennaStatus antennaStatus) {
-    this.antennaStatus = antennaStatus;
+    this.antennaStatus.set(antennaStatus);
   }
 
   @Override
   public void setLeftDoorStatus(TrainModelEnums.DoorStatus leftDoorStatus) {
-    this.leftDoorStatus = leftDoorStatus;
+    this.leftDoorStatus.set(leftDoorStatus);
   }
 
   @Override
   public void setRightDoorStatus(TrainModelEnums.DoorStatus rightDoorStatus) {
-    this.rightDoorStatus = rightDoorStatus;
+    this.rightDoorStatus.set(rightDoorStatus);
   }
 
   @Override
   public void setLightStatus(TrainModelEnums.LightStatus lightStatus) {
-    this.lightStatus = lightStatus;
+    this.lightStatus.set(lightStatus);
   }
 
   @Override
@@ -273,7 +305,7 @@ public class TrainModel implements TrainModelInterface {
   //Will be called by TrainController to give TrainModel the power command.
   @Override
   public void setPowerCommand(double powerCommand) {
-    this.powerCommand = powerCommand;
+    this.powerCommand.set(powerCommand);
   }
 
   //Will get called by MBO (or TrackModel?)
@@ -296,7 +328,7 @@ public class TrainModel implements TrainModelInterface {
   }
 
   /**
-   * Getters
+   * Getters.
    */
   @Override
   public GpsLocation getGpsLocation() {
@@ -305,42 +337,42 @@ public class TrainModel implements TrainModelInterface {
 
   @Override
   public double getCurrentSpeed() {
-    return actualSpeed.getValue();
+    return velocity.getValue();
   }
 
   @Override
   public TrainModelEnums.BrakeStatus getEmergencyBrakeStatus() {
-    return emergencyBrakeStatus;
+    return emergencyBrakeStatus.get();
   }
 
   @Override
   public TrainModelEnums.BrakeStatus getServiceBrakeStatus() {
-    return serviceBrakeStatus;
+    return serviceBrakeStatus.get();
   }
 
   @Override
   public TrainModelEnums.TrackLineStatus getTrackLineStatus() {
-    return trackLineStatus;
+    return trackLineStatus.get();
   }
 
   @Override
   public TrainModelEnums.AntennaStatus getAntennaStatus() {
-    return antennaStatus;
+    return antennaStatus.get();
   }
 
   @Override
   public TrainModelEnums.DoorStatus getLeftDoorStatus() {
-    return leftDoorStatus;
+    return leftDoorStatus.get();
   }
 
   @Override
   public TrainModelEnums.DoorStatus getRightDoorStatus() {
-    return rightDoorStatus;
+    return rightDoorStatus.get();
   }
 
   @Override
   public TrainModelEnums.LightStatus getLightStatus() {
-    return lightStatus;
+    return lightStatus.get();
   }
 
   @Override
@@ -354,7 +386,7 @@ public class TrainModel implements TrainModelInterface {
   }
 
   public double getMass() {
-    return mass;
+    return mass.get();
   }
 
   public double getAcceleration() {
@@ -366,7 +398,7 @@ public class TrainModel implements TrainModelInterface {
   }
 
   public double getVelocity() {
-    return velocity;
+    return velocity.get();
   }
 
   public String getId() {
@@ -378,7 +410,7 @@ public class TrainModel implements TrainModelInterface {
   }
 
   public double getPowerCommand() {
-    return powerCommand;
+    return powerCommand.get();
   }
 
   public Block getCurrentBlock() {
@@ -387,5 +419,73 @@ public class TrainModel implements TrainModelInterface {
 
   public Block getPreviousBlock() {
     return previousBlock;
+  }
+
+  public DoubleProperty currentTempProperty() {
+    return currentTemp;
+  }
+
+  public SimpleDoubleProperty massProperty() {
+    return mass;
+  }
+
+  public SimpleDoubleProperty velocityProperty() {
+    return velocity;
+  }
+
+  public SimpleDoubleProperty powerCommandProperty() {
+    return powerCommand;
+  }
+
+  public SimpleIntegerProperty numPassengersProperty() {
+    return numPassengers;
+  }
+
+  public SimpleIntegerProperty capacityProperty() {
+    return capacity;
+  }
+
+  public SimpleDoubleProperty heightProperty() {
+    return height;
+  }
+
+  public SimpleDoubleProperty widthProperty() {
+    return width;
+  }
+
+  public SimpleDoubleProperty lengthOfTrainProperty() {
+    return lengthOfTrain;
+  }
+
+  public SimpleDoubleProperty numberOfCarsProperty() {
+    return numberOfCars;
+  }
+
+  public ObjectProperty<TrainModelEnums.BrakeStatus> emergencyBrakeStatusProperty() {
+    return emergencyBrakeStatus;
+  }
+
+  public ObjectProperty<TrainModelEnums.LightStatus> lightStatusProperty() {
+    return lightStatus;
+  }
+
+  public ObjectProperty<TrainModelEnums.DoorStatus> rightDoorStatusProperty() {
+    return rightDoorStatus;
+  }
+
+  public ObjectProperty<TrainModelEnums.DoorStatus> leftDoorStatusProperty() {
+    return leftDoorStatus;
+  }
+
+  public ObjectProperty<TrainModelEnums.AntennaStatus> antennaStatusProperty() {
+    return antennaStatus;
+  }
+
+  public ObjectProperty<TrainModelEnums.TrackLineStatus> trackLineStatusProperty() {
+    return trackLineStatus;
+  }
+
+  public ObjectProperty<TrainModelEnums.BrakeStatus> serviceBrakeStatusProperty() {
+    return serviceBrakeStatus;
   }
 }
