@@ -4,11 +4,7 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
 
-
 public class Block {
-
-  //BLob Data
-  private String[] params;
 
   //ID
   private String line;
@@ -18,18 +14,19 @@ public class Block {
   //Parameters
   private float size;
   private float grade;
-  private float speedLimit;
+  private int speedLimit;
   private float elevation;
   private float cumElevation;
-  private int direction;
 
   //Infrastructure
-  private String infrastructure;
+  private String stationName = "";
+  private boolean leftStation;
+  private boolean rightStation;
+  private boolean underground;
+  private boolean switchHere;
+  private boolean crossing;
+  private boolean crossingStatus;
   private boolean heaters;
-  private int switchId;
-  private Switch junction;
-  private Crossing crossing;
-  private Station station;
 
   //Failures
   private boolean brokenRailStatus;
@@ -45,76 +42,53 @@ public class Block {
   private float setPointSpeed;
   private float authority;
   private boolean beacon;
-
+  
   //Neighbors
-  private Block nextBlock;
-  private Block previousBlock;
+  private boolean biDirectional;
+  private int previous;
+  private int nextBlock1;
 
   public Block() {
 
   }
 
-  public Block(String csvLine) {
-    loadBlock(csvLine);
-  }
-
   /**
-  *Parse String and set block data.
-  *@param csvLine string of Block data
-  */
-  private void loadBlock(String csvLine) {
-    params = csvLine.split(",");
-
-    //Line
-    setLine(params[0]);
-
-    //Section
-    setSection(params[1]);
-
-    //Block Number
-    setNumber(Integer.parseInt(params[2]));
-
-    //Block Length
-    setSize(Float.parseFloat(params[3]));
-
-    //Block Grade
-    setGrade(Float.parseFloat(params[4]));
-
-    //Speed Limit
-    setSpeedLimit(Float.parseFloat(params[5]));
-
-    //Infrastructure
-    setInfrastructure(params[6]);
-
-    //Elevation
-    setElevation(Float.parseFloat(params[8]));
-
-    //Cumulative Elevation
-    setCumElevation(Float.parseFloat(params[9]));
-
-    //Set No switch value
-    setSwitchId(-1);
-
-    //SwitchID
-    if (params.length > 10 && params[10].length() > 1) {
-      int switchNum = Integer.parseInt(params[10].split(" ")[1]);
-      setSwitchId(switchNum);
-    }     //Station
-
-    if (getInfrastructure().equals("STATION")) {
-      setStation(new Station(params[6]));
-    } else if (getInfrastructure().equals("CROSSING")) {
-      setCrossing(new Crossing());
-    }
-  }
-
-
-  /**
-   * This method return a list of parameter.
-   * @return the array of parameters
+   *Parse String and set block data.
+   *@param line The string that indicates the line
+   *@param section This string that indicates the section
+   *@param number This string indicates the number for the block
+   *@param length The length of a block
+   *@param grade The grade of a block
+   *@param speedLimit The speed limit on a block
+   *@param infrastructure The special indicators for a block type
+   *@param elevation The elevation of a block
+   *@param cumElevation The cumulative elevation of a block
+   *@param biDirectional This indicates if a block is bidirectional
+   *@param previous This indicates the block prior to this one
+   *@param next1 This indicates the next logical block for the track after the current block
+   *@param leftDoors This indicates that the station is on the left of the track
+   *@param rightDoors This indicates that the station is on the right of the track
    */
-  public String[] getparams() {
-    return params;
+  public Block(String line, String section, String number, float length,
+               float grade, int speedLimit, String infrastructure, float elevation,
+               float cumElevation, boolean biDirectional, int previous, int next1,
+               boolean leftDoors, boolean rightDoors) {
+
+    setLine(line);
+    setSection(section);
+    setNumber(Integer.parseInt(number));
+    setSize(length);
+    setGrade(grade);
+    setSpeedLimit(speedLimit);
+    setInfrastructure(infrastructure);
+    setElevation(elevation);
+    setCumElevation(cumElevation);
+    setBiDirectional(biDirectional);
+    setPrevious(previous);
+    setNextBlockOne(next1);
+    setLeftDoors(leftDoors);
+    setRightDoors(rightDoors);
+
   }
 
   /**
@@ -194,33 +168,24 @@ public class Block {
    * This method will return the direction based on an integer.
    * @return An integer value will be returned to indicate the direction
    */
-  public int getDirection() {
-    return direction;
+  public boolean getBiDirection() {
+    return biDirectional;
   }
 
   /**
    * This method will return the next block in the track.
-   * @return A Block will be returned
+   * @return A integer will be returned
    */
-  public Block getNextBlock() {
-    return nextBlock;
+  public int getNextBlock() {
+    return nextBlock1;
   }
 
   /**
-   * This method will return the previous block in the track.
-   * @return A Block will be returned
+   * This method will return the other possible next block.
+   * @return A integer will be returned
    */
-  public Block getPreviousBlock() {
-    return previousBlock;
-  }
+  public int getPrevious() { return previous; }
 
-  /**
-   * The infrastructure will be returned.
-   * @return This will be returned in the form of a string
-   */
-  public String getInfrastructure() {
-    return infrastructure;
-  }
 
   /**
    * The status of the heaters will be returned by this method.
@@ -230,37 +195,6 @@ public class Block {
     return heaters;
   }
 
-  /**
-   * The status of the switch id number will be returned if this block holds a switch.
-   * @return The integer that is used as an id will be returned
-   */
-  public int getSwitchId() {
-    return switchId;
-  }
-
-  /**
-   * The switch at the current location will be returned.
-   * @return Returns a switch object
-   */
-  public Switch getSwitch() {
-    return junction;
-  }
-
-  /**
-   * The switch will return a crossing object if one is at the block.
-   * @return Returns a crossing object
-   */
-  public Crossing getCrossing() {
-    return crossing;
-  }
-
-  /**
-   * This method will return a station if there is one at this block.
-   * @return A Station object will be returned
-   */
-  public Station getStation() {
-    return station;
-  }
 
   /**
    * Return the id of any train present.
@@ -268,6 +202,64 @@ public class Block {
    */
   public int getTrainPresent() {
     return trainPresent;
+  }
+
+  /**
+  * This method will alert the driver if the left doors are to be opened
+  * @return A Boolean value indicating if the station is on the left
+  */
+  public boolean getLeftDoors() {
+    if (stationName.equals("")) {
+      return leftStation;
+    }
+    return false;
+  }
+
+  /**
+  * This method will alert the driver if the left doors are to be opened
+  * @return A Boolean value indicating if the station is on the right
+  */
+  public boolean getRightDoors() {
+    if (stationName.equals("")) {
+      return rightStation;
+    }
+    return false;
+  }
+
+  /**
+  * This method will alert the user if the track block is underground
+  * @return A Boolean value indicating if the track is underground
+  */
+  public boolean getUnderground() {
+    return underground;
+  }
+
+  /**
+  * This method will let the user know if there is a switch at this block
+  * @return A Boolean value indicating if the block is a switch
+  */
+  public boolean getSwitch() {
+    return switchHere;
+  }
+
+  /**
+  * This method will let the user know if there is a crossing here
+  * @Return A Boolean value will be passed in that indicates if this block has a crossing
+  */
+  public boolean getCrossing() {
+    return crossing;
+  }
+
+  /**
+  * This method will return the status of the crossing if there is one at this block location
+  * @return A Boolean value will be returned indicating the status of a crossing
+  */
+  public boolean getCrossingStatus() {
+    if (crossing == true) {
+      return crossingStatus;
+    } else {
+      return false;
+    }
   }
 
   /**
@@ -335,14 +327,6 @@ public class Block {
   }
 
   /**
-   * This method update the parameter of the block.
-   * @param newparams This is a string that updates the parameters.
-   */
-  public void setparams(String[] newparams) {
-    params = newparams;
-  }
-
-  /**
    * This method will set a new line for the block.
    * @param newLine The new line that the block is part of
    */
@@ -386,7 +370,7 @@ public class Block {
    * This method will set the speed limit of a block.
    * @param newSpeedLimit The new speed limit as a float
    */
-  public void setSpeedLimit(float newSpeedLimit) {
+  public void setSpeedLimit(int newSpeedLimit) {
     speedLimit = newSpeedLimit;
   }
 
@@ -407,27 +391,27 @@ public class Block {
   }
 
   /**
-   * This method will set the new direction of a block.
-   * @param newDirection A integer value will be passed in to set the direction
+   * This method will set if the block is bidirectional.
+   * @param newBiDirectional This states wether the block is bidirectional
    */
-  public void setDirection(int newDirection) {
-    direction = newDirection;
+  public void setBiDirectional(Boolean newBiDirectional) {
+    biDirectional = newBiDirectional;
   }
 
   /**
    * This method will set the next block for the track.
-   * @param newNextBlock A Block will be passed in for the current block.
+   * @param newPrevious A Block will be passed in for the current block.
    */
-  public void setNextBlock(Block newNextBlock) {
-    nextBlock = newNextBlock;
+  public void setPrevious(int newPrevious) {
+    previous = newPrevious;
   }
 
   /**
-   * This method will set the previous block of the track.
-   * @param newPreviousBlock A Block will be passed in for the current block.
+   * This method will set the other possible next block.
+   * @param newNextBlock A Block will be passed in for the other possible next block.
    */
-  public void setPreviousBlock(Block newPreviousBlock) {
-    previousBlock = newPreviousBlock;
+  public void setNextBlockOne(int newNextBlock) {
+    nextBlock1 = newNextBlock;
   }
 
   /**
@@ -443,17 +427,21 @@ public class Block {
    * @param newInfrastructure A String will the infrastructure will be passed in
    */
   public void setInfrastructure(String newInfrastructure) {
-    String beginning1 = newInfrastructure.split(" ")[0];
-    String beginning2 = beginning1.split(";")[0];
-    String beginning3 = beginning2.split(":")[0];
+    String[] parts = newInfrastructure.split(";");
 
-    if (beginning3.equals("RAILWAY")) {
-      infrastructure = "CROSSING";
-    } else if (beginning3.equals("STATION")) {
-      infrastructure = "STATION";
-    } else {
-      infrastructure = beginning3;
+    for (int i = 0; i < parts.length; i++) {
+      if (parts[i].equals("STATION")) {
+        stationName = parts[i + 1];
+      } else if (parts[i].equals("RAILWAY CROSSING")) {
+        crossing = true;
+        crossingStatus = false;
+      } else if (parts[i].equals("UNDERGROUND")) {
+        underground = true;
+      } else if (parts[i].equals("SWITCH")) {
+        switchHere = true;
+      }
     }
+
   }
 
   /**
@@ -462,38 +450,6 @@ public class Block {
    */
   public void setHeaters(boolean state) {
     heaters = state;
-  }
-
-  /**
-   * This method will update the switch id at the current block.
-   * @param newSwitchId A integer will be passed in for the id number
-   */
-  public void setSwitchId(int newSwitchId) {
-    switchId = newSwitchId;
-  }
-
-  /**
-   * The switch will be updated for the block.
-   * @param newSwitch A Switch will be passed in for the block
-   */
-  public void setSwitch(Switch newSwitch) {
-    junction = newSwitch;
-  }
-
-  /**
-   * This method will set the crossing on the block.
-   * @param newCrossing A Crossing object should be passed in
-   */
-  public void setCrossing(Crossing newCrossing) {
-    crossing = newCrossing;
-  }
-
-  /**
-   * This method will create a new station.
-   * @param newStation A Station object should be passed on to the method
-   */
-  public void setStation(Station newStation) {
-    station = newStation;
   }
 
   /**
@@ -518,9 +474,6 @@ public class Block {
    */
   public void setSetPointSpeed(float newSetPointSpeed) {
     setPointSpeed = newSetPointSpeed;
-    if (setPointSpeed > speedLimit) {
-      speedLimit = setPointSpeed;
-    }
   }
 
   /**
@@ -545,6 +498,22 @@ public class Block {
     } else if (failure == 2) {
       setTrackCircuitStatus(true);
     }
+  }
+
+  /**
+  * This method will set the if the doors for a station are on the left side
+  * @param leftDoors This using a boolean indicates if the doors are on the left
+  */
+  public void setLeftDoors(boolean leftDoors) {
+    this.leftStation = leftDoors;
+  }
+
+  /**
+  * This method will set the if the doors for a station are on the right side
+  * @param rightDoors This using a boolean indicates if the doors are on the left
+  */
+  public void setRightDoors(boolean rightDoors) {
+    this.rightStation = rightDoors;
   }
 
   /**
@@ -605,13 +574,6 @@ public class Block {
         + "<br><br><b>Infrastructure</b><br>&#09;Train Present: " + this.trainPresent
         + "<br>&#09;Heaters: " + this.heaters;
 
-    if (this.getInfrastructure().equals("SWITCH")) {
-      output += "<br>&#09;Switch: " + this.switchId;
-    } else if (this.getInfrastructure().equals("STATION")) {
-      output += "<br>&#09;Station: " + this.station;
-    } else if (this.getInfrastructure().equals("CROSSING")) {
-      output += "<br>&#09;Crossing: " + this.crossing;
-    }
 
     output += "<br><br><b>Failures</b><br>&#09;Broken Rail: " + this.brokenRailStatus
         + "<br>&#09;Track Circuit Failure: " + this.powerStatus
@@ -638,13 +600,6 @@ public class Block {
         + "\n\tInfrastructure\n\t\tTrain Present: " + this.trainPresent
         + "\n\t\tHeaters: " + this.heaters;
 
-    if (this.getInfrastructure().equals("SWITCH")) {
-      output += "\n\t\tSwitch: " + this.switchId;
-    } else if (this.getInfrastructure().equals("STATION")) {
-      output += "\n\t\tStation: " + this.station;
-    } else if (this.getInfrastructure().equals("CROSSING")) {
-      output += "\n\t\tCrossing: " + this.crossing;
-    }
     output += "\n\tFailures\n\t\tBroken Rail: " + this.brokenRailStatus
         + "\n\t\tTrack Circuit Failure: " + this.powerStatus
         + "\n\t\tPower Failure: " + this.trackCircuitStatus;

@@ -1,96 +1,53 @@
 package trackmodel.model;
 
-public class Switch {
+public class Switch extends Block{
 
-  private int id;
-  private Block mainB;
-  private boolean state;
-  private Block destination1;
-  private Block destination2;
+  private int next2;
+  private int status;
 
-  public Switch(int id, Block mainB) {
-    setId(id);
-    setMainBlock(mainB);
-  }
+  public Switch(String line, String section, String number, float length,
+                float grade, int speedLimit, String infrastructure, float elevation,
+                float cumElevation, boolean biDirectional, int previous, int next1,
+                int next2, boolean leftDoors, boolean rightDoors) {
 
-  public int getId() {
-    return this.id;
-  }
-
-  public Block getDestination1() {
-    return this.destination1;
-  }
-
-  public Block getDestination2() {
-    return this.destination2;
-  }
-
-  public boolean getState() {
-    return this.state;
-  }
-
-  public void setId(int id) {
-    this.id = id;
-  }
-
-  public void setMainBlock(Block mainB) {
-    this.mainB = mainB;
-  }
-
-  public void setDestination1(Block dest1) {
-    this.destination1 = dest1;
-  }
-
-  public void setDestination2(Block dest2) {
-    this.destination2 = dest2;
+    super(line, section, number, length, grade, speedLimit, infrastructure, elevation,
+        cumElevation, biDirectional, previous, next1, leftDoors, rightDoors);
+    this.next2 = next2;
   }
 
   /**
-   * This method will allow the user to set a State.
-   * @param newState The boolean value of a state for the switch.
+   * This method will set the other possible next block.
+   * @param newNextBlock A Block will be passed in for the other possible next block.
    */
-  public void setState(boolean newState) {
-    this.state = newState;
+  public void setNextBlockOne(int newNextBlock) {
+    next2 = newNextBlock;
+  }
 
-    if (!state) {
-      if (mainB.getNextBlock() == destination1) {
-        mainB.setNextBlock(destination1);
-      } else if (mainB.getPreviousBlock() == destination2) {
-        mainB.setPreviousBlock(destination1);
-      }
+  /**
+   * This method will return the next block in the track.
+   * @return A integer will be returned
+   */
+  public int getNextBlock() {
+    return next2;
+  }
 
-      if (destination1.getNextBlock() == null) {
-        destination1.setNextBlock(mainB);
-      } else if (destination1.getPreviousBlock() == null) {
-        destination1.setPreviousBlock(mainB);
-      }
-    } else if (state) {
-      if (mainB.getNextBlock() == destination1) {
-        mainB.setNextBlock(destination2);
-      } else if (mainB.getPreviousBlock() == destination1) {
-        mainB.setPreviousBlock(destination2);
-      }
-
-      if (destination1.getNextBlock() == mainB) {
-        destination1.setNextBlock(null);
-      } else if (destination1.getPreviousBlock() == mainB) {
-        destination1.setPreviousBlock(null);
-      }
-
-      if (destination2.getNextBlock() == mainB) {
-        destination2.setNextBlock(mainB);
-      } else if (destination2.getPreviousBlock() == mainB) {
-        destination2.setPreviousBlock(mainB);
-      }
+  /**
+  * This method will update the status of the switch.
+  * The status will be set to a block
+  * @param newStatus This is the block number that the switch is to be set too
+  */
+  public void setStatus(int newStatus) {
+    if (newStatus == getNextBlock() || newStatus == next2) {
+      status = newStatus;
     }
   }
 
-  public void toggleSwitch() {
-    setState(!state);
+  /**
+  * This method will return the status of a switch
+  * @return a block number that the switch is currently connected to
+  */
+  public int getStatus() {
+    return status;
   }
 
-  public String toString() {
-    return "ID =" + id + ", Main Block = " + mainB.getNumber() + ", Destination 1 "
-            + destination1.getNumber() + ", Destination 2 = " + destination2.getNumber();
-  }
 }
