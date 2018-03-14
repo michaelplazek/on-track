@@ -538,6 +538,7 @@ public class CentralTrafficControlController {
 
       // create train
       ctc.addTrain(train);
+
     }
   }
 

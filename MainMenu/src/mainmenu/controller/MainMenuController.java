@@ -1,24 +1,19 @@
 package mainmenu.controller;
 
-import ctc.controller.CentralTrafficControlController;
 import ctc.view.CentralTrafficControlUserInterface;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import mainmenu.model.MainMenuModel;
 import mbo.view.MovingBlockOverlayUserInterface;
 import trackmodel.view.TrackModelUserInterface;
 import traincontroller.model.TrainController;
-import traincontroller.model.TrainControllerFactory;
 import traincontroller.view.TrainControllerUserInterface;
+import trainmodel.TrainModelUserInterface;
 
 /**
  * Main controller class for the Main Menu.
@@ -77,7 +72,7 @@ public class MainMenuController implements Initializable {
   }
 
   /**
-   * Handler to open to CTC.
+   * Handler to open to MBO.
    * @param event event from the button
    */
   public void openMovingBlockOverlay(ActionEvent event) {
@@ -101,7 +96,7 @@ public class MainMenuController implements Initializable {
   }
 
   /**
-   * Handler to open Track Model.
+   * Handler to open Train Controller.
    * @param event event from button
    */
   @FXML
@@ -111,5 +106,14 @@ public class MainMenuController implements Initializable {
 
   public void updateTrainControllerDropdown() {
     trainControllerChoiceBox.setItems(TrainController.getListOfTrains());
+  }
+
+  @FXML
+  private void openTrainModel(ActionEvent event) {
+    TrainModelUserInterface.openTrainModel(trainModelChoiceBox.getSelectionModel().getSelectedItem());
+  }
+
+  public void updateTrainModelDropdown(){
+    trainModelChoiceBox.setItems(TrainController.getListOfTrains());
   }
 }

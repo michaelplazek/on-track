@@ -1,7 +1,6 @@
 package trainmodel.model;
 
 import traincontroller.model.TrainControllerInterface;
-import trainmodel.TrainModelInterface;
 
 /**
  * Created by jeremyzang on 3/2/18.

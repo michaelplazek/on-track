@@ -9,7 +9,7 @@ import javafx.collections.ObservableList;
 import mainmenu.Clock;
 import mainmenu.ClockInterface;
 import mainmenu.controller.MainMenuController;
-import trainmodel.TrainModelInterface;
+import trainmodel.model.TrainModelInterface;
 import trainmodel.model.TrainModel;
 import utils.train.TrainModelEnums;
 

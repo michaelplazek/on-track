@@ -1,4 +1,4 @@
-package trainmodel;
+package trainmodel.model;
 
 import trainmodel.model.GpsLocation;
 import utils.train.TrainModelEnums.AntennaStatus;

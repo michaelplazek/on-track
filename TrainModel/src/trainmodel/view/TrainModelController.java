@@ -139,6 +139,11 @@ public class TrainModelController implements Initializable {
   private TrainModel trainModel;
   private TrainController trainController;
 
+  public TrainModelController(String trainId) {
+    trainController = TrainController.getTrainController(trainId);
+    trainModel.setController(trainController);
+  }
+
   @FXML
   private void toggleSelectedFailures(ActionEvent event) {
     Button btn = (Button) event.getSource();

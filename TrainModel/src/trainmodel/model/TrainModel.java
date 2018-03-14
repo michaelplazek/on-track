@@ -8,7 +8,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import mainmenu.Clock;
 import trackmodel.model.Block;
 import traincontroller.model.TrainControllerInterface;
-import trainmodel.TrainModelInterface;
 import trainmodel.controller.Constants;
 import utils.train.TrainData;
 import utils.train.TrainModelEnums;
@@ -48,7 +47,7 @@ public class TrainModel implements TrainModelInterface {
   private SimpleDoubleProperty powerCommand = new SimpleDoubleProperty(0); //In kilo Watts.
   private SimpleIntegerProperty numPassengers = new SimpleIntegerProperty(0);
   private SimpleIntegerProperty capacity
-      = new SimpleIntegerProperty(148); //passenger capacity of train.
+      = new SimpleIntegerProperty(TrainData.MAX_PASSENGERS); //passenger capacity of train.
 
   private double acceleration = 0.0000001; //in m/s^2
   private double force = 0; //in N
@@ -111,12 +110,19 @@ public class TrainModel implements TrainModelInterface {
    * @param numberOfPassengers The number of passengers to add.
    */
   public void addPassengers(int numberOfPassengers) {
-    if ((numberOfPassengers + this.numPassengers.get()) < TrainData.MAX_PASSENGERS) {
+    int availableSeats = TrainData.MAX_PASSENGERS - this.numPassengers.get();
+
+    if (numberOfPassengers <= availableSeats) {
       this.capacity.set(capacity.get() - numberOfPassengers);
       this.numPassengers.set(numPassengers.get() + numberOfPassengers);
       this.mass.set(mass.get() + (TrainData.PASSENGER_WEIGHT * numberOfPassengers));
+    } else {
+      //If numberOfPassengers is >= available seats as the most you can.
+      int passengersTotal = this.numPassengers.get() + availableSeats;
+      this.numPassengers.set(passengersTotal);
+      this.capacity.set(TrainData.MAX_PASSENGERS - passengersTotal); //This should be zero
+      this.mass.set(TrainData.EMPTY_WEIGHT + (TrainData.PASSENGER_WEIGHT * passengersTotal));
     }
-    //Handle case where to many passengers could possibly be added.
   }
 
   /**
@@ -127,7 +133,14 @@ public class TrainModel implements TrainModelInterface {
     if ((this.numPassengers.get() - numberOfPassengers) >= 0) {
       this.capacity.set(capacity.get() + numberOfPassengers);
       this.numPassengers.set(numPassengers.get() - numberOfPassengers);
-      this.mass.set(mass.get() - (Constants.passengerAvgMassKg * numberOfPassengers));
+      this.mass.set(mass.get() - (TrainData.PASSENGER_WEIGHT * numberOfPassengers));
+    } else {
+      this.capacity.set(TrainData.MAX_PASSENGERS);
+      this.numPassengers.set(0);
+      this.mass.set(
+          (TrainData.EMPTY_WEIGHT + (TrainData.MAX_PASSENGERS * TrainData.PASSENGER_WEIGHT))
+          - (TrainData.MAX_PASSENGERS * Constants.passengerAvgMassKg));
+
     }
   }
   
@@ -323,6 +336,10 @@ public class TrainModel implements TrainModelInterface {
     //When in manual mode Speed/Auth and Beacon signal comes from track model.
     //when in manual mode call this.
     this.controller.setBeaconSignal(beaconSignal);
+  }
+
+  public void setController(TrainControllerInterface controller) {
+    this.controller = controller;
   }
 
   /**
