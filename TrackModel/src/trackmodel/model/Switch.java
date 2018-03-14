@@ -1,10 +1,28 @@
 package trackmodel.model;
 
-public class Switch extends Block{
+public class Switch extends Block {
 
   private int next2;
   private int status;
 
+  /**
+   * This method is the constructor to create a new switch.
+   * @param line The line the switch lays on
+   * @param section The section of the track that the block is on
+   * @param number The number of hte block that the switch is on
+   * @param length The length of the block
+   * @param grade The grade of the block
+   * @param speedLimit The speed limit on the block
+   * @param infrastructure The infrastructure string for the block
+   * @param elevation The elevation of a block
+   * @param cumElevation The cumulative elevation of the block
+   * @param biDirectional If the block is bidirectional
+   * @param previous The previous block in the track
+   * @param next1 The first of two possible next blocks in the track
+   * @param next2 The second of two possible next blocks in the track
+   * @param leftDoors If the track is on the left of the track
+   * @param rightDoors If the station is on the right of the track
+   */
   public Switch(String line, String section, String number, float length,
                 float grade, int speedLimit, String infrastructure, float elevation,
                 float cumElevation, boolean biDirectional, int previous, int next1,
@@ -43,7 +61,7 @@ public class Switch extends Block{
   }
 
   /**
-  * This method will return the status of a switch
+  * This method will return the status of a switch.
   * @return a block number that the switch is currently connected to
   */
   public int getStatus() {

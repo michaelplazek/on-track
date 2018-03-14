@@ -184,8 +184,9 @@ public class Block {
    * This method will return the other possible next block.
    * @return A integer will be returned
    */
-  public int getPrevious() { return previous; }
-
+  public int getPrevious() {
+    return previous;
+  }
 
   /**
    * The status of the heaters will be returned by this method.
@@ -205,7 +206,7 @@ public class Block {
   }
 
   /**
-  * This method will alert the driver if the left doors are to be opened
+  * This method will alert the driver if the left doors are to be opened.
   * @return A Boolean value indicating if the station is on the left
   */
   public boolean getLeftDoors() {
@@ -216,7 +217,7 @@ public class Block {
   }
 
   /**
-  * This method will alert the driver if the left doors are to be opened
+  * This method will alert the driver if the left doors are to be opened.
   * @return A Boolean value indicating if the station is on the right
   */
   public boolean getRightDoors() {
@@ -227,7 +228,7 @@ public class Block {
   }
 
   /**
-  * This method will alert the user if the track block is underground
+  * This method will alert the user if the track block is underground.
   * @return A Boolean value indicating if the track is underground
   */
   public boolean getUnderground() {
@@ -235,7 +236,7 @@ public class Block {
   }
 
   /**
-  * This method will let the user know if there is a switch at this block
+  * This method will let the user know if there is a switch at this block.
   * @return A Boolean value indicating if the block is a switch
   */
   public boolean getSwitch() {
@@ -243,7 +244,7 @@ public class Block {
   }
 
   /**
-  * This method will let the user know if there is a crossing here
+  * This method will let the user know if there is a crossing here.
   * @Return A Boolean value will be passed in that indicates if this block has a crossing
   */
   public boolean getCrossing() {
@@ -251,7 +252,7 @@ public class Block {
   }
 
   /**
-  * This method will return the status of the crossing if there is one at this block location
+  * This method will return the status of the crossing if there is one at this block location.
   * @return A Boolean value will be returned indicating the status of a crossing
   */
   public boolean getCrossingStatus() {
@@ -501,7 +502,7 @@ public class Block {
   }
 
   /**
-  * This method will set the if the doors for a station are on the left side
+  * This method will set the if the doors for a station are on the left side.
   * @param leftDoors This using a boolean indicates if the doors are on the left
   */
   public void setLeftDoors(boolean leftDoors) {
@@ -509,7 +510,7 @@ public class Block {
   }
 
   /**
-  * This method will set the if the doors for a station are on the right side
+  * This method will set the if the doors for a station are on the right side.
   * @param rightDoors This using a boolean indicates if the doors are on the left
   */
   public void setRightDoors(boolean rightDoors) {
