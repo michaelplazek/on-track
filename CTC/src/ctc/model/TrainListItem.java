@@ -3,7 +3,6 @@ package ctc.model;
 import javafx.collections.ObservableList;
 import traincontroller.model.TrainController;
 import traincontroller.model.TrainControllerFactory;
-import trainmodel.model.TrainModelFactory;
 
 /**
  * This class is used to map the train instances to their routes.
@@ -42,9 +41,6 @@ public class TrainListItem {
       String line,
       ObservableList<TrainStopRow> schedule) {
     this.train = (TrainController) TrainControllerFactory.createTrainController(id, line);
-
-    //Added by J.Zang 3/13/18 to create a TrainModel when a TrainController gets created
-    TrainModelFactory.createTrainModel(train, id, line);
     this.name = id;
     this.departure = departure;
     this.schedule = schedule;
