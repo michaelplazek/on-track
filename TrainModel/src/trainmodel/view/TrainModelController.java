@@ -17,10 +17,8 @@ import javafx.util.StringConverter;
 import javafx.util.converter.NumberStringConverter;
 import mainmenu.Clock;
 import traincontroller.model.TrainController;
-import traincontroller.model.TrainControllerFactory;
 import trainmodel.controller.Constants;
 import trainmodel.model.TrainModel;
-import trainmodel.model.TrainModelFactory;
 import utils.train.TrainModelEnums;
 
 
@@ -139,8 +137,13 @@ public class TrainModelController implements Initializable {
   private TrainModel trainModel;
   private TrainController trainController;
 
+  /**
+   * Constructs a TrainModelController instance.
+   * @param trainId the ID of the train.
+   */
   public TrainModelController(String trainId) {
     trainController = TrainController.getTrainController(trainId);
+    trainModel = TrainModel.getTrainModel(trainId);
     trainModel.setController(trainController);
   }
 
@@ -196,21 +199,9 @@ public class TrainModelController implements Initializable {
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
-    initializeTrainModel();
     initializeStatusLabels();
     initializeStatusIcons();
     initializeButtonHandlers();
-  }
-
-  /**
-   * Initialized TrainModel and TrainController instances.
-   * TODO: Get proper id and line names from CTC on creation. Maybe?
-   */
-  private void initializeTrainModel() {
-    trainController = (TrainController) TrainControllerFactory
-        .createTrainController("001", "RED");
-    trainModel = (TrainModel) TrainModelFactory
-        .createTrainModel(trainController,"001", "RED");
   }
 
   /**

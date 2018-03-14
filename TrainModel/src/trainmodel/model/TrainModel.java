@@ -1,17 +1,23 @@
 package trainmodel.model;
 
+import java.util.HashMap;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import mainmenu.Clock;
+import mainmenu.controller.MainMenuController;
 import trackmodel.model.Block;
 import traincontroller.model.TrainControllerInterface;
 import trainmodel.controller.Constants;
 import utils.train.TrainData;
 import utils.train.TrainModelEnums;
 import utils.unitconversion.UnitConversions;
+
+
 
 /**
  * Created by jeremyzang on 2/16/18.
@@ -87,6 +93,8 @@ public class TrainModel implements TrainModelInterface {
   //Speed and Authority from trackModel gets passed to TrainController in Manual Mode
   private Byte[] trackModelSpeedAuth;
   private Byte[] beaconSignal;
+
+  private static HashMap<String, TrainModel> listOfTrainModels = new HashMap<>();
 
   private TrainControllerInterface controller;
   private String id; //Train id
@@ -268,6 +276,28 @@ public class TrainModel implements TrainModelInterface {
   private boolean crossingBlock(Double distChange) {
     // return ((positionInBlock + distChange) > currentBlock.getSize());
     return false;
+  }
+
+  /**
+   * Adds Train Model to the list.
+   * @param train the TrainModel to be added.
+   */
+  protected static void addTrain(TrainModel train) {
+    listOfTrainModels.put(train.getId(), train);
+    MainMenuController.getInstance().updateTrainModelDropdown();
+  }
+
+  /**
+   * Removes a trainModel from the list.
+   * */
+  public static boolean delete(String trainId) {
+    TrainModel temp = listOfTrainModels.get(trainId);
+    if (temp == null) {
+      return false;
+    }
+    listOfTrainModels.remove(trainId);
+    MainMenuController.getInstance().updateTrainModelDropdown();
+    return true;
   }
 
   /**
@@ -503,4 +533,21 @@ public class TrainModel implements TrainModelInterface {
   public ObjectProperty<TrainModelEnums.BrakeStatus> serviceBrakeStatusProperty() {
     return serviceBrakeStatus;
   }
+
+  public TrainControllerInterface getController() {
+    return controller;
+  }
+
+  public static ObservableList<String> getObservableListOfTrainModels() {
+    return FXCollections.observableArrayList(listOfTrainModels.keySet());
+  }
+
+  public static TrainModel getTrainModel(String id) {
+    return listOfTrainModels.get(id);
+  }
+
+  public static HashMap<String, TrainModel> getTrainModels() {
+    return listOfTrainModels;
+  }
+
 }

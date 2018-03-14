@@ -9,8 +9,8 @@ import javafx.collections.ObservableList;
 import mainmenu.Clock;
 import mainmenu.ClockInterface;
 import mainmenu.controller.MainMenuController;
-import trainmodel.model.TrainModelInterface;
 import trainmodel.model.TrainModel;
+import trainmodel.model.TrainModelInterface;
 import utils.train.TrainModelEnums;
 
 public class TrainController implements TrainControllerInterface {

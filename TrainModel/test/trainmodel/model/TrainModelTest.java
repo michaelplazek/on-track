@@ -4,7 +4,6 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import utils.train.TrainData;
-
 import static org.junit.Assert.assertEquals;
 
 /**

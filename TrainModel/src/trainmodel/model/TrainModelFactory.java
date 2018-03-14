@@ -1,5 +1,6 @@
 package trainmodel.model;
 
+import traincontroller.model.TrainController;
 import traincontroller.model.TrainControllerInterface;
 
 /**
@@ -17,7 +18,12 @@ public class TrainModelFactory {
    */
   public static TrainModelInterface createTrainModel(
       TrainControllerInterface trainControllerInterface, String id, String line) {
-    return new TrainModel(trainControllerInterface, id, line);
+    if (TrainModel.getTrainModels().get(id) != null) {
+      return null;
+    }
+    TrainModel trainModel = new TrainModel(trainControllerInterface, id, line);
+    TrainModel.addTrain(trainModel);
+    return trainModel;
   }
 
 

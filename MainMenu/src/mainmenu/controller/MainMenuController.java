@@ -14,6 +14,7 @@ import trackmodel.view.TrackModelUserInterface;
 import traincontroller.model.TrainController;
 import traincontroller.view.TrainControllerUserInterface;
 import trainmodel.TrainModelUserInterface;
+import trainmodel.model.TrainModel;
 
 /**
  * Main controller class for the Main Menu.
@@ -61,7 +62,7 @@ public class MainMenuController implements Initializable {
 
   /**
    * Handler to open to CTC.
-   * @param event event from the button
+   * @param event event from the button.
    */
   public void openCentralTrafficControl(ActionEvent event) {
     try {
@@ -73,7 +74,7 @@ public class MainMenuController implements Initializable {
 
   /**
    * Handler to open to MBO.
-   * @param event event from the button
+   * @param event event from the button.
    */
   public void openMovingBlockOverlay(ActionEvent event) {
     try {
@@ -85,7 +86,7 @@ public class MainMenuController implements Initializable {
 
   /**
    * Handler to open Track Model.
-   * @param event event from button
+   * @param event event from button.
    */
   public void openTrackModel(ActionEvent event) {
     try {
@@ -97,23 +98,29 @@ public class MainMenuController implements Initializable {
 
   /**
    * Handler to open Train Controller.
-   * @param event event from button
+   * @param event event from button.
    */
   @FXML
   private void openTrainController(ActionEvent event) {
-    TrainControllerUserInterface.openTrainController(trainControllerChoiceBox.getSelectionModel().getSelectedItem());
+    TrainControllerUserInterface.openTrainController(
+        trainControllerChoiceBox.getSelectionModel().getSelectedItem());
   }
 
   public void updateTrainControllerDropdown() {
     trainControllerChoiceBox.setItems(TrainController.getListOfTrains());
   }
 
+  /**
+   * Handler to open Train Model.
+   * @param event event from button.
+   */
   @FXML
   private void openTrainModel(ActionEvent event) {
-    TrainModelUserInterface.openTrainModel(trainModelChoiceBox.getSelectionModel().getSelectedItem());
+    TrainModelUserInterface.openTrainModel(
+        trainModelChoiceBox.getSelectionModel().getSelectedItem());
   }
 
-  public void updateTrainModelDropdown(){
-    trainModelChoiceBox.setItems(TrainController.getListOfTrains());
+  public void updateTrainModelDropdown() {
+    trainModelChoiceBox.setItems(TrainModel.getObservableListOfTrainModels());
   }
 }
