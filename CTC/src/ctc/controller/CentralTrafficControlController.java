@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -21,6 +22,8 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import mainmenu.Clock;
+import traincontroller.model.TrainController;
+import trainmodel.model.TrainModel;
 
 public class CentralTrafficControlController {
 
@@ -548,6 +551,8 @@ public class CentralTrafficControlController {
       if (ctc.getTrainQueueTable().get(i).getName().equals(selected.getName())) {
         ctc.getTrainQueueTable().remove(i);
         ctc.getTrainList().remove(i);
+        TrainController.delete(selected.getName());
+        TrainModel.delete(selected.getName());
       }
     }
 

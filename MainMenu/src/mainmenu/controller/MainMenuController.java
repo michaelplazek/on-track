@@ -4,9 +4,12 @@ import ctc.view.CentralTrafficControlUserInterface;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import mainmenu.model.MainMenuModel;
 import mbo.view.MovingBlockOverlayUserInterface;
@@ -22,11 +25,8 @@ import trainmodel.model.TrainModel;
  */
 public class MainMenuController implements Initializable {
 
-  private static int id = 0;
-
-  private MainMenuModel mmm = MainMenuModel.getInstance();
-
   private static MainMenuController instance;
+  private MainMenuModel mmm = MainMenuModel.getInstance();
 
   private CentralTrafficControlUserInterface ctcui =
       CentralTrafficControlUserInterface.getInstance();
@@ -37,15 +37,12 @@ public class MainMenuController implements Initializable {
   private TrackModelUserInterface tmui =
       TrackModelUserInterface.getInstance();
 
+  @FXML private Button trackControllerButton;
   @FXML private ChoiceBox<String> trackControllerChoiceBox;
+  @FXML private Button trainControllerButton;
   @FXML private ChoiceBox<String> trainControllerChoiceBox;
+  @FXML private Button trainModelButton;
   @FXML private ChoiceBox<String> trainModelChoiceBox;
-
-  @Override
-  public void initialize(URL location, ResourceBundle resources) {
-
-    // TODO: initialize lists here
-  }
 
   private MainMenuController() { }
 
@@ -108,6 +105,18 @@ public class MainMenuController implements Initializable {
 
   public void updateTrainControllerDropdown() {
     trainControllerChoiceBox.setItems(TrainController.getListOfTrains());
+
+    if (TrainController.getListOfTrains().size() > 0) {
+      trainControllerChoiceBox.setDisable(false);
+      trainControllerButton.setDisable(false);
+
+      if (trainControllerChoiceBox.getSelectionModel().isEmpty()) {
+        trainControllerChoiceBox.setValue(TrainController.getListOfTrains().get(0));
+      }
+    } else {
+      trainControllerButton.setDisable(true);
+      trainControllerChoiceBox.setDisable(true);
+    }
   }
 
   /**
@@ -121,6 +130,22 @@ public class MainMenuController implements Initializable {
   }
 
   public void updateTrainModelDropdown() {
-    trainModelChoiceBox.setItems(TrainModel.getObservableListOfTrainModels());
+    ObservableList list = TrainModel.getObservableListOfTrainModels();
+    trainModelChoiceBox.setItems(list);
+
+    if (TrainModel.getObservableListOfTrainModels().size() > 0) {
+      trainModelChoiceBox.setDisable(false);
+      trainModelButton.setDisable(false);
+
+      if (trainModelChoiceBox.getSelectionModel().isEmpty()) {
+        trainModelChoiceBox.setValue(TrainModel.getObservableListOfTrainModels().get(0));
+      }
+    } else {
+      trainModelButton.setDisable(true);
+      trainModelChoiceBox.setDisable(true);
+    }
   }
+
+  @Override
+  public void initialize(URL location, ResourceBundle resources) {}
 }
