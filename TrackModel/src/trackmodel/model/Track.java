@@ -1,18 +1,19 @@
 package trackmodel.model;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Track {
 
   private String trackName;
-  public ArrayList<Block> track;
+  private HashMap<Integer, Block> track;
+  private int startBlock;
 
   /**
    * This is the constructor to create a Track.
    * @param line This will hold the value of a line
    */
   public Track(String line) {
-    track = new ArrayList<Block>();
+    track = new HashMap<>();
     trackName = line;
   }
 
@@ -45,15 +46,7 @@ public class Track {
    * @param newBlock A block to add to the track/line
    */
   public void addBlock(Block newBlock) {
-    try {
-      track.add(newBlock.getNumber(), newBlock);
-    } catch (Exception e) {
-      int space = newBlock.getNumber() - track.size();
-      for (int i = 0; i < space; i++) {
-        track.add(null);
-      }
-      track.add(newBlock.getNumber(), newBlock);
-    }
+    track.put(newBlock.getNumber(), newBlock);
   }
 
   /**
@@ -61,26 +54,44 @@ public class Track {
    * @param num number of the desired block
    */
   public Block getBlock(int num) {
-    if (num >= 0 && num < track.size()) {
-      Block temp = track.get(num);
+    Block temp = track.get(num);
+    return temp;
+  }
 
-      if (temp != null) {
-        if (temp.getNumber() == num) {
-          return temp;
-        }
-      }
+  /**
+   * This method will allow for the user to get the next block.
+   * @param previousBlock This will return the prior block the train was on
+   * @param currentBlock This will be the id of the current block the train is on
+   */
+  public Block getNextBlock(int previousBlock, int currentBlock) {
+    Block temp = track.get(currentBlock);
+    if (temp.getPrevious() == previousBlock) {
+      return track.get(temp.getNextBlock1());
+    } else {
+      return track.get(temp.getPrevious());
     }
+  }
 
-    for (int i = 0; i < track.size(); i++) {
-      Block temp = track.get(i);
-      if (temp != null) {
-        if (temp.getNumber() == num) {
-          return temp;
-        }
-      }
+  /**
+   * This method will return the other possible block for the track.
+   * @param currentBlock The current block the train is on
+   * @return A Block that the train will be going to
+   */
+  public Block getNextBlock2(int currentBlock) {
+    Block temp = track.get(currentBlock);
+    if (temp.isSwitchHere()) {
+      Switch s = (Switch) temp;
+      return track.get(s.getNextBlock2());
     }
-
     return null;
+  }
+
+  public void setStartBlock(int startBlock) {
+    this.startBlock = startBlock;
+  }
+
+  public Block getStartBlock() {
+    return track.get(startBlock);
   }
 
   /**
@@ -89,28 +100,12 @@ public class Track {
    * @return A String will be returned that has the section and block number
    */
   public String getBlockString(int num) {
-    if (num >= 0 && num < track.size()) {
-      Block temp = track.get(num);
-
-      if (temp != null) {
-        if (temp.getNumber() == num) {
-          String blockId = temp.getSection() + Integer.toString(num);
-          return blockId;
-        }
-      }
+    Block temp = track.get(num);
+    if (temp != null) {
+      return temp.getSection() + Integer.toString(num);
+    } else {
+      return "";
     }
-
-    for (int i = 0; i < track.size(); i++) {
-      Block temp = track.get(i);
-      if (temp != null) {
-        if (temp.getNumber() == num) {
-          String blockId = temp.getSection() + Integer.toString(num);
-          return blockId;
-        }
-      }
-    }
-
-    return null;
   }
 
 }

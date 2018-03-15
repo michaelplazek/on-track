@@ -35,28 +35,28 @@ public class Switch extends Block {
 
   /**
    * This method will set the other possible next block.
-   * @param newNextBlock A Block will be passed in for the other possible next block.
+   * @param next2 A Block will be passed in for the other possible next block.
    */
-  public void setNextBlockOne(int newNextBlock) {
-    next2 = newNextBlock;
+  public void setNextBlockOne(int next2) {
+    this.next2 = next2;
   }
 
   /**
    * This method will return the next block in the track.
    * @return A integer will be returned
    */
-  public int getNextBlock() {
+  public int getNextBlock2() {
     return next2;
   }
 
   /**
   * This method will update the status of the switch.
   * The status will be set to a block
-  * @param newStatus This is the block number that the switch is to be set too
+  * @param status This is the block number that the switch is to be set too
   */
-  public void setStatus(int newStatus) {
-    if (newStatus == getNextBlock() || newStatus == next2) {
-      status = newStatus;
+  public void setStatus(int status) {
+    if (status == getNextBlock1() || status == next2) {
+      this.status = status;
     }
   }
 
