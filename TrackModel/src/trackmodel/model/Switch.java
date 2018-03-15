@@ -37,7 +37,7 @@ public class Switch extends Block {
    * This method will set the other possible next block.
    * @param next2 A Block will be passed in for the other possible next block.
    */
-  public void setNextBlockOne(int next2) {
+  public void setNextBlock2(int next2) {
     this.next2 = next2;
   }
 

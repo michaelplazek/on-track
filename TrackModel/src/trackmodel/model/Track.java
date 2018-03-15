@@ -65,10 +65,10 @@ public class Track {
    */
   public Block getNextBlock(int previousBlock, int currentBlock) {
     Block temp = track.get(currentBlock);
-    if (temp.getPrevious() == previousBlock) {
+    if (temp.getPreviousBlock() == previousBlock) {
       return track.get(temp.getNextBlock1());
     } else {
-      return track.get(temp.getPrevious());
+      return track.get(temp.getPreviousBlock());
     }
   }
 
@@ -79,7 +79,7 @@ public class Track {
    */
   public Block getNextBlock2(int currentBlock) {
     Block temp = track.get(currentBlock);
-    if (temp.isSwitchHere()) {
+    if (temp.isSwitch()) {
       Switch s = (Switch) temp;
       return track.get(s.getNextBlock2());
     }

@@ -23,8 +23,8 @@ public class Block {
   private boolean leftStation;
   private boolean rightStation;
   private boolean underground;
-  private boolean switchHere;
-  private boolean crossing;
+  private boolean isSwitch;
+  private boolean isCrossing;
   private boolean crossingStatus;
   private boolean heaters;
 
@@ -38,7 +38,6 @@ public class Block {
   private boolean trainPresent;
 
   //Track Signal
-  private boolean go;
   private float setPointSpeed;
   private float authority;
   private boolean beacon;
@@ -88,7 +87,7 @@ public class Block {
     setElevation(elevation);
     setCumElevation(cumElevation);
     setBiDirectional(biDirectional);
-    setPrevious(previous);
+    setPreviousBlock(previous);
     setNextBlock1(next1);
     setLeftStation(leftStation);
     setRightStation(rightStation);
@@ -212,28 +211,28 @@ public class Block {
     this.underground = underground;
   }
 
-  public boolean isSwitchHere() {
-    return switchHere;
+  public boolean isSwitch() {
+    return isSwitch;
   }
 
-  public void setSwitchHere(boolean switchHere) {
-    this.switchHere = switchHere;
+  public void setSwitchHere(boolean isSwitch) {
+    this.isSwitch = isSwitch;
   }
 
   public boolean isCrossing() {
-    return crossing;
+    return isCrossing;
   }
 
-  public void setCrossing(boolean crossing) {
-    this.crossing = crossing;
+  public void setCrossing(boolean isCrossing) {
+    this.isCrossing = isCrossing;
   }
 
-  public boolean isCrossingStatus() {
+  public boolean getCrossingStatus() {
     return crossingStatus;
   }
 
   public void setCrossingStatus(boolean crossingStatus) {
-    this.crossingStatus = crossingStatus && crossing;
+    this.crossingStatus = crossingStatus && isCrossing;
   }
 
   public boolean isHeaters() {
@@ -244,7 +243,7 @@ public class Block {
     this.heaters = heaters;
   }
 
-  public boolean isBrokenRailStatus() {
+  public boolean getBrokenRailStatus() {
     return brokenRailStatus;
   }
 
@@ -252,7 +251,7 @@ public class Block {
     this.brokenRailStatus = brokenRailStatus;
   }
 
-  public boolean isPowerStatus() {
+  public boolean getPowerStatus() {
     return powerStatus;
   }
 
@@ -260,7 +259,7 @@ public class Block {
     this.powerStatus = powerStatus;
   }
 
-  public boolean isTrackCircuitStatus() {
+  public boolean getTrackCircuitStatus() {
     return trackCircuitStatus;
   }
 
@@ -276,20 +275,12 @@ public class Block {
     this.closedForMaintenance = closedForMaintenance;
   }
 
-  public boolean isTrainPresent() {
+  public boolean isOccupied() {
     return trainPresent;
   }
 
   public void setTrainPresent(boolean trainPresent) {
     this.trainPresent = trainPresent;
-  }
-
-  public boolean isGo() {
-    return go;
-  }
-
-  public void setGo(boolean go) {
-    this.go = go;
   }
 
   public float getSetPointSpeed() {
@@ -324,11 +315,11 @@ public class Block {
     this.biDirectional = biDirectional;
   }
 
-  public int getPrevious() {
+  public int getPreviousBlock() {
     return previous;
   }
 
-  public void setPrevious(int previous) {
+  public void setPreviousBlock(int previous) {
     this.previous = previous;
   }
 
