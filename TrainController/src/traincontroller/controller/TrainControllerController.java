@@ -155,7 +155,7 @@ public class TrainControllerController implements Initializable {
   @FXML
   private void toggleMode(ActionEvent event) {
     ObservableMap<Object, Object> map = mode.getProperties();
-    for(Object k : map.keySet()) {
+    for (Object k : map.keySet()) {
       System.out.println(k + ":" + map.get(k));
     }
   }

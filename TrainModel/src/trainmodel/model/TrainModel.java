@@ -1,18 +1,23 @@
 package trainmodel.model;
 
+import java.util.HashMap;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import mainmenu.Clock;
+import mainmenu.controller.MainMenuController;
 import trackmodel.model.Block;
 import traincontroller.model.TrainControllerInterface;
-import trainmodel.TrainModelInterface;
 import trainmodel.controller.Constants;
 import utils.train.TrainData;
 import utils.train.TrainModelEnums;
 import utils.unitconversion.UnitConversions;
+
+
 
 /**
  * Created by jeremyzang on 2/16/18.
@@ -48,7 +53,7 @@ public class TrainModel implements TrainModelInterface {
   private SimpleDoubleProperty powerCommand = new SimpleDoubleProperty(0); //In kilo Watts.
   private SimpleIntegerProperty numPassengers = new SimpleIntegerProperty(0);
   private SimpleIntegerProperty capacity
-      = new SimpleIntegerProperty(148); //passenger capacity of train.
+      = new SimpleIntegerProperty(TrainData.MAX_PASSENGERS); //passenger capacity of train.
 
   private double acceleration = 0.0000001; //in m/s^2
   private double force = 0; //in N
@@ -89,6 +94,8 @@ public class TrainModel implements TrainModelInterface {
   private Byte[] trackModelSpeedAuth;
   private Byte[] beaconSignal;
 
+  private static HashMap<String, TrainModel> listOfTrainModels = new HashMap<>();
+
   private TrainControllerInterface controller;
   private String id; //Train id
   private String line; //Train line (green or red)
@@ -111,12 +118,19 @@ public class TrainModel implements TrainModelInterface {
    * @param numberOfPassengers The number of passengers to add.
    */
   public void addPassengers(int numberOfPassengers) {
-    if ((numberOfPassengers + this.numPassengers.get()) < TrainData.MAX_PASSENGERS) {
+    int availableSeats = TrainData.MAX_PASSENGERS - this.numPassengers.get();
+
+    if (numberOfPassengers <= availableSeats) {
       this.capacity.set(capacity.get() - numberOfPassengers);
       this.numPassengers.set(numPassengers.get() + numberOfPassengers);
       this.mass.set(mass.get() + (TrainData.PASSENGER_WEIGHT * numberOfPassengers));
+    } else {
+      //If numberOfPassengers is >= available seats as the most you can.
+      int passengersTotal = this.numPassengers.get() + availableSeats;
+      this.numPassengers.set(passengersTotal);
+      this.capacity.set(TrainData.MAX_PASSENGERS - passengersTotal); //This should be zero
+      this.mass.set(TrainData.EMPTY_WEIGHT + (TrainData.PASSENGER_WEIGHT * passengersTotal));
     }
-    //Handle case where to many passengers could possibly be added.
   }
 
   /**
@@ -127,7 +141,14 @@ public class TrainModel implements TrainModelInterface {
     if ((this.numPassengers.get() - numberOfPassengers) >= 0) {
       this.capacity.set(capacity.get() + numberOfPassengers);
       this.numPassengers.set(numPassengers.get() - numberOfPassengers);
-      this.mass.set(mass.get() - (Constants.passengerAvgMassKg * numberOfPassengers));
+      this.mass.set(mass.get() - (TrainData.PASSENGER_WEIGHT * numberOfPassengers));
+    } else {
+      this.capacity.set(TrainData.MAX_PASSENGERS);
+      this.numPassengers.set(0);
+      this.mass.set(
+          (TrainData.EMPTY_WEIGHT + (TrainData.MAX_PASSENGERS * TrainData.PASSENGER_WEIGHT))
+          - (TrainData.MAX_PASSENGERS * Constants.passengerAvgMassKg));
+
     }
   }
   
@@ -258,6 +279,28 @@ public class TrainModel implements TrainModelInterface {
   }
 
   /**
+   * Adds Train Model to the list.
+   * @param train the TrainModel to be added.
+   */
+  protected static void addTrain(TrainModel train) {
+    listOfTrainModels.put(train.getId(), train);
+    MainMenuController.getInstance().updateTrainModelDropdown();
+  }
+
+  /**
+   * Removes a trainModel from the list.
+   * */
+  public static boolean delete(String trainId) {
+    TrainModel temp = listOfTrainModels.get(trainId);
+    if (temp == null) {
+      return false;
+    }
+    listOfTrainModels.remove(trainId);
+    MainMenuController.getInstance().updateTrainModelDropdown();
+    return true;
+  }
+
+  /**
    * Setters.
    */
   @Override
@@ -323,6 +366,10 @@ public class TrainModel implements TrainModelInterface {
     //When in manual mode Speed/Auth and Beacon signal comes from track model.
     //when in manual mode call this.
     this.controller.setBeaconSignal(beaconSignal);
+  }
+
+  public void setController(TrainControllerInterface controller) {
+    this.controller = controller;
   }
 
   /**
@@ -486,4 +533,21 @@ public class TrainModel implements TrainModelInterface {
   public ObjectProperty<TrainModelEnums.BrakeStatus> serviceBrakeStatusProperty() {
     return serviceBrakeStatus;
   }
+
+  public TrainControllerInterface getController() {
+    return controller;
+  }
+
+  public static ObservableList<String> getObservableListOfTrainModels() {
+    return FXCollections.observableArrayList(listOfTrainModels.keySet());
+  }
+
+  public static TrainModel getTrainModel(String id) {
+    return listOfTrainModels.get(id);
+  }
+
+  public static HashMap<String, TrainModel> getTrainModels() {
+    return listOfTrainModels;
+  }
+
 }

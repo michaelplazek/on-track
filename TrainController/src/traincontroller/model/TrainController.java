@@ -9,8 +9,9 @@ import javafx.collections.ObservableList;
 import mainmenu.Clock;
 import mainmenu.ClockInterface;
 import mainmenu.controller.MainMenuController;
-import trainmodel.TrainModelInterface;
 import trainmodel.model.TrainModel;
+import trainmodel.model.TrainModelFactory;
+import trainmodel.model.TrainModelInterface;
 import utils.train.TrainModelEnums;
 
 public class TrainController implements TrainControllerInterface {
@@ -55,6 +56,8 @@ public class TrainController implements TrainControllerInterface {
     this.ki = new SimpleDoubleProperty(5);
     this.currentStation = new SimpleStringProperty("N/A");
     this.nextStation = new SimpleStringProperty("N/A");
+
+    this.trainModel = (TrainModel) TrainModelFactory.createTrainModel(this, id, line);
   }
 
   public void setAntennaSignal(Byte[] signal) {
