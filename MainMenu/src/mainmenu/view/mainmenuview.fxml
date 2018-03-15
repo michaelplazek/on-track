@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <VBox alignment="TOP_CENTER" layoutX="25.0" layoutY="38.0" spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="40.0">
          <children>
@@ -51,12 +51,12 @@
             </HBox>
             <HBox alignment="CENTER_LEFT" spacing="20.0">
                <children>
-                  <Button mnemonicParsing="false" onAction="#openTrainController" prefHeight="35.0" prefWidth="220.0" text="Train Controller">
+                  <Button fx:id="trainControllerButton" disable="true" mnemonicParsing="false" onAction="#openTrainController" prefHeight="35.0" prefWidth="220.0" text="Train Controller">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </Button>
-                  <ChoiceBox fx:id="trainControllerChoiceBox" prefHeight="35.0" prefWidth="145.0" />
+                  <ChoiceBox fx:id="trainControllerChoiceBox" disable="true" prefHeight="35.0" prefWidth="145.0" />
                </children>
             </HBox>
             <HBox>
@@ -70,12 +70,12 @@
             </HBox>
             <HBox alignment="CENTER_LEFT" spacing="20.0">
                <children>
-                  <Button fx:id="trainModelButton" mnemonicParsing="false" onAction="#openTrainModel" prefHeight="35.0" prefWidth="220.0" text="Train Model">
+                  <Button fx:id="trainModelButton" disable="true" mnemonicParsing="false" onAction="#openTrainModel" prefHeight="35.0" prefWidth="220.0" text="Train Model">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </Button>
-                  <ChoiceBox fx:id="trainModelChoiceBox" prefHeight="35.0" prefWidth="145.0" />
+                  <ChoiceBox fx:id="trainModelChoiceBox" disable="true" prefHeight="35.0" prefWidth="145.0" />
                </children>
             </HBox>
             <Label text="On-Track Development | 2018">

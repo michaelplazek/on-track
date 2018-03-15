@@ -45,6 +45,7 @@ public class Runner extends Application {
                 if (ctc.isActive()) {
                   clk.tick();
                   ctcc.run();
+                  mmc.run();
                   TrainController.runAllInstances();
                 }
               }

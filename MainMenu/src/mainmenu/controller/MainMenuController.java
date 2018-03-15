@@ -7,6 +7,7 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import mainmenu.model.MainMenuModel;
 import mbo.view.MovingBlockOverlayUserInterface;
@@ -22,11 +23,8 @@ import trainmodel.model.TrainModel;
  */
 public class MainMenuController implements Initializable {
 
-  private static int id = 0;
-
-  private MainMenuModel mmm = MainMenuModel.getInstance();
-
   private static MainMenuController instance;
+  private MainMenuModel mmm = MainMenuModel.getInstance();
 
   private CentralTrafficControlUserInterface ctcui =
       CentralTrafficControlUserInterface.getInstance();
@@ -37,15 +35,12 @@ public class MainMenuController implements Initializable {
   private TrackModelUserInterface tmui =
       TrackModelUserInterface.getInstance();
 
+  @FXML private Button trackControllerButton;
   @FXML private ChoiceBox<String> trackControllerChoiceBox;
+  @FXML private Button trainControllerButton;
   @FXML private ChoiceBox<String> trainControllerChoiceBox;
+  @FXML private Button trainModelButton;
   @FXML private ChoiceBox<String> trainModelChoiceBox;
-
-  @Override
-  public void initialize(URL location, ResourceBundle resources) {
-
-    // TODO: initialize lists here
-  }
 
   private MainMenuController() { }
 
@@ -108,6 +103,15 @@ public class MainMenuController implements Initializable {
 
   public void updateTrainControllerDropdown() {
     trainControllerChoiceBox.setItems(TrainController.getListOfTrains());
+
+    if (TrainController.getListOfTrains().size() == 1) {
+      trainControllerChoiceBox.setDisable(false);
+      trainControllerButton.setDisable(false);
+    }
+
+    if (trainControllerChoiceBox.getSelectionModel().isEmpty()) {
+      trainControllerChoiceBox.setValue(TrainController.getListOfTrains().get(0));
+    }
   }
 
   /**
@@ -122,5 +126,43 @@ public class MainMenuController implements Initializable {
 
   public void updateTrainModelDropdown() {
     trainModelChoiceBox.setItems(TrainModel.getObservableListOfTrainModels());
+
+    if (TrainModel.getObservableListOfTrainModels().size() == 1) {
+      trainModelChoiceBox.setDisable(false);
+      trainModelButton.setDisable(false);
+    }
+
+    if (trainModelChoiceBox.getSelectionModel().isEmpty()) {
+      trainModelChoiceBox.setValue(TrainModel.getObservableListOfTrainModels().get(0));
+    }
+  }
+
+  @Override
+  public void initialize(URL location, ResourceBundle resources) {}
+
+  public void run() {
+
+    updateInstanceComponents();
+  }
+
+  public void updateInstanceComponents() {
+
+    if (TrainModel.getObservableListOfTrainModels().size() == 0) {
+      trainModelButton.setDisable(true);
+      trainModelChoiceBox.setDisable(true);
+    } else {
+      trainModelButton.setDisable(false);
+      trainModelChoiceBox.setDisable(false);
+    }
+
+    if (TrainController.getListOfTrains().size() == 0) {
+      trainControllerButton.setDisable(true);
+      trainControllerChoiceBox.setDisable(true);
+    } else {
+      trainControllerButton.setDisable(false);
+      trainControllerChoiceBox.setDisable(false);
+    }
+
+    // TODO: disable the trackController components once theyre set up
   }
 }
