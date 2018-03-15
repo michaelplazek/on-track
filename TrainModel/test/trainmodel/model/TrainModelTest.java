@@ -35,7 +35,7 @@ public class TrainModelTest {
   }
 
   @Test
- public void removePassengers() {
+  public void removePassengers() {
     trainModel.removePassengers(1);
     assertEquals(221, trainModel.numPassengersProperty().get());
     assertEquals(TrainData.EMPTY_WEIGHT + (221 * TrainData.PASSENGER_WEIGHT), trainModel.getMass(), .01);

@@ -8,5 +8,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="TrackModel" />
+    <orderEntry type="library" name="org.testfx:testfx-core:4.0.6-alpha" level="project" />
   </component>
 </module>

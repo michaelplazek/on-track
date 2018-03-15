@@ -25,6 +25,7 @@ import org.junit.runners.model.Statement;
  *  -> Original Author Andy Till
  *  -> http://andrewtill.blogspot.com/2012/10/junit-rule-for-javafx-controller-testing.html
  *
+ * 
  */
 public class JavaFXThreadingRule implements TestRule {
   /**

@@ -10,5 +10,6 @@
     <orderEntry type="module" module-name="MainMenu" />
     <orderEntry type="module" module-name="Utils" />
     <orderEntry type="module" module-name="TrainModel" exported="" />
+    <orderEntry type="library" name="org.testfx:testfx-core:4.0.6-alpha" level="project" />
   </component>
 </module>

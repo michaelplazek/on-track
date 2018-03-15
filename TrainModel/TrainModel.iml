@@ -20,5 +20,6 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="org.testfx:testfx-core:4.0.6-alpha" level="project" />
   </component>
 </module>
