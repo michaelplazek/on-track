@@ -254,7 +254,6 @@ public class TrainController implements TrainControllerInterface {
   }
 
   private void start() {
-    trainModel = new TrainModel(this, id.getValue(), line.getValue());
     running = true;
   }
 
