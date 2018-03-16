@@ -84,7 +84,7 @@ public class TrainModel implements TrainModelInterface {
   private Block currentBlock;
   private Block previousBlock;
 
-  private boolean mboMode = false;
+  private boolean movingBlockMode = false;
 
   //Speed and Authority from MBO gets passed to TrainController in MBO mode.
 //  private float mboSpeed;
@@ -357,7 +357,7 @@ public class TrainModel implements TrainModelInterface {
   public void setAntennaSignal(float speed, float authority) {
 
     //if Manual Mode call this
-    if (mboMode) {
+    if (movingBlockMode) {
       this.controller.setAntennaSignal(speed, authority);
     } else {
 
@@ -374,8 +374,8 @@ public class TrainModel implements TrainModelInterface {
     this.controller.setBeaconSignal(beaconSignal);
   }
 
-  public void setMboMode(boolean mboMode) {
-    this.mboMode = mboMode;
+  public void setMovingBlockMode(boolean movingBlockMode) {
+    this.movingBlockMode = movingBlockMode;
   }
 
   public void setController(TrainControllerInterface controller) {
@@ -560,8 +560,8 @@ public class TrainModel implements TrainModelInterface {
     return FXCollections.observableArrayList(listOfTrainModels.keySet());
   }
 
-  public boolean isMboMode() {
-    return mboMode;
+  public boolean isMovingBlockMode() {
+    return movingBlockMode;
   }
 
   public static TrainModel getTrainModel(String id) {
