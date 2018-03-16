@@ -22,7 +22,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import trackmodel.model.Block;
-import trackmodel.model.Switch;
 
 public class TrackModelController {
   //DROPDOWNS
@@ -160,19 +159,19 @@ public class TrackModelController {
           circuitStatus.setFill(Color.WHITE);
         }
 
-        if (picked.getBeacon()) {
+        if (picked.hasBeacon()) {
           beaconStatus.setFill(Color.GREEN);
         } else {
           beaconStatus.setFill(Color.WHITE);
         }
 
-        if (picked.getTrainPresent() == 1) {
+        if (picked.isOccupied()) {
           occupiedStatus.setFill(Color.GREEN);
         } else {
           occupiedStatus.setFill(Color.WHITE);
         }
 
-        if (picked.getHeaters()) {
+        if (picked.isHeated()) {
           trackHeating.setFill(Color.GREEN);
         } else {
           trackHeating.setFill(Color.WHITE);
@@ -198,11 +197,11 @@ public class TrackModelController {
       b.setCumElevation((float).35);
 
       if (i % 2 == 0) {
-        b.setHeaters(true);
+        b.setHeated(true);
       }
 
       if (i == 2) {
-        b.setTrainPresent(1);
+        b.setOccupied(true);
       }
 
       if (i == 3) {

@@ -28,7 +28,7 @@ public class Block {
   private boolean brokenRailStatus;
   private boolean powerStatus;
   private boolean trackCircuitStatus;
-  private boolean closedForMaintenance;
+  private boolean isClosedForMaintenance;
 
   //Track Circuit
   private boolean isOccupied;
@@ -36,10 +36,10 @@ public class Block {
   //Track Signal
   private float setPointSpeed;
   private float authority;
-  private boolean beacon;
+  private boolean hasBeacon;
   
   //Neighbors
-  private boolean biDirectional;
+  private boolean isBiDirectional;
   private int previous;
   private int nextBlock1;
 
@@ -58,7 +58,7 @@ public class Block {
    *@param infrastructure The special indicators for a block type
    *@param elevation The elevation of a block
    *@param cumElevation The cumulative elevation of a block
-   *@param biDirectional This indicates if a block is bidirectional
+   *@param isBiDirectional This indicates if a block is bidirectional
    *@param previous This indicates the block prior to this one
    *@param next1 This indicates the next logical block for the track after the current block
    *@param leftStation This indicates that the station is on the left of the track
@@ -66,7 +66,7 @@ public class Block {
    */
   public Block(String line, String section, String number, float length,
                float grade, int speedLimit, String infrastructure, float elevation,
-               float cumElevation, boolean biDirectional, int previous, int next1,
+               float cumElevation, boolean isBiDirectional, int previous, int next1,
                boolean leftStation, boolean rightStation) {
 
     setLine(line);
@@ -82,7 +82,7 @@ public class Block {
     setInfrastructure(infrastructure);
     setElevation(elevation);
     setCumElevation(cumElevation);
-    setBiDirectional(biDirectional);
+    setBiDirectional(isBiDirectional);
     setPreviousBlock(previous);
     setNextBlock1(next1);
     setLeftStation(leftStation);
@@ -264,11 +264,11 @@ public class Block {
   }
 
   public boolean isClosedForMaintenance() {
-    return closedForMaintenance;
+    return isClosedForMaintenance;
   }
 
   public void setClosedForMaintenance(boolean closedForMaintenance) {
-    this.closedForMaintenance = closedForMaintenance;
+    this.isClosedForMaintenance = closedForMaintenance;
   }
 
   public boolean isOccupied() {
@@ -295,20 +295,20 @@ public class Block {
     this.authority = authority;
   }
 
-  public boolean isBeacon() {
-    return beacon;
+  public boolean hasBeacon() {
+    return hasBeacon;
   }
 
-  public void setBeacon(boolean beacon) {
-    this.beacon = beacon;
+  public void setBeacon(boolean hasBeacon) {
+    this.hasBeacon = hasBeacon;
   }
 
   public boolean isBiDirectional() {
-    return biDirectional;
+    return isBiDirectional;
   }
 
   public void setBiDirectional(boolean biDirectional) {
-    this.biDirectional = biDirectional;
+    this.isBiDirectional = biDirectional;
   }
 
   public int getPreviousBlock() {
