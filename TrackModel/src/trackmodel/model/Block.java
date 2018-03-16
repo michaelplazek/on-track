@@ -26,7 +26,7 @@ public class Block {
   private boolean isSwitch;
   private boolean isCrossing;
   private boolean crossingStatus;
-  private boolean heaters;
+  private boolean isHeated;
 
   //Failures
   private boolean brokenRailStatus;
@@ -35,7 +35,7 @@ public class Block {
   private boolean closedForMaintenance;
 
   //Track Circuit
-  private boolean trainPresent;
+  private boolean isOccupied;
 
   //Track Signal
   private float setPointSpeed;
@@ -235,12 +235,12 @@ public class Block {
     this.crossingStatus = crossingStatus && isCrossing;
   }
 
-  public boolean isHeaters() {
-    return heaters;
+  public boolean isHeated() {
+    return isHeated;
   }
 
-  public void setHeaters(boolean heaters) {
-    this.heaters = heaters;
+  public void setHeated(boolean isHeated) {
+    this.isHeated = isHeated;
   }
 
   public boolean getBrokenRailStatus() {
@@ -276,11 +276,11 @@ public class Block {
   }
 
   public boolean isOccupied() {
-    return trainPresent;
+    return isOccupied;
   }
 
-  public void setTrainPresent(boolean trainPresent) {
-    this.trainPresent = trainPresent;
+  public void setOccupied(boolean isOccupied) {
+    this.isOccupied = isOccupied;
   }
 
   public float getSetPointSpeed() {
@@ -345,8 +345,8 @@ public class Block {
         + "<br>&#09;Speed Limit: " + this.speedLimit
         + "<br>&#09;Elevation: " + this.elevation
         + "<br>&#09;Cum Elevation: " + this.cumElevation
-        + "<br><br><b>Infrastructure</b><br>&#09;Train Present: " + this.trainPresent
-        + "<br>&#09;Heaters: " + this.heaters;
+        + "<br><br><b>Infrastructure</b><br>&#09;Train Present: " + this.isOccupied
+        + "<br>&#09;isHeated: " + this.isHeated;
 
 
     output += "<br><br><b>Failures</b><br>&#09;Broken Rail: " + this.brokenRailStatus
@@ -371,8 +371,8 @@ public class Block {
         + "\n\t\tSpeed Limit: " + this.speedLimit
         + "\n\t\tElevation: " + this.elevation
         + "\n\t\tCum Elevation: " + this.cumElevation
-        + "\n\tInfrastructure\n\t\tTrain Present: " + this.trainPresent
-        + "\n\t\tHeaters: " + this.heaters;
+        + "\n\tInfrastructure\n\t\tTrain Present: " + this.isOccupied
+        + "\n\t\tisHeated: " + this.isHeated;
 
     output += "\n\tFailures\n\t\tBroken Rail: " + this.brokenRailStatus
         + "\n\t\tTrack Circuit Failure: " + this.powerStatus
