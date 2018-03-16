@@ -357,14 +357,15 @@ public class TrainModel implements TrainModelInterface {
   public void setAntennaSignal(float speed, float authority) {
 
     //if Manual Mode call this
-    if (isMovingBlockMode) {
+    if (!isMovingBlockMode) {
       this.controller.setAntennaSignal(speed, authority);
+      this.controller.setTrackCircuitSignal(speed, authority);
     } else {
-
+      //if MBO mode call this
+      // this.controller.setAntennaSignal(mboSpeed);
     }
 
-    //if MBO mode call this
-    // this.controller.setAntennaSignal(mboSpeed);
+
   }
 
   @Override

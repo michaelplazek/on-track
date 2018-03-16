@@ -68,7 +68,7 @@ public class TrainController implements TrainControllerInterface {
 
   }
 
-  public void setTrackCircuitSignal(Byte[] signal) {
+  public void setTrackCircuitSignal(float speed, float authority) {
 
   }
 
