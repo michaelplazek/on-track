@@ -4,33 +4,40 @@ import java.util.HashMap;
 
 public class Track {
 
-  private String trackName;
+  private String line;
   private HashMap<Integer, Block> track;
   private int startBlock;
+
+  private static HashMap<String, Track> listOfTracks = new HashMap<>();
 
   /**
    * This is the constructor to create a Track.
    * @param line This will hold the value of a line
    */
   public Track(String line) {
-    track = new HashMap<>();
-    trackName = line;
+    this.track = new HashMap<>();
+    this.line = line;
+    listOfTracks.put(line, this);
+  }
+
+  public static HashMap<String, Track> getListOfTracks() {
+    return listOfTracks;
   }
 
   /**
    * This method will return to the user the track's name.
    * @return A String value is returned with the name of the line
    */
-  public String getName() {
-    return trackName;
+  public String getLine() {
+    return line;
   }
 
   /**
    * This will allow the user to alter the name of a track.
-   * @param newName The new name for this instance of the track.
+   * @param line The new name for this instance of the track.
    */
-  public void setName(String newName) {
-    trackName = newName;
+  public void setLine(String line) {
+    this.line = line;
   }
 
   /**
@@ -54,8 +61,7 @@ public class Track {
    * @param num number of the desired block
    */
   public Block getBlock(int num) {
-    Block temp = track.get(num);
-    return temp;
+    return track.get(num);
   }
 
   /**
@@ -99,13 +105,12 @@ public class Track {
    * @param num If the number of a block
    * @return A String will be returned that has the section and block number
    */
-  public String getBlockString(int num) {
+  public String getBlockName(int num) {
     Block temp = track.get(num);
     if (temp != null) {
       return temp.getSection() + Integer.toString(num);
     } else {
-      return "";
+      return null;
     }
   }
-
 }
