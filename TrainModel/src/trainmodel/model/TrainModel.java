@@ -11,6 +11,7 @@ import javafx.collections.ObservableList;
 import mainmenu.Clock;
 import mainmenu.controller.MainMenuController;
 import trackmodel.model.Block;
+import trackmodel.model.Track;
 import traincontroller.model.TrainControllerInterface;
 import trainmodel.controller.Constants;
 import utils.train.TrainData;
@@ -43,7 +44,6 @@ public class TrainModel implements TrainModelInterface {
   private SimpleDoubleProperty width = new SimpleDoubleProperty(TrainData.WIDTH_OF_TRAIN);
   private SimpleDoubleProperty lengthOfTrain = new SimpleDoubleProperty(TrainData.LENGTH_OF_TRAIN);
   private SimpleDoubleProperty numberOfCars = new SimpleDoubleProperty(TrainData.NUMBER_OF_CARS);
-
 
   //String Properties to be bound with UI.
   private SimpleDoubleProperty mass = new SimpleDoubleProperty(TrainData.EMPTY_WEIGHT);
@@ -80,18 +80,20 @@ public class TrainModel implements TrainModelInterface {
   private double positionInBlock = 0; //The number of meters from the border of the current block.
   // Measured from the previous boarder to front of train.
 
-  /**
-   * TODO: Needs an instance of the TrackModel object.
-   */
-  // private TrackModel activeTrack;
+  private Track activeTrack;
   private Block currentBlock;
   private Block previousBlock;
 
+  private boolean isMovingBlockMode = false;
+
   //Speed and Authority from MBO gets passed to TrainController in MBO mode.
-  private Byte[] mboSpeedAuth;
+//  private float mboSpeed;
+//  private float mboAuthority;
 
   //Speed and Authority from trackModel gets passed to TrainController in Manual Mode
-  private Byte[] trackModelSpeedAuth;
+//  private float trackModelSpeed;
+//  private float trackModelAuthority;
+
   private Byte[] beaconSignal;
 
   private static HashMap<String, TrainModel> listOfTrainModels = new HashMap<>();
@@ -174,13 +176,13 @@ public class TrainModel implements TrainModelInterface {
    *  and the current position in the updated block.
    */
   private void updatePosition() {
-    double tempChange = changeInDist();
-    if (crossingBlock(tempChange)) {
-      positionInBlock = (positionInBlock + tempChange) - currentBlock.getSize();
+    double changeInDist = changeInDist();
+    if (crossingBlock(changeInDist)) {
+      positionInBlock = (positionInBlock + changeInDist) - currentBlock.getSize();
       updateCurrentBlock();
       updatePreviousBlock();
     } else {
-      positionInBlock = positionInBlock + tempChange;
+      positionInBlock = positionInBlock + changeInDist;
     }
 
   }
@@ -189,23 +191,24 @@ public class TrainModel implements TrainModelInterface {
    * Updates current block to next block.
    */
   private void updateCurrentBlock() {
-    currentBlock = currentBlock.getNextBlock();
+   Block next = activeTrack.getBlock(currentBlock.getNextBlock1());
+    currentBlock = next;
   }
 
   /**
    * Updates previous block.
    */
   private void updatePreviousBlock() {
-    previousBlock = currentBlock.getPreviousBlock();
+    Block previous = activeTrack.getBlock(currentBlock.getPreviousBlock());
+    previousBlock = previous;
   }
 
   /**
    * Updates occupancy of a block when train changes blocks.
    */
   private void updateOccupancy() {
-    //Need TrackModel instance 3/11/18.
-  //  currentBlock.setTrainPresent(1);
-  //  currentBlock.getPreviousBlock().setTrainPresent(0);
+    currentBlock.setOccupied(true);
+    previousBlock.setOccupied(false);
   }
 
   /**
@@ -274,8 +277,7 @@ public class TrainModel implements TrainModelInterface {
    * @return true if train crosses block boarder, false otherwise.
    */
   private boolean crossingBlock(Double distChange) {
-    // return ((positionInBlock + distChange) > currentBlock.getSize());
-    return false;
+    return ((positionInBlock + distChange) > currentBlock.getSize());
   }
 
   /**
@@ -352,13 +354,17 @@ public class TrainModel implements TrainModelInterface {
   //Will get called by MBO (or TrackModel?)
   // - to send speed and authority over antenna and pass to TrainController.
   @Override
-  public void setAntennaSignal(Byte[] speedAuth) {
+  public void setAntennaSignal(float speed, float authority) {
 
     //if Manual Mode call this
-    this.controller.setAntennaSignal(speedAuth);
+    if (isMovingBlockMode) {
+      this.controller.setAntennaSignal(speed, authority);
+    } else {
+
+    }
 
     //if MBO mode call this
-    // this.controller.setAntennaSignal(mboSpeedAuth);
+    // this.controller.setAntennaSignal(mboSpeed);
   }
 
   @Override
@@ -368,8 +374,16 @@ public class TrainModel implements TrainModelInterface {
     this.controller.setBeaconSignal(beaconSignal);
   }
 
+  public void setMovingBlockMode(boolean movingBlockMode) {
+    this.isMovingBlockMode = movingBlockMode;
+  }
+
   public void setController(TrainControllerInterface controller) {
     this.controller = controller;
+  }
+
+  public void setActiveTrack(Track activeTrack) {
+    this.activeTrack = activeTrack;
   }
 
   /**
@@ -458,6 +472,10 @@ public class TrainModel implements TrainModelInterface {
     return powerCommand.get();
   }
 
+  public Track getActiveTrack() {
+    return activeTrack;
+  }
+
   public Block getCurrentBlock() {
     return currentBlock;
   }
@@ -540,6 +558,10 @@ public class TrainModel implements TrainModelInterface {
 
   public static ObservableList<String> getObservableListOfTrainModels() {
     return FXCollections.observableArrayList(listOfTrainModels.keySet());
+  }
+
+  public boolean isMovingBlockMode() {
+    return isMovingBlockMode;
   }
 
   public static TrainModel getTrainModel(String id) {

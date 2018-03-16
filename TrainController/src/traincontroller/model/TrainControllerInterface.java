@@ -1,10 +1,8 @@
 package traincontroller.model;
 
-import java.util.HashMap;
-
 public interface TrainControllerInterface {
 
-  void setAntennaSignal(Byte[] signal);
+  void setAntennaSignal(float speed, float authority);
 
   void setBeaconSignal(Byte[] signal);
 
