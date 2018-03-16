@@ -133,7 +133,7 @@ public class TrainControllerController implements Initializable {
       rightDoorButton.setSelected(false);
       return;
     }
-    if (!leftDoorButton.isSelected()) {
+    if (!rightDoorButton.isSelected()) {
       rightDoorButton.textProperty().setValue("CLOSE");
       trainController.setRightDoorStatus(TrainModelEnums.DoorStatus.CLOSED);
     } else {

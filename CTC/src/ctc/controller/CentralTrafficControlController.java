@@ -23,6 +23,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import mainmenu.Clock;
 import traincontroller.model.TrainController;
+import traincontroller.model.TrainControllerFactory;
 import trainmodel.model.TrainModel;
 
 public class CentralTrafficControlController {
@@ -571,6 +572,7 @@ public class CentralTrafficControlController {
       }
 
       ctc.getDispatchTable().add(selected);
+      TrainControllerFactory.startTrainController(selected.getName());
       dispatchTable.setItems(ctc.getDispatchTable());
       if (ctc.getTrainQueueTable().size() == 0) {
         selectedScheduleTable.setItems(FXCollections.observableArrayList());
