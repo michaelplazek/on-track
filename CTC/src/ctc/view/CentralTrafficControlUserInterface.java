@@ -23,7 +23,7 @@ public class CentralTrafficControlUserInterface {
       this.controller = loader.getController();
       this.scene = new Scene(root);
     } catch (IOException e) {
-      System.out.println(e);
+      e.printStackTrace();
     }
   }
 

@@ -1,16 +1,19 @@
 package ctc.model;
 
 import javafx.collections.ObservableList;
+import trackmodel.model.Block;
+import trackmodel.model.Track;
 import traincontroller.model.TrainController;
 import traincontroller.model.TrainControllerFactory;
 
 /**
  * This class is used to map the train instances to their routes.
  */
-public class TrainListItem {
+public class TrainWrapper {
 
   private TrainController train;
-  private ObservableList<TrainStopRow> schedule;
+  private ObservableList<ScheduleRow> schedule;
+  private Track track;
   private String name;
   private String departure;
   private boolean isDispatched;
@@ -18,16 +21,14 @@ public class TrainListItem {
   private int passengers;
   private double authority;
   private double distanceTravelled;
-  private String location;
-  private String station;
-  private String track;
-  // private Block location;
-  // private Route route;
+  private String line;
+  private Block location;
+  private Route route;
 
   /**
    * Default constructor.
    */
-  public TrainListItem(){}
+  public TrainWrapper(){}
 
   /**
    * Constructor for the TrainList items.
@@ -35,11 +36,11 @@ public class TrainListItem {
    * @param id String for name of train
    * @param line String for name of line train is running on
    */
-  public TrainListItem(
+  public TrainWrapper(
       String id,
       String departure,
       String line,
-      ObservableList<TrainStopRow> schedule) {
+      ObservableList<ScheduleRow> schedule) {
     this.train = (TrainController) TrainControllerFactory.createTrainController(id, line);
     this.name = id;
     this.departure = departure;
@@ -48,18 +49,22 @@ public class TrainListItem {
     this.speed = 0.0;
     this.passengers = 0;
     this.authority = 0;
-    this.location = "A1";
+    this.line = line;
+    // TODO: add the fucking track
+//    this.track = Track.getListOfTracks().get(line);
+//    this.location = track.getStartBlock();
+    this.route = new Route();
   }
 
   public TrainController getTrain() {
     return train;
   }
 
-  public ObservableList<TrainStopRow> getSchedule() {
+  public ObservableList<ScheduleRow> getSchedule() {
     return schedule;
   }
 
-  public void setSchedule(ObservableList<TrainStopRow> schedule) {
+  public void setSchedule(ObservableList<ScheduleRow> schedule) {
     this.schedule = schedule;
   }
 
@@ -67,16 +72,8 @@ public class TrainListItem {
     return name;
   }
 
-  public void setName(String name) {
-    this.name = name;
-  }
-
   public String getDeparture() {
     return departure;
-  }
-
-  public void setDeparture(String departure) {
-    this.departure = departure;
   }
 
   public boolean isDispatched() {
@@ -111,27 +108,43 @@ public class TrainListItem {
     this.authority = authority;
   }
 
-  public String getLocation() {
+  public Block getLocation() {
     return location;
   }
 
-  public void setLocation(String location) {
+  public void setLocation(Block location) {
     this.location = location;
   }
 
-  public String getTrack() {
+  public Track getTrack() {
     return track;
   }
 
-  public void setTrack(String track) {
+  public void setTrack(Track track) {
     this.track = track;
   }
 
-  public String getStation() {
-    return station;
+  public double getDistanceTravelled() {
+    return distanceTravelled;
   }
 
-  public void setStation(String station) {
-    this.station = station;
+  public void setDistanceTravelled(double distanceTravelled) {
+    this.distanceTravelled = distanceTravelled;
+  }
+
+  public String getLine() {
+    return line;
+  }
+
+  public void setLine(String line) {
+    this.line = line;
+  }
+
+  public Route getRoute() {
+    return route;
+  }
+
+  public void setRoute(Route route) {
+    this.route = route;
   }
 }

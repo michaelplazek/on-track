@@ -87,12 +87,12 @@ public class TrainModel implements TrainModelInterface {
   private boolean isMovingBlockMode = false;
 
   //Speed and Authority from MBO gets passed to TrainController in MBO mode.
-//  private float mboSpeed;
-//  private float mboAuthority;
+  // private float mboSpeed;
+  // private float mboAuthority;
 
   //Speed and Authority from trackModel gets passed to TrainController in Manual Mode
-//  private float trackModelSpeed;
-//  private float trackModelAuthority;
+  // private float trackModelSpeed;
+  // private float trackModelAuthority;
 
   private Byte[] beaconSignal;
 
@@ -191,7 +191,7 @@ public class TrainModel implements TrainModelInterface {
    * Updates current block to next block.
    */
   private void updateCurrentBlock() {
-   Block next = activeTrack.getBlock(currentBlock.getNextBlock1());
+    Block next = activeTrack.getBlock(currentBlock.getNextBlock1());
     currentBlock = next;
   }
 
@@ -359,8 +359,6 @@ public class TrainModel implements TrainModelInterface {
     //if Manual Mode call this
     if (isMovingBlockMode) {
       this.controller.setAntennaSignal(speed, authority);
-    } else {
-
     }
 
     //if MBO mode call this

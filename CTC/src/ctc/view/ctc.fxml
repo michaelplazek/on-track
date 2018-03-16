@@ -99,7 +99,7 @@
                                                 <TextField fx:id="trainNameField" layoutX="4.0" layoutY="94.0" onKeyReleased="#formatTrainName" prefHeight="26.0" prefWidth="106.0" promptText="Train name" />
                                                 <TextField fx:id="departingTimeField" layoutX="112.0" layoutY="94.0" onKeyReleased="#formatTimeInput" prefHeight="26.0" prefWidth="108.0" promptText="Departure time" />
                                                 <ChoiceBox fx:id="scheduleBlocks" layoutX="222.0" layoutY="94.0" prefHeight="26.0" prefWidth="91.0" value="Green" />
-                                                <TableView fx:id="addTrainTable" editable="true" layoutX="5.0" layoutY="125.0" prefHeight="250.0" prefWidth="308.0">
+                                                <TableView fx:id="addScheduleTable" editable="true" layoutX="5.0" layoutY="125.0" prefHeight="250.0" prefWidth="308.0">
                                                   <columns>
                                                     <TableColumn fx:id="stopColumn" prefWidth="155.5" text="Stop" />
                                                     <TableColumn fx:id="dwellColumn" prefWidth="150.0" text="Dwell" />
