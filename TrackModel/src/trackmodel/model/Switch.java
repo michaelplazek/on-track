@@ -54,10 +54,13 @@ public class Switch extends Block {
   * The status will be set to a block
   * @param status This is the block number that the switch is to be set too
   */
-  public void setStatus(int status) {
+  public boolean setStatus(int status) {
     if (status == getNextBlock1() || status == next2) {
       this.status = status;
+      return true;
     }
+
+    return false;
   }
 
   /**
