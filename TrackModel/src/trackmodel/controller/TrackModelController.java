@@ -22,6 +22,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import trackmodel.model.Block;
+import trackmodel.model.Switch;
 
 public class TrackModelController {
   //DROPDOWNS
@@ -175,24 +176,6 @@ public class TrackModelController {
           trackHeating.setFill(Color.GREEN);
         } else {
           trackHeating.setFill(Color.WHITE);
-        }
-
-        if (picked.getInfrastructure().equals("CROSSING")) {
-          crossingStatus.setFill(Color.GREEN);
-        } else {
-          crossingStatus.setFill(Color.WHITE);
-        }
-
-        if (picked.getInfrastructure().equals("STATION")) {
-          stationStatus.setFill(Color.GREEN);
-        } else {
-          stationStatus.setFill(Color.WHITE);
-        }
-
-        if (picked.getInfrastructure().equals("UNDERGROUND")) {
-          undergroundStatus.setFill(Color.GREEN);
-        } else {
-          undergroundStatus.setFill(Color.WHITE);
         }
       }
     });

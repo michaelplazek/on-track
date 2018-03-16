@@ -4,11 +4,7 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
 
-
 public class Block {
-
-  //BLob Data
-  private String[] params;
 
   //ID
   private String line;
@@ -18,18 +14,19 @@ public class Block {
   //Parameters
   private float size; //in meters
   private float grade;
-  private float speedLimit;
+  private int speedLimit;
   private float elevation;
   private float cumElevation;
-  private int direction;
 
   //Infrastructure
-  private String infrastructure;
-  private boolean heaters;
-  private int switchId;
-  private Switch junction;
-  private Crossing crossing;
-  private Station station;
+  private String stationName = "";
+  private boolean leftStation;
+  private boolean rightStation;
+  private boolean underground;
+  private boolean isSwitch;
+  private boolean isCrossing;
+  private boolean crossingStatus;
+  private boolean isHeated;
 
   //Failures
   private boolean brokenRailStatus;
@@ -38,554 +35,300 @@ public class Block {
   private boolean closedForMaintenance;
 
   //Track Circuit
-  private int trainPresent;
+  private boolean isOccupied;
 
   //Track Signal
-  private boolean go;
   private float setPointSpeed;
   private float authority;
   private boolean beacon;
-
+  
   //Neighbors
-  private Block nextBlock;
-  private Block previousBlock;
+  private boolean biDirectional;
+  private int previous;
+  private int nextBlock1;
 
   public Block() {
 
   }
 
-  public Block(String csvLine) {
-    loadBlock(csvLine);
-  }
-
   /**
-  *Parse String and set block data.
-  *@param csvLine string of Block data
-  */
-  private void loadBlock(String csvLine) {
-    params = csvLine.split(",");
-
-    //Line
-    setLine(params[0]);
-
-    //Section
-    setSection(params[1]);
-
-    //Block Number
-    setNumber(Integer.parseInt(params[2]));
-
-    //Block Length
-    setSize(Float.parseFloat(params[3]));
-
-    //Block Grade
-    setGrade(Float.parseFloat(params[4]));
-
-    //Speed Limit
-    setSpeedLimit(Float.parseFloat(params[5]));
-
-    //Infrastructure
-    setInfrastructure(params[6]);
-
-    //Elevation
-    setElevation(Float.parseFloat(params[8]));
-
-    //Cumulative Elevation
-    setCumElevation(Float.parseFloat(params[9]));
-
-    //Set No switch value
-    setSwitchId(-1);
-
-    //SwitchID
-    if (params.length > 10 && params[10].length() > 1) {
-      int switchNum = Integer.parseInt(params[10].split(" ")[1]);
-      setSwitchId(switchNum);
-    }     //Station
-
-    if (getInfrastructure().equals("STATION")) {
-      setStation(new Station(params[6]));
-    } else if (getInfrastructure().equals("CROSSING")) {
-      setCrossing(new Crossing());
-    }
-  }
-
-
-  /**
-   * This method return a list of parameter.
-   * @return the array of parameters
+   *Parse String and set block data.
+   *@param line The string that indicates the line
+   *@param section This string that indicates the section
+   *@param number This string indicates the number for the block
+   *@param length The length of a block
+   *@param grade The grade of a block
+   *@param speedLimit The speed limit on a block
+   *@param infrastructure The special indicators for a block type
+   *@param elevation The elevation of a block
+   *@param cumElevation The cumulative elevation of a block
+   *@param biDirectional This indicates if a block is bidirectional
+   *@param previous This indicates the block prior to this one
+   *@param next1 This indicates the next logical block for the track after the current block
+   *@param leftStation This indicates that the station is on the left of the track
+   *@param rightStation This indicates that the station is on the right of the track
    */
-  public String[] getparams() {
-    return params;
+  public Block(String line, String section, String number, float length,
+               float grade, int speedLimit, String infrastructure, float elevation,
+               float cumElevation, boolean biDirectional, int previous, int next1,
+               boolean leftStation, boolean rightStation) {
+
+    setLine(line);
+    setSection(section);
+    setNumber(Integer.parseInt(number));
+    setSize(length);
+    setGrade(grade);
+    setSpeedLimit(speedLimit);
+    setStationName("");
+    setUnderground(false);
+    setSwitchHere(false);
+    setCrossing(false);
+    setInfrastructure(infrastructure);
+    setElevation(elevation);
+    setCumElevation(cumElevation);
+    setBiDirectional(biDirectional);
+    setPreviousBlock(previous);
+    setNextBlock1(next1);
+    setLeftStation(leftStation);
+    setRightStation(rightStation);
+
   }
 
-  /**
-   * This method return the line the block is on.
-   * @return the string for the line
-   */
   public String getLine() {
     return line;
   }
 
-  /**
-   * This method will return the section a block is on.
-   * @return A string with the block name
-   */
+  public void setLine(String line) {
+    this.line = line;
+  }
+
   public String getSection() {
     return section;
   }
 
-  /**
-   * This method will return a block number.
-   * @return This method will return the block number
-   */
+  public void setSection(String section) {
+    this.section = section;
+  }
+
   public int getNumber() {
     return number;
   }
 
+  public void setNumber(int number) {
+    this.number = number;
+  }
 
-  /**
-   * This method will return the size of a block.
-   * @return This will pass back the size of a block
-   */
   public float getSize() {
     return size;
   }
 
-  /**
-   * This method will return the grade of a block.
-   * @return The float for the grade of a block
-   */
+  public void setSize(float size) {
+    this.size = size;
+  }
+
   public float getGrade() {
     return grade;
   }
 
-  /**
-   * Pass back the speed limit of a block.
-   * @return The float value for a speed limit of a block
-   */
-  public float getSpeedLimit() {
+  public void setGrade(float grade) {
+    this.grade = grade;
+  }
+
+  public int getSpeedLimit() {
     return speedLimit;
   }
 
-  /**
-   * This method will return the elevation of a block.
-   * @return a float with the value of elevation
-   */
+  public void setSpeedLimit(int speedLimit) {
+    this.speedLimit = speedLimit;
+  }
+
   public float getElevation() {
     return elevation;
   }
 
-  /**
-   * This method will return the cumulative elevation.
-   * @return A float value will be returned with the cumulative elevation
-   */
+  public void setElevation(float elevation) {
+    this.elevation = elevation;
+  }
+
   public float getCumElevation() {
     return cumElevation;
   }
 
-  /**
-   * This method will return if a beacon is at the location.
-   * @return A boolean value will be returned indicating if there is a beacon there.
-   */
-  public boolean getBeacon() {
-    return beacon;
+  public void setCumElevation(float cumElevation) {
+    this.cumElevation = cumElevation;
   }
 
   /**
-   * This method will return the direction based on an integer.
-   * @return An integer value will be returned to indicate the direction
+   * This method will set the various infrastructure field for the block.
+   * @param infrastructure A string with data about the block.
    */
-  public int getDirection() {
-    return direction;
+  public void setInfrastructure(String infrastructure) {
+    String[] parts = infrastructure.split(";");
+
+    for (int i = 0; i < parts.length; i++) {
+      if (parts[i].equals("STATION")) {
+        setStationName(parts[i + 1]);
+      } else if (parts[i].equals("RAILWAY CROSSING")) {
+        setCrossing(true);
+        setCrossingStatus(false);
+      } else if (parts[i].equals("UNDERGROUND")) {
+        setUnderground(true);
+      } else if (parts[i].equals("SWITCH")) {
+        setSwitchHere(true);
+      }
+    }
   }
 
-  /**
-   * This method will return the next block in the track.
-   * @return A Block will be returned
-   */
-  public Block getNextBlock() {
-    return nextBlock;
+  public String getStationName() {
+    return stationName;
   }
 
-  /**
-   * This method will return the previous block in the track.
-   * @return A Block will be returned
-   */
-  public Block getPreviousBlock() {
-    return previousBlock;
+  public void setStationName(String stationName) {
+    this.stationName = stationName;
   }
 
-  /**
-   * The infrastructure will be returned.
-   * @return This will be returned in the form of a string
-   */
-  public String getInfrastructure() {
-    return infrastructure;
+  public boolean isLeftStation() {
+    return leftStation;
   }
 
-  /**
-   * The status of the heaters will be returned by this method.
-   * @return The status will be passed as a boolean value
-   */
-  public boolean getHeaters() {
-    return heaters;
+  public void setLeftStation(boolean leftStation) {
+    this.leftStation = leftStation;
   }
 
-  /**
-   * The status of the switch id number will be returned if this block holds a switch.
-   * @return The integer that is used as an id will be returned
-   */
-  public int getSwitchId() {
-    return switchId;
+  public boolean isRightStation() {
+    return rightStation;
   }
 
-  /**
-   * The switch at the current location will be returned.
-   * @return Returns a switch object
-   */
-  public Switch getSwitch() {
-    return junction;
+  public void setRightStation(boolean rightStation) {
+    this.rightStation = rightStation;
   }
 
-  /**
-   * The switch will return a crossing object if one is at the block.
-   * @return Returns a crossing object
-   */
-  public Crossing getCrossing() {
-    return crossing;
+  public boolean isUnderground() {
+    return underground;
   }
 
-  /**
-   * This method will return a station if there is one at this block.
-   * @return A Station object will be returned
-   */
-  public Station getStation() {
-    return station;
+  public void setUnderground(boolean underground) {
+    this.underground = underground;
   }
 
-  /**
-   * Return the id of any train present.
-   * @return An integer identification for a train is passed back
-   */
-  public int getTrainPresent() {
-    return trainPresent;
+  public boolean isSwitch() {
+    return isSwitch;
   }
 
-  /**
-   * This method will tell the user if they are allowed to go.
-   * @return A boolean value will be passed if a train can go
-   */
-  public boolean getGo() {
-    return go;
+  public void setSwitchHere(boolean isSwitch) {
+    this.isSwitch = isSwitch;
   }
 
-  /**
-   * This method will return the set point speed.
-   * @return The value passed will be a float value
-   */
-  public float getSetPointSpeed() {
-    return setPointSpeed;
+  public boolean isCrossing() {
+    return isCrossing;
   }
 
-  /**
-   * This method will return the authority at a  block.
-   * @return The value returned will be a float with the distance
-   */
-  public float getAuthority() {
-    return authority;
+  public void setCrossing(boolean isCrossing) {
+    this.isCrossing = isCrossing;
   }
 
-  /**
-   * This will tell the user if there is a failure.
-   * @return The method will return a boolean if there was a failure
-   */
-  public boolean getFailureStatus() {
-    return (brokenRailStatus || powerStatus || trackCircuitStatus || closedForMaintenance);
+  public boolean getCrossingStatus() {
+    return crossingStatus;
   }
 
-  /**
-   * This method will tell if there was a broken rail failure.
-   * @return A boolean value will be returned
-   */
+  public void setCrossingStatus(boolean crossingStatus) {
+    this.crossingStatus = crossingStatus && isCrossing;
+  }
+
+  public boolean isHeated() {
+    return isHeated;
+  }
+
+  public void setHeated(boolean isHeated) {
+    this.isHeated = isHeated;
+  }
+
   public boolean getBrokenRailStatus() {
     return brokenRailStatus;
   }
 
-  /**
-   * This method will tell if the block is closed for maintenance.
-   * @return A boolean value will be returned
-   */
-  public boolean getClosedForMaintenence() {
-    return closedForMaintenance;
+  public void setBrokenRailStatus(boolean brokenRailStatus) {
+    this.brokenRailStatus = brokenRailStatus;
   }
 
-  /**
-   * This method will indicate if there is a power failure.
-   * @return A boolean value will be returned
-   */
   public boolean getPowerStatus() {
     return powerStatus;
   }
 
-  /**
-   * This method will tell the status of a track circuit failure.
-   * @return A boolean value will be returned
-   */
+  public void setPowerStatus(boolean powerStatus) {
+    this.powerStatus = powerStatus;
+  }
+
   public boolean getTrackCircuitStatus() {
     return trackCircuitStatus;
   }
 
-  /**
-   * This method update the parameter of the block.
-   * @param newparams This is a string that updates the parameters.
-   */
-  public void setparams(String[] newparams) {
-    params = newparams;
+  public void setTrackCircuitStatus(boolean trackCircuitStatus) {
+    this.trackCircuitStatus = trackCircuitStatus;
   }
 
-  /**
-   * This method will set a new line for the block.
-   * @param newLine The new line that the block is part of
-   */
-  public void setLine(String newLine) {
-    line = new String(newLine);
+  public boolean isClosedForMaintenance() {
+    return closedForMaintenance;
   }
 
-  /**
-   * This method will set the section for the block.
-   * @param newSection The string value for the section of the track
-   */
-  public void setSection(String newSection) {
-    section = new String(newSection);
+  public void setClosedForMaintenance(boolean closedForMaintenance) {
+    this.closedForMaintenance = closedForMaintenance;
   }
 
-  /**
-   * This will set a new number of the block.
-   * @param newNumber The block number that is now to be set
-   */
-  public void setNumber(int newNumber) {
-    number = newNumber;
+  public boolean isOccupied() {
+    return isOccupied;
   }
 
-  /**
-   * This method will set the size of a block.
-   * @param newSize The new size of the block
-   */
-  public void setSize(float newSize) {
-    size = newSize;
+  public void setOccupied(boolean isOccupied) {
+    this.isOccupied = isOccupied;
   }
 
-  /**
-   * This method will set the grade of the block.
-   * @param newGrade The new grade of the block
-   */
-  public void setGrade(float newGrade) {
-    grade = newGrade;
+  public float getSetPointSpeed() {
+    return setPointSpeed;
   }
 
-  /**
-   * This method will set the speed limit of a block.
-   * @param newSpeedLimit The new speed limit as a float
-   */
-  public void setSpeedLimit(float newSpeedLimit) {
-    speedLimit = newSpeedLimit;
+  public void setSetPointSpeed(float setPointSpeed) {
+    this.setPointSpeed = setPointSpeed;
   }
 
-  /**
-   * This method will set the elevation of a block.
-   * @param newElevation A float value for the new elevation
-   */
-  public void setElevation(float newElevation) {
-    elevation = newElevation;
+  public float getAuthority() {
+    return authority;
   }
 
-  /**
-   * This method will set the cumulative elevation of a block.
-   * @param newCumElevation A float value for the new cumulative elevation
-   */
-  public void setCumElevation(float newCumElevation) {
-    cumElevation = newCumElevation;
+  public void setAuthority(float authority) {
+    this.authority = authority;
   }
 
-  /**
-   * This method will set the new direction of a block.
-   * @param newDirection A integer value will be passed in to set the direction
-   */
-  public void setDirection(int newDirection) {
-    direction = newDirection;
+  public boolean isBeacon() {
+    return beacon;
   }
 
-  /**
-   * This method will set the next block for the track.
-   * @param newNextBlock A Block will be passed in for the current block.
-   */
-  public void setNextBlock(Block newNextBlock) {
-    nextBlock = newNextBlock;
+  public void setBeacon(boolean beacon) {
+    this.beacon = beacon;
   }
 
-  /**
-   * This method will set the previous block of the track.
-   * @param newPreviousBlock A Block will be passed in for the current block.
-   */
-  public void setPreviousBlock(Block newPreviousBlock) {
-    previousBlock = newPreviousBlock;
+  public boolean isBiDirectional() {
+    return biDirectional;
   }
 
-  /**
-   * This method will set a new line for the block.
-   * @param newBeacon The new line that the block is part of
-   */
-  public void setBeacon(boolean newBeacon) {
-    beacon = newBeacon;
+  public void setBiDirectional(boolean biDirectional) {
+    this.biDirectional = biDirectional;
   }
 
-  /**
-   * This method will setup a new infrastructure.
-   * @param newInfrastructure A String will the infrastructure will be passed in
-   */
-  public void setInfrastructure(String newInfrastructure) {
-    String beginning1 = newInfrastructure.split(" ")[0];
-    String beginning2 = beginning1.split(";")[0];
-    String beginning3 = beginning2.split(":")[0];
-
-    if (beginning3.equals("RAILWAY")) {
-      infrastructure = "CROSSING";
-    } else if (beginning3.equals("STATION")) {
-      infrastructure = "STATION";
-    } else {
-      infrastructure = beginning3;
-    }
+  public int getPreviousBlock() {
+    return previous;
   }
 
-  /**
-   * This method will update the heaters.
-   * @param state A boolean will be passed in for the heater status
-   */
-  public void setHeaters(boolean state) {
-    heaters = state;
+  public void setPreviousBlock(int previous) {
+    this.previous = previous;
   }
 
-  /**
-   * This method will update the switch id at the current block.
-   * @param newSwitchId A integer will be passed in for the id number
-   */
-  public void setSwitchId(int newSwitchId) {
-    switchId = newSwitchId;
+  public int getNextBlock1() {
+    return nextBlock1;
   }
 
-  /**
-   * The switch will be updated for the block.
-   * @param newSwitch A Switch will be passed in for the block
-   */
-  public void setSwitch(Switch newSwitch) {
-    junction = newSwitch;
-  }
-
-  /**
-   * This method will set the crossing on the block.
-   * @param newCrossing A Crossing object should be passed in
-   */
-  public void setCrossing(Crossing newCrossing) {
-    crossing = newCrossing;
-  }
-
-  /**
-   * This method will create a new station.
-   * @param newStation A Station object should be passed on to the method
-   */
-  public void setStation(Station newStation) {
-    station = newStation;
-  }
-
-  /**
-   * This method will alert tha user if a track is present.
-   * @param trainId The id for the track on the block should be passed in
-   */
-  public void setTrainPresent(int trainId) {
-    trainPresent = trainId;
-  }
-
-  /**
-   * This method will aler the user if they can go.
-   * @param newGo A boolean will be passed in if the user can go onto the block
-   */
-  public void setGo(boolean newGo) {
-    go = newGo;
-  }
-
-  /**
-   * This method will allow the user to set a new set speed.
-   * @param newSetPointSpeed A float value is passed in allowing set speed to update
-   */
-  public void setSetPointSpeed(float newSetPointSpeed) {
-    setPointSpeed = newSetPointSpeed;
-    if (setPointSpeed > speedLimit) {
-      speedLimit = setPointSpeed;
-    }
-  }
-
-  /**
-   * This method will set the authority of a block.
-   * @param newAuthority A float value will be passed into the method.
-   */
-  public void setAuthority(float newAuthority) {
-    authority = newAuthority;
-    System.out.println("Set NEW Authority of " + authority + " on block num " + number);
-  }
-
-  /**
-   * This method will set a failure status of the various failure modes.
-   */
-  public void setFailureStatus() {
-    Random rand = new Random();
-    int failure = rand.nextInt(3);
-    if (failure == 0) {
-      setBrokenRailStatus(true);
-    } else if (failure == 1) {
-      setPowerStatus(true);
-    } else if (failure == 2) {
-      setTrackCircuitStatus(true);
-    }
-  }
-
-  /**
-   * This method will allow for the maintenance to be updated.
-   * @param status This will be the maintenance status
-   */
-  public void setClosedForMaintenence(boolean status) {
-    closedForMaintenance = status;
-  }
-
-  /**
-   * This method will allow the user to reset the status of all failure modes.
-   */
-  public void resetFailureStatus() {
-    setBrokenRailStatus(false);
-    setPowerStatus(false);
-    setTrackCircuitStatus(false);
-  }
-
-  /**
-   * This method will set the broken rail failure.
-   * @param state The boolean value of the failure.
-   */
-  public void setBrokenRailStatus(boolean state) {
-    brokenRailStatus = state;
-  }
-
-  /**
-   * This method will set the power rail failure.
-   * @param state The boolean state of the power failure
-   */
-  public void setPowerStatus(boolean state) {
-    powerStatus = state;
-  }
-
-  /**
-   * This method will set the track circuit failure.
-   * @param state The boolean value for the track circuit failure
-   */
-  public void setTrackCircuitStatus(boolean state) {
-    trackCircuitStatus = state;
+  public void setNextBlock1(int nextBlock1) {
+    this.nextBlock1 = nextBlock1;
   }
 
   /**
@@ -602,16 +345,9 @@ public class Block {
         + "<br>&#09;Speed Limit: " + this.speedLimit
         + "<br>&#09;Elevation: " + this.elevation
         + "<br>&#09;Cum Elevation: " + this.cumElevation
-        + "<br><br><b>Infrastructure</b><br>&#09;Train Present: " + this.trainPresent
-        + "<br>&#09;Heaters: " + this.heaters;
+        + "<br><br><b>Infrastructure</b><br>&#09;Train Present: " + this.isOccupied
+        + "<br>&#09;isHeated: " + this.isHeated;
 
-    if (this.getInfrastructure().equals("SWITCH")) {
-      output += "<br>&#09;Switch: " + this.switchId;
-    } else if (this.getInfrastructure().equals("STATION")) {
-      output += "<br>&#09;Station: " + this.station;
-    } else if (this.getInfrastructure().equals("CROSSING")) {
-      output += "<br>&#09;Crossing: " + this.crossing;
-    }
 
     output += "<br><br><b>Failures</b><br>&#09;Broken Rail: " + this.brokenRailStatus
         + "<br>&#09;Track Circuit Failure: " + this.powerStatus
@@ -635,16 +371,9 @@ public class Block {
         + "\n\t\tSpeed Limit: " + this.speedLimit
         + "\n\t\tElevation: " + this.elevation
         + "\n\t\tCum Elevation: " + this.cumElevation
-        + "\n\tInfrastructure\n\t\tTrain Present: " + this.trainPresent
-        + "\n\t\tHeaters: " + this.heaters;
+        + "\n\tInfrastructure\n\t\tTrain Present: " + this.isOccupied
+        + "\n\t\tisHeated: " + this.isHeated;
 
-    if (this.getInfrastructure().equals("SWITCH")) {
-      output += "\n\t\tSwitch: " + this.switchId;
-    } else if (this.getInfrastructure().equals("STATION")) {
-      output += "\n\t\tStation: " + this.station;
-    } else if (this.getInfrastructure().equals("CROSSING")) {
-      output += "\n\t\tCrossing: " + this.crossing;
-    }
     output += "\n\tFailures\n\t\tBroken Rail: " + this.brokenRailStatus
         + "\n\t\tTrack Circuit Failure: " + this.powerStatus
         + "\n\t\tPower Failure: " + this.trackCircuitStatus;
