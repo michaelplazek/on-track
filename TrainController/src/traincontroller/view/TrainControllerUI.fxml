@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.shape.Circle?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" >
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <SplitPane dividerPositions="0.3417085427135678" layoutX="220.0" layoutY="100.0" orientation="VERTICAL" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
@@ -39,11 +39,11 @@
                                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                             </rowConstraints>
                                              <children>
-                                                <RadioButton mnemonicParsing="false" text="Automatic Mode">
+                                                <RadioButton fx:id="automatic" mnemonicParsing="false" onAction="#toggleMode" text="Automatic Mode">
                                                    <toggleGroup>
                                                       <ToggleGroup fx:id="mode" />
                                                    </toggleGroup></RadioButton>
-                                                <RadioButton mnemonicParsing="false" selected="true" text="Manual Mode" toggleGroup="$mode" GridPane.rowIndex="1" />
+                                                <RadioButton fx:id="manual" mnemonicParsing="false" onAction="#toggleMode" selected="true" text="Manual Mode" toggleGroup="$mode" GridPane.rowIndex="1" />
                                              </children>
                                           </GridPane>
                                        </children>
@@ -192,7 +192,7 @@
                                                 <Label text="Right Doors:" GridPane.rowIndex="1" />
                                                 <Label text="Left Doors:" GridPane.rowIndex="2" />
                                                 <Label text="Temperature:" GridPane.rowIndex="3" />
-                                                <ToggleButton fx:id="ligtsButton" mnemonicParsing="false" onAction="#toggleLights" prefHeight="25.0" prefWidth="78.0" text="OFF" GridPane.columnIndex="1" />
+                                                <ToggleButton fx:id="lightsButton" mnemonicParsing="false" onAction="#toggleLights" prefHeight="25.0" prefWidth="78.0" text="OFF" GridPane.columnIndex="1" />
                                                 <ToggleButton fx:id="rightDoorButton" mnemonicParsing="false" onAction="#toggleRightDoors" prefHeight="25.0" prefWidth="132.0" text="CLOSED" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                 <ToggleButton fx:id="leftDoorButton" mnemonicParsing="false" onAction="#toggleLeftDoors" prefHeight="25.0" prefWidth="78.0" text="CLOSED" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                 <Label id="temperature" fx:id="temperature" text="68" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
