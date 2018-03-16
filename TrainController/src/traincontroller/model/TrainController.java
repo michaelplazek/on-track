@@ -60,7 +60,7 @@ public class TrainController implements TrainControllerInterface {
     this.trainModel = (TrainModel) TrainModelFactory.createTrainModel(this, id, line);
   }
 
-  public void setAntennaSignal(Byte[] signal) {
+  public void setAntennaSignal(float speed, float authority) {
 
   }
 

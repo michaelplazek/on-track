@@ -59,7 +59,7 @@ public interface TrainModelInterface {
 
   void setPowerCommand(double powerCommand);
 
-  void setAntennaSignal(Byte[] speedAuth);
+  void setAntennaSignal(float speed, float authority);
 
   void setBeaconSignal(Byte[] beaconSignal);
 
