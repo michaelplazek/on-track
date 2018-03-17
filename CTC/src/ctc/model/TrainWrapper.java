@@ -17,10 +17,10 @@ public class TrainWrapper {
   private String name;
   private String departure;
   private boolean isDispatched;
-  private double speed;
+  private float speed;
   private int passengers;
-  private double authority;
-  private double distanceTravelled;
+  private float authority;
+  private float distanceTravelled;
   private String line;
   private Block location;
   private Route route;
@@ -46,13 +46,12 @@ public class TrainWrapper {
     this.departure = departure;
     this.schedule = schedule;
     this.isDispatched = false;
-    this.speed = 0.0;
+    this.speed = 0;
     this.passengers = 0;
     this.authority = 0;
     this.line = line;
-    // TODO: add the fucking track
-//    this.track = Track.getListOfTracks().get(line);
-//    this.location = track.getStartBlock();
+    this.track = Track.getListOfTracks().get(line);
+    this.location = track.getStartBlock();
     this.route = new Route();
   }
 
@@ -84,11 +83,11 @@ public class TrainWrapper {
     isDispatched = dispatched;
   }
 
-  public double getSpeed() {
+  public float getSpeed() {
     return speed;
   }
 
-  public void setSpeed(double speed) {
+  public void setSpeed(float speed) {
     this.speed = speed;
   }
 
@@ -96,15 +95,11 @@ public class TrainWrapper {
     return passengers;
   }
 
-  public void setPassengers(int passengers) {
-    this.passengers = passengers;
-  }
-
-  public double getAuthority() {
+  public float getAuthority() {
     return authority;
   }
 
-  public void setAuthority(double authority) {
+  public void setAuthority(float authority) {
     this.authority = authority;
   }
 
@@ -124,11 +119,11 @@ public class TrainWrapper {
     this.track = track;
   }
 
-  public double getDistanceTravelled() {
+  public float getDistanceTravelled() {
     return distanceTravelled;
   }
 
-  public void setDistanceTravelled(double distanceTravelled) {
+  public void setDistanceTravelled(float distanceTravelled) {
     this.distanceTravelled = distanceTravelled;
   }
 

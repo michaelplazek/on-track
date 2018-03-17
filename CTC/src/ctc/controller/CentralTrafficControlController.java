@@ -58,7 +58,6 @@ public class CentralTrafficControlController {
   @FXML private TableView<ScheduleRow> addScheduleTable;
   @FXML private TableColumn<ScheduleRow, String> stopColumn;
   @FXML private TableColumn<ScheduleRow, String> dwellColumn;
-  @FXML private TableColumn<ScheduleRow, String> timeColumn;
   @FXML private Button resetButton;
   @FXML private Button addTrainButton;
 

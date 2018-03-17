@@ -10,15 +10,13 @@ import javafx.collections.ObservableList;
 import mainmenu.Clock;
 import trackmodel.model.Track;
 
-public class CentralTrafficControl {
+public class CentralTrafficControl implements CentralTrafficControlInterface {
 
   private static CentralTrafficControl instance = null;
   private Clock clock;
 
   private boolean isActive = false;
   private ObservableList<TrainWrapper> trainList;
-  private double exactAuthority;
-  private long exactTime;
   private StringProperty displayTime = new SimpleStringProperty();
   private String line;
   private String throughput = "17.4 passenger/s"; // TODO: calculate throughput
