@@ -1,6 +1,6 @@
 package ctc.model;
 
-public class TrainStopRow {
+public class ScheduleRow {
 
   private String stop;
   private String dwell;
@@ -9,14 +9,14 @@ public class TrainStopRow {
   /**
    * Default constructor.
    */
-  public TrainStopRow() {}
+  public ScheduleRow() {}
 
   /**
    * Base constructor.
    * @param stop the name of the stop
    * @param dwell the time stayed at that stop
    */
-  public TrainStopRow(String stop, String dwell, String time) {
+  public ScheduleRow(String stop, String dwell, String time) {
     this.stop = stop;
     this.dwell = dwell;
     this.time = time;

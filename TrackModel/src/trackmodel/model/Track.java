@@ -1,5 +1,6 @@
 package trackmodel.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Track {
@@ -62,6 +63,21 @@ public class Track {
    */
   public Block getBlock(int num) {
     return track.get(num);
+  }
+
+  /**
+   * This method creates an ArrayList of Strings for the Block names.
+   * @return ArrayList of strings for block names
+   */
+  public ArrayList<String> getBlockList() {
+    ArrayList<Block> list =  (ArrayList<Block>) track.values();
+    ArrayList<String> names = new ArrayList<>();
+
+    for (int i = 0; i < list.size(); i++) {
+      names.add(list.get(i).getSection() + list.get(i).getNumber());
+    }
+
+    return names;
   }
 
   /**

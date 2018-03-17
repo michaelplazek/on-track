@@ -1,6 +1,6 @@
 package ctc.model;
 
-public class TrainDispatchRow {
+public class DispatchRow {
 
   private String train;
   private String location;
@@ -9,7 +9,7 @@ public class TrainDispatchRow {
   private int passengers;
 
   /**
-   * Full constructor for the TrainDispatchRow class. To be used when populating
+   * Full constructor for the DispatchRow class. To be used when populating
    * rows of the dispatch table in the CTC.
    * @param train String that defines the train's name
    * @param location String that defines the current block or station of the train
@@ -18,7 +18,7 @@ public class TrainDispatchRow {
    * @param passengers int that defines the total number of passengers currently
    *                   onboard the train
    */
-  public TrainDispatchRow(
+  public DispatchRow(
       String train, String location, double authority, double speed, int passengers) {
     this.train = train;
     this.location = location;

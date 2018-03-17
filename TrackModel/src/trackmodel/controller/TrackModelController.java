@@ -158,7 +158,7 @@ public class TrackModelController {
         } else {
           circuitStatus.setFill(Color.WHITE);
         }
-
+        
         if (picked.hasBeacon()) {
           beaconStatus.setFill(Color.GREEN);
         } else {

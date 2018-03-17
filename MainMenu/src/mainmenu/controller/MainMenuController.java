@@ -103,6 +103,9 @@ public class MainMenuController implements Initializable {
         trainControllerChoiceBox.getSelectionModel().getSelectedItem());
   }
 
+  /**
+   * Disables and enables the train controller dropdown on the main menu.
+   */
   public void updateTrainControllerDropdown() {
     trainControllerChoiceBox.setItems(TrainController.getListOfTrains());
 
@@ -129,6 +132,9 @@ public class MainMenuController implements Initializable {
         trainModelChoiceBox.getSelectionModel().getSelectedItem());
   }
 
+  /**
+   * Enables and disables the train model dropdown.
+   */
   public void updateTrainModelDropdown() {
     ObservableList list = TrainModel.getObservableListOfTrainModels();
     trainModelChoiceBox.setItems(list);
