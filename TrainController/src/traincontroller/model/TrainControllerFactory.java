@@ -5,7 +5,7 @@ public class TrainControllerFactory {
    * @param id Id of the new train.
    * @return Returns a new train controller with the given id.
    * */
-  public static TrainControllerInterface createTrainController(String id, String line) {
+  public static TrainControllerInterface create(String id, String line) {
     if (TrainController.getTrainControllers().get(id) != null) {
       return null;
     }
@@ -14,7 +14,7 @@ public class TrainControllerFactory {
     return trainController;
   }
 
-  public static boolean startTrainController(String id) {
+  public static boolean start(String id) {
     return TrainController.start(id);
   }
 

@@ -8,6 +8,7 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import mainmenu.Clock;
+import trackmodel.model.Block;
 import trackmodel.model.Track;
 
 public class CentralTrafficControl implements CentralTrafficControlInterface {
@@ -120,6 +121,21 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
     for (Map.Entry<String, Track> entry : track.entrySet()) {
       String key = entry.getKey();
       trackList.add(key);
+    }
+  }
+
+  /**
+   * Track should call this method at a station to add passengers.
+   * This will allow calculation of throughput.
+   * @param block Block reference of station
+   * @param passengers number of passengers
+   */
+  public void addPassengers(Block block, int passengers) {
+
+    for (int i = 0; i < trainList.size(); i++) {
+      if (trainList.get(i).getLocation() == block) {
+        trainList.get(i).updatePassengers(passengers);
+      }
     }
   }
 

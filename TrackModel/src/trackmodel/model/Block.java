@@ -1,5 +1,7 @@
 package trackmodel.model;
 
+import ctc.model.CentralTrafficControl;
+
 public class Block {
 
   //ID
@@ -173,6 +175,21 @@ public class Block {
         setSwitchHere(true);
       }
     }
+  }
+
+  /**
+   * This will be called by the TrainModel when it arrives at a station.
+   * @return number of passengers added to train = train limit - number of passengers currently on train
+   */
+  public int getPassengers() {
+
+    // TODO: generate random number of passengers, using limit - passengers as max
+    int passengers = 0;
+
+    // set passengers for train in CTC
+    CentralTrafficControl.getInstance().addPassengers(this, passengers);
+
+    return passengers; // return number of passenger to TrainModel
   }
 
   public String getStationName() {
