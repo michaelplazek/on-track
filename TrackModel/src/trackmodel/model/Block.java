@@ -299,6 +299,10 @@ public class Block {
     return hasBeacon;
   }
 
+  public byte[] getBeacon() {
+    return null;
+  }
+
   public void setBeacon(boolean hasBeacon) {
     this.hasBeacon = hasBeacon;
   }
