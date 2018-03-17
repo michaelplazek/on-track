@@ -284,7 +284,7 @@ public class TrainModel implements TrainModelInterface {
    * Adds Train Model to the list.
    * @param train the TrainModel to be added.
    */
-  protected static void addTrain(TrainModel train) {
+  protected static void add(TrainModel train) {
     listOfTrainModels.put(train.getId(), train);
     MainMenuController.getInstance().updateTrainModelDropdown();
   }
@@ -292,7 +292,7 @@ public class TrainModel implements TrainModelInterface {
   /**
    * Removes a trainModel from the list.
    * */
-  public static boolean deleteTrain(String trainId) {
+  public static boolean delete(String trainId) {
     TrainModel temp = listOfTrainModels.get(trainId);
     if (temp == null) {
       return false;

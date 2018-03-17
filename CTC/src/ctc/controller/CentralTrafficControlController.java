@@ -551,7 +551,7 @@ public class CentralTrafficControlController {
         ctc.getTrainQueueTable().remove(i);
         ctc.getTrainList().remove(i);
         TrainController.delete(selected.getName());
-        TrainModel.deleteTrain(selected.getName());
+        TrainModel.delete(selected.getName());
       }
     }
 
