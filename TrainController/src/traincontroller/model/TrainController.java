@@ -68,7 +68,7 @@ public class TrainController implements TrainControllerInterface {
 
   }
 
-  public void setTrackCircuitSignal(Byte[] signal) {
+  public void setTrackCircuitSignal(float speed, float authority) {
 
   }
 
@@ -116,7 +116,7 @@ public class TrainController implements TrainControllerInterface {
     return currentSpeed;
   }
 
-  private Double getCurrentSpeedValue() {
+  public Double getCurrentSpeed() {
     return currentSpeed.getValue();
   }
 
@@ -140,7 +140,7 @@ public class TrainController implements TrainControllerInterface {
     return setSpeed;
   }
 
-  private Double getSetSpeed() {
+  public Double getSetSpeed() {
     return setSpeed.getValue();
   }
 
@@ -156,7 +156,7 @@ public class TrainController implements TrainControllerInterface {
     return driverSetSpeed.getValue();
   }
 
-  private void setDriverSetSpeed(Double driverSetSpeed) {
+  public void setDriverSetSpeed(Double driverSetSpeed) {
     this.driverSetSpeed.set(driverSetSpeed);
   }
 
@@ -168,7 +168,7 @@ public class TrainController implements TrainControllerInterface {
     return setTemperature.getValue();
   }
 
-  private void setSetTemperature(Double setTemperature) {
+  public void setSetTemperature(Double setTemperature) {
     this.setTemperature.set(setTemperature);
   }
 
@@ -251,6 +251,26 @@ public class TrainController implements TrainControllerInterface {
   @Override
   public void activateEmergencyBrake() {
     this.setEmergencyBrake(TrainModelEnums.BrakeStatus.ON);
+  }
+
+  public void setRightDoorStatus(TrainModelEnums.DoorStatus doorStatus) {
+    trainModel.setRightDoorStatus(doorStatus);
+  }
+
+  public TrainModelEnums.DoorStatus getRightDoorStatus() {
+    return trainModel.getRightDoorStatus();
+  }
+
+  public void setLeftDoorStatus(TrainModelEnums.DoorStatus doorStatus) {
+    trainModel.setLeftDoorStatus(doorStatus);
+  }
+
+  public TrainModelEnums.DoorStatus getLeftDoorStatus() {
+    return trainModel.getLeftDoorStatus();
+  }
+
+  public void setLightStatus(TrainModelEnums.LightStatus lightStatus) {
+    trainModel.setLightStatus(lightStatus);
   }
 
   private void start() {
