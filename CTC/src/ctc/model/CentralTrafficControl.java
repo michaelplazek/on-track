@@ -19,7 +19,7 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
   private Clock clock;
 
   private boolean isActive = false;
-  private ObservableList<TrainWrapper> trainList;
+  private ObservableList<TrainTracker> trainList;
   private StringProperty displayTime = new SimpleStringProperty();
   private String line;
   private long time;
@@ -30,8 +30,8 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
   private StringProperty displayThroughput = new SimpleStringProperty("0.00 passengers/hr");
 
   private ObservableList<ScheduleRow> scheduleTable;
-  private ObservableList<TrainWrapper> trainQueueTable;
-  private ObservableList<TrainWrapper> dispatchTable;
+  private ObservableList<TrainTracker> trainQueueTable;
+  private ObservableList<TrainTracker> dispatchTable;
 
   private ObservableList<String> blockList = FXCollections.observableArrayList();
   private ObservableList<String> trackList = FXCollections.observableArrayList("Select track");
@@ -191,11 +191,11 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
     scheduleTable = table;
   }
 
-  public ObservableList<TrainWrapper> getTrainList() {
+  public ObservableList<TrainTracker> getTrainList() {
     return trainList;
   }
 
-  public void addTrain(TrainWrapper train) {
+  public void addTrain(TrainTracker train) {
     this.trainList.add(train);
     trainQueueTable.add(train);
   }
@@ -214,11 +214,11 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
     );
   }
 
-  public ObservableList<TrainWrapper> getTrainQueueTable() {
+  public ObservableList<TrainTracker> getTrainQueueTable() {
     return trainQueueTable;
   }
 
-  public ObservableList<TrainWrapper> getDispatchTable() {
+  public ObservableList<TrainTracker> getDispatchTable() {
     return dispatchTable;
   }
 

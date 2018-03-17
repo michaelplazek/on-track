@@ -2,7 +2,7 @@ package ctc.controller;
 
 import ctc.model.CentralTrafficControl;
 import ctc.model.ScheduleRow;
-import ctc.model.TrainWrapper;
+import ctc.model.TrainTracker;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -76,9 +76,9 @@ public class CentralTrafficControlController {
   @FXML private Button addTrainButton;
 
   /* QUEUE COMPONENTS */
-  @FXML private TableView<TrainWrapper> trainQueueTable;
-  @FXML private TableColumn<TrainWrapper, String> trainColumn;
-  @FXML private TableColumn<TrainWrapper, String> departureColumn;
+  @FXML private TableView<TrainTracker> trainQueueTable;
+  @FXML private TableColumn<TrainTracker, String> trainColumn;
+  @FXML private TableColumn<TrainTracker, String> departureColumn;
   @FXML private TableView<ScheduleRow> selectedScheduleTable;
   @FXML private TableColumn<ScheduleRow, String> selectedStopColumn;
   @FXML private TableColumn<ScheduleRow, String> selectedDwellColumn;
@@ -87,12 +87,12 @@ public class CentralTrafficControlController {
   @FXML private Button dispatchButton;
 
   /* DISPATCH COMPONENTS */
-  @FXML private TableView<TrainWrapper> dispatchTable;
-  @FXML private TableColumn<TrainWrapper, String> dispatchTrainColumn;
-  @FXML private TableColumn<TrainWrapper, String> dispatchLocationColumn;
-  @FXML private TableColumn<TrainWrapper, String> dispatchAuthorityColumn;
-  @FXML private TableColumn<TrainWrapper, String> dispatchSpeedColumn;
-  @FXML private TableColumn<TrainWrapper, String> dispatchPassengersColumn;
+  @FXML private TableView<TrainTracker> dispatchTable;
+  @FXML private TableColumn<TrainTracker, String> dispatchTrainColumn;
+  @FXML private TableColumn<TrainTracker, String> dispatchLocationColumn;
+  @FXML private TableColumn<TrainTracker, String> dispatchAuthorityColumn;
+  @FXML private TableColumn<TrainTracker, String> dispatchSpeedColumn;
+  @FXML private TableColumn<TrainTracker, String> dispatchPassengersColumn;
   @FXML private TextField suggestedSpeedField;
   @FXML private Button setSpeedButton;
   @FXML private ChoiceBox<String> setAuthorityBlocks;
@@ -162,20 +162,20 @@ public class CentralTrafficControlController {
     selectedTimeColumn.setCellValueFactory(
         new PropertyValueFactory<ScheduleRow, String>("time"));
     trainColumn.setCellValueFactory(
-        new PropertyValueFactory<TrainWrapper, String>("name"));
+        new PropertyValueFactory<TrainTracker, String>("id"));
     departureColumn.setCellValueFactory(
-        new PropertyValueFactory<TrainWrapper, String>("departure"));
+        new PropertyValueFactory<TrainTracker, String>("departure"));
 
     dispatchTrainColumn.setCellValueFactory(
-        new PropertyValueFactory<TrainWrapper, String>("name"));
+        new PropertyValueFactory<TrainTracker, String>("id"));
     dispatchLocationColumn.setCellValueFactory(
-        new PropertyValueFactory<TrainWrapper, String>("location"));
+        new PropertyValueFactory<TrainTracker, String>("locationId"));
     dispatchAuthorityColumn.setCellValueFactory(
-        new PropertyValueFactory<TrainWrapper, String>("authority"));
+        new PropertyValueFactory<TrainTracker, String>("authority"));
     dispatchSpeedColumn.setCellValueFactory(
-        new PropertyValueFactory<TrainWrapper, String>("speed"));
+        new PropertyValueFactory<TrainTracker, String>("speed"));
     dispatchPassengersColumn.setCellValueFactory(
-        new PropertyValueFactory<TrainWrapper, String>("passengers"));
+        new PropertyValueFactory<TrainTracker, String>("passengers"));
 
     stopColumn.setCellFactory(TextFieldTableCell.<ScheduleRow>forTableColumn());
     stopColumn.setOnEditCommit(
@@ -235,7 +235,7 @@ public class CentralTrafficControlController {
     trainQueueTable.getSelectionModel().selectedItemProperty()
         .addListener((observableValue, oldValue, newValue) -> {
           if (trainQueueTable.getSelectionModel().getSelectedItem() != null) {
-            TrainWrapper selected = trainQueueTable.getSelectionModel().getSelectedItem();
+            TrainTracker selected = trainQueueTable.getSelectionModel().getSelectedItem();
             selectedScheduleTable.setItems(selected.getSchedule());
           }
         });
@@ -450,7 +450,7 @@ public class CentralTrafficControlController {
 
   private void openFile(File file) {
 
-    TrainWrapper train = new TrainWrapper();
+    TrainTracker train = new TrainTracker();
 
     BufferedReader br = null;
     ObservableList<ScheduleRow> list = FXCollections.observableArrayList();
@@ -521,7 +521,7 @@ public class CentralTrafficControlController {
 
   private void addTrainToQueue() {
 
-    // TODO: create route and add it to TrainWrapper
+    // TODO: create route and add it to TrainTracker
 
     // get train stop info
     List<String> stopData = new ArrayList<>();
@@ -547,7 +547,7 @@ public class CentralTrafficControlController {
 
     if (!name.equals("") && departingTime.length() == 8) {
 
-      TrainWrapper train = new TrainWrapper(name, departingTime, "red", schedule);
+      TrainTracker train = new TrainTracker(name, departingTime, "red", schedule);
       train.setLine(ctc.getLine()); // set the track that is current set
 
       // create item in queue
@@ -561,13 +561,13 @@ public class CentralTrafficControlController {
   }
 
   private void deleteTrainFromQueue() {
-    TrainWrapper selected = trainQueueTable.getSelectionModel().getSelectedItem();
+    TrainTracker selected = trainQueueTable.getSelectionModel().getSelectedItem();
     for (int i = 0; i < ctc.getTrainQueueTable().size(); i++) {
-      if (ctc.getTrainQueueTable().get(i).getName().equals(selected.getName())) {
+      if (ctc.getTrainQueueTable().get(i).getId().equals(selected.getId())) {
         ctc.getTrainQueueTable().remove(i);
         ctc.getTrainList().remove(i);
-        TrainControllerFactory.delete(selected.getName());
-        TrainModel.delete(selected.getName());
+        TrainControllerFactory.delete(selected.getId());
+        TrainModel.delete(selected.getId());
       }
     }
 
@@ -577,16 +577,16 @@ public class CentralTrafficControlController {
   private void dispatchTrain() {
 
     // remove selected train from queue
-    TrainWrapper selected = trainQueueTable.getSelectionModel().getSelectedItem();
+    TrainTracker selected = trainQueueTable.getSelectionModel().getSelectedItem();
     if (selected != null) {
       for (int i = 0; i < ctc.getTrainQueueTable().size(); i++) {
-        if (ctc.getTrainQueueTable().get(i).getName().equals(selected.getName())) {
+        if (ctc.getTrainQueueTable().get(i).getId().equals(selected.getId())) {
           ctc.getTrainQueueTable().remove(i);
         }
       }
 
       ctc.getDispatchTable().add(selected);
-      TrainControllerFactory.start(selected.getName());
+      TrainControllerFactory.start(selected.getId());
       dispatchTable.setItems(ctc.getDispatchTable());
       if (ctc.getTrainQueueTable().size() == 0) {
         selectedScheduleTable.setItems(FXCollections.observableArrayList());
@@ -597,7 +597,7 @@ public class CentralTrafficControlController {
   private void setSuggestedSpeed() {
 
     // get selected train
-    TrainWrapper train = dispatchTable.getSelectionModel().getSelectedItem();
+    TrainTracker train = dispatchTable.getSelectionModel().getSelectedItem();
 
     // get selected track
     String line = trackSelect.getSelectionModel().getSelectedItem();
@@ -613,7 +613,7 @@ public class CentralTrafficControlController {
   private void setAuthority() {
 
     // get selected train
-    TrainWrapper train = dispatchTable.getSelectionModel().getSelectedItem();
+    TrainTracker train = dispatchTable.getSelectionModel().getSelectedItem();
 
     // get selected track
     String line = trackSelect.getSelectionModel().getSelectedItem();
@@ -628,7 +628,7 @@ public class CentralTrafficControlController {
 
   private void dispatch() {
 
-    ObservableList<TrainWrapper> trains = ctc.getTrainQueueTable();
+    ObservableList<TrainTracker> trains = ctc.getTrainQueueTable();
     for (int i = 0; i < trains.size(); i++) {
       if (trains.get(i).getDeparture().equals(clock.getFormattedTime())
           && !ctc.getDispatchTable().contains(trains.get(i))) {
@@ -639,7 +639,7 @@ public class CentralTrafficControlController {
 
   private void autoDispatchTrain(int index) {
 
-    TrainWrapper train = ctc.getTrainQueueTable().get(index);
+    TrainTracker train = ctc.getTrainQueueTable().get(index);
 
     // remove selected train from queue
     ctc.getTrainQueueTable().remove(index);
