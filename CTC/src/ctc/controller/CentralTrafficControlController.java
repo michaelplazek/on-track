@@ -581,7 +581,7 @@ public class CentralTrafficControlController {
       }
 
       ctc.getDispatchTable().add(selected);
-      TrainControllerFactory.startTrainController(selected.getName());
+      TrainControllerFactory.start(selected.getName());
       dispatchTable.setItems(ctc.getDispatchTable());
       if (ctc.getTrainQueueTable().size() == 0) {
         selectedScheduleTable.setItems(FXCollections.observableArrayList());
