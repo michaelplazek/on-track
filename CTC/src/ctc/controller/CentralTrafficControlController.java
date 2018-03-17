@@ -266,7 +266,7 @@ public class CentralTrafficControlController {
     });
   }
 
-  private boolean isInteger(char ch) {
+  private boolean isValidCharacter(char ch) {
     return Character.isDigit(ch) || ch == ':';
   }
 
@@ -288,7 +288,7 @@ public class CentralTrafficControlController {
         // use Platform.runLater() hack to get around JavaFX being stupid
         if (ignore || newValue == null || oldValue == null) {
           return;
-        } else if (!newValue.equals("") && !isInteger(newValue.charAt(newValue.length() - 1))) {
+        } else if (!newValue.equals("") && !isValidCharacter(newValue.charAt(newValue.length() - 1))) {
           Platform.runLater(() -> {
             departingTimeField.setText(oldValue);
             departingTimeField.positionCaret(newValue.length() + 1);
