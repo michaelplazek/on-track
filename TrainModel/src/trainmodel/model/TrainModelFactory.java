@@ -1,6 +1,5 @@
 package trainmodel.model;
 
-import traincontroller.model.TrainController;
 import traincontroller.model.TrainControllerInterface;
 
 /**
@@ -22,7 +21,7 @@ public class TrainModelFactory {
       return null;
     }
     TrainModel trainModel = new TrainModel(trainControllerInterface, id, line);
-    TrainModel.addTrain(trainModel);
+    TrainModel.add(trainModel);
     return trainModel;
   }
 
