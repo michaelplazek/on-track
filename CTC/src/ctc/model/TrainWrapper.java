@@ -95,6 +95,10 @@ public class TrainWrapper {
     return passengers;
   }
 
+  public void updatePassengers(int passengers) {
+    this.passengers += passengers;
+  }
+
   public float getAuthority() {
     return authority;
   }
