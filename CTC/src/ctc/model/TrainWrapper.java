@@ -51,7 +51,7 @@ public class TrainWrapper {
     this.authority = 0;
     this.line = line;
     this.track = Track.getListOfTracks().get(line);
-    this.location = track.getStartBlock();
+//    this.location = track.getStartBlock();
     this.route = new Route();
   }
 
