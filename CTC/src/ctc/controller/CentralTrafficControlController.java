@@ -34,6 +34,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import mainmenu.Clock;
 import trackctrl.model.TrackControllerLineManager;
+import trackmodel.model.Block;
 import traincontroller.model.TrainControllerFactory;
 import trainmodel.model.TrainModel;
 
@@ -111,6 +112,7 @@ public class CentralTrafficControlController {
    */
   public void run() {
     ctc.updateDisplayTime();
+    ctc.calculateThroughput();
     dispatch();
   }
 
@@ -426,7 +428,10 @@ public class CentralTrafficControlController {
 
   private void submitMaintenance(){}
 
-  private void testGreen(){}
+  private void testGreen() {
+
+    ctc.addPassengers(new Block(), 20);
+  }
 
   private void testRed(){}
 

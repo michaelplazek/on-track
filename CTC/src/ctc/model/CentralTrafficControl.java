@@ -1,5 +1,7 @@
 package ctc.model;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,7 +22,12 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
   private ObservableList<TrainWrapper> trainList;
   private StringProperty displayTime = new SimpleStringProperty();
   private String line;
-  private String throughput = "17.4 passenger/s"; // TODO: calculate throughput
+  private long time;
+  private double hours;
+  private int refresh;
+  private int totalPassengers;
+  private double throughput;
+  private StringProperty displayThroughput = new SimpleStringProperty("0.00 passengers/hr");
 
   private ObservableList<ScheduleRow> scheduleTable;
   private ObservableList<TrainWrapper> trainQueueTable;
@@ -51,6 +58,10 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
     // need Track to be loaded
     // this.line = Track.getListOfTracks().get(0).getLine();
     this.line = "Green";
+    this.time = 0;
+    this.refresh = 0;
+    this.hours = 0.0001;
+    this.totalPassengers = 0;
 
     // makeBlockList();
     // makeTrackList();
@@ -81,7 +92,9 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
   }
 
   public void updateDisplayTime() {
+
     displayTime.setValue(clock.getFormattedTime());
+    time += clock.getChangeInTime();
   }
 
   public StringProperty getDisplayTime() {
@@ -101,7 +114,7 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
   }
 
   public StringProperty getThroughput() {
-    return new SimpleStringProperty(throughput);
+    return displayThroughput;
   }
 
   public boolean isActive() {
@@ -132,10 +145,27 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
    */
   public void addPassengers(Block block, int passengers) {
 
+    totalPassengers += passengers;
+
     for (int i = 0; i < trainList.size(); i++) {
       if (trainList.get(i).getLocation() == block) {
         trainList.get(i).updatePassengers(passengers);
       }
+    }
+  }
+
+  /**
+   * Called by controller to calculate the throughput each tick.
+   */
+  public void calculateThroughput() {
+
+    hours += ((float) clock.getChangeInTime() / (3600 * 1000));
+    throughput = (double) totalPassengers / hours;
+
+    if (refresh++ > 500) {
+      NumberFormat formatter = new DecimalFormat("#0.00");
+      displayThroughput.setValue(formatter.format(throughput) + " passengers/hr");
+      this.refresh = 0; // reset count
     }
   }
 

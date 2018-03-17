@@ -65,12 +65,12 @@
                   <Font size="14.0" />
                </font>
             </Label>
-            <Label layoutX="1267.0" layoutY="21.0" text="Throughput:" AnchorPane.leftAnchor="1267.0">
+            <Label layoutX="1246.0" layoutY="22.0" text="Throughput:" AnchorPane.leftAnchor="1246.0">
                <font>
                   <Font name="System Italic" size="12.0" />
                </font>
             </Label>
-            <Label fx:id="throughput" layoutX="1255.0" layoutY="42.0" text="27 passengers/hr" AnchorPane.leftAnchor="1255.0">
+            <Label fx:id="throughput" layoutX="1240.0" layoutY="41.0" AnchorPane.leftAnchor="1240.0">
                <font>
                   <Font name="System Italic" size="10.0" />
                </font>
