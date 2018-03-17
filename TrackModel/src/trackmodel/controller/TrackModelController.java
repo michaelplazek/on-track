@@ -1,6 +1,7 @@
 package trackmodel.controller;
 
 import java.io.File;
+import java.util.HashMap;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -22,6 +23,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import trackmodel.model.Block;
+import trackmodel.model.Track;
 
 public class TrackModelController {
   //DROPDOWNS
@@ -65,6 +67,8 @@ public class TrackModelController {
   @FXML private MenuButton failures;
 
   private Block[] blocks;
+  private boolean running;
+  private static HashMap<String, Track> listOfTracks = new HashMap<>();
 
   /**
    * This method initializes many of the fields.
@@ -79,7 +83,19 @@ public class TrackModelController {
     end.setOnAction(this::toggleSelectedFailures);
   }
 
-  @FXML void toggleSelectedFailures(ActionEvent event) {
+  public static void runAllInstances() {
+    for (String key: listOfTracks.keySet()) {
+      listOfTracks.get(key).run();
+    }
+  }
+
+  private void run() {
+    if (running) {
+      updateUI();
+    }
+  }
+
+  public void toggleSelectedFailures(ActionEvent event) {
     Button btn = (Button) event.getSource();
 
     for (MenuItem item : failures.getItems()) {
@@ -224,5 +240,9 @@ public class TrackModelController {
     fc.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Track Files", ".csv"));
 
     File inFile = fc.showOpenDialog((Stage) uploadButton.getScene().getWindow());
+  }
+
+  private void updateUI() {
+
   }
 }
