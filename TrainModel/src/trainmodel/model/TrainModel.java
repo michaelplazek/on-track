@@ -177,7 +177,7 @@ public class TrainModel implements TrainModelInterface {
    */
   private void updatePosition() {
     double changeInDist = changeInDist();
-    if (crossingBlock(changeInDist)) {
+    if (isCrossingBlock(changeInDist)) {
       positionInBlock = (positionInBlock + changeInDist) - currentBlock.getSize();
       updateCurrentBlock();
       updatePreviousBlock();
@@ -276,7 +276,7 @@ public class TrainModel implements TrainModelInterface {
    * @param distChange The distance the train moved.
    * @return true if train crosses block boarder, false otherwise.
    */
-  private boolean crossingBlock(Double distChange) {
+  private boolean isCrossingBlock(Double distChange) {
     return ((positionInBlock + distChange) > currentBlock.getSize());
   }
 
@@ -292,7 +292,7 @@ public class TrainModel implements TrainModelInterface {
   /**
    * Removes a trainModel from the list.
    * */
-  public static boolean delete(String trainId) {
+  public static boolean deleteTrain(String trainId) {
     TrainModel temp = listOfTrainModels.get(trainId);
     if (temp == null) {
       return false;
