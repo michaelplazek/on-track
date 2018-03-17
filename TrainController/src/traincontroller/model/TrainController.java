@@ -1,3 +1,4 @@
+
 package traincontroller.model;
 
 import java.util.HashMap;
@@ -9,6 +10,7 @@ import javafx.collections.ObservableList;
 import mainmenu.Clock;
 import mainmenu.ClockInterface;
 import mainmenu.controller.MainMenuController;
+import trackmodel.model.Block;
 import trainmodel.model.TrainModel;
 import trainmodel.model.TrainModelFactory;
 import trainmodel.model.TrainModelInterface;
@@ -34,8 +36,10 @@ public class TrainController implements TrainControllerInterface {
   private SimpleDoubleProperty ki;
   private SimpleStringProperty currentStation;
   private SimpleStringProperty nextStation;
+  private Block currentBlock;
 
   private static HashMap<String, TrainController> listOfTrains = new HashMap<>();
+
 
   /**
    * Base constructor for TrainController.
@@ -248,6 +252,14 @@ public class TrainController implements TrainControllerInterface {
     trainModel.setEmergencyBrakeStatus(brakeStatus);
   }
 
+  public Block getCurrentBlock() {
+    return currentBlock;
+  }
+
+  public void setCurrentBlock(Block currentBlock) {
+    this.currentBlock = currentBlock;
+  }
+
   @Override
   public void activateEmergencyBrake() {
     this.setEmergencyBrake(TrainModelEnums.BrakeStatus.ON);
@@ -280,7 +292,7 @@ public class TrainController implements TrainControllerInterface {
   /**
    * Starts a train.
    * */
-  public static boolean start(String trainId) {
+  protected static boolean start(String trainId) {
     TrainController temp = listOfTrains.get(trainId);
     if (temp == null) {
       return false;
@@ -292,7 +304,7 @@ public class TrainController implements TrainControllerInterface {
   /**
    * Removes a train from the list.
    * */
-  public static boolean delete(String trainId) {
+  protected static boolean delete(String trainId) {
     TrainController temp = listOfTrains.get(trainId);
     if (temp == null) {
       return false;
@@ -302,41 +314,15 @@ public class TrainController implements TrainControllerInterface {
     return true;
   }
 
-  /**
-   * Updates the current train controller.
-   */
-  private void run() {
-    if (running) {
-      takeAction();
-      updateFields();
-    }
-  }
-
-  private void takeAction() {
-
-  }
-
-  private void updateFields() {
-    setCurrentTemperature(trainModel.getCurrentTemp());
-    setCurrentSpeed(trainModel.getCurrentSpeed());
-
-  }
-
   protected static void addTrain(TrainController train) {
     listOfTrains.put(train.getId(), train);
     MainMenuController.getInstance().updateTrainControllerDropdown();
   }
 
-  /** Run all instances of the train controller. */
-  public static void runAllInstances() {
-    for (String key : listOfTrains.keySet()) {
-      listOfTrains.get(key).run();
-    }
-  }
-
   public static ObservableList<String> getListOfTrains() {
     return FXCollections.observableArrayList(listOfTrains.keySet());
   }
+
 
   public static HashMap<String, TrainController> getTrainControllers() {
     return listOfTrains;

@@ -4,7 +4,11 @@ import ctc.model.CentralTrafficControl;
 import ctc.model.ScheduleRow;
 import ctc.model.TrainWrapper;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,14 +19,21 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Toggle;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import mainmenu.Clock;
 import trackctrl.model.TrackControllerLineManager;
-import traincontroller.model.TrainController;
 import traincontroller.model.TrainControllerFactory;
 import trainmodel.model.TrainModel;
 
@@ -550,8 +561,8 @@ public class CentralTrafficControlController {
       if (ctc.getTrainQueueTable().get(i).getName().equals(selected.getName())) {
         ctc.getTrainQueueTable().remove(i);
         ctc.getTrainList().remove(i);
-        TrainController.delete(selected.getName());
-        TrainModel.deleteTrain(selected.getName());
+        TrainControllerFactory.delete(selected.getName());
+        TrainModel.delete(selected.getName());
       }
     }
 
@@ -570,7 +581,7 @@ public class CentralTrafficControlController {
       }
 
       ctc.getDispatchTable().add(selected);
-      TrainControllerFactory.startTrainController(selected.getName());
+      TrainControllerFactory.start(selected.getName());
       dispatchTable.setItems(ctc.getDispatchTable());
       if (ctc.getTrainQueueTable().size() == 0) {
         selectedScheduleTable.setItems(FXCollections.observableArrayList());

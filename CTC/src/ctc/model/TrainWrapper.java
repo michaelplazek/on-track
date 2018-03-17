@@ -41,7 +41,7 @@ public class TrainWrapper {
       String departure,
       String line,
       ObservableList<ScheduleRow> schedule) {
-    this.train = (TrainController) TrainControllerFactory.createTrainController(id, line);
+    this.train = (TrainController) TrainControllerFactory.create(id, line);
     this.name = id;
     this.departure = departure;
     this.schedule = schedule;
