@@ -32,7 +32,7 @@ public class TrackControllerLineManager implements TrackControllerLineManagerInt
   }
 
   @Override
-  public Boolean setAuthority(int block, float authority) {
+  public boolean setAuthority(int block, float authority) {
     if (lineControllers != null) {
       for (TrackController tc : lineControllers) {
         if (tc.hasBlock(block)) {
@@ -44,7 +44,7 @@ public class TrackControllerLineManager implements TrackControllerLineManagerInt
   }
 
   @Override
-  public Boolean setSuggestedSpeed(int block, float speed) {
+  public boolean setSuggestedSpeed(int block, float speed) {
     if (lineControllers != null) {
       for (TrackController tc : lineControllers) {
         if (tc.hasBlock(block)) {
@@ -68,7 +68,7 @@ public class TrackControllerLineManager implements TrackControllerLineManagerInt
   }
 
   @Override
-  public Boolean addController(TrackController newCtrl) {
+  public boolean addController(TrackController newCtrl) {
     if (lineControllers != null) {
       return lineControllers.add(newCtrl);
     } else {

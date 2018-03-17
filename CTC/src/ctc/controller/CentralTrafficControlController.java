@@ -21,6 +21,7 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import mainmenu.Clock;
+import trackctrl.model.TrackControllerLineManager;
 import traincontroller.model.TrainController;
 import traincontroller.model.TrainControllerFactory;
 import trainmodel.model.TrainModel;
@@ -540,7 +541,6 @@ public class CentralTrafficControlController {
 
       // create train
       ctc.addTrain(train);
-
     }
   }
 
@@ -578,9 +578,37 @@ public class CentralTrafficControlController {
     }
   }
 
-  private void setSuggestedSpeed(){}
+  private void setSuggestedSpeed() {
 
-  private void setAuthority(){}
+    // get selected train
+    TrainWrapper train = dispatchTable.getSelectionModel().getSelectedItem();
+
+    // get selected track
+    String line = trackSelect.getSelectionModel().getSelectedItem();
+    TrackControllerLineManager control = TrackControllerLineManager.getInstance(line);
+
+    // get suggested speed
+    String speed = suggestedSpeedField.getText();
+
+    // send speed
+    control.setSuggestedSpeed(train.getLocation().getNumber(), Float.parseFloat(speed));
+  }
+
+  private void setAuthority() {
+
+    // get selected train
+    TrainWrapper train = dispatchTable.getSelectionModel().getSelectedItem();
+
+    // get selected track
+    String line = trackSelect.getSelectionModel().getSelectedItem();
+    TrackControllerLineManager control = TrackControllerLineManager.getInstance(line);
+
+    // get suggested authority
+    String authority = setAuthorityBlocks.getSelectionModel().getSelectedItem();
+
+    // send authority
+    control.setAuthority(train.getLocation().getNumber(), Float.parseFloat(authority));
+  }
 
   private void dispatch() {
 
