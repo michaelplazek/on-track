@@ -486,38 +486,49 @@ public class CentralTrafficControlController {
 
     String line = maintenanceTracks.getSelectionModel().getSelectedItem();
 
-    int blockId = extractBlock();
-    Block block = Track.getListOfTracks().get(line).getBlock(blockId);
-
-    if (block.isClosedForMaintenance()) {
-      statusLight.setFill(Paint.valueOf("Green"));
+    if (line.equals("Select track")) {
+      statusLight.setFill(Paint.valueOf("Grey"));
+      occupiedLight.setFill(Paint.valueOf("Grey"));
+      maintenanceBlocks.setDisable(true);
+      maintenanceActions.setDisable(true);
     } else {
-      statusLight.setFill(Paint.valueOf("Red"));
-    }
 
-    if (block.isOccupied()) {
-      occupiedLight.setFill(Paint.valueOf("Green"));
-    } else {
-      occupiedLight.setFill(Paint.valueOf("Red"));
+      maintenanceBlocks.setDisable(true);
+      maintenanceActions.setDisable(true);
 
-    }
+      int blockId = extractBlock();
+      Block block = Track.getListOfTracks().get(line).getBlock(blockId);
 
-    if (block.isSwitch()) {
-      Switch sw = (Switch) block;
+      if (block.isClosedForMaintenance()) {
+        statusLight.setFill(Paint.valueOf("Green"));
+      } else {
+        statusLight.setFill(Paint.valueOf("Red"));
+      }
 
-      if (sw.getSwitchState()) {
-        stateOne.setOpacity(100);
-        stateTwo.setOpacity(0);
-        stateZero.setOpacity(0);
+      if (block.isOccupied()) {
+        occupiedLight.setFill(Paint.valueOf("Green"));
+      } else {
+        occupiedLight.setFill(Paint.valueOf("Red"));
+
+      }
+
+      if (block.isSwitch()) {
+        Switch sw = (Switch) block;
+
+        if (sw.getSwitchState()) {
+          stateOne.setOpacity(100);
+          stateTwo.setOpacity(0);
+          stateZero.setOpacity(0);
+        } else {
+          stateOne.setOpacity(0);
+          stateTwo.setOpacity(100);
+          stateZero.setOpacity(0);
+        }
       } else {
         stateOne.setOpacity(0);
-        stateTwo.setOpacity(100);
-        stateZero.setOpacity(0);
+        stateTwo.setOpacity(0);
+        stateZero.setOpacity(100);
       }
-    } else {
-      stateOne.setOpacity(0);
-      stateTwo.setOpacity(0);
-      stateZero.setOpacity(100);
     }
   }
 
