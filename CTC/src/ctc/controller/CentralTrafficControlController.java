@@ -464,7 +464,6 @@ public class CentralTrafficControlController {
     TrackControllerLineManager manager = TrackControllerLineManager.getInstance(line);
 
     int blockId = extractBlock();
-    Block block = Track.getListOfTracks().get(line).getBlock(blockId);
     String action = maintenanceActions.getSelectionModel().getSelectedItem();
 
     switch (action) {
@@ -509,10 +508,10 @@ public class CentralTrafficControlController {
         occupiedLight.setFill(Paint.valueOf("Green"));
       } else {
         occupiedLight.setFill(Paint.valueOf("Red"));
-
       }
 
       if (block.isSwitch()) {
+
         Switch sw = (Switch) block;
 
         if (sw.getSwitchState()) {
