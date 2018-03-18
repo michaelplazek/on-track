@@ -1,16 +1,19 @@
 package trackctrl.model;
 
 import java.util.ArrayList;
-import trackctrl.model.TrackController;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 public class TrackControllerLineManager implements TrackControllerLineManagerInterface {
 
   public String line;
-  private ArrayList<TrackController> lineControllers = null;
   private int[][] occupancy;
   private int[][] states;
 
-  private static ArrayList<TrackControllerLineManager> lines = null;
+  private static ArrayList<TrackControllerLineManager> lines;
+  private ArrayList<TrackController> lineControllers;
+  private ArrayList<String> lineControllerIds;
 
   /**
    * Constructor for a TrackControllerLineManager
@@ -29,6 +32,13 @@ public class TrackControllerLineManager implements TrackControllerLineManagerInt
       lines.add(this);
     }
 
+    lineControllers = new ArrayList<TrackController>();
+    lineControllerIds = new ArrayList<String>();
+  }
+
+  @Override
+  public String getLine() {
+    return line;
   }
 
   @Override
@@ -55,6 +65,18 @@ public class TrackControllerLineManager implements TrackControllerLineManagerInt
     return false;
   }
 
+  @Override
+  public boolean setSwitchOverride(int block, boolean state) {
+    if (lineControllers != null) {
+      for (TrackController tc : lineControllers) {
+        if (tc.hasBlock(block)) {
+          return tc.setSwitchOverride(block, state);
+        }
+      }
+    }
+    return false;
+  }
+
   //TODO
   @Override
   public int[][] getOccupancy() {
@@ -70,11 +92,15 @@ public class TrackControllerLineManager implements TrackControllerLineManagerInt
   @Override
   public boolean addController(TrackController newCtrl) {
     if (lineControllers != null) {
-      return lineControllers.add(newCtrl);
-    } else {
-      lineControllers = new ArrayList<TrackController>();
+      lineControllerIds.add(line + " " + newCtrl.getId());
       return lineControllers.add(newCtrl);
     }
+    return lineControllers.add(newCtrl);
+  }
+
+  @Override
+  public ArrayList<TrackController> getControllersList() {
+    return this.lineControllers;
   }
 
   /**
@@ -96,6 +122,58 @@ public class TrackControllerLineManager implements TrackControllerLineManagerInt
   }
 
   /**
+   * REturns a controller object based on its Id number.
+   * @param ctrlrId String of the controller ID, either "Green 1"
+   * @return TrackController object matching the line and id
+   */
+  public static TrackController getController(String ctrlrId) {
+    String[] temp = ctrlrId.split(" ");
+    String line = temp[0];
+    String id = null;
+
+    line = temp[0];
+    id = temp[1];
+
+    for (TrackControllerLineManager lm : lines) {
+      if (lm.line.equals(line)) {
+        //line found, get ctrlr
+        ArrayList ctrlrs = lm.getControllersList();
+        return (TrackController) ctrlrs.get(Integer.parseInt(id));
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Sets occupancy of a block in the Track Model to true to allow someone to
+   * repair the Track Circuit.
+   * @param id block identifier for requested block
+   * @return boolean indicating success of operation
+   */
+  public boolean closeBlock(int id) {
+    return false;
+  }
+
+  /**
+   * Sets occupancy of a block in the Track Model to false indicating someone
+   * repaired the Track Circuit.
+   * @param id block identifier for requested block
+   * @return boolean indicating success of operation
+   */
+  public boolean repairBlock(int id) {
+    return false;
+  }
+
+  /**
+   * Toggles the state of a switch on a block indicated by id if one exists.
+   * @param id block identifier for requested block
+   * @return boolean indicating success of operation
+   */
+  public boolean toggleSwitch(int id) {
+    return false;
+  }
+
+  /**
    * Gives all Line Managers created via a Java ArrayList.
    * @return returns an ArrayList of the created instances
    */
@@ -105,6 +183,18 @@ public class TrackControllerLineManager implements TrackControllerLineManagerInt
     } else {
       return lines = new ArrayList<TrackControllerLineManager>();
     }
+  }
+
+  public ObservableList<String> getObservableListOfIds() {
+    return FXCollections.observableArrayList(this.lineControllerIds);
+  }
+
+  /**
+   * Returns total number of lines.
+   * @return number of lines created
+   */
+  public static int getLineCount() {
+    return lines.size();
   }
 
 }
