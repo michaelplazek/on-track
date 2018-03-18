@@ -4,6 +4,7 @@ import ctc.controller.CentralTrafficControlController;
 
 import ctc.model.CentralTrafficControl;
 import ctc.view.CentralTrafficControlUserInterface;
+import trackctrl.model.TrackControllerInitializer;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -19,6 +20,7 @@ import javafx.util.Duration;
 import mainmenu.Clock;
 import mainmenu.controller.MainMenuController;
 import traincontroller.model.TrainController;
+import traincontroller.model.TrainControllerInterface;
 import traincontroller.model.TrainControllerManager;
 
 public class Runner extends Application {
@@ -73,5 +75,8 @@ public class Runner extends Application {
     clk.setInitialTime();
     clk.tick();
     ctc.initialize();
+    //TODO: Insert Track Initializer Here
+    TrackControllerInitializer.parseTrack();
+
   }
 }
