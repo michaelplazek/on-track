@@ -17,7 +17,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="375.0" prefWidth="375.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="trackctrl.control.TrackControllerController">
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="375.0" prefWidth="375.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Label fx:id="instanceTitle" layoutX="117.0" layoutY="4.0" text="G-One">
          <font>

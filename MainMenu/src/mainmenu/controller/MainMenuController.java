@@ -3,8 +3,11 @@ package mainmenu.controller;
 import ctc.view.CentralTrafficControlUserInterface;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.ResourceBundle;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,6 +16,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import mainmenu.model.MainMenuModel;
 import mbo.view.MovingBlockOverlayUserInterface;
+import trackctrl.model.TrackControllerLineManager;
+import trackctrl.view.TrackControllerUserInterface;
 import trackmodel.view.TrackModelUserInterface;
 import traincontroller.model.TrainController;
 import traincontroller.view.TrainControllerUserInterface;
@@ -38,7 +43,8 @@ public class MainMenuController implements Initializable {
       TrackModelUserInterface.getInstance();
 
   @FXML private Button trackControllerButton;
-  @FXML private ChoiceBox<String> trackControllerChoiceBox;
+  @FXML private ChoiceBox<String> trackControllerLineChoiceBox;
+  @FXML private ChoiceBox<String> trackControllerIdChoiceBox;
   @FXML private Button trainControllerButton;
   @FXML private ChoiceBox<String> trainControllerChoiceBox;
   @FXML private Button trainModelButton;
@@ -58,10 +64,60 @@ public class MainMenuController implements Initializable {
   }
 
   /**
+   * This function sets the lines to the initial line values.
+   */
+  public void initializeTrackControllers() {
+
+    ObservableList lineList = FXCollections.observableArrayList();
+    //ObservableList[] ctrlrLists = FXCollections.observableArrayList()[];
+    HashMap<String,ObservableList> ctrlrLists = new HashMap<>();
+
+    lineList.add("Select Line");
+    for (TrackControllerLineManager lm : TrackControllerLineManager.getLines()) {
+      lineList.add(lm.getLine());
+      ObservableList<String> currLineList = FXCollections.observableArrayList();
+      currLineList.addAll(lm.getObservableListOfIds());
+      ctrlrLists.put(lm.getLine(),currLineList);
+    }
+
+    trackControllerLineChoiceBox.setItems(lineList);
+    trackControllerLineChoiceBox.setValue("Select Line");
+
+    //Disable invalid operations
+    trackControllerIdChoiceBox.setDisable(true);
+    trackControllerButton.setDisable(true);
+
+    //Action Event for line selection
+    trackControllerLineChoiceBox.getSelectionModel().selectedItemProperty()
+        .addListener((observableValue, oldValue, newValue) -> {
+          if (!(trackControllerLineChoiceBox.getSelectionModel().getSelectedItem().equals("Select Line"))) {
+            //Line Selected, select Id, get proper list
+            trackControllerIdChoiceBox.setItems(ctrlrLists.get(newValue));
+            String testboi = (String) ctrlrLists.get(newValue).get(0);
+            trackControllerIdChoiceBox.setValue((String) ctrlrLists.get(newValue).get(0));
+            trackControllerIdChoiceBox.setDisable(false);
+          } else {
+            trackControllerLineChoiceBox.setValue(oldValue);
+          }
+        });
+
+    //Action Event for id selection
+    trackControllerIdChoiceBox.getSelectionModel().selectedItemProperty()
+        .addListener((observableValue, oldValue, newValue) -> {
+          if (!(trackControllerIdChoiceBox.getSelectionModel().getSelectedItem().equals("Select ID"))) {
+
+            //Line Selected, Id selected, enable button
+            trackControllerButton.setDisable(false);
+          }
+        });
+  }
+
+  /**
    * Handler to open to CTC.
    * @param event event from the button.
    */
-  public void openCentralTrafficControl(ActionEvent event) {
+  @FXML
+  private void openCentralTrafficControl(ActionEvent event) {
     try {
       ctcui.load();
     } catch (Exception e) {
@@ -73,7 +129,8 @@ public class MainMenuController implements Initializable {
    * Handler to open to MBO.
    * @param event event from the button.
    */
-  public void openMovingBlockOverlay(ActionEvent event) {
+  @FXML
+  private void openMovingBlockOverlay(ActionEvent event) {
     try {
       mboui.load();
     } catch (Exception e) {
@@ -85,11 +142,26 @@ public class MainMenuController implements Initializable {
    * Handler to open Track Model.
    * @param event event from button.
    */
-  public void openTrackModel(ActionEvent event) {
+  @FXML
+  private void openTrackModel(ActionEvent event) {
     try {
       tmui.load();
     } catch (Exception e) {
       e.printStackTrace();
+    }
+  }
+
+  /**
+   * Handler to open Track Controller.
+   * @param event event from button.
+   */
+  @FXML
+  private void openTrackController(ActionEvent event) {
+
+    if (trackControllerIdChoiceBox.getSelectionModel().getSelectedItem() != null
+        && !(trackControllerLineChoiceBox.getSelectionModel().getSelectedItem().equals("Select Line"))) {
+      TrackControllerUserInterface.openTrackController(
+          trackControllerIdChoiceBox.getSelectionModel().getSelectedItem());
     }
   }
 
@@ -152,6 +224,12 @@ public class MainMenuController implements Initializable {
     }
   }
 
+  public void updateTrackControllerPanel() {
+
+  }
+
   @Override
-  public void initialize(URL location, ResourceBundle resources) {}
+  public void initialize(URL location, ResourceBundle resources) {
+    initializeTrackControllers();
+  }
 }

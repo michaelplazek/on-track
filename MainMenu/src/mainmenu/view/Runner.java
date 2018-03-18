@@ -15,10 +15,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
 import mainmenu.Clock;
 import mainmenu.controller.MainMenuController;
+import trackctrl.model.TrackControllerInitializer;
 import traincontroller.model.TrainController;
+import traincontroller.model.TrainControllerInterface;
 import traincontroller.model.TrainControllerManager;
 
 public class Runner extends Application {
@@ -73,5 +74,8 @@ public class Runner extends Application {
     clk.setInitialTime();
     clk.tick();
     ctc.initialize();
+    //TODO: Insert Track Initializer Here
+    TrackControllerInitializer.parseTrack();
+
   }
 }

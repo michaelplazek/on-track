@@ -6,15 +6,26 @@ import trackmodel.model.Block;
 
 public class TrackController implements TrackControllerInterface {
 
-  private String id;
+  private int id;
+  private int trackOffset;
   private final int capacity = 64;
   private HashMap<Integer, Block> myZone = new HashMap<Integer, Block>(capacity);
-  private TrackController neighborCtrlr1 = new TrackController();
-  private TrackController neighborCtrlr2 = new TrackController();
+  private TrackController neighborCtrlr1;
+  private TrackController neighborCtrlr2;
 
+  /**
+   * Constructor for a new TrackController that is uninitialized.
+   */
   public TrackController() {
     //Zero Id indicates Controller is not initialized
-    this.id = "0";
+    this.id = 0;
+    neighborCtrlr1 = new TrackController();
+    neighborCtrlr2 = new TrackController();
+  }
+
+  public TrackController(int id, int offset) {
+    this.id = id;
+    this.trackOffset = offset;
   }
 
   /**
@@ -28,35 +39,46 @@ public class TrackController implements TrackControllerInterface {
     this.neighborCtrlr2 = tc.neighborCtrlr2;
   }
 
+  //TODO
   @Override
-  public Boolean setAuthority(int block, float authority) {
-    return null;
+  public boolean setAuthority(int block, float authority) {
+    return false;
+  }
+
+  //TODO
+  @Override
+  public boolean setSuggestedSpeed(int block, float setSpeed) {
+    return false;
+  }
+
+  //TODO
+  @Override
+  public boolean setSwitchOverride(int block, boolean state) {
+    return false;
+  }
+
+  //TODO
+  @Override
+  public boolean relayAuthority(int block, double authority) {
+    return false;
+  }
+
+  //TODO
+  @Override
+  public boolean relaySetSpeed(int block, double setSpeed) {
+    return false;
+  }
+
+  //TODO
+  @Override
+  public boolean setInfrastructureState(int block, boolean state) {
+    return false;
   }
 
   @Override
-  public Boolean setSuggestedSpeed(int block, float setSpeed) {
-    return null;
-  }
-
-  @Override
-  public Boolean relayAuthority(int block, double authority) {
-    return null;
-  }
-
-  @Override
-  public Boolean relaySetSpeed(int block, double setSpeed) {
-    return null;
-  }
-
-  @Override
-  public Boolean setInfrastructureState(int block, Boolean state) {
-    return null;
-  }
-
-  @Override
-  public Boolean setId(String id) {
+  public boolean setId(int id) {
     this.id = id;
-    return null;
+    return true;
   }
 
   @Override
@@ -70,23 +92,43 @@ public class TrackController implements TrackControllerInterface {
     }
   }
 
+  //TODO
   @Override
-  public Boolean addBlock(Block newBlock) {
-    return null;
+  public boolean addBlock(Block newBlock) {
+    return false;
   }
 
   @Override
-  public Boolean hasBlock(int block) {
-    return myZone.containsKey(block);
+  public boolean hasBlock(int id) {
+    return myZone.containsKey(id);
+  }
+
+  //TODO
+  @Override
+  public boolean closeBlock(int id) {
+    return false;
+  }
+
+  //TODO
+  @Override
+  public boolean repairBlock(int id) {
+    return false;
+  }
+
+  //TODO
+  @Override
+  public boolean toggleSwitch(int id) {
+    return false;
   }
 
   @Override
   public int getId() {
-    return 0;
+    return this.id;
   }
 
+  //TODO
   @Override
-  public Boolean importLogic(File myplc) {
-    return null;
+  public boolean importLogic(File myplc) {
+    return false;
   }
 }

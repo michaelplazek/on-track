@@ -1,10 +1,13 @@
 package trackctrl.control;
 
 import java.io.File;
+import java.net.URL;
+import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
@@ -18,8 +21,10 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import trackctrl.model.TrackController;
+import trackctrl.model.TrackControllerLineManager;
 
-public class TrackControllerController {
+public class TrackControllerController implements Initializable {
 
   //Toggles
   @FXML
@@ -96,6 +101,12 @@ public class TrackControllerController {
   ToggleGroup lightGroup = new ToggleGroup();
   ToggleGroup crossingGroup = new ToggleGroup();
   ToggleGroup switchGroup = new ToggleGroup();
+
+  private TrackController myController;
+
+  public TrackControllerController(String ctrlrId) {
+    myController = TrackControllerLineManager.getController(ctrlrId);
+  }
 
   /**
    * FAKE DATA FOR THE UI DEMO.
@@ -307,7 +318,9 @@ public class TrackControllerController {
   /**
    * This method will be automatically called upon the initialization of the MVC.
    */
-  public void initialize() {
+  @Override
+  public void initialize(URL location, ResourceBundle resources) {
+    //Init UI
     populateDropDowns();
     setSpinnerBounds();
     groupRadioButtons();
@@ -315,6 +328,4 @@ public class TrackControllerController {
     setSwitchInactive();
     importLogic.setOnAction(this::handleImportLogic);
   }
-
-
 }
