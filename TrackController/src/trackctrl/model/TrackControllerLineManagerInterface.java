@@ -19,9 +19,9 @@ public interface TrackControllerLineManagerInterface {
 
   public boolean toggleSwitch(int id);
 
-  public int[][] getOccupancy();
+  public boolean getOccupancy(int id);
 
-  public int[][] getInfrastructure();
+  public boolean getInfrastructure(int id);
 
   public String getLine();
 

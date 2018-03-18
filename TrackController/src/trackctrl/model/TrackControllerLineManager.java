@@ -79,14 +79,14 @@ public class TrackControllerLineManager implements TrackControllerLineManagerInt
 
   //TODO
   @Override
-  public int[][] getOccupancy() {
-    return new int[0][];
+  public boolean getOccupancy(int id) {
+    return false;
   }
 
   //TODO
   @Override
-  public int[][] getInfrastructure() {
-    return new int[0][];
+  public boolean getInfrastructure(int id) {
+    return false;
   }
 
   @Override
