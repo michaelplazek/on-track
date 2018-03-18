@@ -94,7 +94,7 @@ public class TrackModelController {
 
   private void run() {
     if (running) {
-      updateUI();
+      update();
     }
   }
 
