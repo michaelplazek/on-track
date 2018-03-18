@@ -71,4 +71,12 @@ public class Switch extends Block {
     return status;
   }
 
+  // TODO: fill out this function to toggle the switch
+  public void toggle() {}
+
+  // TODO: fill out this function to return the switch state
+  public boolean getSwitchState() {
+    return false;
+  }
+
 }

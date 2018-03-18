@@ -83,6 +83,9 @@ public class TrackModelController {
     end.setOnAction(this::toggleSelectedFailures);
   }
 
+  /**
+   * Run all instances of tracks.
+   */
   public static void runAllInstances() {
     for (String key: listOfTracks.keySet()) {
       listOfTracks.get(key).run();
@@ -91,10 +94,14 @@ public class TrackModelController {
 
   private void run() {
     if (running) {
-      updateUI();
+      update();
     }
   }
 
+  /**
+   * Toggle the failures.
+   * @param event pass event.
+   */
   public void toggleSelectedFailures(ActionEvent event) {
     Button btn = (Button) event.getSource();
 
@@ -242,7 +249,7 @@ public class TrackModelController {
     File inFile = fc.showOpenDialog((Stage) uploadButton.getScene().getWindow());
   }
 
-  private void updateUI() {
+  private void update() {
 
   }
 }

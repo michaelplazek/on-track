@@ -179,8 +179,8 @@ public class Block {
 
   /**
    * This will be called by the TrainModel when it arrives at a station.
-   * @return number of passengers added to train = train limit - number of passengers currently on train
-   */
+   * @return number of passengers added to train
+  **/
   public int getPassengers() {
 
     // TODO: generate random number of passengers, using limit - passengers as max
