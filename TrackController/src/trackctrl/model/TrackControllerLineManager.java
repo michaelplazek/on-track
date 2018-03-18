@@ -122,7 +122,7 @@ public class TrackControllerLineManager implements TrackControllerLineManagerInt
   }
 
   /**
-   * REturns a controller object based on its Id number.
+   * Returns a controller object based on its Id number.
    * @param ctrlrId String of the controller ID, either "Green 1"
    * @return TrackController object matching the line and id
    */
