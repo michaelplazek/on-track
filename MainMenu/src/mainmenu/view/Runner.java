@@ -4,7 +4,6 @@ import ctc.controller.CentralTrafficControlController;
 
 import ctc.model.CentralTrafficControl;
 import ctc.view.CentralTrafficControlUserInterface;
-import trackctrl.model.TrackControllerInitializer;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -16,9 +15,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
 import mainmenu.Clock;
 import mainmenu.controller.MainMenuController;
+import trackctrl.model.TrackControllerInitializer;
 import traincontroller.model.TrainController;
 import traincontroller.model.TrainControllerInterface;
 import traincontroller.model.TrainControllerManager;

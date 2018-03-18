@@ -24,8 +24,6 @@ import traincontroller.view.TrainControllerUserInterface;
 import trainmodel.TrainModelUserInterface;
 import trainmodel.model.TrainModel;
 
-import javax.swing.*;
-
 /**
  * Main controller class for the Main Menu.
  * All the user interfaces will be called and opened from handlers in this class.
@@ -65,6 +63,9 @@ public class MainMenuController implements Initializable {
     return instance;
   }
 
+  /**
+   * This function sets the lines to the initial line values.
+   */
   public void initializeTrackControllers() {
 
     ObservableList lineList = FXCollections.observableArrayList();
@@ -87,11 +88,10 @@ public class MainMenuController implements Initializable {
     //Action Event for line selection
     trackControllerLineChoiceBox.getSelectionModel().selectedItemProperty()
         .addListener((observableValue, oldValue, newValue) -> {
-            if (trackControllerLineChoiceBox.getSelectionModel().selectedItemProperty() != null) {
-
-              //Line Selected, select Id, get proper list
-              trackControllerIdChoiceBox.setItems(ctrlrLists.get(newValue));
-              trackControllerIdChoiceBox.setDisable(false);
+          if (trackControllerLineChoiceBox.getSelectionModel().selectedItemProperty() != null) {
+            //Line Selected, select Id, get proper list
+            trackControllerIdChoiceBox.setItems(ctrlrLists.get(newValue));
+            trackControllerIdChoiceBox.setDisable(false);
           }
         });
 
@@ -152,7 +152,8 @@ public class MainMenuController implements Initializable {
   @FXML
   private void openTrackController(ActionEvent event) {
 
-    if (trackControllerIdChoiceBox.getSelectionModel().getSelectedItem() != null && trackControllerLineChoiceBox != null) {
+    if (trackControllerIdChoiceBox.getSelectionModel().getSelectedItem() != null
+        && trackControllerLineChoiceBox != null) {
       TrackControllerUserInterface.openTrackController(
           trackControllerIdChoiceBox.getSelectionModel().getSelectedItem());
     }
