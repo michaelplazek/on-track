@@ -83,6 +83,9 @@ public class TrackModelController {
     end.setOnAction(this::toggleSelectedFailures);
   }
 
+  /**
+   * Run all instances of tracks.
+   */
   public static void runAllInstances() {
     for (String key: listOfTracks.keySet()) {
       listOfTracks.get(key).run();
@@ -95,6 +98,10 @@ public class TrackModelController {
     }
   }
 
+  /**
+   * Toggle the failures.
+   * @param event
+   */
   public void toggleSelectedFailures(ActionEvent event) {
     Button btn = (Button) event.getSource();
 

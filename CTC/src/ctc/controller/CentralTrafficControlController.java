@@ -30,11 +30,16 @@ import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.ImageView;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import mainmenu.Clock;
 import trackctrl.model.TrackControllerLineManager;
 import trackmodel.model.Block;
+import trackmodel.model.Switch;
+import trackmodel.model.Track;
 import traincontroller.model.TrainControllerFactory;
 import trainmodel.model.TrainModel;
 
@@ -63,6 +68,11 @@ public class CentralTrafficControlController {
   @FXML private ChoiceBox<String> maintenanceBlocks;
   @FXML private ChoiceBox<String> maintenanceActions;
   @FXML private Button submitMaintenance;
+  @FXML private Circle statusLight;
+  @FXML private Circle occupiedLight;
+  @FXML private ImageView stateZero;
+  @FXML private ImageView stateOne;
+  @FXML private ImageView stateTwo;
 
   /* ADD TRAIN COMPONENTS */
   @FXML private Button importScheduleButton;
@@ -104,6 +114,7 @@ public class CentralTrafficControlController {
    */
   public void initialize() {
     connect();
+    updateMaintenance();
   }
 
   /**
@@ -248,6 +259,13 @@ public class CentralTrafficControlController {
             trackSelect.setValue(oldValue);
           }
         });
+
+    maintenanceBlocks.getSelectionModel().selectedItemProperty()
+        .addListener((observableValue, oldValue, newValue) -> {
+          if (!newValue.equals("Block")) {
+            updateMaintenance();
+          }
+        });
   }
 
   /**
@@ -301,7 +319,8 @@ public class CentralTrafficControlController {
         // use Platform.runLater() hack to get around JavaFX being stupid
         if (ignore || newValue == null || oldValue == null) {
           return;
-        } else if (!newValue.equals("") && !isValidCharacter(newValue.charAt(newValue.length() - 1))) {
+        } else if (!newValue.equals("")
+            && !isValidCharacter(newValue.charAt(newValue.length() - 1))) {
           Platform.runLater(() -> {
             departingTimeField.setText(oldValue);
             departingTimeField.positionCaret(newValue.length() + 1);
@@ -417,7 +436,6 @@ public class CentralTrafficControlController {
     multiplier.textProperty().setValue(Integer.toString(clock.getMultiplier()).concat("x"));
   }
 
-  // TODO: complete these functions
   private void startClock() {
     ctc.setActive(true);
   }
@@ -426,7 +444,82 @@ public class CentralTrafficControlController {
     ctc.setActive(false);
   }
 
-  private void submitMaintenance(){}
+  private int extractBlock() {
+
+    StringBuilder blockName = new StringBuilder();
+    char[] temp = maintenanceBlocks.getSelectionModel().getSelectedItem().toCharArray();
+
+    for (int i = 0; i < temp.length; i++) {
+      if (!Character.isLetter(temp[i])) {
+        blockName.append(temp[i]);
+      }
+    }
+
+    return Integer.parseInt(blockName.toString());
+  }
+
+  private void submitMaintenance() {
+
+    String line = maintenanceTracks.getSelectionModel().getSelectedItem();
+    TrackControllerLineManager manager = TrackControllerLineManager.getInstance(line);
+
+    int blockId = extractBlock();
+    Block block = Track.getListOfTracks().get(line).getBlock(blockId);
+    String action = maintenanceActions.getSelectionModel().getSelectedItem();
+
+    switch (action) {
+      case "Close block":
+        manager.closeBlock(blockId);
+        break;
+      case "Repair block":
+        manager.repairBlock(blockId);
+        break;
+      case "Toggle switch":
+        manager.toggleSwitch(blockId);
+        break;
+      default:
+        break;
+    }
+  }
+
+  private void updateMaintenance() {
+
+    String line = maintenanceTracks.getSelectionModel().getSelectedItem();
+
+    int blockId = extractBlock();
+    Block block = Track.getListOfTracks().get(line).getBlock(blockId);
+
+    if (block.isClosedForMaintenance()) {
+      statusLight.setFill(Paint.valueOf("Green"));
+    } else {
+      statusLight.setFill(Paint.valueOf("Red"));
+    }
+
+    if (block.isOccupied()) {
+      occupiedLight.setFill(Paint.valueOf("Green"));
+    } else {
+      occupiedLight.setFill(Paint.valueOf("Red"));
+
+    }
+
+    if (block.isSwitch()) {
+      Switch sw = (Switch) block;
+
+      if (sw.getSwitchState()) {
+        stateOne.setOpacity(100);
+        stateTwo.setOpacity(0);
+        stateZero.setOpacity(0);
+      } else {
+        stateOne.setOpacity(0);
+        stateTwo.setOpacity(100);
+        stateZero.setOpacity(0);
+      }
+    } else {
+      stateOne.setOpacity(0);
+      stateTwo.setOpacity(0);
+      stateZero.setOpacity(100);
+    }
+  }
 
   private void testGreen() {
 

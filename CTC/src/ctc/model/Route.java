@@ -13,7 +13,7 @@ public class Route {
   /**
    * Default constructor.
    */
-  public Route() {
+  protected Route() {
 
     this.path = new LinkedList<>();
   }

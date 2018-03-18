@@ -91,6 +91,9 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
     updateDisplayTime();
   }
 
+  /**
+   * Display time of clock is updated.
+   */
   public void updateDisplayTime() {
 
     displayTime.setValue(clock.getFormattedTime());
@@ -124,7 +127,6 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
   private void makeBlockList() {
 
     Track track = Track.getListOfTracks().get(line);
-    // need getBlockList()
     blockList.addAll(track.getBlockList());
   }
 
