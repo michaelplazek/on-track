@@ -1,9 +1,8 @@
 package trackctrl.control;
 
-
+import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.io.File;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;

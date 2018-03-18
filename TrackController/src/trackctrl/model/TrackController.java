@@ -53,7 +53,9 @@ public class TrackController implements TrackControllerInterface {
 
   //TODO
   @Override
-  public boolean setSwitchOverride(int block, boolean state) { return false; }
+  public boolean setSwitchOverride(int block, boolean state) {
+    return false;
+  }
 
   //TODO
   @Override
