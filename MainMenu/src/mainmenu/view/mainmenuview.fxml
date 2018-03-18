@@ -12,46 +12,51 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="619.0" prefWidth="442.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <VBox alignment="TOP_CENTER" layoutX="25.0" layoutY="38.0" spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="40.0">
+      <VBox alignment="TOP_CENTER" layoutY="38.0" prefHeight="563.0" prefWidth="417.0" spacing="20.0" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="40.0">
          <children>
             <Label text="On-Track Train Simulator">
                <font>
                   <Font name="Thonburi" size="24.0" />
                </font>
             </Label>
-            <HBox>
+            <HBox prefHeight="195.0" prefWidth="392.0">
                <children>
-                  <Button mnemonicParsing="false" onAction="#openCentralTrafficControl" prefWidth="220.0" text="Central Traffic Control">
+                  <Button mnemonicParsing="false" onAction="#openCentralTrafficControl" prefHeight="80.0" prefWidth="220.0" text="Central Traffic Control">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </Button>
                </children>
             </HBox>
-            <HBox>
+            <HBox prefHeight="195.0">
                <children>
-                  <Button mnemonicParsing="false" onAction="#openMovingBlockOverlay" prefWidth="220.0" text="Moving Block Overlay">
+                  <Button mnemonicParsing="false" onAction="#openMovingBlockOverlay" prefHeight="80.0" prefWidth="220.0" text="Moving Block Overlay">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </Button>
                </children>
             </HBox>
-            <HBox alignment="CENTER_LEFT" spacing="20.0">
+            <HBox alignment="CENTER_LEFT" prefHeight="195.0" prefWidth="392.0" spacing="20.0">
                <children>
-                  <Button fx:id="trackControllerButton" mnemonicParsing="false" prefHeight="35.0" prefWidth="220.0" text="Track Controller">
+                  <Button fx:id="trackControllerButton" disable="true" mnemonicParsing="false" onAction="#openTrackController" prefHeight="80.0" prefWidth="220.0" text="Track Controller">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </Button>
-                  <ChoiceBox fx:id="trackControllerChoiceBox" prefHeight="35.0" prefWidth="145.0" />
+                  <VBox prefHeight="175.0" prefWidth="145.0">
+                     <children>
+                        <ChoiceBox fx:id="trackControllerLineChoiceBox" prefHeight="35.0" prefWidth="145.0" translateY="-3.0" />
+                        <ChoiceBox fx:id="trackControllerIdChoiceBox" disable="true" onInputMethodTextChanged="#updateTrackControllerPanel" onKeyPressed="#updateTrackControllerPanel" prefHeight="35.0" prefWidth="145.0" translateY="4.0" />
+                     </children>
+                  </VBox>
                </children>
             </HBox>
-            <HBox alignment="CENTER_LEFT" spacing="20.0">
+            <HBox alignment="CENTER_LEFT" prefHeight="195.0" spacing="20.0">
                <children>
-                  <Button fx:id="trainControllerButton" disable="true" mnemonicParsing="false" onAction="#openTrainController" prefHeight="35.0" prefWidth="220.0" text="Train Controller">
+                  <Button fx:id="trainControllerButton" disable="true" mnemonicParsing="false" onAction="#openTrainController" prefHeight="80.0" prefWidth="220.0" text="Train Controller">
                      <font>
                         <Font size="18.0" />
                      </font>
@@ -59,18 +64,18 @@
                   <ChoiceBox fx:id="trainControllerChoiceBox" disable="true" prefHeight="35.0" prefWidth="145.0" />
                </children>
             </HBox>
-            <HBox>
+            <HBox prefHeight="195.0">
                <children>
-                  <Button mnemonicParsing="false" onAction="#openTrackModel" prefHeight="35.0" prefWidth="220.0" text="Track Model">
+                  <Button mnemonicParsing="false" onAction="#openTrackModel" prefHeight="80.0" prefWidth="220.0" text="Track Model">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </Button>
                </children>
             </HBox>
-            <HBox alignment="CENTER_LEFT" spacing="20.0">
+            <HBox alignment="CENTER_LEFT" prefHeight="195.0" spacing="20.0">
                <children>
-                  <Button fx:id="trainModelButton" disable="true" mnemonicParsing="false" onAction="#openTrainModel" prefHeight="35.0" prefWidth="220.0" text="Train Model">
+                  <Button fx:id="trainModelButton" disable="true" mnemonicParsing="false" onAction="#openTrainModel" prefHeight="80.0" prefWidth="220.0" text="Train Model">
                      <font>
                         <Font size="18.0" />
                      </font>
@@ -88,7 +93,7 @@
             <Insets bottom="5.0" />
          </padding>
       </VBox>
-      <MenuBar prefHeight="30.0" prefWidth="350.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+      <MenuBar prefHeight="30.0" prefWidth="442.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
