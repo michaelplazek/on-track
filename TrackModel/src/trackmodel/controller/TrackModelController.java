@@ -100,7 +100,7 @@ public class TrackModelController {
 
   /**
    * Toggle the failures.
-   * @param event
+   * @param event pass event.
    */
   public void toggleSelectedFailures(ActionEvent event) {
     Button btn = (Button) event.getSource();
@@ -249,7 +249,7 @@ public class TrackModelController {
     File inFile = fc.showOpenDialog((Stage) uploadButton.getScene().getWindow());
   }
 
-  private void updateUI() {
+  private void update() {
 
   }
 }
