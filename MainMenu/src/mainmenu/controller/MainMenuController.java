@@ -72,6 +72,7 @@ public class MainMenuController implements Initializable {
     //ObservableList[] ctrlrLists = FXCollections.observableArrayList()[];
     HashMap<String,ObservableList> ctrlrLists = new HashMap<>();
 
+    lineList.add("Select Line");
     for (TrackControllerLineManager lm : TrackControllerLineManager.getLines()) {
       lineList.add(lm.getLine());
       ObservableList<String> currLineList = FXCollections.observableArrayList();
@@ -80,6 +81,7 @@ public class MainMenuController implements Initializable {
     }
 
     trackControllerLineChoiceBox.setItems(lineList);
+    trackControllerLineChoiceBox.setValue("Select Line");
 
     //Disable invalid operations
     trackControllerIdChoiceBox.setDisable(true);
@@ -88,9 +90,10 @@ public class MainMenuController implements Initializable {
     //Action Event for line selection
     trackControllerLineChoiceBox.getSelectionModel().selectedItemProperty()
         .addListener((observableValue, oldValue, newValue) -> {
-          if (trackControllerLineChoiceBox.getSelectionModel().selectedItemProperty() != null) {
+          if (!(trackControllerLineChoiceBox.getSelectionModel().selectedItemProperty().equals("Select Line"))) {
             //Line Selected, select Id, get proper list
             trackControllerIdChoiceBox.setItems(ctrlrLists.get(newValue));
+            trackControllerIdChoiceBox.setValue((String) ctrlrLists.get(newValue).get(0));
             trackControllerIdChoiceBox.setDisable(false);
           }
         });
@@ -98,7 +101,7 @@ public class MainMenuController implements Initializable {
     //Action Event for id selection
     trackControllerIdChoiceBox.getSelectionModel().selectedItemProperty()
         .addListener((observableValue, oldValue, newValue) -> {
-          if (trackControllerIdChoiceBox.getSelectionModel().selectedItemProperty() != null) {
+          if (!(trackControllerIdChoiceBox.getSelectionModel().selectedItemProperty().equals("Select ID"))) {
 
             //Line Selected, Id selected, enable button
             trackControllerButton.setDisable(false);
