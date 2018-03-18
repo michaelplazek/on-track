@@ -266,6 +266,11 @@ public class CentralTrafficControlController {
             updateMaintenance();
           }
         });
+
+    maintenanceTracks.getSelectionModel().selectedItemProperty()
+        .addListener((observableValue, oldValue, newValue) -> {
+          updateMaintenance();
+        });
   }
 
   /**
@@ -492,8 +497,8 @@ public class CentralTrafficControlController {
       maintenanceActions.setDisable(true);
     } else {
 
-      maintenanceBlocks.setDisable(true);
-      maintenanceActions.setDisable(true);
+      maintenanceBlocks.setDisable(false);
+      maintenanceActions.setDisable(false);
 
       int blockId = extractBlock();
       Block block = Track.getListOfTracks().get(line).getBlock(blockId);
