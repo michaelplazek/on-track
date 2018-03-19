@@ -20,6 +20,7 @@ import trackctrl.model.TrackControllerLineManager;
 import trackctrl.view.TrackControllerUserInterface;
 import trackmodel.view.TrackModelUserInterface;
 import traincontroller.model.TrainController;
+import traincontroller.model.TrainControllerManager;
 import traincontroller.view.TrainControllerUserInterface;
 import trainmodel.TrainModelUserInterface;
 import trainmodel.model.TrainModel;
@@ -181,14 +182,14 @@ public class MainMenuController implements Initializable {
    * Disables and enables the train controller dropdown on the main menu.
    */
   public void updateTrainControllerDropdown() {
-    trainControllerChoiceBox.setItems(TrainController.getListOfTrains());
+    trainControllerChoiceBox.setItems(TrainControllerManager.getListOfTrainControllers());
 
-    if (TrainController.getListOfTrains().size() > 0) {
+    if (TrainControllerManager.getListOfTrainControllers().size() > 0) {
       trainControllerChoiceBox.setDisable(false);
       trainControllerButton.setDisable(false);
 
       if (trainControllerChoiceBox.getSelectionModel().isEmpty()) {
-        trainControllerChoiceBox.setValue(TrainController.getListOfTrains().get(0));
+        trainControllerChoiceBox.setValue(TrainControllerManager.getListOfTrainControllers().get(0));
       }
     } else {
       trainControllerButton.setDisable(true);

@@ -13,6 +13,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import traincontroller.model.TrainController;
+import traincontroller.model.TrainControllerManager;
 import utils.train.TrainModelEnums;
 
 public class TrainControllerController implements Initializable {
@@ -67,7 +68,7 @@ public class TrainControllerController implements Initializable {
   private TrainController trainController;
 
   public TrainControllerController(String trainId) {
-    trainController = TrainController.getTrainController(trainId);
+    trainController = TrainControllerManager.getTrainController(trainId);
   }
 
   @FXML

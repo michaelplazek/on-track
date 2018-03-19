@@ -1,15 +1,8 @@
 
 package traincontroller.model;
 
-import java.util.HashMap;
-
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import mainmenu.Clock;
-import mainmenu.ClockInterface;
-import mainmenu.controller.MainMenuController;
 import trackmodel.model.Block;
 import trainmodel.model.TrainModel;
 import trainmodel.model.TrainModelFactory;
@@ -17,7 +10,6 @@ import trainmodel.model.TrainModelInterface;
 import utils.train.TrainModelEnums;
 
 public class TrainController implements TrainControllerInterface {
-  private static ClockInterface clock = Clock.getInstance();
 
   private boolean automatic;
 
@@ -37,8 +29,6 @@ public class TrainController implements TrainControllerInterface {
   private SimpleStringProperty currentStation;
   private SimpleStringProperty nextStation;
   private Block currentBlock;
-
-  private static HashMap<String, TrainController> listOfTrains = new HashMap<>();
 
 
   /**
@@ -76,20 +66,12 @@ public class TrainController implements TrainControllerInterface {
 
   }
 
-  private String getId() {
+  protected String getId() {
     return id.getValue();
   }
 
-  private void setId(String id) {
-    this.id.set(id);
-  }
-
-  private String getLine() {
+  protected String getLine() {
     return line.getValue();
-  }
-
-  private void setLine(String line) {
-    this.line.set(line);
   }
 
   public TrainModelInterface getTrainModel() {
@@ -100,19 +82,15 @@ public class TrainController implements TrainControllerInterface {
     return running;
   }
 
-  public void setRunning(boolean running) {
-    this.running = running;
-  }
-
   public SimpleDoubleProperty getAuthorityProperty() {
     return authority;
   }
 
-  private Double getAuthority() {
+  public Double getAuthority() {
     return authority.getValue();
   }
 
-  private void setAuthority(Double authority) {
+  public void setAuthority(Double authority) {
     this.authority.set(authority);
   }
 
@@ -124,7 +102,7 @@ public class TrainController implements TrainControllerInterface {
     return currentSpeed.getValue();
   }
 
-  private void setCurrentSpeed(Double currentSpeed) {
+  public void setCurrentSpeed(Double currentSpeed) {
     this.currentSpeed.set(currentSpeed);
   }
 
@@ -132,11 +110,11 @@ public class TrainController implements TrainControllerInterface {
     return powerCommand;
   }
 
-  private Double getPowerCommand() {
+  public Double getPowerCommand() {
     return powerCommand.getValue();
   }
 
-  private void setPowerCommand(Double powerCommand) {
+  public void setPowerCommand(Double powerCommand) {
     this.powerCommand.set(powerCommand);
   }
 
@@ -148,7 +126,7 @@ public class TrainController implements TrainControllerInterface {
     return setSpeed.getValue();
   }
 
-  private void setSetSpeed(Double setSpeed) {
+  public void setSetSpeed(Double setSpeed) {
     this.setSpeed.set(setSpeed);
   }
 
@@ -156,7 +134,7 @@ public class TrainController implements TrainControllerInterface {
     return driverSetSpeed;
   }
 
-  private Double getDriverSetSpeed() {
+  public Double getDriverSetSpeed() {
     return driverSetSpeed.getValue();
   }
 
@@ -168,7 +146,7 @@ public class TrainController implements TrainControllerInterface {
     return setTemperature;
   }
 
-  private Double getSetTemperature() {
+  public Double getSetTemperature() {
     return setTemperature.getValue();
   }
 
@@ -180,11 +158,11 @@ public class TrainController implements TrainControllerInterface {
     return currentTemperature;
   }
 
-  private Double getCurrentTemperature() {
+  public Double getCurrentTemperature() {
     return currentTemperature.getValue();
   }
 
-  private void setCurrentTemperature(Double currentTemperature) {
+  public void setCurrentTemperature(Double currentTemperature) {
     this.currentTemperature.set(currentTemperature);
   }
 
@@ -192,11 +170,11 @@ public class TrainController implements TrainControllerInterface {
     return kp;
   }
 
-  private Double getKp() {
+  public Double getKp() {
     return kp.getValue();
   }
 
-  private void setKp(Double kp) {
+  public void setKp(Double kp) {
     this.kp.set(kp);
   }
 
@@ -204,11 +182,11 @@ public class TrainController implements TrainControllerInterface {
     return ki;
   }
 
-  private Double getKi() {
+  public Double getKi() {
     return ki.getValue();
   }
 
-  private void setKi(Double ki) {
+  public void setKi(Double ki) {
     this.ki.set(ki);
   }
 
@@ -216,11 +194,11 @@ public class TrainController implements TrainControllerInterface {
     return currentStation;
   }
 
-  private String getCurrentStation() {
+  public String getCurrentStation() {
     return currentStation.getValue();
   }
 
-  private void setCurrentStation(String currentStation) {
+  public void setCurrentStation(String currentStation) {
     this.currentStation.set(currentStation);
   }
 
@@ -228,11 +206,11 @@ public class TrainController implements TrainControllerInterface {
     return nextStation;
   }
 
-  private String getNextStation() {
+  public String getNextStation() {
     return nextStation.getValue();
   }
 
-  private void setNextStation(String nextStation) {
+  public void setNextStation(String nextStation) {
     this.nextStation.set(nextStation);
   }
 
@@ -285,50 +263,11 @@ public class TrainController implements TrainControllerInterface {
     trainModel.setLightStatus(lightStatus);
   }
 
-  private void start() {
+  public void getLightStatus() {
+    trainModel.getLightStatus();
+  }
+
+  protected void start() {
     running = true;
-  }
-
-  /**
-   * Starts a train.
-   * */
-  protected static boolean start(String trainId) {
-    TrainController temp = listOfTrains.get(trainId);
-    if (temp == null) {
-      return false;
-    }
-    temp.start();
-    return true;
-  }
-
-  /**
-   * Removes a train from the list.
-   * */
-  protected static boolean delete(String trainId) {
-    TrainController temp = listOfTrains.get(trainId);
-    if (temp == null) {
-      return false;
-    }
-    listOfTrains.remove(trainId);
-    MainMenuController.getInstance().updateTrainControllerDropdown();
-    return true;
-  }
-
-  protected static void addTrain(TrainController train) {
-    listOfTrains.put(train.getId(), train);
-    MainMenuController.getInstance().updateTrainControllerDropdown();
-  }
-
-  public static ObservableList<String> getListOfTrains() {
-    return FXCollections.observableArrayList(listOfTrains.keySet());
-  }
-
-
-  public static HashMap<String, TrainController> getTrainControllers() {
-    return listOfTrains;
-  }
-
-  public static TrainController getTrainController(String id) {
-    return listOfTrains.get(id);
   }
 }
