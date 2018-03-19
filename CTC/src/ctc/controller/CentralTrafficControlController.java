@@ -38,6 +38,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import mainmenu.Clock;
 import trackctrl.model.TrackControllerLineManager;
+import trackctrl.model.TrackControllerLineManagerInterface;
 import trackmodel.model.Block;
 import trackmodel.model.Switch;
 import trackmodel.model.Track;
@@ -476,7 +477,7 @@ public class CentralTrafficControlController {
   private void submitMaintenance() {
 
     String line = maintenanceTracks.getSelectionModel().getSelectedItem();
-    TrackControllerLineManager manager = TrackControllerLineManager.getInstance(line);
+    TrackControllerLineManagerInterface manager = TrackControllerLineManager.getInstance(line);
 
     int blockId = extractBlock();
     String action = maintenanceActions.getSelectionModel().getSelectedItem();

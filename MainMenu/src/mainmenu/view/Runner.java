@@ -3,6 +3,7 @@ package mainmenu.view;
 import ctc.controller.CentralTrafficControlController;
 
 import ctc.model.CentralTrafficControl;
+import ctc.model.CentralTrafficControlInterface;
 import ctc.view.CentralTrafficControlUserInterface;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -20,8 +21,6 @@ import mainmenu.controller.MainMenuController;
 import trackctrl.model.TrackControllerInitializer;
 import trackmodel.model.Block;
 import trackmodel.model.Track;
-import traincontroller.model.TrainController;
-import traincontroller.model.TrainControllerInterface;
 import traincontroller.model.TrainControllerManager;
 
 public class Runner extends Application {
@@ -29,7 +28,7 @@ public class Runner extends Application {
   // create instances of modules
   private CentralTrafficControlController ctcc =
       CentralTrafficControlUserInterface.getInstance().getController();
-  private CentralTrafficControl ctc = CentralTrafficControl.getInstance();
+  private CentralTrafficControlInterface ctc = CentralTrafficControl.getInstance();
   private MainMenuController mmc = MainMenuController.getInstance();
   private Clock clk = Clock.getInstance();
 

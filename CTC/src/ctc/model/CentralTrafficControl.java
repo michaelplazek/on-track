@@ -10,13 +10,14 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import mainmenu.Clock;
+import mainmenu.ClockInterface;
 import trackmodel.model.Block;
 import trackmodel.model.Track;
 
 public class CentralTrafficControl implements CentralTrafficControlInterface {
 
   private static CentralTrafficControl instance = null;
-  private Clock clock;
+  private ClockInterface clock;
 
   private boolean isActive = false;
   private ObservableList<TrainTracker> trainList;

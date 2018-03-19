@@ -3,7 +3,6 @@ package ctc.model;
 import javafx.collections.ObservableList;
 import trackmodel.model.Block;
 import trackmodel.model.Track;
-import traincontroller.model.TrainController;
 import traincontroller.model.TrainControllerFactory;
 
 /**
