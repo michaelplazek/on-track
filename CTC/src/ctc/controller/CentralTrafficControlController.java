@@ -241,7 +241,6 @@ public class CentralTrafficControlController {
         if (mode.getSelectedToggle() != null) {
           RadioButton btn = (RadioButton) newToggle.getToggleGroup().getSelectedToggle();
           changeMode(btn.getText(), defaultModel);
-          // Do something here with the userData of newly selected radioButton
         }
       }
     });
