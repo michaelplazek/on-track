@@ -1,5 +1,7 @@
 package traincontroller.model;
 
+import trainmodel.model.TrainModel;
+
 public class TrainControllerFactory {
   /** Use this function to create new train controllers.
    * @param id Id of the new train.
@@ -19,6 +21,6 @@ public class TrainControllerFactory {
   }
 
   public static boolean delete(String id) {
-    return TrainControllerManager.delete(id);
+    return TrainControllerManager.delete(id) && TrainModel.delete(id);
   }
 }

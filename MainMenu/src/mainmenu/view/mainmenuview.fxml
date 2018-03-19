@@ -49,7 +49,7 @@
                   <VBox prefHeight="175.0" prefWidth="145.0">
                      <children>
                         <ChoiceBox fx:id="trackControllerLineChoiceBox" prefHeight="35.0" prefWidth="145.0" translateY="-3.0" />
-                        <ChoiceBox fx:id="trackControllerIdChoiceBox" disable="true" onInputMethodTextChanged="#updateTrackControllerPanel" onKeyPressed="#updateTrackControllerPanel" prefHeight="35.0" prefWidth="145.0" translateY="4.0" />
+                        <ChoiceBox fx:id="trackControllerIdChoiceBox" disable="true" prefHeight="35.0" prefWidth="145.0" translateY="4.0" />
                      </children>
                   </VBox>
                </children>

@@ -179,8 +179,8 @@ public class Block {
 
   /**
    * This will be called by the TrainModel when it arrives at a station.
-   * @return number of passengers added to train = train limit - number of passengers currently on train
-   */
+   * @return number of passengers added to train
+  **/
   public int getPassengers() {
 
     // TODO: generate random number of passengers, using limit - passengers as max
@@ -346,56 +346,5 @@ public class Block {
 
   public void setNextBlock1(int nextBlock1) {
     this.nextBlock1 = nextBlock1;
-  }
-
-  /**
-   * This method will display output for the track model and a block's status.
-   * @return A String with the output shall be returned
-   */
-  public String toDisplay() {
-    String output = "<html><body style='width: 500px;vertical-align: text-top'>";
-    output += "<b>ID</b><br>&#09;Line: " + this.line
-        + "<br>&#09;Section: " + this.section
-        + "<br>&#09;Number: " + this.number
-        + "<br><br><b>Parameters</b><br>&#09;Length: " + this.size
-        + "<br>&#09;Grade: " + this.grade
-        + "<br>&#09;Speed Limit: " + this.speedLimit
-        + "<br>&#09;Elevation: " + this.elevation
-        + "<br>&#09;Cum Elevation: " + this.cumElevation
-        + "<br><br><b>Infrastructure</b><br>&#09;Train Present: " + this.isOccupied
-        + "<br>&#09;isHeated: " + this.isHeated;
-
-
-    output += "<br><br><b>Failures</b><br>&#09;Broken Rail: " + this.brokenRailStatus
-        + "<br>&#09;Track Circuit Failure: " + this.powerStatus
-        + "<br>&#09;Power Failure: " + this.trackCircuitStatus;
-
-    output += "</body></html>";
-    return output;
-  }
-
-  /**
-   * This method will return the block as a string object.
-   * @return A string with block data will be returned
-   */
-  public String toString() {
-    String output;
-    output = "\tID\n\t\tLine: " + this.line
-        + "\n\t\tSection: " + this.section
-        + "\n\t\tNumber: " + this.number
-        + "\n\tParameters\n\t\tLength: " + this.size
-        + "\n\t\tGrade: " + this.grade
-        + "\n\t\tSpeed Limit: " + this.speedLimit
-        + "\n\t\tElevation: " + this.elevation
-        + "\n\t\tCum Elevation: " + this.cumElevation
-        + "\n\tInfrastructure\n\t\tTrain Present: " + this.isOccupied
-        + "\n\t\tisHeated: " + this.isHeated;
-
-    output += "\n\tFailures\n\t\tBroken Rail: " + this.brokenRailStatus
-        + "\n\t\tTrack Circuit Failure: " + this.powerStatus
-        + "\n\t\tPower Failure: " + this.trackCircuitStatus;
-
-    return output;
-
   }
 }

@@ -196,8 +196,8 @@
                               </Label>
                               <ChoiceBox fx:id="maintenanceTracks" layoutX="10.0" layoutY="40.0" prefHeight="26.0" prefWidth="160.0" />
                               <ChoiceBox fx:id="maintenanceBlocks" layoutX="174.0" layoutY="40.0" prefHeight="26.0" prefWidth="103.0" />
-                              <Circle fill="#24c51b" layoutX="68.0" layoutY="112.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
-                              <Circle fill="#24c51b" layoutX="68.0" layoutY="131.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
+                              <Circle fx:id="statusLight" fill="#24c51b" layoutX="68.0" layoutY="112.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
+                              <Circle fx:id="occupiedLight" fill="#24c51b" layoutX="68.0" layoutY="131.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
                               <Label layoutX="78.0" layoutY="106.0" text="Status">
                                  <font>
                                     <Font size="10.0" />
@@ -224,9 +224,19 @@
                                     <Font size="12.0" />
                                  </font>
                               </Label>
-                              <ImageView fitHeight="40.0" fitWidth="47.0" layoutX="179.0" layoutY="105.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fx:id="stateTwo" fitHeight="40.0" fitWidth="47.0" layoutX="179.0" layoutY="105.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@images/switch_stay.png" />
+                                 </image>
+                              </ImageView>
+                              <ImageView fx:id="stateZero" fitHeight="48.0" fitWidth="40.0" layoutX="179.0" layoutY="105.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@images/switch_inactive.png" />
+                                 </image>
+                              </ImageView>
+                              <ImageView fx:id="stateOne" fitHeight="40.0" fitWidth="42.0" layoutX="179.0" layoutY="105.0" opacity="0.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@images/switch_alter.png" />
                                  </image>
                               </ImageView>
                            </children>

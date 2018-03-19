@@ -50,8 +50,8 @@ public class TrainTracker {
     this.authority = 0;
     this.line = line;
     this.track = Track.getListOfTracks().get(line);
-//    this.location = track.getStartBlock();
-//    this.locationId = location.getSection() + location.getNumber();
+    // this.location = track.getStartBlock();
+    // this.locationId = location.getSection() + location.getNumber();
     this.route = new Route();
 
     TrainControllerFactory.create(id, line);
@@ -109,6 +109,10 @@ public class TrainTracker {
     return location;
   }
 
+  /**
+   * Sets the location of the train.
+   * @param location Block object
+   */
   public void setLocation(Block location) {
 
     this.location = location;

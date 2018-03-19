@@ -72,7 +72,7 @@ public class Track {
    * @return ArrayList of strings for block names
    */
   public ArrayList<String> getBlockList() {
-    ArrayList<Block> list =  (ArrayList<Block>) track.values();
+    ArrayList<Block> list =  new ArrayList<Block>(track.values());
     ArrayList<String> names = new ArrayList<>();
 
     for (int i = 0; i < list.size(); i++) {
