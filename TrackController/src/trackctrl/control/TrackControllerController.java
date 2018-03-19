@@ -21,6 +21,8 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import mainmenu.Clock;
+import mainmenu.ClockInterface;
 import trackctrl.model.TrackController;
 import trackctrl.model.TrackControllerLineManager;
 
@@ -103,6 +105,7 @@ public class TrackControllerController implements Initializable {
   ToggleGroup switchGroup = new ToggleGroup();
 
   private TrackController myController;
+  private ClockInterface theClock;
 
   public TrackControllerController(String ctrlrId) {
     myController = TrackControllerLineManager.getController(ctrlrId);
@@ -320,6 +323,9 @@ public class TrackControllerController implements Initializable {
    */
   @Override
   public void initialize(URL location, ResourceBundle resources) {
+
+    theClock = Clock.getInstance();
+
     //Init UI
     populateDropDowns();
     setSpinnerBounds();
