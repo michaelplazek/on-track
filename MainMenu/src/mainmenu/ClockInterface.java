@@ -29,10 +29,4 @@ public interface ClockInterface {
    * Use to tick the clock for a 10ms.
    */
   void tick();
-
-  /**
-   * Return the single instance of the Clock.
-   * @return clock
-   */
-  Clock getInstance();
 }
