@@ -221,8 +221,6 @@ public class TrainModelController implements Initializable {
         trainModel.velocityProperty(), numberStringConverter);
     Bindings.bindBidirectional(cabinTemp.textProperty(),
         trainModel.currentTempProperty(), numberStringConverter);
-    Bindings.bindBidirectional(capacity.textProperty(),
-        trainModel.capacityProperty(), numberStringConverter);
     Bindings.bindBidirectional(length.textProperty(),
         trainModel.lengthOfTrainProperty(), numberStringConverter);
     Bindings.bindBidirectional(width.textProperty(),
@@ -231,7 +229,10 @@ public class TrainModelController implements Initializable {
         trainModel.heightProperty(), numberStringConverter);
     Bindings.bindBidirectional(numberOfCars.textProperty(),
         trainModel.numberOfCarsProperty(), numberStringConverter);
+//    Bindings.bindBidirectional(capacity.textProperty(),
+//        trainModel.capacityProperty(), numberStringConverter);
 
+    capacity.setText(String.valueOf(trainModel.getCapacityOfTrain()));
 
 
     setSpeedStatus.textProperty().setValue("45"); //Will be received from TrainController

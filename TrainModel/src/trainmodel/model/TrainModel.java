@@ -52,8 +52,7 @@ public class TrainModel implements TrainModelInterface {
   //set by TrainController.
   private SimpleDoubleProperty powerCommand = new SimpleDoubleProperty(0); //In kilo Watts.
   private SimpleIntegerProperty numPassengers = new SimpleIntegerProperty(0);
-  private SimpleIntegerProperty capacity
-      = new SimpleIntegerProperty(TrainData.MAX_PASSENGERS); //passenger capacity of train.
+  private final int capacityOfTrain = TrainData.MAX_PASSENGERS * TrainData.NUMBER_OF_CARS;
 
   private double acceleration = 0.0000001; //in m/s^2
   private double force = 0; //in N
@@ -123,14 +122,12 @@ public class TrainModel implements TrainModelInterface {
     int availableSeats = TrainData.MAX_PASSENGERS - this.numPassengers.get();
 
     if (numberOfPassengers <= availableSeats) {
-      this.capacity.set(capacity.get() - numberOfPassengers);
       this.numPassengers.set(numPassengers.get() + numberOfPassengers);
       this.mass.set(mass.get() + (TrainData.PASSENGER_WEIGHT * numberOfPassengers));
     } else {
       //If numberOfPassengers is >= available seats as the most you can.
       int passengersTotal = this.numPassengers.get() + availableSeats;
       this.numPassengers.set(passengersTotal);
-      this.capacity.set(TrainData.MAX_PASSENGERS - passengersTotal); //This should be zero
       this.mass.set(TrainData.EMPTY_WEIGHT + (TrainData.PASSENGER_WEIGHT * passengersTotal));
     }
   }
@@ -141,11 +138,9 @@ public class TrainModel implements TrainModelInterface {
    */
   public void removePassengers(int numberOfPassengers) {
     if ((this.numPassengers.get() - numberOfPassengers) >= 0) {
-      this.capacity.set(capacity.get() + numberOfPassengers);
       this.numPassengers.set(numPassengers.get() - numberOfPassengers);
       this.mass.set(mass.get() - (TrainData.PASSENGER_WEIGHT * numberOfPassengers));
     } else {
-      this.capacity.set(TrainData.MAX_PASSENGERS);
       this.numPassengers.set(0);
       this.mass.set(
           (TrainData.EMPTY_WEIGHT + (TrainData.MAX_PASSENGERS * TrainData.PASSENGER_WEIGHT))
@@ -506,10 +501,6 @@ public class TrainModel implements TrainModelInterface {
     return numPassengers;
   }
 
-  public SimpleIntegerProperty capacityProperty() {
-    return capacity;
-  }
-
   public SimpleDoubleProperty heightProperty() {
     return height;
   }
@@ -552,6 +543,10 @@ public class TrainModel implements TrainModelInterface {
 
   public ObjectProperty<TrainModelEnums.BrakeStatus> serviceBrakeStatusProperty() {
     return serviceBrakeStatus;
+  }
+
+  public int getCapacityOfTrain() {
+    return capacityOfTrain;
   }
 
   public TrainControllerInterface getController() {
