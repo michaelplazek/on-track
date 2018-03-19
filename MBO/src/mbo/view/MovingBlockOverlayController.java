@@ -21,10 +21,15 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.io.*;
 
+import mainmenu.Clock;
+import mbo.controller.Constants;
+import mbo.model.MovingBlockOverlayInterface;
+
 
 public class MovingBlockOverlayController implements Initializable {
 
   String name;
+  boolean mboMode;
 
   private ObservableList<TrainInfoItem> trainData = FXCollections.observableArrayList();
   private ObservableList<TrainScheduleItem> trainSchedule = FXCollections.observableArrayList();
@@ -93,23 +98,22 @@ public class MovingBlockOverlayController implements Initializable {
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
+    setMBOMode(mboMode);
     initializeStatus();
     initializeTrainInfo();
     connectButtons();
 
-    generateSchedule.setOnAction(event ->  {
-      makeSchedule();
-    });
+    generateSchedule.setOnAction(event -> makeSchedule());
 
-    exportSchedule.setOnAction(event -> {
-      exportCSV(name);
-    });
+    exportSchedule.setOnAction(event -> exportCSV(name));
   }
 
   // initialize values upon UI start
   private void initializeStatus(){
     mboModeEnabled.setFill(Paint.valueOf(Constants.GREEN));
   }
+
+  private void setMBOMode(boolean mboMode) { this.mboMode = mboMode; }
 
   private void initializeTrainInfo(){
 

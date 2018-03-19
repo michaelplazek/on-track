@@ -1,24 +1,47 @@
 package mbo.model;
 
+
 import javafx.collections.ObservableList;
 import javafx.collections.*;
 import java.util.*;
 
+import mainmenu.controller.MainMenuController;
+import mainmenu.Clock;
+import mainmenu.ClockInterface;
 
-public class MovingBlockOverlay {
+import ctc.model.CentralTrafficControl;
+import ctc.model.CentralTrafficControlInterface;
+
+import trainmodel.model.TrainModel;
+import trainmodel.model.TrainModelInterface;
+import trackmodel.model.Block;
+import trainmodel.model.TrainModelFactory;
+
+import trackctrl.model.TrackController;
+import trackctrl.model.TrackControllerInterface;
+import trackctrl.model.TrackControllerLineManager;
+import trackctrl.model.TrackControllerLineManagerInterface;
+
+
+
+
+
+public class MovingBlockOverlay implements MovingBlockOverlayInterface {
+
+  private static ClockInterface clock = Clock.getInstance();
 
   private static MovingBlockOverlay instance = null;
 
-  private Schedule schedule;
   private ObservableList<TrainInfoItem> trainInfoList;
   private ObservableList<DriverScheduleItem> driverScheduleList;
   private ObservableList<TrainScheduleItem> trainScheduleList;
   private String scheduleName;
   private String desiredThroughput;
 
+
   // MBO constructor
   private MovingBlockOverlay() {
-    schedule = new Schedule();
+    Schedule schedule = new Schedule();
     trainInfoList = FXCollections.observableArrayList();
     trainScheduleList = FXCollections.observableArrayList();
     driverScheduleList = FXCollections.observableArrayList();
@@ -29,15 +52,15 @@ public class MovingBlockOverlay {
   * @return the single instance of the MBO
   * */
 
-  public static MovingBlockOverlay getInstance() {
+  public MovingBlockOverlay getInstance() {
     if(instance == null)
       instance = new MovingBlockOverlay();
     return instance;
   }
 
-  public void initialize(){ };
+  public void initialize(){ }
 
-  public void run(){};
+  public void run(){}
 
   public String getDesiredThroughput() {
     return desiredThroughput;

@@ -6,11 +6,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+@SuppressWarnings("ALL")
 public class MovingBlockOverlayUserInterface {
 
   private static MovingBlockOverlayUserInterface instance = null;
   private MovingBlockOverlayController controller;
-  private Parent root;
   private Scene scene;
 
   private MovingBlockOverlayUserInterface() {
@@ -18,7 +18,7 @@ public class MovingBlockOverlayUserInterface {
     FXMLLoader loader = new FXMLLoader(getClass().getResource("mbo.fxml"));
 
     try {
-      this.root = loader.load();
+      Parent root = loader.load();
       this.controller = loader.getController();
       this.scene = new Scene(root);
     } catch (IOException e) {
