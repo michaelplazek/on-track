@@ -28,8 +28,8 @@ import mbo.model.MovingBlockOverlayInterface;
 
 public class MovingBlockOverlayController implements Initializable {
 
-  String name;
-  boolean mboMode;
+  private String name;
+  private boolean mboMode = false;
 
   private ObservableList<TrainInfoItem> trainData = FXCollections.observableArrayList();
   private ObservableList<TrainScheduleItem> trainSchedule = FXCollections.observableArrayList();

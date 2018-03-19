@@ -6,7 +6,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-@SuppressWarnings("ALL")
 public class MovingBlockOverlayUserInterface {
 
   private static MovingBlockOverlayUserInterface instance = null;
@@ -43,7 +42,6 @@ public class MovingBlockOverlayUserInterface {
    * Called by Main Menu to load the window for the CTC UI.
    */
   public void load() {
-
     Stage stage = new Stage();
     stage.setScene(this.scene);
     stage.show();

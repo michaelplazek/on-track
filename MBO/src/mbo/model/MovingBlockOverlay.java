@@ -1,6 +1,5 @@
 package mbo.model;
 
-
 import javafx.collections.ObservableList;
 import javafx.collections.*;
 import java.util.*;
@@ -19,19 +18,14 @@ import trainmodel.model.TrainModelFactory;
 
 import trackctrl.model.TrackController;
 import trackctrl.model.TrackControllerInterface;
-import trackctrl.model.TrackControllerLineManager;
-import trackctrl.model.TrackControllerLineManagerInterface;
-
-
-
 
 
 public class MovingBlockOverlay implements MovingBlockOverlayInterface {
 
-  private static ClockInterface clock = Clock.getInstance();
-
   private static MovingBlockOverlay instance = null;
 
+  private ClockInterface clock;
+  private Schedule schedule = new Schedule();
   private ObservableList<TrainInfoItem> trainInfoList;
   private ObservableList<DriverScheduleItem> driverScheduleList;
   private ObservableList<TrainScheduleItem> trainScheduleList;
@@ -41,7 +35,6 @@ public class MovingBlockOverlay implements MovingBlockOverlayInterface {
 
   // MBO constructor
   private MovingBlockOverlay() {
-    Schedule schedule = new Schedule();
     trainInfoList = FXCollections.observableArrayList();
     trainScheduleList = FXCollections.observableArrayList();
     driverScheduleList = FXCollections.observableArrayList();
@@ -52,7 +45,7 @@ public class MovingBlockOverlay implements MovingBlockOverlayInterface {
   * @return the single instance of the MBO
   * */
 
-  public MovingBlockOverlay getInstance() {
+  public static MovingBlockOverlay getInstance() {
     if(instance == null)
       instance = new MovingBlockOverlay();
     return instance;
