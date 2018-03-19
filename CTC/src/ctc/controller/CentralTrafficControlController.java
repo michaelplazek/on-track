@@ -31,6 +31,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
@@ -147,17 +148,19 @@ public class CentralTrafficControlController {
     maintenanceActions.setItems(ctc.getActionList());
 
     maintenanceTracks.setValue(ctc.getTrackList().get(0));
-    maintenanceBlocks.setValue(ctc.getBlockList().get(0));
     maintenanceActions.setValue(ctc.getActionList().get(0));
-
     scheduleBlocks.setItems(ctc.getBlockList());
-    scheduleBlocks.setValue(ctc.getBlockList().get(0));
-
     setAuthorityBlocks.setItems(ctc.getBlockList());
-    setAuthorityBlocks.setValue(ctc.getBlockList().get(0));
-
     trackSelect.setItems(ctc.getTrackList());
-    trackSelect.setValue(ctc.getTrackList().get(1));
+
+
+    if (ctc.getBlockList().size() > 0) {
+      maintenanceBlocks.setValue(ctc.getBlockList().get(0));
+      scheduleBlocks.setValue(ctc.getBlockList().get(0));
+      setAuthorityBlocks.setValue(ctc.getBlockList().get(0));
+    }
+
+    trackSelect.setValue(ctc.getTrackList().get(0));
   }
 
   private void connectTables() {
@@ -260,15 +263,23 @@ public class CentralTrafficControlController {
           }
         });
 
+    maintenanceActions.getSelectionModel().selectedItemProperty()
+        .addListener((observableValue, oldValue, newValue) -> {
+          if (newValue.equals("Select action")) {
+            maintenanceActions.setValue(oldValue);
+          }
+        });
+
     maintenanceBlocks.getSelectionModel().selectedItemProperty()
         .addListener((observableValue, oldValue, newValue) -> {
-          if (!newValue.equals("Block")) {
-            updateMaintenance();
-          }
+          updateMaintenance();
         });
 
     maintenanceTracks.getSelectionModel().selectedItemProperty()
         .addListener((observableValue, oldValue, newValue) -> {
+          if (oldValue.equals("Select track")) {
+            maintenanceBlocks.setValue(ctc.getBlockList().get(0));
+          }
           updateMaintenance();
         });
   }
@@ -484,6 +495,8 @@ public class CentralTrafficControlController {
       default:
         break;
     }
+
+    updateMaintenance();
   }
 
   private void updateMaintenance() {
@@ -495,26 +508,29 @@ public class CentralTrafficControlController {
       occupiedLight.setFill(Paint.valueOf("Grey"));
       maintenanceBlocks.setDisable(true);
       maintenanceActions.setDisable(true);
+      submitMaintenance.setDisable(true);
     } else {
 
       maintenanceBlocks.setDisable(false);
       maintenanceActions.setDisable(false);
+      submitMaintenance.setDisable(false);
 
       int blockId = extractBlock();
       Block block = Track.getListOfTracks().get(line).getBlock(blockId);
 
       if (block.isClosedForMaintenance()) {
-        statusLight.setFill(Paint.valueOf("Green"));
-      } else {
         statusLight.setFill(Paint.valueOf("Red"));
+      } else {
+        statusLight.setFill(Paint.valueOf("#24c51b"));
       }
 
       if (block.isOccupied()) {
-        occupiedLight.setFill(Paint.valueOf("Green"));
+        occupiedLight.setFill(Paint.valueOf("#24c51b"));
       } else {
         occupiedLight.setFill(Paint.valueOf("Red"));
       }
 
+      // TODO: Block won't cast to Switch?
       if (block.isSwitch()) {
 
         Switch sw = (Switch) block;
@@ -675,7 +691,7 @@ public class CentralTrafficControlController {
         ctc.getTrainQueueTable().remove(i);
         ctc.getTrainList().remove(i);
         TrainControllerFactory.delete(selected.getId());
-        TrainModel.delete(selected.getId());
+        // TrainModel.delete(selected.getId());
       }
     }
 
@@ -762,6 +778,8 @@ public class CentralTrafficControlController {
   private void changeMode(
       String mode,
       TableView.TableViewSelectionModel<ScheduleRow> defaultModel) {
+
+    ctc.toggleMode();
 
     // disable buttons
     if (mode.equals("Moving Block Mode")) {

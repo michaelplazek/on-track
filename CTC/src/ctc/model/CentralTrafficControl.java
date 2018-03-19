@@ -27,6 +27,7 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
   private int refresh;
   private int totalPassengers;
   private double throughput;
+  private String mode;
   private StringProperty displayThroughput = new SimpleStringProperty("0.00 passengers/hr");
 
   private ObservableList<ScheduleRow> scheduleTable;
@@ -54,26 +55,16 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
         new ScheduleRow("","",""),
         new ScheduleRow("","","")
     );
+
+    HashMap<String, Track> track =  Track.getListOfTracks();
+
     this.trainList = FXCollections.observableArrayList();
-    // need Track to be loaded
-    // this.line = Track.getListOfTracks().get(0).getLine();
-    this.line = "Green";
     this.time = 0;
     this.refresh = 0;
     this.hours = 0.0001;
     this.totalPassengers = 0;
+    this.mode = "Fixed Block Mode";
 
-    // makeBlockList();
-    // makeTrackList();
-
-    this.blockList = FXCollections.observableArrayList(
-        "Block",
-        "A1", "A2", "A3",
-        "B1", "B2", "B3",
-        "C1", "C2", "C3");
-
-    this.trackList = FXCollections.observableArrayList(
-    "Select track", "Green", "Red");
   }
 
   /**
@@ -87,7 +78,12 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
     return instance;
   }
 
+  /**
+   * Initializes the CTC.
+   */
   public void initialize() {
+    makeTrackList();
+    makeBlockList();
     updateDisplayTime();
   }
 
@@ -126,7 +122,7 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
 
   private void makeBlockList() {
 
-    Track track = Track.getListOfTracks().get(line);
+    Track track = Track.getListOfTracks().get("blue");
     blockList.addAll(track.getBlockList());
   }
 
@@ -232,4 +228,18 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
     this.line = track;
   }
 
+  /**
+   * This is called to toggle between moving block and fixed block mode.
+   * @return the new mode after the toggle
+   */
+  public String toggleMode() {
+
+    if (this.mode.equals("Fixed Block Mode")) {
+      this.mode = "Moving Block Mode";
+      return this.mode;
+    } else {
+      this.mode = "Fixed Block Mode";
+      return this.mode;
+    }
+  }
 }

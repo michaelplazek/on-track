@@ -18,6 +18,8 @@ import javafx.util.Duration;
 import mainmenu.Clock;
 import mainmenu.controller.MainMenuController;
 import trackctrl.model.TrackControllerInitializer;
+import trackmodel.model.Block;
+import trackmodel.model.Track;
 import traincontroller.model.TrainController;
 import traincontroller.model.TrainControllerInterface;
 import traincontroller.model.TrainControllerManager;
@@ -71,11 +73,29 @@ public class Runner extends Application {
 
   private void initialize() {
 
+    //TODO: Insert Track Initializer Here
+    sampleTrackMaker();
+
     clk.setInitialTime();
     clk.tick();
     ctc.initialize();
-    //TODO: Insert Track Initializer Here
     TrackControllerInitializer.parseTrack();
 
+  }
+
+  private void sampleTrackMaker() {
+
+    Track test = new Track("blue");
+
+    for (int i = 0; i < 20; i++) {
+      Block block = new Block();
+      block.setNumber(i);
+      block.setSection("V");
+      block.setLine("blue");
+      test.addBlock(block);
+    }
+
+    test.getBlock(5).setSwitchHere(true);
+    test.getBlock(8).setSwitchHere(true);
   }
 }

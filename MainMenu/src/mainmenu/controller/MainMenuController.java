@@ -66,9 +66,9 @@ public class MainMenuController implements Initializable {
   /**
    * This function sets the lines to the initial line values.
    */
-  public void initializeTrackControllers() {
+  private void initializeTrackControllers() {
 
-    ObservableList lineList = FXCollections.observableArrayList();
+    ObservableList<String> lineList = FXCollections.observableArrayList();
     //ObservableList[] ctrlrLists = FXCollections.observableArrayList()[];
     HashMap<String,ObservableList> ctrlrLists = new HashMap<>();
 
@@ -90,10 +90,10 @@ public class MainMenuController implements Initializable {
     //Action Event for line selection
     trackControllerLineChoiceBox.getSelectionModel().selectedItemProperty()
         .addListener((observableValue, oldValue, newValue) -> {
-          if (!(trackControllerLineChoiceBox.getSelectionModel().getSelectedItem().equals("Select Line"))) {
+          if (!(trackControllerLineChoiceBox.getSelectionModel()
+              .getSelectedItem().equals("Select Line"))) {
             //Line Selected, select Id, get proper list
             trackControllerIdChoiceBox.setItems(ctrlrLists.get(newValue));
-            String testboi = (String) ctrlrLists.get(newValue).get(0);
             trackControllerIdChoiceBox.setValue((String) ctrlrLists.get(newValue).get(0));
             trackControllerIdChoiceBox.setDisable(false);
           } else {
@@ -104,7 +104,8 @@ public class MainMenuController implements Initializable {
     //Action Event for id selection
     trackControllerIdChoiceBox.getSelectionModel().selectedItemProperty()
         .addListener((observableValue, oldValue, newValue) -> {
-          if (!(trackControllerIdChoiceBox.getSelectionModel().getSelectedItem().equals("Select ID"))) {
+          if (!(trackControllerIdChoiceBox.getSelectionModel()
+              .getSelectedItem().equals("Select ID"))) {
 
             //Line Selected, Id selected, enable button
             trackControllerButton.setDisable(false);
@@ -159,7 +160,8 @@ public class MainMenuController implements Initializable {
   private void openTrackController(ActionEvent event) {
 
     if (trackControllerIdChoiceBox.getSelectionModel().getSelectedItem() != null
-        && !(trackControllerLineChoiceBox.getSelectionModel().getSelectedItem().equals("Select Line"))) {
+        && !(trackControllerLineChoiceBox.getSelectionModel()
+        .getSelectedItem().equals("Select Line"))) {
       TrackControllerUserInterface.openTrackController(
           trackControllerIdChoiceBox.getSelectionModel().getSelectedItem());
     }
@@ -208,7 +210,7 @@ public class MainMenuController implements Initializable {
    * Enables and disables the train model dropdown.
    */
   public void updateTrainModelDropdown() {
-    ObservableList list = TrainModel.getObservableListOfTrainModels();
+    ObservableList<String> list = TrainModel.getObservableListOfTrainModels();
     trainModelChoiceBox.setItems(list);
 
     if (TrainModel.getObservableListOfTrainModels().size() > 0) {
@@ -222,10 +224,6 @@ public class MainMenuController implements Initializable {
       trainModelButton.setDisable(true);
       trainModelChoiceBox.setDisable(true);
     }
-  }
-
-  public void updateTrackControllerPanel() {
-
   }
 
   @Override

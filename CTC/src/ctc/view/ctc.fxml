@@ -88,7 +88,7 @@
                                  <children>
                                     <TitledPane alignment="TOP_CENTER" animated="false" collapsible="false" prefHeight="439.0" prefWidth="279.0" text="Add">
                                       <content>
-                                        <AnchorPane fx:id="stateZero" minHeight="0.0" minWidth="0.0" prefHeight="401.0" prefWidth="318.0">
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="401.0" prefWidth="318.0">
                                              <children>
                                                 <Button fx:id="importScheduleButton" layoutX="90.0" layoutY="22.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="135.0" text="Import Schedule" />
                                                 <Label layoutX="145.0" layoutY="69.0" text="- or -">
@@ -229,12 +229,12 @@
                                     <Image url="@images/switch_stay.png" />
                                  </image>
                               </ImageView>
-                              <ImageView fitHeight="48.0" fitWidth="40.0" layoutX="179.0" layoutY="105.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fx:id="stateZero" fitHeight="48.0" fitWidth="40.0" layoutX="179.0" layoutY="105.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@images/switch_inactive.png" />
                                  </image>
                               </ImageView>
-                              <ImageView fx:id="stateOne" fitHeight="40.0" fitWidth="42.0" layoutX="179.0" layoutY="105.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fx:id="stateOne" fitHeight="40.0" fitWidth="42.0" layoutX="179.0" layoutY="105.0" opacity="0.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@images/switch_alter.png" />
                                  </image>
