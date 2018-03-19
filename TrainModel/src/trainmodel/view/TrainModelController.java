@@ -17,6 +17,7 @@ import javafx.util.StringConverter;
 import javafx.util.converter.NumberStringConverter;
 import mainmenu.Clock;
 import traincontroller.model.TrainController;
+import traincontroller.model.TrainControllerInterface;
 import trainmodel.controller.Constants;
 import trainmodel.model.TrainModel;
 import utils.train.TrainModelEnums;
@@ -135,15 +136,15 @@ public class TrainModelController implements Initializable {
    * Train model && controller associated with UI (use for testing as of 3/11/18).
    */
   private TrainModel trainModel;
-  private TrainController trainController;
+  private TrainControllerInterface trainController;
 
   /**
    * Constructs a TrainModelController instance.
    * @param trainId the ID of the train.
    */
   public TrainModelController(String trainId) {
-    trainController = TrainController.getTrainController(trainId);
     trainModel = TrainModel.getTrainModel(trainId);
+    trainController = trainModel.getController();
     trainModel.setController(trainController);
   }
 

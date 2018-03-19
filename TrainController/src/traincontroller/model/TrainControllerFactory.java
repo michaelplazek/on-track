@@ -6,19 +6,19 @@ public class TrainControllerFactory {
    * @return Returns a new train controller with the given id.
    * */
   public static TrainControllerInterface create(String id, String line) {
-    if (TrainController.getTrainControllers().get(id) != null) {
+    if (TrainControllerManager.getTrainControllers().get(id) != null) {
       return null;
     }
     TrainController trainController = new TrainController(id, line);
-    TrainController.addTrain(trainController);
+    TrainControllerManager.addTrain(trainController);
     return trainController;
   }
 
   public static boolean start(String id) {
-    return TrainController.start(id);
+    return TrainControllerManager.start(id);
   }
 
   public static boolean delete(String id) {
-    return TrainController.delete(id);
+    return TrainControllerManager.delete(id);
   }
 }
