@@ -14,9 +14,9 @@ public interface TrackControllerInterface {
   public boolean setSwitchOverride(int block, boolean state);
 
   //To be relayed to the Track model
-  boolean relayAuthority(int block, double authority);
+  boolean relayAuthority(int block, float authority);
 
-  boolean relaySetSpeed(int block, double setSpeed);
+  boolean relaySetSpeed(int block, float setSpeed);
 
   //To be called by TrackController and/or CTC
   boolean setInfrastructureState(int block, boolean state);

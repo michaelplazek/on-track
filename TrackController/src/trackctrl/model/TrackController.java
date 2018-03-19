@@ -59,13 +59,13 @@ public class TrackController implements TrackControllerInterface {
 
   //TODO
   @Override
-  public boolean relayAuthority(int block, double authority) {
+  public boolean relayAuthority(int block, float authority) {
     return false;
   }
 
   //TODO
   @Override
-  public boolean relaySetSpeed(int block, double setSpeed) {
+  public boolean relaySetSpeed(int block, float setSpeed) {
     return false;
   }
 
