@@ -10,6 +10,8 @@ public class Track {
   private String line;
   private HashMap<Integer, Block> track;
   private int startBlock;
+  private ArrayList<Integer> occupiedBlocks;
+  private ArrayList<Integer> closedBlocks;
 
   private static HashMap<String, Track> listOfTracks = new HashMap<>();
 
@@ -134,5 +136,21 @@ public class Track {
 
   public void run() {
 
+  }
+
+  public void toggleOccupancy(int num) {
+
+  }
+
+  public void toggleFailure(int num, String failureType) {
+
+  }
+
+  public String getOccupiedBlocks() {
+    return null;
+  }
+
+  public String getClosedBlocks() {
+    return null;
   }
 }
