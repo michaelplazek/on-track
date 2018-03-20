@@ -138,11 +138,11 @@ public class Track {
 
   }
 
-  public void toggleOccupancy(int num) {
-
+  public boolean toggleOccupancy(int num) {
+    return true;
   }
 
-  public void toggleFailure(int num, String failureType) {
+  public void toggleFailure(int blockId, String failureType) {
 
   }
 
