@@ -11,6 +11,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -28,6 +30,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.ImageView;
@@ -35,6 +38,8 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.converter.DefaultStringConverter;
+import jdk.nashorn.internal.runtime.regexp.joni.encoding.CharacterType;
 import mainmenu.Clock;
 import trackctrl.model.TrackControllerLineManager;
 import trackctrl.model.TrackControllerLineManagerInterface;
@@ -192,20 +197,41 @@ public class CentralTrafficControlController {
     dispatchPassengersColumn.setCellValueFactory(
         new PropertyValueFactory<TrainTracker, String>("passengers"));
 
-    stopColumn.setCellFactory(TextFieldTableCell.<ScheduleRow>forTableColumn());
-    stopColumn.setOnEditCommit(
-        (TableColumn.CellEditEvent<ScheduleRow, String> t) -> {
-          ((ScheduleRow) t.getTableView().getItems().get(
-              t.getTablePosition().getRow())
-          ).setStop(t.getNewValue());
-        });
+    // set dropdown menu for stations
+    stopColumn.setCellFactory(ComboBoxTableCell.forTableColumn(
+        new DefaultStringConverter(), ctc.getStationList()));
+//    stopColumn.setCellFactory(TextFieldTableCell.<ScheduleRow>forTableColumn());
+//    stopColumn.setOnEditCommit(
+//        (TableColumn.CellEditEvent<ScheduleRow, String> t) -> {
+//
+//          String input = t.getNewValue();
+//
+//          if (checkStopFormat(input))
+//          ((ScheduleRow) t.getTableView().getItems().get(
+//              t.getTablePosition().getRow())
+//          ).setStop(input);
+//        });
 
     dwellColumn.setCellFactory(TextFieldTableCell.<ScheduleRow>forTableColumn());
     dwellColumn.setOnEditCommit(
         (TableColumn.CellEditEvent<ScheduleRow, String> t) -> {
-          ((ScheduleRow) t.getTableView().getItems().get(
-              t.getTablePosition().getRow())
-          ).setDwell(t.getNewValue());
+
+          String input = t.getNewValue();
+
+          if (checkTimeFormat(input)) {
+            ((ScheduleRow) t.getTableView().getItems().get(
+                t.getTablePosition().getRow())
+            ).setDwell(input);
+          } else {
+            AlertWindow alert = new AlertWindow();
+
+            alert.setTitle("Error Submitting");
+            alert.setHeader("Please Use Correct Format");
+            alert.setContent("Please enter the time in the following format: "
+                + "XX:XX:XX");
+
+            alert.show();
+          }
         });
 
     addScheduleTable.setItems(ctc.getScheduleTable());
@@ -283,6 +309,26 @@ public class CentralTrafficControlController {
           updateMaintenance();
         });
   }
+
+  private boolean checkTimeFormat(String input) {
+
+    Pattern pattern = Pattern.compile("\\d\\d\\:\\d\\d\\:\\d\\d");
+    Matcher m = pattern.matcher(input);
+
+    return m.find();
+  }
+
+//  private boolean checkStopFormat(String input) {
+//
+//    char[] arr = input.toCharArray();
+//    for (int i = 0; i < arr.length; i++) {
+//      if (!Character.isLetter(arr[i]) || !Character.isLowerCase(arr[i])) {
+//        return false;
+//      }
+//    }
+//
+//    return true;
+//  }
 
   /**
    * This function deals with formatting for TextFields related to naming trains.
@@ -648,7 +694,17 @@ public class CentralTrafficControlController {
 
     // TODO: create route and add it to TrainTracker
 
-    if (!trackSelect.getSelectionModel().getSelectedItem().equals("Select track")) {
+    if (trackSelect.getSelectionModel().getSelectedItem().equals("Select track")) {
+
+      AlertWindow alert = new AlertWindow();
+
+      alert.setTitle("Error Submitting");
+      alert.setHeader("No Track Selected");
+      alert.setContent("Please select a track from the "
+          + "Select Track dropdown menu before submitting.");
+
+      alert.show();
+    } else {
 
       // get train stop info
       List<String> stopData = new ArrayList<>();
@@ -669,12 +725,13 @@ public class CentralTrafficControlController {
       }
 
       String block = scheduleBlocks.getSelectionModel().getSelectedItem();
+      String line = trackSelect.getSelectionModel().getSelectedItem();
       String name = trainNameField.getText();
       String departingTime = departingTimeField.getText();
 
       if (!name.equals("") && departingTime.length() == 8) {
 
-        TrainTracker train = new TrainTracker(name, departingTime, "red", schedule);
+        TrainTracker train = new TrainTracker(name, departingTime, line, schedule);
         train.setLine(ctc.getLine()); // set the track that is current set
 
         // create item in queue
@@ -685,15 +742,6 @@ public class CentralTrafficControlController {
         // create train
         ctc.addTrain(train);
       }
-    } else {
-      AlertWindow alert = new AlertWindow();
-
-      alert.setTitle("Error Submitting");
-      alert.setHeader("No Track Selected");
-      alert.setContent("Please select a track from the "
-          + "Select Track dropdown menu before submitting.");
-
-      alert.show();
     }
   }
 

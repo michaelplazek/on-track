@@ -36,6 +36,7 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
   private ObservableList<TrainTracker> dispatchTable;
 
   private ObservableList<String> blockList = FXCollections.observableArrayList();
+  private ObservableList<String> stationList = FXCollections.observableArrayList();
   private ObservableList<String> trackList = FXCollections.observableArrayList("Select track");
   private ObservableList<String> actionsList = FXCollections.observableArrayList(
       "Select action", "Close block", "Repair block", "Toggle switch");
@@ -85,6 +86,7 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
   public void initialize() {
     makeTrackList();
     makeBlockList();
+    makeStationList();
     updateDisplayTime();
   }
 
@@ -125,6 +127,12 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
 
     Track track = Track.getListOfTracks().get("blue");
     blockList.addAll(track.getBlockList());
+  }
+
+  private void makeStationList() {
+
+    Track track = Track.getListOfTracks().get("blue");
+    blockList.addAll(track.getStationList());
   }
 
   private void makeTrackList() {
@@ -192,6 +200,10 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
 
   public ObservableList<TrainTracker> getTrainList() {
     return trainList;
+  }
+
+  public ObservableList<String> getStationList() {
+    return stationList;
   }
 
   public void addTrain(TrainTracker train) {
