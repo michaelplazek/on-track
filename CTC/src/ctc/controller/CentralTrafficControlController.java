@@ -31,7 +31,6 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
@@ -43,7 +42,7 @@ import trackmodel.model.Block;
 import trackmodel.model.Switch;
 import trackmodel.model.Track;
 import traincontroller.model.TrainControllerFactory;
-import trainmodel.model.TrainModel;
+import utils.alerts.AlertWindow;
 
 public class CentralTrafficControlController {
 
@@ -649,40 +648,52 @@ public class CentralTrafficControlController {
 
     // TODO: create route and add it to TrainTracker
 
-    // get train stop info
-    List<String> stopData = new ArrayList<>();
-    for (ScheduleRow item : addScheduleTable.getItems()) {
-      stopData.add(stopColumn.getCellObservableValue(item).getValue());
-    }
+    if (!trackSelect.getSelectionModel().getSelectedItem().equals("Select track")) {
 
-    // get train dwell info
-    List<String> dwellData = new ArrayList<>();
-    for (ScheduleRow item : addScheduleTable.getItems()) {
-      dwellData.add(dwellColumn.getCellObservableValue(item).getValue());
-    }
+      // get train stop info
+      List<String> stopData = new ArrayList<>();
+      for (ScheduleRow item : addScheduleTable.getItems()) {
+        stopData.add(stopColumn.getCellObservableValue(item).getValue());
+      }
 
-    // create schedule
-    ObservableList<ScheduleRow> schedule =  FXCollections.observableArrayList();
-    for (int i = 0; i < addScheduleTable.getItems().size(); i++) {
-      schedule.add(new ScheduleRow(stopData.get(i), dwellData.get(i), ""));
-    }
+      // get train dwell info
+      List<String> dwellData = new ArrayList<>();
+      for (ScheduleRow item : addScheduleTable.getItems()) {
+        dwellData.add(dwellColumn.getCellObservableValue(item).getValue());
+      }
 
-    String block = scheduleBlocks.getSelectionModel().getSelectedItem();
-    String name = trainNameField.getText();
-    String departingTime = departingTimeField.getText();
+      // create schedule
+      ObservableList<ScheduleRow> schedule =  FXCollections.observableArrayList();
+      for (int i = 0; i < addScheduleTable.getItems().size(); i++) {
+        schedule.add(new ScheduleRow(stopData.get(i), dwellData.get(i), ""));
+      }
 
-    if (!name.equals("") && departingTime.length() == 8) {
+      String block = scheduleBlocks.getSelectionModel().getSelectedItem();
+      String name = trainNameField.getText();
+      String departingTime = departingTimeField.getText();
 
-      TrainTracker train = new TrainTracker(name, departingTime, "red", schedule);
-      train.setLine(ctc.getLine()); // set the track that is current set
+      if (!name.equals("") && departingTime.length() == 8) {
 
-      // create item in queue
-      trainQueueTable.setItems(ctc.getTrainQueueTable());
+        TrainTracker train = new TrainTracker(name, departingTime, "red", schedule);
+        train.setLine(ctc.getLine()); // set the track that is current set
 
-      resetSchedule();
+        // create item in queue
+        trainQueueTable.setItems(ctc.getTrainQueueTable());
 
-      // create train
-      ctc.addTrain(train);
+        resetSchedule();
+
+        // create train
+        ctc.addTrain(train);
+      }
+    } else {
+      AlertWindow alert = new AlertWindow();
+
+      alert.setTitle("Error Submitting");
+      alert.setHeader("No Track Selected");
+      alert.setContent("Please select a track from the "
+          + "Select Track dropdown menu before submitting.");
+
+      alert.show();
     }
   }
 
