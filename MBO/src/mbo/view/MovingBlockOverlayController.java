@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -90,7 +91,6 @@ public class MovingBlockOverlayController implements Initializable {
   @FXML
   private TableColumn schedShiftEnd;
   @FXML
-  private TableColumn schedBreakEnd;
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
@@ -119,7 +119,6 @@ public class MovingBlockOverlayController implements Initializable {
     line.setCellValueFactory(new PropertyValueFactory<TrainInfoItem,String>(""));
     coordinates.setCellValueFactory(new PropertyValueFactory<TrainInfoItem,String>(""));
     //trainInfoTable.getItems().addAll(trainSchedule);
-
 
     setTrainInfoData();
     trainInfoTable.getItems().addAll(trainSchedule);
@@ -165,8 +164,6 @@ public class MovingBlockOverlayController implements Initializable {
     schedShiftStart.setCellValueFactory(new PropertyValueFactory<DriverScheduleItem,String>(""));
     setDriverScheduleData();
     schedulerDriverSchedule.getItems().addAll(driverSchedule);
-
-
   }
 
   private void setTrainInfoData() {

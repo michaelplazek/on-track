@@ -2,8 +2,6 @@ package mbo.model;
 
 public interface MovingBlockOverlayInterface {
 
-  MovingBlockOverlay getInstance();
-
   void initialize();
 
   void run();

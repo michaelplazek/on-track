@@ -52,6 +52,7 @@ public class MovingBlockOverlay implements MovingBlockOverlayInterface {
   }
 
   public void initialize() {
+
   }
 
   public void run() {
