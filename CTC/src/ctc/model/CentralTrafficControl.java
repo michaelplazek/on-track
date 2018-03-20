@@ -19,7 +19,7 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
   private static CentralTrafficControl instance = null;
   private ClockInterface clock;
 
-  private boolean isActive = false;
+  private boolean isActive = true;
   private ObservableList<TrainTracker> trainList;
   private StringProperty displayTime = new SimpleStringProperty();
   private String line;
