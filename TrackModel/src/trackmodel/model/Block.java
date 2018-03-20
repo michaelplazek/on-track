@@ -347,4 +347,8 @@ public class Block {
   public void setNextBlock1(int nextBlock1) {
     this.nextBlock1 = nextBlock1;
   }
+
+  public String getUiData() {
+    return null;
+  }
 }
