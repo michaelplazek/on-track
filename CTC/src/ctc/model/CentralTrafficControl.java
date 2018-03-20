@@ -20,7 +20,6 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
   private ClockInterface clock;
 
   private boolean isActive = true;
-  private ObservableList<TrainTracker> trainList;
   private StringProperty displayTime = new SimpleStringProperty();
   private String line;
   private long time;
@@ -35,6 +34,7 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
   private ObservableList<TrainTracker> trainQueueTable;
   private ObservableList<TrainTracker> dispatchTable;
 
+  private ObservableList<TrainTracker> trainList;
   private ObservableList<String> blockList = FXCollections.observableArrayList();
   private ObservableList<String> stationList = FXCollections.observableArrayList();
   private ObservableList<String> trackList = FXCollections.observableArrayList("Select track");
@@ -57,8 +57,6 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
         new ScheduleRow("","",""),
         new ScheduleRow("","","")
     );
-
-    HashMap<String, Track> track =  Track.getListOfTracks();
 
     this.trainList = FXCollections.observableArrayList();
     this.time = 0;
@@ -123,6 +121,9 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
     return isActive;
   }
 
+  /**
+   * Create the list of strings for the block dropdown.
+   */
   public void makeBlockList() {
 
     Track track = Track.getListOfTracks().get(line);
@@ -150,6 +151,10 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
     for (Map.Entry<String, Track> entry : track.entrySet()) {
       String key = entry.getKey();
       trackList.add(key);
+    }
+
+    if (trackList.size() > 0) {
+      line = trackList.get(1);
     }
   }
 

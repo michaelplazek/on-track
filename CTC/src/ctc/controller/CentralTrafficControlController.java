@@ -280,7 +280,6 @@ public class CentralTrafficControlController {
 
             ctc.setLine(newValue);
             ctc.makeStationList();
-            ctc.makeBlockList();
 
             stopColumn.setCellFactory(ComboBoxTableCell.forTableColumn(
                 new DefaultStringConverter(), ctc.getStationList()));
@@ -304,6 +303,18 @@ public class CentralTrafficControlController {
         .addListener((observableValue, oldValue, newValue) -> {
           if (newValue.equals("Select action")) {
             maintenanceActions.setValue(oldValue);
+          } else {
+            String action = maintenanceActions.getSelectionModel().getSelectedItem();
+            String line = maintenanceTracks.getSelectionModel().getSelectedItem();
+
+            int blockId = extractBlock();
+            Block block = Track.getListOfTracks().get(line).getBlock(blockId);
+
+            if (action.equals("Toggle switch") && !block.isSwitch()) {
+              submitMaintenance.setDisable(true);
+            } else {
+              submitMaintenance.setDisable(false);
+            }
           }
         });
 
@@ -314,8 +325,14 @@ public class CentralTrafficControlController {
 
     maintenanceTracks.getSelectionModel().selectedItemProperty()
         .addListener((observableValue, oldValue, newValue) -> {
-          if (oldValue.equals("Select track")) {
-            maintenanceBlocks.setValue(ctc.getBlockList().get(0));
+          if (!newValue.equals("Select track")) {
+
+            maintenanceBlocks.setItems(ctc.getBlockList());
+            if (ctc.getBlockList().size() > 0) {
+              maintenanceBlocks.setValue(ctc.getBlockList().get(0));
+            }
+          } else {
+            maintenanceTracks.setValue(oldValue);
           }
           updateMaintenance();
         });
@@ -510,15 +527,20 @@ public class CentralTrafficControlController {
   private int extractBlock() {
 
     StringBuilder blockName = new StringBuilder();
-    char[] temp = maintenanceBlocks.getSelectionModel().getSelectedItem().toCharArray();
 
-    for (int i = 0; i < temp.length; i++) {
-      if (!Character.isLetter(temp[i])) {
-        blockName.append(temp[i]);
+    if (!maintenanceBlocks.getSelectionModel().isEmpty()) {
+      char[] temp = maintenanceBlocks.getSelectionModel().getSelectedItem().toCharArray();
+
+      for (int i = 0; i < temp.length; i++) {
+        if (!Character.isLetter(temp[i])) {
+          blockName.append(temp[i]);
+        }
       }
+
+      return Integer.parseInt(blockName.toString());
     }
 
-    return Integer.parseInt(blockName.toString());
+    return 0;
   }
 
   private void submitMaintenance() {
@@ -562,7 +584,10 @@ public class CentralTrafficControlController {
       maintenanceActions.setDisable(false);
       submitMaintenance.setDisable(false);
 
+
       int blockId = extractBlock();
+
+      // TODO: deal with this
       Block block = Track.getListOfTracks().get(line).getBlock(blockId);
 
       if (block.isClosedForMaintenance()) {
