@@ -17,7 +17,7 @@ public class Clock implements ClockInterface {
   private long lastTimestamp;
   private int multiplier = 1;
   private long timedPaused = 0;
-  private boolean isPaused = false;
+  private boolean isPaused = true;
 
   /**
    * The main constructor for the Clock class.
