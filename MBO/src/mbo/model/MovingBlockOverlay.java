@@ -1,24 +1,23 @@
 package mbo.model;
 
-import javafx.collections.ObservableList;
-import javafx.collections.*;
-import java.util.*;
-
-import mainmenu.controller.MainMenuController;
-import mainmenu.Clock;
-import mainmenu.ClockInterface;
-
 import ctc.model.CentralTrafficControl;
 import ctc.model.CentralTrafficControlInterface;
 
-import trainmodel.model.TrainModel;
-import trainmodel.model.TrainModelInterface;
-import trackmodel.model.Block;
-import trainmodel.model.TrainModelFactory;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
+import mainmenu.Clock;
+import mainmenu.ClockInterface;
+
+import mainmenu.controller.MainMenuController;
 import trackctrl.model.TrackController;
 import trackctrl.model.TrackControllerInterface;
-
+import trackctrl.model.TrackControllerLineManager;
+import trackctrl.model.TrackControllerLineManagerInterface;
+import trackmodel.model.Block;
+import trainmodel.model.TrainModel;
+import trainmodel.model.TrainModelFactory;
+import trainmodel.model.TrainModelInterface;
 
 public class MovingBlockOverlay implements MovingBlockOverlayInterface {
 
@@ -40,20 +39,23 @@ public class MovingBlockOverlay implements MovingBlockOverlayInterface {
     driverScheduleList = FXCollections.observableArrayList();
   }
 
-  /*
-  * Maintain a single instance of a MBO object
-  * @return the single instance of the MBO
-  * */
-
+  /**
+   * Maintain a single instance of a MBO object.
+   *
+   * @return a single instance of MBO
+   **/
   public static MovingBlockOverlay getInstance() {
-    if(instance == null)
+    if (instance == null) {
       instance = new MovingBlockOverlay();
+    }
     return instance;
   }
 
-  public void initialize(){ }
+  public void initialize() {
+  }
 
-  public void run(){}
+  public void run() {
+  }
 
   public String getDesiredThroughput() {
     return desiredThroughput;
@@ -63,7 +65,7 @@ public class MovingBlockOverlay implements MovingBlockOverlayInterface {
     return scheduleName;
   }
 
-  public void setDesiredThroughput(String desiredThroughput){
+  public void setDesiredThroughput(String desiredThroughput) {
     this.desiredThroughput = desiredThroughput;
   }
 
@@ -88,7 +90,7 @@ public class MovingBlockOverlay implements MovingBlockOverlayInterface {
     private ObservableList<DriverScheduleItem> driverScheduleTable;
     private ObservableList<TrainInfoItem> trainInfoTable;
 
-    public Schedule(){
+    public Schedule() {
       this.trainScheduleTable = FXCollections.observableArrayList();
       this.driverScheduleTable = FXCollections.observableArrayList();
       this.trainInfoTable = FXCollections.observableArrayList();

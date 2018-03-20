@@ -1,6 +1,5 @@
 package mbo.controller;
 
-import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
 public class Constants {

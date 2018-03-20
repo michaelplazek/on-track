@@ -1,19 +1,19 @@
 package mbo.model;
 
-import javafx.collections.ObservableList;
-
 public class DriverScheduleItem {
   // constructor for DriverSchedule items.
   private String schedDriver;
-  private String schedDriverTrainID;
+  private String schedDriverTrainId;
   private String schedShiftStart;
   private String schedBreakStart;
   private String schedShiftEnd;
   private String schedBreakEnd;
 
-  public DriverScheduleItem(String schedDriver, String schedDriverTrainID, String schedShiftStart, String schedBreakStart, String schedShiftEnd, String schedBreakEnd) {
+  public DriverScheduleItem(String schedDriver, String schedDriverTrainId,
+                            String schedShiftStart, String schedBreakStart,
+                            String schedShiftEnd, String schedBreakEnd) {
     this.schedDriver = schedDriver;
-    this.schedDriverTrainID = schedDriverTrainID;
+    this.schedDriverTrainId = schedDriverTrainId;
     this.schedShiftStart = schedShiftStart;
     this.schedBreakStart = schedBreakStart;
     this.schedShiftEnd = schedShiftEnd;
@@ -32,8 +32,8 @@ public class DriverScheduleItem {
     this.schedDriver = schedDriver;
   }
 
-  public void setSchedDriverTrainID(String schedDriverTrainID) {
-    this.schedDriverTrainID = schedDriverTrainID;
+  public void setSchedDriverTrainId(String schedDriverTrainId) {
+    this.schedDriverTrainId = schedDriverTrainId;
   }
 
   public void setSchedShiftEnd(String schedShiftEnd) {
@@ -64,8 +64,9 @@ public class DriverScheduleItem {
     return schedDriver;
   }
 
-  public String getSchedDriverTrainID() {
-    return schedDriverTrainID;
+  public String getSchedDriverTrainId() {
+
+    return schedDriverTrainId;
   }
 
   @Override

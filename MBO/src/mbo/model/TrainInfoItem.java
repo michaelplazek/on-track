@@ -1,7 +1,7 @@
 package mbo.model;
 
 public class TrainInfoItem {
-  private String trainID;
+  private String trainId;
   private String line;
   private double coordinates;
   private int passengerCount;
@@ -9,22 +9,36 @@ public class TrainInfoItem {
   private double authority;
   private double safeBrakeDist;
 
-  public TrainInfoItem(String trainID, String line,double coordinates,int passengerCount,double velocity,double authority, double safeBrakeDist) {
-    this.trainID = trainID;
+  /**
+   * Constructor for train information.
+   *
+   * @param trainId name of train
+   * @param line line that train occupies
+   * @param coordinates GPS coordinates of train
+   * @param passengerCount number of passengers on the train
+   * @param velocity velocity at which train travels in meters/second
+   * @param authority calculated safe authority of the train in yards based on speed of the train
+   * @param safeBrakeDist safe braking distance of the train in meters
+   **/
+
+  public TrainInfoItem(String trainId, String line, double coordinates,
+                       int passengerCount, double velocity, double authority,
+                       double safeBrakeDist) {
+    this.trainId = trainId;
     this.line = line;
     this.coordinates = coordinates;
-    this. passengerCount = passengerCount;
+    this.passengerCount = passengerCount;
     this.velocity = velocity;
     this.authority = authority;
     this.safeBrakeDist = safeBrakeDist;
   }
 
-  public String getTrainID() {
-    return trainID;
+  public String getTrainId() {
+    return trainId;
   }
 
-  public void setTrainID(String trainID) {
-    this.trainID = trainID;
+  public void setTrainId(String trainId) {
+    this.trainId = trainId;
   }
 
   public String getLine() {
