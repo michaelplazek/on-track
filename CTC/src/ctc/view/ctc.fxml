@@ -98,7 +98,7 @@
                                                 </Label>
                                                 <TextField fx:id="trainNameField" layoutX="4.0" layoutY="94.0" onKeyReleased="#formatTrainName" prefHeight="26.0" prefWidth="106.0" promptText="Train name" />
                                                 <TextField fx:id="departingTimeField" layoutX="112.0" layoutY="94.0" onKeyReleased="#formatTimeInput" prefHeight="26.0" prefWidth="108.0" promptText="Departure time" />
-                                                <ChoiceBox fx:id="scheduleBlocks" layoutX="222.0" layoutY="94.0" prefHeight="26.0" prefWidth="91.0" value="Green" />
+                                                <ChoiceBox fx:id="scheduleBlocks" disable="true" layoutX="222.0" layoutY="94.0" prefHeight="26.0" prefWidth="91.0" value="Green" />
                                                 <TableView fx:id="addScheduleTable" editable="true" layoutX="5.0" layoutY="125.0" prefHeight="250.0" prefWidth="308.0">
                                                   <columns>
                                                     <TableColumn fx:id="stopColumn" prefWidth="155.5" text="Stop" />
@@ -154,8 +154,8 @@
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="478.0" prefWidth="404.0">
                                              <children>
                                                 <TextField fx:id="suggestedSpeedField" layoutX="8.0" layoutY="350.0" prefHeight="26.0" prefWidth="121.0" promptText="mph" />
-                                                <Button fx:id="setSpeedButton" layoutX="133.0" layoutY="350.0" mnemonicParsing="false" text="Set Suggested Speed" />
-                                                <Button fx:id="setAuthorityButton" layoutX="133.0" layoutY="380.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="147.5" text="Set Authority" />
+                                                <Button fx:id="setSpeedButton" disable="true" layoutX="133.0" layoutY="350.0" mnemonicParsing="false" text="Set Suggested Speed" />
+                                                <Button fx:id="setAuthorityButton" disable="true" layoutX="133.0" layoutY="380.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="147.5" text="Set Authority" />
                                                 <Circle fill="#24c51b" layoutX="305.0" layoutY="380.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
                                                 <Label layoutX="318.0" layoutY="372.0" text="Train Status" />
                                                 <TableView fx:id="dispatchTable" layoutX="4.0" layoutY="7.0" prefHeight="338.0" prefWidth="396.0">
@@ -167,7 +167,7 @@
                                                       <TableColumn fx:id="dispatchPassengersColumn" prefWidth="91.4915771484375" text="Passengers" />
                                                   </columns>
                                                 </TableView>
-                                                <ChoiceBox fx:id="setAuthorityBlocks" layoutX="8.0" layoutY="380.0" prefHeight="26.0" prefWidth="121.0" />
+                                                <ChoiceBox fx:id="setAuthorityBlocks" disable="true" layoutX="8.0" layoutY="380.0" prefHeight="26.0" prefWidth="121.0" />
                                              </children>
                                           </AnchorPane>
                                       </content>

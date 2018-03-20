@@ -123,16 +123,25 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
     return isActive;
   }
 
-  private void makeBlockList() {
+  public void makeBlockList() {
 
-    Track track = Track.getListOfTracks().get("blue");
-    blockList.addAll(track.getBlockList());
+    Track track = Track.getListOfTracks().get(line);
+
+    if (track != null) {
+      blockList.addAll(track.getBlockList());
+    }
   }
 
-  private void makeStationList() {
+  /**
+   * Update the list of stations held by the CTC.
+   */
+  public void makeStationList() {
 
-    Track track = Track.getListOfTracks().get("blue");
-    blockList.addAll(track.getStationList());
+    Track track = Track.getListOfTracks().get(line);
+
+    if (track != null) {
+      stationList.addAll(track.getStationList());
+    }
   }
 
   private void makeTrackList() {

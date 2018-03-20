@@ -155,8 +155,6 @@ public class CentralTrafficControlController {
 
     maintenanceTracks.setValue(ctc.getTrackList().get(0));
     maintenanceActions.setValue(ctc.getActionList().get(0));
-    scheduleBlocks.setItems(ctc.getBlockList());
-    setAuthorityBlocks.setItems(ctc.getBlockList());
     trackSelect.setItems(ctc.getTrackList());
 
 
@@ -200,17 +198,13 @@ public class CentralTrafficControlController {
     // set dropdown menu for stations
     stopColumn.setCellFactory(ComboBoxTableCell.forTableColumn(
         new DefaultStringConverter(), ctc.getStationList()));
-//    stopColumn.setCellFactory(TextFieldTableCell.<ScheduleRow>forTableColumn());
-//    stopColumn.setOnEditCommit(
-//        (TableColumn.CellEditEvent<ScheduleRow, String> t) -> {
-//
-//          String input = t.getNewValue();
-//
-//          if (checkStopFormat(input))
-//          ((ScheduleRow) t.getTableView().getItems().get(
-//              t.getTablePosition().getRow())
-//          ).setStop(input);
-//        });
+
+    stopColumn.setOnEditCommit(
+        (TableColumn.CellEditEvent<ScheduleRow, String> t) -> {
+            ((ScheduleRow) t.getTableView().getItems().get(
+                t.getTablePosition().getRow())
+            ).setStop(t.getNewValue());
+        });
 
     dwellColumn.setCellFactory(TextFieldTableCell.<ScheduleRow>forTableColumn());
     dwellColumn.setOnEditCommit(
@@ -218,7 +212,7 @@ public class CentralTrafficControlController {
 
           String input = t.getNewValue();
 
-          if (checkTimeFormat(input)) {
+          if (checkTimeFormat(input) || input.equals("")) {
             ((ScheduleRow) t.getTableView().getItems().get(
                 t.getTablePosition().getRow())
             ).setDwell(input);
@@ -283,7 +277,24 @@ public class CentralTrafficControlController {
     trackSelect.getSelectionModel().selectedItemProperty()
         .addListener((observableValue, oldValue, newValue) -> {
           if (!newValue.equals("Select track")) {
+
             ctc.setLine(newValue);
+            ctc.makeStationList();
+            ctc.makeBlockList();
+
+            stopColumn.setCellFactory(ComboBoxTableCell.forTableColumn(
+                new DefaultStringConverter(), ctc.getStationList()));
+
+            scheduleBlocks.setDisable(false);
+            setAuthorityBlocks.setDisable(false);
+
+            scheduleBlocks.setItems(ctc.getBlockList());
+            setAuthorityBlocks.setItems(ctc.getBlockList());
+
+            if (ctc.getBlockList().size() > 0) {
+              scheduleBlocks.setValue(ctc.getBlockList().get(0));
+              setAuthorityBlocks.setValue(ctc.getBlockList().get(0));
+            }
           } else {
             trackSelect.setValue(oldValue);
           }
@@ -317,18 +328,6 @@ public class CentralTrafficControlController {
 
     return m.find();
   }
-
-//  private boolean checkStopFormat(String input) {
-//
-//    char[] arr = input.toCharArray();
-//    for (int i = 0; i < arr.length; i++) {
-//      if (!Character.isLetter(arr[i]) || !Character.isLowerCase(arr[i])) {
-//        return false;
-//      }
-//    }
-//
-//    return true;
-//  }
 
   /**
    * This function deals with formatting for TextFields related to naming trains.
@@ -709,7 +708,7 @@ public class CentralTrafficControlController {
       // get train stop info
       List<String> stopData = new ArrayList<>();
       for (ScheduleRow item : addScheduleTable.getItems()) {
-        stopData.add(stopColumn.getCellObservableValue(item).getValue());
+        stopData.add(stopColumn.getCellData(item));
       }
 
       // get train dwell info
