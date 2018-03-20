@@ -127,6 +127,7 @@ public class CentralTrafficControlController {
     ctc.updateDisplayTime();
     ctc.calculateThroughput();
     dispatch();
+    trackTrains();
   }
 
   public CentralTrafficControl getCtc() {
@@ -384,6 +385,8 @@ public class CentralTrafficControlController {
     });
   }
 
+  private void trackTrains(){}
+
   private void bindClock() {
     time.textProperty().bind(ctc.getDisplayTime());
   }
@@ -530,7 +533,6 @@ public class CentralTrafficControlController {
         occupiedLight.setFill(Paint.valueOf("Red"));
       }
 
-      // TODO: Block won't cast to Switch?
       if (block.isSwitch()) {
 
         Switch sw = (Switch) block;
