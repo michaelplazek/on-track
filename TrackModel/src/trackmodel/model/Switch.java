@@ -4,6 +4,12 @@ public class Switch extends Block {
 
   private int next2;
   private int status;
+  private boolean switchState;
+
+  /**
+   * Default constructor.
+   */
+  public Switch() {}
 
   /**
    * This method is the constructor to create a new switch.
@@ -71,4 +77,20 @@ public class Switch extends Block {
     return status;
   }
 
+  // TODO: fill out this function to toggle the switch
+
+  /**
+   * Toggle the boolean value of switchState.
+   */
+  public void toggle() {}
+
+  // TODO: fill out this function to return the switch state
+
+  /**
+   * For setting the state of elements in the user interface.
+   * @return true is the switch is straight, and false if it is the fork.
+   */
+  public boolean getSwitchState() {
+    return false;
+  }
 }

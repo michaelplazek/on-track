@@ -1,20 +1,17 @@
 package ctc.model;
 
-import javafx.collections.ObservableList;
 import trackmodel.model.Block;
 import trackmodel.model.Track;
-import traincontroller.model.TrainController;
 import traincontroller.model.TrainControllerFactory;
 
 /**
  * This class is used to map the train instances to their routes.
  */
-public class TrainWrapper {
+public class TrainTracker {
 
-  private TrainController train;
-  private ObservableList<ScheduleRow> schedule;
+  private Schedule schedule;
   private Track track;
-  private String name;
+  private String id;
   private String departure;
   private boolean isDispatched;
   private float speed;
@@ -23,12 +20,13 @@ public class TrainWrapper {
   private float distanceTravelled;
   private String line;
   private Block location;
+  private String locationId;
   private Route route;
 
   /**
    * Default constructor.
    */
-  public TrainWrapper(){}
+  public TrainTracker() { }
 
   /**
    * Constructor for the TrainList items.
@@ -36,13 +34,12 @@ public class TrainWrapper {
    * @param id String for name of train
    * @param line String for name of line train is running on
    */
-  public TrainWrapper(
+  public TrainTracker(
       String id,
       String departure,
       String line,
-      ObservableList<ScheduleRow> schedule) {
-    this.train = (TrainController) TrainControllerFactory.create(id, line);
-    this.name = id;
+      Schedule schedule) {
+    this.id = id;
     this.departure = departure;
     this.schedule = schedule;
     this.isDispatched = false;
@@ -51,24 +48,23 @@ public class TrainWrapper {
     this.authority = 0;
     this.line = line;
     this.track = Track.getListOfTracks().get(line);
-//    this.location = track.getStartBlock();
+    // this.location = track.getStartBlock();
+    // this.locationId = location.getSection() + location.getNumber();
     this.route = new Route();
+
+    TrainControllerFactory.create(id, line);
   }
 
-  public TrainController getTrain() {
-    return train;
-  }
-
-  public ObservableList<ScheduleRow> getSchedule() {
+  public Schedule getSchedule() {
     return schedule;
   }
 
-  public void setSchedule(ObservableList<ScheduleRow> schedule) {
+  public void setSchedule(Schedule schedule) {
     this.schedule = schedule;
   }
 
-  public String getName() {
-    return name;
+  public String getId() {
+    return id;
   }
 
   public String getDeparture() {
@@ -111,8 +107,14 @@ public class TrainWrapper {
     return location;
   }
 
+  /**
+   * Sets the location of the train.
+   * @param location Block object
+   */
   public void setLocation(Block location) {
+
     this.location = location;
+    this.locationId = location.getSection() + location.getNumber();
   }
 
   public Track getTrack() {

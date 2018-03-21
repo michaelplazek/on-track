@@ -7,30 +7,38 @@ import trackmodel.model.Block;
 public interface TrackControllerInterface {
 
   //To be set by the CTC
-  Boolean setAuthority(int block, float authority);
+  boolean setAuthority(int block, float authority);
 
-  Boolean setSuggestedSpeed(int block, float setSpeed);
+  boolean setSuggestedSpeed(int block, float setSpeed);
+
+  public boolean setSwitchOverride(int block, boolean state);
 
   //To be relayed to the Track model
-  Boolean relayAuthority(int block, double authority);
+  boolean relayAuthority(int block, double authority);
 
-  Boolean relaySetSpeed(int block, double setSpeed);
+  boolean relaySetSpeed(int block, double setSpeed);
 
   //To be called by TrackController and/or CTC
-  Boolean setInfrastructureState(int block, Boolean state);
+  boolean setInfrastructureState(int block, boolean state);
 
   //To be called by TrackControllerLineManager
-  Boolean setId(String id);
+  boolean setId(int id);
 
   void setZone(HashMap<Integer, Block> blocks);
 
-  Boolean addBlock(Block newBlock);
+  boolean addBlock(Block newBlock);
 
-  Boolean hasBlock(int block);
+  boolean hasBlock(int id);
+
+  boolean closeBlock(int id);
+
+  boolean repairBlock(int id);
+
+  boolean toggleSwitch(int id);
 
   int getId();
 
   //To be called within TrackController
-  Boolean importLogic(File myplc);
+  boolean importLogic(File myplc);
 
 }

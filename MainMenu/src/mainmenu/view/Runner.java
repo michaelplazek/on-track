@@ -3,6 +3,7 @@ package mainmenu.view;
 import ctc.controller.CentralTrafficControlController;
 
 import ctc.model.CentralTrafficControl;
+import ctc.model.CentralTrafficControlInterface;
 import ctc.view.CentralTrafficControlUserInterface;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -15,10 +16,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
 import mainmenu.Clock;
 import mainmenu.controller.MainMenuController;
-import traincontroller.model.TrainController;
+import trackctrl.model.TrackControllerInitializer;
+import trackmodel.model.Block;
+import trackmodel.model.Switch;
+import trackmodel.model.Track;
 import traincontroller.model.TrainControllerManager;
 
 public class Runner extends Application {
@@ -26,7 +29,7 @@ public class Runner extends Application {
   // create instances of modules
   private CentralTrafficControlController ctcc =
       CentralTrafficControlUserInterface.getInstance().getController();
-  private CentralTrafficControl ctc = CentralTrafficControl.getInstance();
+  private CentralTrafficControlInterface ctc = CentralTrafficControl.getInstance();
   private MainMenuController mmc = MainMenuController.getInstance();
   private Clock clk = Clock.getInstance();
 
@@ -70,8 +73,70 @@ public class Runner extends Application {
 
   private void initialize() {
 
+    //TODO: Insert Track Initializer Here
+    sampleTrackMaker();
+
     clk.setInitialTime();
     clk.tick();
     ctc.initialize();
+    TrackControllerInitializer.parseTrack();
+
+  }
+
+  // TODO: replace this awful function with a real one
+  private void sampleTrackMaker() {
+
+    Track test = new Track("blue");
+
+    for (int i = 0; i < 20; i++) {
+
+      if (i == 10 || i == 15) {
+        Switch block = new Switch();
+        block.setNumber(i);
+        block.setSection("V");
+        block.setLine("blue");
+        test.addBlock(block);
+      } else {
+        Block block = new Block();
+        block.setNumber(i);
+        block.setSection("V");
+        block.setLine("blue");
+        test.addBlock(block);
+      }
+    }
+
+    test.getBlock(10).setSwitchHere(true);
+    test.getBlock(15).setSwitchHere(true);
+    test.getBlock(11).setLeftStation(true);
+    test.getBlock(11).setStationName("SOME STATION");
+    test.getBlock(16).setRightStation(true);
+    test.getBlock(16).setStationName("ANOTHER STATION");
+
+    Track test2 = new Track("yellow");
+
+    for (int i = 0; i < 20; i++) {
+
+      if (i == 10 || i == 15) {
+        Switch block = new Switch();
+        block.setNumber(i);
+        block.setSection("A");
+        block.setLine("yellow");
+        test2.addBlock(block);
+      } else {
+        Block block = new Block();
+        block.setNumber(i);
+        block.setSection("A");
+        block.setLine("yellow");
+        test2.addBlock(block);
+      }
+    }
+
+    test2.getBlock(10).setSwitchHere(true);
+    test2.getBlock(15).setSwitchHere(true);
+    test2.getBlock(11).setLeftStation(true);
+    test2.getBlock(11).setStationName("yellow station");
+    test2.getBlock(16).setRightStation(true);
+    test2.getBlock(16).setStationName("Another yellow station");
+
   }
 }

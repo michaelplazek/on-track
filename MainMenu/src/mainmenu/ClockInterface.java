@@ -26,7 +26,12 @@ public interface ClockInterface {
   void setMultiplier(int multiplier);
 
   /**
-   * Use to tick the clock for a 10ms.
+   * Pauses the clock - to be called by CTC.
    */
-  void tick();
+  void pause();
+
+  /**
+   * Unpauses the clock - to be called by CTC.
+   */
+  void unpause();
 }

@@ -1,5 +1,7 @@
 package ctc.model;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,28 +10,35 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import mainmenu.Clock;
+import mainmenu.ClockInterface;
 import trackmodel.model.Block;
 import trackmodel.model.Track;
 
 public class CentralTrafficControl implements CentralTrafficControlInterface {
 
   private static CentralTrafficControl instance = null;
-  private Clock clock;
+  private TrackMaintenance trackMaintenance = TrackMaintenance.getInstance();
+  private ClockInterface clock;
+
+  private StringProperty displayTime = new SimpleStringProperty();
+  private StringProperty displayThroughput = new SimpleStringProperty("0.00 passengers/hr");
 
   private boolean isActive = false;
-  private ObservableList<TrainWrapper> trainList;
-  private StringProperty displayTime = new SimpleStringProperty();
   private String line;
-  private String throughput = "17.4 passenger/s"; // TODO: calculate throughput
+  private String mode;
+  private long time;
+  private double hours;
+  private int refresh;
+  private int totalPassengers;
+  private double throughput;
 
-  private ObservableList<ScheduleRow> scheduleTable;
-  private ObservableList<TrainWrapper> trainQueueTable;
-  private ObservableList<TrainWrapper> dispatchTable;
+  private ObservableList<TrainTracker> trainQueueTable;
+  private ObservableList<TrainTracker> dispatchTable;
+  private ObservableList<TrainTracker> trainList;
 
-  private ObservableList<String> blockList = FXCollections.observableArrayList();
-  private ObservableList<String> trackList = FXCollections.observableArrayList("Select track");
-  private ObservableList<String> actionsList = FXCollections.observableArrayList(
-      "Select action", "Close block", "Repair block", "Toggle switch");
+  private ObservableList<String> blockList;
+  private ObservableList<String> stationList;
+  private ObservableList<String> trackList;
 
   /**
    * Base constructor can only be access via the getInstance() method.
@@ -39,30 +48,17 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
 
     this.trainQueueTable = FXCollections.observableArrayList();
     this.dispatchTable = FXCollections.observableArrayList();
-    this.scheduleTable = FXCollections.observableArrayList(
-        new ScheduleRow("","",""),
-        new ScheduleRow("","",""),
-        new ScheduleRow("","",""),
-        new ScheduleRow("","",""),
-        new ScheduleRow("","",""),
-        new ScheduleRow("","","")
-    );
     this.trainList = FXCollections.observableArrayList();
-    // need Track to be loaded
-    // this.line = Track.getListOfTracks().get(0).getLine();
-    this.line = "Green";
+    this.stationList = FXCollections.observableArrayList();
+    this.blockList = FXCollections.observableArrayList();
+    this.trackList = FXCollections.observableArrayList("Select track");
 
-    // makeBlockList();
-    // makeTrackList();
 
-    this.blockList = FXCollections.observableArrayList(
-        "Block",
-        "A1", "A2", "A3",
-        "B1", "B2", "B3",
-        "C1", "C2", "C3");
-
-    this.trackList = FXCollections.observableArrayList(
-    "Select track", "Green", "Red");
+    this.time = 0;
+    this.refresh = 0;
+    this.hours = 0.0001;
+    this.totalPassengers = 0;
+    this.mode = "Fixed Block Mode";
   }
 
   /**
@@ -76,12 +72,24 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
     return instance;
   }
 
+  /**
+   * Initializes the CTC.
+   */
   public void initialize() {
+    makeTrackList();
+    makeBlockList();
     updateDisplayTime();
+
+    trackMaintenance.makeTrackList();
   }
 
+  /**
+   * Display time of clock is updated.
+   */
   public void updateDisplayTime() {
+
     displayTime.setValue(clock.getFormattedTime());
+    time += clock.getChangeInTime();
   }
 
   public StringProperty getDisplayTime() {
@@ -96,23 +104,42 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
     return this.blockList;
   }
 
-  public ObservableList<String> getActionList() {
-    return this.actionsList;
-  }
-
   public StringProperty getThroughput() {
-    return new SimpleStringProperty(throughput);
+    return displayThroughput;
   }
 
   public boolean isActive() {
     return isActive;
   }
 
-  private void makeBlockList() {
+  /**
+   * Create the list of strings for the block dropdown.
+   */
+  public void makeBlockList() {
 
     Track track = Track.getListOfTracks().get(line);
-    // need getBlockList()
-    blockList.addAll(track.getBlockList());
+
+    // clear the list before refreshing
+    blockList.clear();
+
+    if (track != null) {
+      blockList.addAll(track.getBlockList());
+    }
+  }
+
+  /**
+   * Update the list of stations held by the CTC.
+   */
+  public void makeStationList() {
+
+    Track track = Track.getListOfTracks().get(line);
+
+    // clear the list before refreshing
+    stationList.clear();
+
+    if (track != null) {
+      stationList.addAll(track.getStationList());
+    }
   }
 
   private void makeTrackList() {
@@ -121,6 +148,10 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
     for (Map.Entry<String, Track> entry : track.entrySet()) {
       String key = entry.getKey();
       trackList.add(key);
+    }
+
+    if (trackList.size() > 1) {
+      line = trackList.get(1);
     }
   }
 
@@ -132,10 +163,27 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
    */
   public void addPassengers(Block block, int passengers) {
 
+    totalPassengers += passengers;
+
     for (int i = 0; i < trainList.size(); i++) {
       if (trainList.get(i).getLocation() == block) {
         trainList.get(i).updatePassengers(passengers);
       }
+    }
+  }
+
+  /**
+   * Called by controller to calculate the throughput each tick.
+   */
+  public void calculateThroughput() {
+
+    hours += ((float) clock.getChangeInTime() / (3600 * 1000));
+    throughput = (double) totalPassengers / hours;
+
+    if (refresh++ > 500) {
+      NumberFormat formatter = new DecimalFormat("#0.00");
+      displayThroughput.setValue(formatter.format(throughput) + " passengers/hr");
+      this.refresh = 0; // reset count
     }
   }
 
@@ -153,42 +201,24 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
     isActive = active;
   }
 
-  public ObservableList<ScheduleRow> getScheduleTable() {
-    return scheduleTable;
-  }
-
-  public void setScheduleTable(ObservableList<ScheduleRow> table) {
-    scheduleTable = table;
-  }
-
-  public ObservableList<TrainWrapper> getTrainList() {
+  public ObservableList<TrainTracker> getTrainList() {
     return trainList;
   }
 
-  public void addTrain(TrainWrapper train) {
+  public ObservableList<String> getStationList() {
+    return stationList;
+  }
+
+  public void addTrain(TrainTracker train) {
     this.trainList.add(train);
     trainQueueTable.add(train);
   }
 
-  /**
-   * Use to clear the train table of stops.
-   */
-  public void clearScheduleTable() {
-    scheduleTable = FXCollections.observableArrayList(
-        new ScheduleRow("","",""),
-        new ScheduleRow("","",""),
-        new ScheduleRow("","",""),
-        new ScheduleRow("","",""),
-        new ScheduleRow("","",""),
-        new ScheduleRow("","","")
-    );
-  }
-
-  public ObservableList<TrainWrapper> getTrainQueueTable() {
+  public ObservableList<TrainTracker> getTrainQueueTable() {
     return trainQueueTable;
   }
 
-  public ObservableList<TrainWrapper> getDispatchTable() {
+  public ObservableList<TrainTracker> getDispatchTable() {
     return dispatchTable;
   }
 
@@ -200,4 +230,18 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
     this.line = track;
   }
 
+  /**
+   * This is called to toggle between moving block and fixed block mode.
+   * @return the new mode after the toggle
+   */
+  public String toggleMode() {
+
+    if (this.mode.equals("Fixed Block Mode")) {
+      this.mode = "Moving Block Mode";
+      return this.mode;
+    } else {
+      this.mode = "Fixed Block Mode";
+      return this.mode;
+    }
+  }
 }
