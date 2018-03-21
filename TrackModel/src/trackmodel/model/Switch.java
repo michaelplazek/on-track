@@ -4,6 +4,7 @@ public class Switch extends Block {
 
   private int next2;
   private int status;
+  private boolean switchState;
 
   /**
    * This method is the constructor to create a new switch.
@@ -87,5 +88,4 @@ public class Switch extends Block {
   public boolean getSwitchState() {
     return false;
   }
-
 }

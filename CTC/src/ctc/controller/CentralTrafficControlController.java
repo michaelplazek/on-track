@@ -11,6 +11,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -28,14 +30,15 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.converter.DefaultStringConverter;
 import mainmenu.Clock;
 import trackctrl.model.TrackControllerLineManager;
 import trackctrl.model.TrackControllerLineManagerInterface;
@@ -43,7 +46,7 @@ import trackmodel.model.Block;
 import trackmodel.model.Switch;
 import trackmodel.model.Track;
 import traincontroller.model.TrainControllerFactory;
-import trainmodel.model.TrainModel;
+import utils.alerts.AlertWindow;
 
 public class CentralTrafficControlController {
 
@@ -127,6 +130,7 @@ public class CentralTrafficControlController {
     ctc.updateDisplayTime();
     ctc.calculateThroughput();
     dispatch();
+    trackTrains();
   }
 
   public CentralTrafficControl getCtc() {
@@ -150,8 +154,6 @@ public class CentralTrafficControlController {
 
     maintenanceTracks.setValue(ctc.getTrackList().get(0));
     maintenanceActions.setValue(ctc.getActionList().get(0));
-    scheduleBlocks.setItems(ctc.getBlockList());
-    setAuthorityBlocks.setItems(ctc.getBlockList());
     trackSelect.setItems(ctc.getTrackList());
 
 
@@ -192,24 +194,40 @@ public class CentralTrafficControlController {
     dispatchPassengersColumn.setCellValueFactory(
         new PropertyValueFactory<TrainTracker, String>("passengers"));
 
-    stopColumn.setCellFactory(TextFieldTableCell.<ScheduleRow>forTableColumn());
+    // set dropdown menu for stations
+    stopColumn.setCellFactory(ComboBoxTableCell.forTableColumn(
+        new DefaultStringConverter(), ctc.getStationList()));
+
     stopColumn.setOnEditCommit(
         (TableColumn.CellEditEvent<ScheduleRow, String> t) -> {
-          ((ScheduleRow) t.getTableView().getItems().get(
-              t.getTablePosition().getRow())
-          ).setStop(t.getNewValue());
+            ((ScheduleRow) t.getTableView().getItems().get(
+                t.getTablePosition().getRow())
+            ).setStop(t.getNewValue());
         });
 
     dwellColumn.setCellFactory(TextFieldTableCell.<ScheduleRow>forTableColumn());
     dwellColumn.setOnEditCommit(
         (TableColumn.CellEditEvent<ScheduleRow, String> t) -> {
-          ((ScheduleRow) t.getTableView().getItems().get(
-              t.getTablePosition().getRow())
-          ).setDwell(t.getNewValue());
+
+          String input = t.getNewValue();
+
+          if (checkTimeFormat(input) || input.equals("")) {
+            ((ScheduleRow) t.getTableView().getItems().get(
+                t.getTablePosition().getRow())
+            ).setDwell(input);
+          } else {
+            AlertWindow alert = new AlertWindow();
+
+            alert.setTitle("Error Submitting");
+            alert.setHeader("Please Use Correct Format");
+            alert.setContent("Please enter the time in the following format: "
+                + "XX:XX:XX");
+
+            alert.show();
+          }
         });
 
     addScheduleTable.setItems(ctc.getScheduleTable());
-
   }
 
   private void connectButtons() {
@@ -257,7 +275,23 @@ public class CentralTrafficControlController {
     trackSelect.getSelectionModel().selectedItemProperty()
         .addListener((observableValue, oldValue, newValue) -> {
           if (!newValue.equals("Select track")) {
+
             ctc.setLine(newValue);
+            ctc.makeStationList();
+
+            stopColumn.setCellFactory(ComboBoxTableCell.forTableColumn(
+                new DefaultStringConverter(), ctc.getStationList()));
+
+            scheduleBlocks.setDisable(false);
+            setAuthorityBlocks.setDisable(false);
+
+            scheduleBlocks.setItems(ctc.getBlockList());
+            setAuthorityBlocks.setItems(ctc.getBlockList());
+
+            if (ctc.getBlockList().size() > 0) {
+              scheduleBlocks.setValue(ctc.getBlockList().get(0));
+              setAuthorityBlocks.setValue(ctc.getBlockList().get(0));
+            }
           } else {
             trackSelect.setValue(oldValue);
           }
@@ -267,6 +301,18 @@ public class CentralTrafficControlController {
         .addListener((observableValue, oldValue, newValue) -> {
           if (newValue.equals("Select action")) {
             maintenanceActions.setValue(oldValue);
+          } else {
+            String action = maintenanceActions.getSelectionModel().getSelectedItem();
+            String line = maintenanceTracks.getSelectionModel().getSelectedItem();
+
+            int blockId = extractBlock();
+            Block block = Track.getListOfTracks().get(line).getBlock(blockId);
+
+            if (action.equals("Toggle switch") && !block.isSwitch()) {
+              submitMaintenance.setDisable(true);
+            } else {
+              submitMaintenance.setDisable(false);
+            }
           }
         });
 
@@ -277,11 +323,25 @@ public class CentralTrafficControlController {
 
     maintenanceTracks.getSelectionModel().selectedItemProperty()
         .addListener((observableValue, oldValue, newValue) -> {
-          if (oldValue.equals("Select track")) {
-            maintenanceBlocks.setValue(ctc.getBlockList().get(0));
+          if (!newValue.equals("Select track")) {
+
+            maintenanceBlocks.setItems(ctc.getBlockList());
+            if (ctc.getBlockList().size() > 0) {
+              maintenanceBlocks.setValue(ctc.getBlockList().get(0));
+            }
+          } else {
+            maintenanceTracks.setValue(oldValue);
           }
           updateMaintenance();
         });
+  }
+
+  private boolean checkTimeFormat(String input) {
+
+    Pattern pattern = Pattern.compile("\\d\\d\\:\\d\\d\\:\\d\\d");
+    Matcher m = pattern.matcher(input);
+
+    return m.find();
   }
 
   /**
@@ -304,9 +364,9 @@ public class CentralTrafficControlController {
           return;
         }
 
-        if (newValue.length() > 13) {
+        if (newValue.length() > 15) {
           ignore = true;
-          trainNameField.setText(newValue.substring(0, 13));
+          trainNameField.setText(newValue.substring(0, 15));
           ignore = false;
         }
       }
@@ -383,6 +443,8 @@ public class CentralTrafficControlController {
       }
     });
   }
+
+  private void trackTrains(){}
 
   private void bindClock() {
     time.textProperty().bind(ctc.getDisplayTime());
@@ -463,15 +525,20 @@ public class CentralTrafficControlController {
   private int extractBlock() {
 
     StringBuilder blockName = new StringBuilder();
-    char[] temp = maintenanceBlocks.getSelectionModel().getSelectedItem().toCharArray();
 
-    for (int i = 0; i < temp.length; i++) {
-      if (!Character.isLetter(temp[i])) {
-        blockName.append(temp[i]);
+    if (!maintenanceBlocks.getSelectionModel().isEmpty()) {
+      char[] temp = maintenanceBlocks.getSelectionModel().getSelectedItem().toCharArray();
+
+      for (int i = 0; i < temp.length; i++) {
+        if (!Character.isLetter(temp[i])) {
+          blockName.append(temp[i]);
+        }
       }
+
+      return Integer.parseInt(blockName.toString());
     }
 
-    return Integer.parseInt(blockName.toString());
+    return 0;
   }
 
   private void submitMaintenance() {
@@ -510,7 +577,6 @@ public class CentralTrafficControlController {
       maintenanceActions.setDisable(true);
       submitMaintenance.setDisable(true);
     } else {
-
       maintenanceBlocks.setDisable(false);
       maintenanceActions.setDisable(false);
       submitMaintenance.setDisable(false);
@@ -530,7 +596,6 @@ public class CentralTrafficControlController {
         occupiedLight.setFill(Paint.valueOf("Red"));
       }
 
-      // TODO: Block won't cast to Switch?
       if (block.isSwitch()) {
 
         Switch sw = (Switch) block;
@@ -647,40 +712,54 @@ public class CentralTrafficControlController {
 
     // TODO: create route and add it to TrainTracker
 
-    // get train stop info
-    List<String> stopData = new ArrayList<>();
-    for (ScheduleRow item : addScheduleTable.getItems()) {
-      stopData.add(stopColumn.getCellObservableValue(item).getValue());
-    }
+    if (trackSelect.getSelectionModel().getSelectedItem().equals("Select track")) {
 
-    // get train dwell info
-    List<String> dwellData = new ArrayList<>();
-    for (ScheduleRow item : addScheduleTable.getItems()) {
-      dwellData.add(dwellColumn.getCellObservableValue(item).getValue());
-    }
+      AlertWindow alert = new AlertWindow();
 
-    // create schedule
-    ObservableList<ScheduleRow> schedule =  FXCollections.observableArrayList();
-    for (int i = 0; i < addScheduleTable.getItems().size(); i++) {
-      schedule.add(new ScheduleRow(stopData.get(i), dwellData.get(i), ""));
-    }
+      alert.setTitle("Error Submitting");
+      alert.setHeader("No Track Selected");
+      alert.setContent("Please select a track from the "
+          + "Select Track dropdown menu before submitting.");
 
-    String block = scheduleBlocks.getSelectionModel().getSelectedItem();
-    String name = trainNameField.getText();
-    String departingTime = departingTimeField.getText();
+      alert.show();
+    } else {
 
-    if (!name.equals("") && departingTime.length() == 8) {
+      // get train stop info
+      List<String> stopData = new ArrayList<>();
+      for (ScheduleRow item : addScheduleTable.getItems()) {
+        stopData.add(stopColumn.getCellData(item));
+      }
 
-      TrainTracker train = new TrainTracker(name, departingTime, "red", schedule);
-      train.setLine(ctc.getLine()); // set the track that is current set
+      // get train dwell info
+      List<String> dwellData = new ArrayList<>();
+      for (ScheduleRow item : addScheduleTable.getItems()) {
+        dwellData.add(dwellColumn.getCellObservableValue(item).getValue());
+      }
 
-      // create item in queue
-      trainQueueTable.setItems(ctc.getTrainQueueTable());
+      // create schedule
+      ObservableList<ScheduleRow> schedule =  FXCollections.observableArrayList();
+      for (int i = 0; i < addScheduleTable.getItems().size(); i++) {
+        schedule.add(new ScheduleRow(stopData.get(i), dwellData.get(i), ""));
+      }
 
-      resetSchedule();
+      String block = scheduleBlocks.getSelectionModel().getSelectedItem();
+      String line = trackSelect.getSelectionModel().getSelectedItem();
+      String name = trainNameField.getText();
+      String departingTime = departingTimeField.getText();
 
-      // create train
-      ctc.addTrain(train);
+      if (!name.equals("") && departingTime.length() == 8) {
+
+        TrainTracker train = new TrainTracker(name, departingTime, line, schedule);
+        train.setLine(ctc.getLine()); // set the track that is current set
+
+        // create item in queue
+        trainQueueTable.setItems(ctc.getTrainQueueTable());
+
+        resetSchedule();
+
+        // create train
+        ctc.addTrain(train);
+      }
     }
   }
 
@@ -691,7 +770,6 @@ public class CentralTrafficControlController {
         ctc.getTrainQueueTable().remove(i);
         ctc.getTrainList().remove(i);
         TrainControllerFactory.delete(selected.getId());
-        // TrainModel.delete(selected.getId());
       }
     }
 
@@ -710,6 +788,9 @@ public class CentralTrafficControlController {
       }
 
       ctc.getDispatchTable().add(selected);
+      setAuthorityButton.setDisable(false);
+      setSpeedButton.setDisable(false);
+
       TrainControllerFactory.start(selected.getId());
       dispatchTable.setItems(ctc.getDispatchTable());
       if (ctc.getTrainQueueTable().size() == 0) {
