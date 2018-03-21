@@ -17,29 +17,28 @@ import trackmodel.model.Track;
 public class CentralTrafficControl implements CentralTrafficControlInterface {
 
   private static CentralTrafficControl instance = null;
+  private TrackMaintenance trackMaintenance = TrackMaintenance.getInstance();
   private ClockInterface clock;
 
-  private boolean isActive = false;
   private StringProperty displayTime = new SimpleStringProperty();
+  private StringProperty displayThroughput = new SimpleStringProperty("0.00 passengers/hr");
+
+  private boolean isActive = false;
   private String line;
+  private String mode;
   private long time;
   private double hours;
   private int refresh;
   private int totalPassengers;
   private double throughput;
-  private String mode;
-  private StringProperty displayThroughput = new SimpleStringProperty("0.00 passengers/hr");
 
-  private ObservableList<ScheduleRow> scheduleTable;
   private ObservableList<TrainTracker> trainQueueTable;
   private ObservableList<TrainTracker> dispatchTable;
-
   private ObservableList<TrainTracker> trainList;
-  private ObservableList<String> blockList = FXCollections.observableArrayList();
-  private ObservableList<String> stationList = FXCollections.observableArrayList();
-  private ObservableList<String> trackList = FXCollections.observableArrayList("Select track");
-  private ObservableList<String> actionsList = FXCollections.observableArrayList(
-      "Select action", "Close block", "Repair block", "Toggle switch");
+
+  private ObservableList<String> blockList;
+  private ObservableList<String> stationList;
+  private ObservableList<String> trackList;
 
   /**
    * Base constructor can only be access via the getInstance() method.
@@ -49,22 +48,17 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
 
     this.trainQueueTable = FXCollections.observableArrayList();
     this.dispatchTable = FXCollections.observableArrayList();
-    this.scheduleTable = FXCollections.observableArrayList(
-        new ScheduleRow("","",""),
-        new ScheduleRow("","",""),
-        new ScheduleRow("","",""),
-        new ScheduleRow("","",""),
-        new ScheduleRow("","",""),
-        new ScheduleRow("","","")
-    );
-
     this.trainList = FXCollections.observableArrayList();
+    this.stationList = FXCollections.observableArrayList();
+    this.blockList = FXCollections.observableArrayList();
+    this.trackList = FXCollections.observableArrayList("Select track");
+
+
     this.time = 0;
     this.refresh = 0;
     this.hours = 0.0001;
     this.totalPassengers = 0;
     this.mode = "Fixed Block Mode";
-
   }
 
   /**
@@ -85,6 +79,8 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
     makeTrackList();
     makeBlockList();
     updateDisplayTime();
+
+    trackMaintenance.makeTrackList();
   }
 
   /**
@@ -108,10 +104,6 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
     return this.blockList;
   }
 
-  public ObservableList<String> getActionList() {
-    return this.actionsList;
-  }
-
   public StringProperty getThroughput() {
     return displayThroughput;
   }
@@ -123,9 +115,12 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
   /**
    * Create the list of strings for the block dropdown.
    */
-  private void makeBlockList() {
+  public void makeBlockList() {
 
     Track track = Track.getListOfTracks().get(line);
+
+    // clear the list before refreshing
+    blockList.clear();
 
     if (track != null) {
       blockList.addAll(track.getBlockList());
@@ -155,7 +150,7 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
       trackList.add(key);
     }
 
-    if (trackList.size() > 0) {
+    if (trackList.size() > 1) {
       line = trackList.get(1);
     }
   }
@@ -206,14 +201,6 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
     isActive = active;
   }
 
-  public ObservableList<ScheduleRow> getScheduleTable() {
-    return scheduleTable;
-  }
-
-  public void setScheduleTable(ObservableList<ScheduleRow> table) {
-    scheduleTable = table;
-  }
-
   public ObservableList<TrainTracker> getTrainList() {
     return trainList;
   }
@@ -225,20 +212,6 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
   public void addTrain(TrainTracker train) {
     this.trainList.add(train);
     trainQueueTable.add(train);
-  }
-
-  /**
-   * Use to clear the train table of stops.
-   */
-  public void clearScheduleTable() {
-    scheduleTable = FXCollections.observableArrayList(
-        new ScheduleRow("","",""),
-        new ScheduleRow("","",""),
-        new ScheduleRow("","",""),
-        new ScheduleRow("","",""),
-        new ScheduleRow("","",""),
-        new ScheduleRow("","","")
-    );
   }
 
   public ObservableList<TrainTracker> getTrainQueueTable() {

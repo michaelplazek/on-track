@@ -20,6 +20,7 @@ import mainmenu.Clock;
 import mainmenu.controller.MainMenuController;
 import trackctrl.model.TrackControllerInitializer;
 import trackmodel.model.Block;
+import trackmodel.model.Switch;
 import trackmodel.model.Track;
 import traincontroller.model.TrainControllerManager;
 
@@ -82,24 +83,60 @@ public class Runner extends Application {
 
   }
 
+  // TODO: replace this awful function with a real one
   private void sampleTrackMaker() {
 
     Track test = new Track("blue");
 
     for (int i = 0; i < 20; i++) {
-      Block block = new Block();
-      block.setNumber(i);
-      block.setSection("V");
-      block.setLine("blue");
-      test.addBlock(block);
+
+      if (i == 10 || i == 15) {
+        Switch block = new Switch();
+        block.setNumber(i);
+        block.setSection("V");
+        block.setLine("blue");
+        test.addBlock(block);
+      } else {
+        Block block = new Block();
+        block.setNumber(i);
+        block.setSection("V");
+        block.setLine("blue");
+        test.addBlock(block);
+      }
     }
 
-    test.getBlock(5).setSwitchHere(true);
-    test.getBlock(8).setSwitchHere(true);
-    test.getBlock(10).setLeftStation(true);
-    test.getBlock(10).setStationName("SOME STATION");
-    test.getBlock(15).setRightStation(true);
-    test.getBlock(15).setStationName("ANOTHER STATION");
+    test.getBlock(10).setSwitchHere(true);
+    test.getBlock(15).setSwitchHere(true);
+    test.getBlock(11).setLeftStation(true);
+    test.getBlock(11).setStationName("SOME STATION");
+    test.getBlock(16).setRightStation(true);
+    test.getBlock(16).setStationName("ANOTHER STATION");
+
+    Track test2 = new Track("yellow");
+
+    for (int i = 0; i < 20; i++) {
+
+      if (i == 10 || i == 15) {
+        Switch block = new Switch();
+        block.setNumber(i);
+        block.setSection("A");
+        block.setLine("yellow");
+        test2.addBlock(block);
+      } else {
+        Block block = new Block();
+        block.setNumber(i);
+        block.setSection("A");
+        block.setLine("yellow");
+        test2.addBlock(block);
+      }
+    }
+
+    test2.getBlock(10).setSwitchHere(true);
+    test2.getBlock(15).setSwitchHere(true);
+    test2.getBlock(11).setLeftStation(true);
+    test2.getBlock(11).setStationName("yellow station");
+    test2.getBlock(16).setRightStation(true);
+    test2.getBlock(16).setStationName("Another yellow station");
 
   }
 }
