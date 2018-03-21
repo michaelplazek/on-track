@@ -9,6 +9,17 @@ public class DriverScheduleItem {
   private String schedShiftEnd;
   private String schedBreakEnd;
 
+  /**
+   * This constructor initializes variables and fields of DriverScheduleItem object.
+   *
+   * @param schedDriver This is the first and last name of the driver.
+   * @param schedDriverTrainId The ID of the train that the driver operates.
+   * @param schedShiftStart The time at which the driver's shift begins.
+   * @param schedShiftEnd The time at which the driver's shift ends
+   * @param schedBreakStart The time at which the driver's break starts.
+   * @param schedBreakEnd The time at which the driver's break ends.
+   *
+   * */
   public DriverScheduleItem(String schedDriver, String schedDriverTrainId,
                             String schedShiftStart, String schedBreakStart,
                             String schedShiftEnd, String schedBreakEnd) {

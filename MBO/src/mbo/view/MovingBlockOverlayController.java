@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -90,7 +89,6 @@ public class MovingBlockOverlayController implements Initializable {
   private TableColumn schedBreakStart;
   @FXML
   private TableColumn schedShiftEnd;
-  @FXML
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
@@ -187,13 +185,13 @@ public class MovingBlockOverlayController implements Initializable {
   }
 
   private void setDriverScheduleData() {
-    DriverScheduleItem Mike = new DriverScheduleItem("Mike","Train1","6:00",
+    DriverScheduleItem mike = new DriverScheduleItem("Mike","Train1","6:00",
         "10:30","14:00","12:00");
-    DriverScheduleItem Julissa = new DriverScheduleItem("Julissa","Train1","6:00",
+    DriverScheduleItem julissa = new DriverScheduleItem("Julissa","Train1","6:00",
         "10:30","14:00","12:00");
-    DriverScheduleItem Joseph = new DriverScheduleItem("Joseph","Train1","6:00",
+    DriverScheduleItem joseph = new DriverScheduleItem("Joseph","Train1","6:00",
         "10:30","14:00","12:00");
-    driverSchedule.addAll(Mike, Julissa, Joseph);
+    driverSchedule.addAll(mike, julissa, joseph);
   }
 
   private static void exportCsv(String name) {
