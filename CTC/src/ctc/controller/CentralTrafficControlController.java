@@ -112,6 +112,7 @@ public class CentralTrafficControlController {
   @FXML private Button setSpeedButton;
   @FXML private ChoiceBox<String> setAuthorityBlocks;
   @FXML private Button setAuthorityButton;
+  @FXML private Circle trainStatus;
 
 
   /**
@@ -318,7 +319,18 @@ public class CentralTrafficControlController {
 
     maintenanceBlocks.getSelectionModel().selectedItemProperty()
         .addListener((observableValue, oldValue, newValue) -> {
-          updateMaintenance();
+
+          String action = maintenanceActions.getSelectionModel().getSelectedItem();
+          String line = maintenanceTracks.getSelectionModel().getSelectedItem();
+
+          int blockId = extractBlock();
+          Block block = Track.getListOfTracks().get(line).getBlock(blockId);
+
+          if (action.equals("Toggle switch") && !block.isSwitch()) {
+            submitMaintenance.setDisable(true);
+          } else {
+            submitMaintenance.setDisable(false);
+          }
         });
 
     maintenanceTracks.getSelectionModel().selectedItemProperty()
@@ -334,6 +346,8 @@ public class CentralTrafficControlController {
           }
           updateMaintenance();
         });
+
+    trainStatus.setFill(Paint.valueOf("Grey"));
   }
 
   private boolean checkTimeFormat(String input) {

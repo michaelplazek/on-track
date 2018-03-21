@@ -7,6 +7,11 @@ public class Switch extends Block {
   private boolean switchState;
 
   /**
+   * Default constructor.
+   */
+  public Switch() {}
+
+  /**
    * This method is the constructor to create a new switch.
    * @param line The line the switch lays on
    * @param section The section of the track that the block is on

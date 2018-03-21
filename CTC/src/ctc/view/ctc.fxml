@@ -156,7 +156,7 @@
                                                 <TextField fx:id="suggestedSpeedField" layoutX="8.0" layoutY="350.0" prefHeight="26.0" prefWidth="121.0" promptText="mph" />
                                                 <Button fx:id="setSpeedButton" disable="true" layoutX="133.0" layoutY="350.0" mnemonicParsing="false" text="Set Suggested Speed" />
                                                 <Button fx:id="setAuthorityButton" disable="true" layoutX="133.0" layoutY="380.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="147.5" text="Set Authority" />
-                                                <Circle fill="#24c51b" layoutX="305.0" layoutY="380.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
+                                                <Circle fx:id="trainStatus" fill="#27c41b" layoutX="305.0" layoutY="380.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
                                                 <Label layoutX="318.0" layoutY="372.0" text="Train Status" />
                                                 <TableView fx:id="dispatchTable" layoutX="4.0" layoutY="7.0" prefHeight="338.0" prefWidth="396.0">
                                                   <columns>
