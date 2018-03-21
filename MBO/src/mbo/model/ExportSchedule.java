@@ -46,10 +46,15 @@ public class ExportSchedule {
   public void setThroughputInfo(ArrayList<String> throughputInfo) {
     this.throughputInfo = throughputInfo;
   }
+
   /**
    * Method to set schedule start time.
    *
+<<<<<<< HEAD
    * @param scheduleStartTime start time of the schedule
+=======
+   * @param scheduleStartTime - The schedule start time.
+>>>>>>> 391bd3a93cea5896274950c8d9b20d86a1945aac
    **/
 
   public void setScheduleStartTime(String scheduleStartTime) {
@@ -59,10 +64,16 @@ public class ExportSchedule {
   }
 
   /**
+<<<<<<< HEAD
    * Generates train schedule.
    * */
 
   // START CREATING TRAIN SCHEDULE
+=======
+   * Starts creating schedule.
+   * @return
+   */
+>>>>>>> 391bd3a93cea5896274950c8d9b20d86a1945aac
   public ArrayList<String> generateTrainSchedule() {
     for (int i = 0; i < throughputInfo.size(); i += 2) {
       BufferedReader br = null;

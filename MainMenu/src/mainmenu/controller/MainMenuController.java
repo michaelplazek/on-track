@@ -189,7 +189,8 @@ public class MainMenuController implements Initializable {
       trainControllerButton.setDisable(false);
 
       if (trainControllerChoiceBox.getSelectionModel().isEmpty()) {
-        trainControllerChoiceBox.setValue(TrainControllerManager.getListOfTrainControllers().get(0));
+        trainControllerChoiceBox.setValue(
+            TrainControllerManager.getListOfTrainControllers().get(0));
       }
     } else {
       trainControllerButton.setDisable(true);
