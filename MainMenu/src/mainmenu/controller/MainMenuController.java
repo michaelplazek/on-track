@@ -3,7 +3,6 @@ package mainmenu.controller;
 import ctc.view.CentralTrafficControlUserInterface;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 
@@ -19,7 +18,6 @@ import mbo.view.MovingBlockOverlayUserInterface;
 import trackctrl.model.TrackControllerLineManager;
 import trackctrl.view.TrackControllerUserInterface;
 import trackmodel.view.TrackModelUserInterface;
-import traincontroller.model.TrainController;
 import traincontroller.model.TrainControllerManager;
 import traincontroller.view.TrainControllerUserInterface;
 import trainmodel.TrainModelUserInterface;

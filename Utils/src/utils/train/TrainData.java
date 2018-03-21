@@ -11,7 +11,7 @@ package utils.train;
  */
 public class TrainData {
   public static final int NUMBER_OF_CARS = 2; //Each train has 2 cars
-  private static final double LENGTH_OF_CAR = 32.2; //meters
+  public static final double LENGTH_OF_CAR = 32.2; //meters
   public static final double LENGTH_OF_TRAIN = LENGTH_OF_CAR * NUMBER_OF_CARS;
   public static final double EMPTY_WEIGHT = 40900; //kilograms (weight of one car)
   public static final double WIDTH_OF_TRAIN = 2.65; //meters
@@ -23,4 +23,9 @@ public class TrainData {
   public static final double PASSENGER_WEIGHT = 68.0389; //Weight of one passenger in kg (150lbs)
   public static final int MAX_POWER = 120; //(Max motor power = 120kW)
 
+  public static final double KG_TO_LBS_CONVERSION = 2.20462262185; //1kg = 2.20462262185 lbs;
+  public static final double LBS_TO_KG_CONVERSION = 0.45359237; //1lb = 0.45359237 kgs;
+  public static final double PASSENGER_AVG_MASS_KG
+      = 150 * LBS_TO_KG_CONVERSION; //assume each person is avg 150lbs
+  public static final double PASSENGER_AVG_MASS_LBS = 150;
 }

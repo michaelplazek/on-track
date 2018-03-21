@@ -14,7 +14,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import traincontroller.model.TrainController;
 import traincontroller.model.TrainControllerManager;
-import utils.train.TrainModelEnums;
+import utils.train.TrainModelEnums.DoorStatus;
+import utils.train.TrainModelEnums.OnOffStatus;
+
 
 public class TrainControllerController implements Initializable {
 
@@ -99,10 +101,10 @@ public class TrainControllerController implements Initializable {
   private void toggleEmergencyBrakes(ActionEvent event) {
     if (!emergencyBrakeButton.isSelected()) {
       emergencyBrakeButton.textProperty().setValue("EMERGENCY BRAKE OFF");
-      trainController.setEmergencyBrake(TrainModelEnums.BrakeStatus.OFF);
+      trainController.setEmergencyBrake(OnOffStatus.OFF);
     } else {
       emergencyBrakeButton.textProperty().setValue("EMERGENCY BRAKE ON");
-      trainController.setEmergencyBrake(TrainModelEnums.BrakeStatus.ON);
+      trainController.setEmergencyBrake(OnOffStatus.ON);
     }
   }
 
@@ -110,10 +112,10 @@ public class TrainControllerController implements Initializable {
   private void toggleServiceBrakes(ActionEvent event) {
     if (!serviceBrakeButton.isSelected()) {
       serviceBrakeButton.textProperty().setValue("OFF");
-      trainController.setServiceBrake(TrainModelEnums.BrakeStatus.OFF);
+      trainController.setServiceBrake(OnOffStatus.OFF);
     } else {
       serviceBrakeButton.textProperty().setValue("ON");
-      trainController.setServiceBrake(TrainModelEnums.BrakeStatus.ON);
+      trainController.setServiceBrake(OnOffStatus.ON);
     }
   }
 
@@ -121,10 +123,10 @@ public class TrainControllerController implements Initializable {
   private void toggleLights(ActionEvent event) {
     if (!lightsButton.isSelected()) {
       lightsButton.textProperty().setValue("OFF");
-      trainController.setLightStatus(TrainModelEnums.LightStatus.OFF);
+      trainController.setLightStatus(OnOffStatus.OFF);
     } else {
       lightsButton.textProperty().setValue("ON");
-      trainController.setLightStatus(TrainModelEnums.LightStatus.ON);
+      trainController.setLightStatus(OnOffStatus.ON);
     }
   }
 
@@ -136,10 +138,10 @@ public class TrainControllerController implements Initializable {
     }
     if (!rightDoorButton.isSelected()) {
       rightDoorButton.textProperty().setValue("CLOSE");
-      trainController.setRightDoorStatus(TrainModelEnums.DoorStatus.CLOSED);
+      trainController.setRightDoorStatus(DoorStatus.CLOSED);
     } else {
       rightDoorButton.textProperty().setValue("OPEN");
-      trainController.setRightDoorStatus(TrainModelEnums.DoorStatus.OPEN);
+      trainController.setRightDoorStatus(DoorStatus.OPEN);
     }
   }
 
@@ -151,10 +153,10 @@ public class TrainControllerController implements Initializable {
     }
     if (!leftDoorButton.isSelected()) {
       leftDoorButton.textProperty().setValue("CLOSE");
-      trainController.setLeftDoorStatus(TrainModelEnums.DoorStatus.CLOSED);
+      trainController.setLeftDoorStatus(DoorStatus.CLOSED);
     } else {
       leftDoorButton.textProperty().setValue("OPEN");
-      trainController.setLeftDoorStatus(TrainModelEnums.DoorStatus.OPEN);
+      trainController.setLeftDoorStatus(DoorStatus.OPEN);
     }
   }
 

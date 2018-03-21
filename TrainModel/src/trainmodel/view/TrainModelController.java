@@ -16,11 +16,11 @@ import javafx.scene.shape.Circle;
 import javafx.util.StringConverter;
 import javafx.util.converter.NumberStringConverter;
 import mainmenu.Clock;
-import traincontroller.model.TrainController;
 import traincontroller.model.TrainControllerInterface;
-import trainmodel.controller.Constants;
 import trainmodel.model.TrainModel;
-import utils.train.TrainModelEnums;
+import utils.general.Constants;
+import utils.train.TrainModelEnums.DoorStatus;
+import utils.train.TrainModelEnums.OnOffStatus;
 
 
 public class TrainModelController implements Initializable {
@@ -86,7 +86,7 @@ public class TrainModelController implements Initializable {
   @FXML
   private Label emergencyBrakeStatus;
   @FXML
-  private Label serviceStatus;
+  private Label serviceBrakeStatus;
   @FXML
   private Label currentBlockStatus;
   @FXML
@@ -131,6 +131,10 @@ public class TrainModelController implements Initializable {
   private Label mboAntenaStatus;
   @FXML
   private Label cabinTemp;
+  @FXML
+  private Label heaterStatus;
+  @FXML
+  private Label acStatus;
 
   /**
    * Train model && controller associated with UI (use for testing as of 3/11/18).
@@ -182,9 +186,9 @@ public class TrainModelController implements Initializable {
   @FXML
   private void emergency_Brake_Engaged() {
     if (emergencyBrakeStatus.textProperty().getValue().equals(Constants.ON)) {
-      emergencyBrakeStatus.textProperty().setValue(Constants.OFF);
+      trainModel.setEmergencyBrakeStatus(OnOffStatus.OFF);
     } else {
-      emergencyBrakeStatus.textProperty().setValue(Constants.ON);
+      trainModel.setEmergencyBrakeStatus(OnOffStatus.ON);
     }
 
   }
@@ -230,8 +234,6 @@ public class TrainModelController implements Initializable {
         trainModel.heightProperty(), numberStringConverter);
     Bindings.bindBidirectional(numberOfCars.textProperty(),
         trainModel.numberOfCarsProperty(), numberStringConverter);
-//    Bindings.bindBidirectional(capacity.textProperty(),
-//        trainModel.capacityProperty(), numberStringConverter);
 
     capacity.setText(String.valueOf(trainModel.getCapacityOfTrain()));
 
@@ -239,7 +241,7 @@ public class TrainModelController implements Initializable {
     setSpeedStatus.textProperty().setValue("45"); //Will be received from TrainController
 
     setAuthorityStatus.textProperty().setValue("1000");
-    serviceStatus.textProperty().setValue("OK");
+    serviceBrakeStatus.textProperty().setValue("OK");
     currentBlockStatus.textProperty().setValue("WAITING");
     currentTrackStatus.textProperty().setValue("OK");
     nextStation.textProperty().setValue("Downtown");
@@ -253,6 +255,9 @@ public class TrainModelController implements Initializable {
     lightStatus.textProperty().bind(trainModel.lightStatusProperty().asString());
     mboAntenaStatus.textProperty().bind(trainModel.antennaStatusProperty().asString());
     emergencyBrakeStatus.textProperty().bind(trainModel.emergencyBrakeStatusProperty().asString());
+    serviceBrakeStatus.textProperty().bind(trainModel.serviceBrakeStatusProperty().asString());
+    acStatus.textProperty().bind(trainModel.acStatusProperty().asString());
+    heaterStatus.textProperty().bind(trainModel.heaterStatusProperty().asString());
   }
 
 
@@ -264,28 +269,28 @@ public class TrainModelController implements Initializable {
 
   @FXML
   private void toggleLights() {
-    if (lightStatus.getText().equals(TrainModelEnums.LightStatus.ON.toString())) {
-      trainModel.lightStatusProperty().set(TrainModelEnums.LightStatus.OFF);
+    if (lightStatus.getText().equals(OnOffStatus.ON.toString())) {
+      trainModel.lightStatusProperty().set(OnOffStatus.OFF);
     } else {
-      trainModel.lightStatusProperty().set(TrainModelEnums.LightStatus.ON);
+      trainModel.lightStatusProperty().set(OnOffStatus.ON);
     }
   }
 
   @FXML
   private void toggleLeftDoor() {
-    if (leftDoorStatus.getText().equals(TrainModelEnums.DoorStatus.OPEN.toString())) {
-      trainModel.leftDoorStatusProperty().set(TrainModelEnums.DoorStatus.CLOSED);
+    if (leftDoorStatus.getText().equals(DoorStatus.OPEN.toString())) {
+      trainModel.leftDoorStatusProperty().set(DoorStatus.CLOSED);
     } else {
-      trainModel.leftDoorStatusProperty().set(TrainModelEnums.DoorStatus.OPEN);
+      trainModel.leftDoorStatusProperty().set(DoorStatus.OPEN);
     }
   }
 
   @FXML
   private void toggleRightDoor() {
-    if (rightDoorStatus.getText().equals(TrainModelEnums.DoorStatus.OPEN.toString())) {
-      trainModel.rightDoorStatusProperty().set(TrainModelEnums.DoorStatus.CLOSED);
+    if (rightDoorStatus.getText().equals(DoorStatus.OPEN.toString())) {
+      trainModel.rightDoorStatusProperty().set(DoorStatus.CLOSED);
     } else {
-      trainModel.rightDoorStatusProperty().set(TrainModelEnums.DoorStatus.OPEN);
+      trainModel.rightDoorStatusProperty().set(DoorStatus.OPEN);
     }
   }
 
@@ -319,28 +324,35 @@ public class TrainModelController implements Initializable {
 
   private void startEngineFailure() {
     engineFailureStatusIcon.setFill(Paint.valueOf(Constants.RED));
+    trainModel.setEmergencyBrakeStatus(OnOffStatus.ON);
+    trainModel.cutEnginePower();
   }
 
   private void startBrakeFailure() {
     brakeFailureStatusIcon.setFill(Paint.valueOf(Constants.RED));
-    emergencyBrakeStatus.setText(Constants.ON);
+    trainModel.setEmergencyBrakeStatus(OnOffStatus.ON);
+    trainModel.cutEnginePower();
   }
 
   private void startSignalFailure() {
     signalFailureStatusIcon.setFill(Paint.valueOf(Constants.RED));
+    trainModel.setEmergencyBrakeStatus(OnOffStatus.ON);
+    trainModel.cutEnginePower();
   }
 
   private void endEngineFailure() {
     engineFailureStatusIcon.setFill(Paint.valueOf(Constants.GREEN));
+    trainModel.setEmergencyBrakeStatus(OnOffStatus.OFF);
   }
 
   private void endBrakeFailure() {
     brakeFailureStatusIcon.setFill(Paint.valueOf(Constants.GREEN));
-    emergencyBrakeStatus.setText(Constants.OFF);
+    trainModel.setEmergencyBrakeStatus(OnOffStatus.OFF);
   }
 
   private void endSignalFailure() {
     signalFailureStatusIcon.setFill(Paint.valueOf(Constants.GREEN));
+    trainModel.setEmergencyBrakeStatus(OnOffStatus.OFF);
   }
 
 }

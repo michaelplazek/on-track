@@ -174,7 +174,7 @@
                                     </HBox>
                                     <HBox alignment="CENTER_LEFT">
                                        <children>
-                                          <Label text="Service:" />
+                                          <Label text="Service Brake:" />
                                        </children>
                                     </HBox>
                                     <HBox alignment="CENTER_LEFT">
@@ -222,7 +222,7 @@
                                     </HBox>
                                     <HBox alignment="CENTER_RIGHT">
                                        <children>
-                                          <Label fx:id="serviceStatus" text="Label" />
+                                          <Label fx:id="serviceBrakeStatus" text="Label" />
                                        </children>
                                     </HBox>
                                     <HBox alignment="CENTER_RIGHT">
@@ -338,6 +338,16 @@
                                           <Label text="Temp:" />
                                        </children>
                                     </HBox>
+                                    <HBox alignment="CENTER_LEFT">
+                                       <children>
+                                          <Label text="Heater:" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT">
+                                       <children>
+                                          <Label text="A/C:" />
+                                       </children>
+                                    </HBox>
                                  </children>
                               </VBox>
                               <VBox alignment="TOP_CENTER">
@@ -376,6 +386,16 @@
                                        <children>
                                           <Label fx:id="cabinTemp" text="Label" />
                                           <Label text="(Degrees F)" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label fx:id="heaterStatus" text="Label" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label fx:id="acStatus" text="Label" />
                                        </children>
                                     </HBox>
                                  </children>

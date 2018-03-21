@@ -2,9 +2,8 @@ package trainmodel.model;
 
 import trainmodel.model.GpsLocation;
 import utils.train.TrainModelEnums.AntennaStatus;
-import utils.train.TrainModelEnums.BrakeStatus;
 import utils.train.TrainModelEnums.DoorStatus;
-import utils.train.TrainModelEnums.LightStatus;
+import utils.train.TrainModelEnums.OnOffStatus;
 import utils.train.TrainModelEnums.TrackLineStatus;
 
 
@@ -21,9 +20,9 @@ public interface TrainModelInterface {
   //Getters
   double getCurrentSpeed();
 
-  BrakeStatus getEmergencyBrakeStatus();
+  OnOffStatus getEmergencyBrakeStatus();
 
-  BrakeStatus getServiceBrakeStatus();
+  OnOffStatus getServiceBrakeStatus();
 
   TrackLineStatus getTrackLineStatus();
 
@@ -33,7 +32,7 @@ public interface TrainModelInterface {
 
   DoorStatus getRightDoorStatus();
 
-  LightStatus getLightStatus();
+  OnOffStatus getLightStatus();
 
   double getCurrentTemp();
 
@@ -41,9 +40,9 @@ public interface TrainModelInterface {
 
   //  void setCurrentSpeed(double currentSpeed); shouldn't be able to set current speed 2/19/18
 
-  void setEmergencyBrakeStatus(BrakeStatus brakeStatus);
+  void setEmergencyBrakeStatus(OnOffStatus brakeStatus);
 
-  void setServiceBrakeStatus(BrakeStatus brakeStatus);
+  void setServiceBrakeStatus(OnOffStatus brakeStatus);
 
   void setTrackLineStatus(TrackLineStatus trackLineStatus);
 
@@ -53,7 +52,11 @@ public interface TrainModelInterface {
 
   void setRightDoorStatus(DoorStatus rightDoorStatus);
 
-  void setLightStatus(LightStatus lightStatus);
+  void setLightStatus(OnOffStatus lightStatus);
+
+  void setHeaterStatus(OnOffStatus heaterStatus);
+
+  void setAcStatus(OnOffStatus acStatus);
 
   void setCurrentTemp(double currentTemp);
 
