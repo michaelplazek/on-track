@@ -47,15 +47,20 @@ public class ExportSchedule {
     this.throughputInfo = throughputInfo;
   }
   /**
-   * Method to set schedule start time
+   * Method to set schedule start time.
    *
-   * @param
+   * @param scheduleStartTime start time of the schedule
    **/
+
   public void setScheduleStartTime(String scheduleStartTime) {
     scheduleStartTime = scheduleStartTime.split("\\s")[3].substring(0, 5);
     String scheduleStartTimeFinal = scheduleStartTime.split("\\s")[3].substring(0, 5);
 
   }
+
+  /**
+   * Generates train schedule.
+   * */
 
   // START CREATING TRAIN SCHEDULE
   public ArrayList<String> generateTrainSchedule() {
