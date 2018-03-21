@@ -10,7 +10,6 @@ public class MovingBlockOverlayUserInterface {
 
   private static MovingBlockOverlayUserInterface instance = null;
   private MovingBlockOverlayController controller;
-  private Parent root;
   private Scene scene;
 
   private MovingBlockOverlayUserInterface() {
@@ -18,7 +17,7 @@ public class MovingBlockOverlayUserInterface {
     FXMLLoader loader = new FXMLLoader(getClass().getResource("mbo.fxml"));
 
     try {
-      this.root = loader.load();
+      Parent root = loader.load();
       this.controller = loader.getController();
       this.scene = new Scene(root);
     } catch (IOException e) {
@@ -43,7 +42,6 @@ public class MovingBlockOverlayUserInterface {
    * Called by Main Menu to load the window for the CTC UI.
    */
   public void load() {
-
     Stage stage = new Stage();
     stage.setScene(this.scene);
     stage.show();
