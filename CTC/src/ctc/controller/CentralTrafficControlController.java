@@ -228,7 +228,6 @@ public class CentralTrafficControlController {
         });
 
     addScheduleTable.setItems(ctc.getScheduleTable());
-
   }
 
   private void connectButtons() {
@@ -365,9 +364,9 @@ public class CentralTrafficControlController {
           return;
         }
 
-        if (newValue.length() > 13) {
+        if (newValue.length() > 15) {
           ignore = true;
-          trainNameField.setText(newValue.substring(0, 13));
+          trainNameField.setText(newValue.substring(0, 15));
           ignore = false;
         }
       }
@@ -578,15 +577,11 @@ public class CentralTrafficControlController {
       maintenanceActions.setDisable(true);
       submitMaintenance.setDisable(true);
     } else {
-
       maintenanceBlocks.setDisable(false);
       maintenanceActions.setDisable(false);
       submitMaintenance.setDisable(false);
 
-
       int blockId = extractBlock();
-
-      // TODO: deal with this
       Block block = Track.getListOfTracks().get(line).getBlock(blockId);
 
       if (block.isClosedForMaintenance()) {
@@ -775,7 +770,6 @@ public class CentralTrafficControlController {
         ctc.getTrainQueueTable().remove(i);
         ctc.getTrainList().remove(i);
         TrainControllerFactory.delete(selected.getId());
-        // TrainModel.delete(selected.getId());
       }
     }
 
