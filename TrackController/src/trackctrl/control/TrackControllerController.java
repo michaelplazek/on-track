@@ -12,8 +12,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.ImageView;
@@ -62,11 +60,7 @@ public class TrackControllerController implements Initializable {
 
   //Choice Boxes
   @FXML
-  private ChoiceBox sectionChoice;
-
-  //Spinner
-  @FXML
-  private Spinner blockSpin;
+  private ChoiceBox blockChoice;
 
   //Circles (used as lights)
   @FXML
@@ -120,8 +114,8 @@ public class TrackControllerController implements Initializable {
 
     ObservableList<String> sectionsN = FXCollections.observableArrayList(
             "Select section", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z");
-    sectionChoice.setValue("");
-    sectionChoice.setItems(sectionsN);
+    blockChoice.setValue("");
+    blockChoice.setItems(sectionsN);
   }
 
   private void handleOpGroup(ActionEvent event) {
@@ -164,6 +158,7 @@ public class TrackControllerController implements Initializable {
 
   private void handleSwitchGroup(ActionEvent event) {
 
+    // TODO: store or fetch old value of radio buttons
     if (switchGroup.getSelectedToggle().equals(stayRad)) {
       //Check that switch is functional
 
@@ -181,11 +176,6 @@ public class TrackControllerController implements Initializable {
         .addAll(new FileChooser.ExtensionFilter("PLC Files", ".plc", ".csv"));
 
     File inFile = fileChooser.showOpenDialog((Stage) importLogic.getScene().getWindow());
-  }
-
-  private void setSpinnerBounds() {
-    SpinnerValueFactory myBlocks = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 150);
-    blockSpin.setValueFactory(myBlocks);
   }
 
   private void groupRadioButtons() {
@@ -328,7 +318,6 @@ public class TrackControllerController implements Initializable {
 
     //Init UI
     populateDropDowns();
-    setSpinnerBounds();
     groupRadioButtons();
     setOpen();
     setSwitchInactive();
