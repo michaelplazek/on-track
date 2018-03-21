@@ -1,6 +1,10 @@
 package ctc.controller;
 
-import ctc.model.*;
+import ctc.model.CentralTrafficControl;
+import ctc.model.Schedule;
+import ctc.model.ScheduleRow;
+import ctc.model.TrackMaintenance;
+import ctc.model.TrainTracker;
 
 import java.io.BufferedReader;
 import java.io.File;
