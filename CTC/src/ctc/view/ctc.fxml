@@ -65,7 +65,7 @@
                   <Font size="14.0" />
                </font>
             </Label>
-            <Label layoutX="1246.0" layoutY="22.0" text="Throughput:" AnchorPane.leftAnchor="1246.0">
+            <Label layoutX="1240.0" layoutY="22.0" text="Throughput:" AnchorPane.leftAnchor="1240.0">
                <font>
                   <Font name="System Italic" size="12.0" />
                </font>

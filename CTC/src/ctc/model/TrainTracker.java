@@ -1,6 +1,5 @@
 package ctc.model;
 
-import javafx.collections.ObservableList;
 import trackmodel.model.Block;
 import trackmodel.model.Track;
 import traincontroller.model.TrainControllerFactory;
@@ -10,7 +9,7 @@ import traincontroller.model.TrainControllerFactory;
  */
 public class TrainTracker {
 
-  private ObservableList<ScheduleRow> schedule;
+  private Schedule schedule;
   private Track track;
   private String id;
   private String departure;
@@ -27,7 +26,7 @@ public class TrainTracker {
   /**
    * Default constructor.
    */
-  public TrainTracker(){}
+  public TrainTracker() { }
 
   /**
    * Constructor for the TrainList items.
@@ -39,7 +38,7 @@ public class TrainTracker {
       String id,
       String departure,
       String line,
-      ObservableList<ScheduleRow> schedule) {
+      Schedule schedule) {
     this.id = id;
     this.departure = departure;
     this.schedule = schedule;
@@ -56,11 +55,11 @@ public class TrainTracker {
     TrainControllerFactory.create(id, line);
   }
 
-  public ObservableList<ScheduleRow> getSchedule() {
+  public Schedule getSchedule() {
     return schedule;
   }
 
-  public void setSchedule(ObservableList<ScheduleRow> schedule) {
+  public void setSchedule(Schedule schedule) {
     this.schedule = schedule;
   }
 
