@@ -20,7 +20,6 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
   private ClockInterface clock;
 
   private boolean isActive = false;
-  private ObservableList<TrainTracker> trainList;
   private StringProperty displayTime = new SimpleStringProperty();
   private String line;
   private long time;
@@ -35,7 +34,9 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
   private ObservableList<TrainTracker> trainQueueTable;
   private ObservableList<TrainTracker> dispatchTable;
 
+  private ObservableList<TrainTracker> trainList;
   private ObservableList<String> blockList = FXCollections.observableArrayList();
+  private ObservableList<String> stationList = FXCollections.observableArrayList();
   private ObservableList<String> trackList = FXCollections.observableArrayList("Select track");
   private ObservableList<String> actionsList = FXCollections.observableArrayList(
       "Select action", "Close block", "Repair block", "Toggle switch");
@@ -56,8 +57,6 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
         new ScheduleRow("","",""),
         new ScheduleRow("","","")
     );
-
-    HashMap<String, Track> track =  Track.getListOfTracks();
 
     this.trainList = FXCollections.observableArrayList();
     this.time = 0;
@@ -121,10 +120,31 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
     return isActive;
   }
 
+  /**
+   * Create the list of strings for the block dropdown.
+   */
   private void makeBlockList() {
 
-    Track track = Track.getListOfTracks().get("blue");
-    blockList.addAll(track.getBlockList());
+    Track track = Track.getListOfTracks().get(line);
+
+    if (track != null) {
+      blockList.addAll(track.getBlockList());
+    }
+  }
+
+  /**
+   * Update the list of stations held by the CTC.
+   */
+  public void makeStationList() {
+
+    Track track = Track.getListOfTracks().get(line);
+
+    // clear the list before refreshing
+    stationList.clear();
+
+    if (track != null) {
+      stationList.addAll(track.getStationList());
+    }
   }
 
   private void makeTrackList() {
@@ -133,6 +153,10 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
     for (Map.Entry<String, Track> entry : track.entrySet()) {
       String key = entry.getKey();
       trackList.add(key);
+    }
+
+    if (trackList.size() > 0) {
+      line = trackList.get(1);
     }
   }
 
@@ -192,6 +216,10 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
 
   public ObservableList<TrainTracker> getTrainList() {
     return trainList;
+  }
+
+  public ObservableList<String> getStationList() {
+    return stationList;
   }
 
   public void addTrain(TrainTracker train) {

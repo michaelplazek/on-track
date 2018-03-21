@@ -96,5 +96,10 @@ public class Runner extends Application {
 
     test.getBlock(5).setSwitchHere(true);
     test.getBlock(8).setSwitchHere(true);
+    test.getBlock(10).setLeftStation(true);
+    test.getBlock(10).setStationName("SOME STATION");
+    test.getBlock(15).setRightStation(true);
+    test.getBlock(15).setStationName("ANOTHER STATION");
+
   }
 }

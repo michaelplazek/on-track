@@ -1,7 +1,5 @@
 package trackmodel.model;
 
-import ctc.model.CentralTrafficControl;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -74,7 +72,7 @@ public class Track {
    * @return ArrayList of strings for block names
    */
   public ArrayList<String> getBlockList() {
-    ArrayList<Block> list =  new ArrayList<Block>(track.values());
+    ArrayList<Block> list =  new ArrayList<>(track.values());
     ArrayList<String> names = new ArrayList<>();
 
     for (int i = 0; i < list.size(); i++) {
@@ -82,6 +80,25 @@ public class Track {
     }
 
     return names;
+  }
+
+  /**
+   * This method will return a list of every block with a station.
+   * @return Arraylist of Strings of station names.
+   */
+  public ArrayList<String> getStationList() {
+
+    ArrayList<Block> list =  new ArrayList<>(track.values());
+    ArrayList<String> stations = new ArrayList<>();
+    Block block;
+    for (int i = 0; i < list.size(); i++) {
+      block = list.get(i);
+      if (block.isLeftStation() || block.isRightStation()) {
+        stations.add(block.getStationName());
+      }
+    }
+
+    return stations;
   }
 
   /**
