@@ -46,9 +46,13 @@ public class TrackControllerController implements Initializable {
   @FXML
   private RadioButton automaticRad;
   @FXML
-  private RadioButton redRad;
+  private RadioButton lightMainLtoR;
   @FXML
-  private RadioButton greenRad;
+  private RadioButton lightForkLtoR;
+  @FXML
+  private RadioButton lightMainRtoL;
+  @FXML
+  private RadioButton lightForkRtoL;
   @FXML
   private RadioButton closedRad;
   @FXML
@@ -57,6 +61,10 @@ public class TrackControllerController implements Initializable {
   private RadioButton alterRad;
   @FXML
   private RadioButton stayRad;
+  @FXML
+  private RadioButton blockBrokenRad;
+  @FXML
+  private RadioButton blockRepairedRad;
 
   //Choice Boxes
   @FXML
@@ -64,9 +72,17 @@ public class TrackControllerController implements Initializable {
 
   //Circles (used as lights)
   @FXML
-  private Circle lightGreen;
+  private Circle fromLight0;
   @FXML
-  private Circle lightRed;
+  private Circle fromLight1;
+  @FXML
+  private Circle mainLight0;
+  @FXML
+  private Circle mainLight1;
+  @FXML
+  private Circle forkLight0;
+  @FXML
+  private Circle forkLight1;
   @FXML
   private Circle blockStatus;
   @FXML
@@ -133,14 +149,18 @@ public class TrackControllerController implements Initializable {
 
   private void handleLightGroup(ActionEvent event) {
 
-    if (lightGroup.getSelectedToggle().equals(greenRad)) {
+    if (lightGroup.getSelectedToggle().equals(lightMainLtoR)) {
       //Check that track is indeed functional
 
       //If functional, assert green value in the GUI
-      setGreen();
-    } else {
+    } else if (lightGroup.getSelectedToggle().equals(lightForkLtoR)) {
       //Assert red value in GUI
-      setRed();
+    } else if (lightGroup.getSelectedToggle().equals(lightMainRtoL)) {
+      //Assert red value in GUI
+    } else if (lightGroup.getSelectedToggle().equals(lightForkLtoR)) {
+      //Assert red value in GUI
+    } else {
+
     }
   }
 
@@ -198,11 +218,15 @@ public class TrackControllerController implements Initializable {
 
 
     //Lights
-    redRad.setToggleGroup(lightGroup);
-    greenRad.setToggleGroup(lightGroup);
-    greenRad.setSelected(true);
-    greenRad.setOnAction(this::handleLightGroup);
-    redRad.setOnAction(this::handleLightGroup);
+    lightMainLtoR.setToggleGroup(lightGroup);
+    lightForkLtoR.setToggleGroup(lightGroup);
+    lightMainRtoL.setToggleGroup(lightGroup);
+    lightForkRtoL.setToggleGroup(lightGroup);
+    lightMainLtoR.setSelected(true);
+    lightMainLtoR.setOnAction(this::handleLightGroup);
+    lightForkLtoR.setOnAction(this::handleLightGroup);
+    lightMainRtoL.setOnAction(this::handleLightGroup);
+    lightForkRtoL.setOnAction(this::handleLightGroup);
 
 
     //Crossing
@@ -238,17 +262,37 @@ public class TrackControllerController implements Initializable {
     alterRad.setDisable(false);
   }
 
-  private void setGreen() {
+  private void setMainLightsLtoR() {
     /**
      * Set our lights to Green
      * Green: ON
      * Red:   OFF
      */
-    lightGreen.setFill(Paint.valueOf("Green"));
+    lightGreen.setFill(Paint.valueOf("#24c51b"));
     lightRed.setFill(Paint.valueOf("Gray"));
   }
 
-  private void setRed() {
+  private void setMainLightsRtoL() {
+    /**
+     * Set our lights to Red
+     * Green: OFF
+     * Red:   ON
+     */
+    lightRed.setFill(Paint.valueOf("Red"));
+    lightGreen.setFill(Paint.valueOf("Gray"));
+  }
+
+  private void setForkLightsLtoR() {
+    /**
+     * Set our lights to Green
+     * Green: ON
+     * Red:   OFF
+     */
+    lightGreen.setFill(Paint.valueOf("#24c51b"));
+    lightRed.setFill(Paint.valueOf("Gray"));
+  }
+
+  private void setForkLightsRtoL() {
     /**
      * Set our lights to Red
      * Green: OFF
