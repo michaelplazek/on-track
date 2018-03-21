@@ -50,13 +50,8 @@ public class ExportSchedule {
   /**
    * Method to set schedule start time.
    *
-<<<<<<< HEAD
-   * @param scheduleStartTime start time of the schedule
-=======
    * @param scheduleStartTime - The schedule start time.
->>>>>>> 391bd3a93cea5896274950c8d9b20d86a1945aac
    **/
-
   public void setScheduleStartTime(String scheduleStartTime) {
     scheduleStartTime = scheduleStartTime.split("\\s")[3].substring(0, 5);
     String scheduleStartTimeFinal = scheduleStartTime.split("\\s")[3].substring(0, 5);
@@ -64,16 +59,10 @@ public class ExportSchedule {
   }
 
   /**
-<<<<<<< HEAD
    * Generates train schedule.
-   * */
-
-  // START CREATING TRAIN SCHEDULE
-=======
-   * Starts creating schedule.
-   * @return
+   *
+   * @return some shit.
    */
->>>>>>> 391bd3a93cea5896274950c8d9b20d86a1945aac
   public ArrayList<String> generateTrainSchedule() {
     for (int i = 0; i < throughputInfo.size(); i += 2) {
       BufferedReader br = null;
