@@ -8,7 +8,6 @@ import trackmodel.model.Block;
 public class Route {
 
   private LinkedList<Block> path;
-  private boolean isLoop;
 
   /**
    * Default constructor.
@@ -24,13 +23,5 @@ public class Route {
 
   public ListIterator<Block> getIterator() {
     return path.listIterator();
-  }
-
-  public boolean isLoop() {
-    return isLoop;
-  }
-
-  public void setLoop(boolean loop) {
-    isLoop = loop;
   }
 }

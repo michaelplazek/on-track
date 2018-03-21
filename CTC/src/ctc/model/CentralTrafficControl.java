@@ -84,7 +84,6 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
   public void initialize() {
     makeTrackList();
     makeBlockList();
-    makeStationList();
     updateDisplayTime();
   }
 
@@ -124,7 +123,7 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
   /**
    * Create the list of strings for the block dropdown.
    */
-  public void makeBlockList() {
+  private void makeBlockList() {
 
     Track track = Track.getListOfTracks().get(line);
 
@@ -139,6 +138,9 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
   public void makeStationList() {
 
     Track track = Track.getListOfTracks().get(line);
+
+    // clear the list before refreshing
+    stationList.clear();
 
     if (track != null) {
       stationList.addAll(track.getStationList());

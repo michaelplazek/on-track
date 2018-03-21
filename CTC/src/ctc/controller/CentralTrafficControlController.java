@@ -39,7 +39,6 @@ import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.converter.DefaultStringConverter;
-import jdk.nashorn.internal.runtime.regexp.joni.encoding.CharacterType;
 import mainmenu.Clock;
 import trackctrl.model.TrackControllerLineManager;
 import trackctrl.model.TrackControllerLineManagerInterface;
@@ -795,6 +794,9 @@ public class CentralTrafficControlController {
       }
 
       ctc.getDispatchTable().add(selected);
+      setAuthorityButton.setDisable(false);
+      setSpeedButton.setDisable(false);
+
       TrainControllerFactory.start(selected.getId());
       dispatchTable.setItems(ctc.getDispatchTable());
       if (ctc.getTrainQueueTable().size() == 0) {

@@ -1,7 +1,5 @@
 package trackmodel.model;
 
-import ctc.model.CentralTrafficControl;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 

@@ -164,7 +164,7 @@
                                                     <TableColumn fx:id="dispatchLocationColumn" prefWidth="78.008544921875" text="Location" />
                                                       <TableColumn fx:id="dispatchAuthorityColumn" minWidth="0.0" prefWidth="72.991455078125" text="Authority" />
                                                       <TableColumn fx:id="dispatchSpeedColumn" minWidth="0.0" prefWidth="64.508544921875" text="Speed" />
-                                                      <TableColumn fx:id="dispatchPassengersColumn" prefWidth="91.4915771484375" text="Passengers" />
+                                                      <TableColumn fx:id="dispatchPassengersColumn" prefWidth="89.5" text="Passengers" />
                                                   </columns>
                                                 </TableView>
                                                 <ChoiceBox fx:id="setAuthorityBlocks" disable="true" layoutX="8.0" layoutY="380.0" prefHeight="26.0" prefWidth="121.0" />
