@@ -21,11 +21,16 @@ public class TrackControllerInitializer {
     //TrackControllerLineManager[] lms = new TrackControllerLineManager[track.size()];
 
     //Create TrackControllerLineManagers
-    /*int i = 0;
-    for (Map.Entry<String, Track> entry : track.entrySet()) {
-      i++;
-      lms[i] = new TrackControllerLineManager(entry.getKey());
-    }*/
+//    int i = 0;
+//    for (Map.Entry<String, Track> entry : track.entrySet()) {
+//      i++;
+//      lms[i] = new TrackControllerLineManager(entry.getKey());
+//      for (String block : entry.getValue().getBlockList()) {
+//        //add each block to a track controller
+//
+//
+//      }
+//    }
 
     lms[0] = new TrackControllerLineManager("Green");
     lms[1] = new TrackControllerLineManager("Red");

@@ -8,7 +8,7 @@ public class TrackController implements TrackControllerInterface {
 
   private int id;
   private int trackOffset;
-  private final int capacity = 64;
+  private final int capacity = 16;
   private HashMap<Integer, Block> myZone = new HashMap<Integer, Block>(capacity);
   private TrackController neighborCtrlr1;
   private TrackController neighborCtrlr2;
@@ -41,13 +41,7 @@ public class TrackController implements TrackControllerInterface {
 
   //TODO
   @Override
-  public boolean setAuthority(int block, float authority) {
-    return false;
-  }
-
-  //TODO
-  @Override
-  public boolean setSuggestedSpeed(int block, float setSpeed) {
+  public boolean sendTrackSignals(int block, float authority, float speed) {
     return false;
   }
 
@@ -121,6 +115,14 @@ public class TrackController implements TrackControllerInterface {
     return false;
   }
 
+  //TODO
+  @Override
+  public boolean toggleCrossing(int id) { return false; }
+
+  //TODO
+  @Override
+  public boolean setTrackLights(int id, boolean state, boolean direction) { return false; }
+
   @Override
   public int getId() {
     return this.id;
@@ -131,4 +133,7 @@ public class TrackController implements TrackControllerInterface {
   public boolean importLogic(File myplc) {
     return false;
   }
+
+  @Override
+  public boolean checkLogic() { return false; }
 }

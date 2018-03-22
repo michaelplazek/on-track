@@ -7,9 +7,7 @@ import javafx.collections.ObservableList;
 
 public interface TrackControllerLineManagerInterface {
 
-  public boolean setAuthority(int block, float authority);
-
-  public boolean setSuggestedSpeed(int block, float speed);
+  public boolean sendTrackSignals(int blockId, float speed, float authority);
 
   public boolean setSwitchOverride(int block, boolean state);
 
