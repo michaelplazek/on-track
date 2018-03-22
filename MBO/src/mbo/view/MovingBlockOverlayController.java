@@ -1,30 +1,31 @@
 package mbo.view;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
+
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.cell.PropertyValueFactory;
-import mbo.model.TrainScheduleItem;
-import mbo.model.TrainInfoItem;
-import mbo.model.DriverScheduleItem;
-
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
-import javafx.scene.control.TextField;
 import mbo.controller.Constants;
-import javafx.beans.binding.Bindings;
-import java.net.URL;
-import java.util.ResourceBundle;
-import java.io.*;
-
+import mbo.model.DriverScheduleItem;
+import mbo.model.TrainInfoItem;
+import mbo.model.TrainScheduleItem;
 
 public class MovingBlockOverlayController implements Initializable {
 
-  String name;
+  private String name;
+  private boolean mboMode = false;
 
   private ObservableList<TrainInfoItem> trainData = FXCollections.observableArrayList();
   private ObservableList<TrainScheduleItem> trainSchedule = FXCollections.observableArrayList();
@@ -53,7 +54,7 @@ public class MovingBlockOverlayController implements Initializable {
   private TableView trainInfoTable;
 
   @FXML
-  private TableColumn trainID;
+  private TableColumn trainId;
   @FXML
   private TableColumn line;
   @FXML
@@ -68,7 +69,7 @@ public class MovingBlockOverlayController implements Initializable {
   private TableColumn safeBrakeDist;
 
   @FXML
-  private TableColumn schedTrainID;
+  private TableColumn schedTrainId;
   @FXML
   private TableColumn schedLine;
   @FXML
@@ -81,43 +82,41 @@ public class MovingBlockOverlayController implements Initializable {
   @FXML
   private TableColumn schedDriver;
   @FXML
-  private TableColumn schedDriverTrainID;
+  private TableColumn schedDriverTrainId;
   @FXML
   private TableColumn schedShiftStart;
   @FXML
   private TableColumn schedBreakStart;
   @FXML
   private TableColumn schedShiftEnd;
-  @FXML
-  private TableColumn schedBreakEnd;
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
+    setMboMode(mboMode);
     initializeStatus();
     initializeTrainInfo();
     connectButtons();
 
-    generateSchedule.setOnAction(event ->  {
-      makeSchedule();
-    });
+    generateSchedule.setOnAction(event -> makeSchedule());
 
-    exportSchedule.setOnAction(event -> {
-      exportCSV(name);
-    });
+    exportSchedule.setOnAction(event -> exportCsv(name));
   }
 
   // initialize values upon UI start
-  private void initializeStatus(){
+  private void initializeStatus() {
     mboModeEnabled.setFill(Paint.valueOf(Constants.GREEN));
   }
 
-  private void initializeTrainInfo(){
+  private void setMboMode(boolean mboMode) {
+    this.mboMode = mboMode;
+  }
 
-    trainID.setCellValueFactory(new PropertyValueFactory<TrainInfoItem,String>("Train1"));
+  private void initializeTrainInfo() {
+
+    trainId.setCellValueFactory(new PropertyValueFactory<TrainInfoItem,String>("Train1"));
     line.setCellValueFactory(new PropertyValueFactory<TrainInfoItem,String>(""));
     coordinates.setCellValueFactory(new PropertyValueFactory<TrainInfoItem,String>(""));
     //trainInfoTable.getItems().addAll(trainSchedule);
-
 
     setTrainInfoData();
     trainInfoTable.getItems().addAll(trainSchedule);
@@ -138,31 +137,34 @@ public class MovingBlockOverlayController implements Initializable {
     );
 
     name = setScheduleName.getText();
-}
+  }
 
   private void makeSchedule() {
     //TopTable
     //Sets Column factories
-    schedTrainID.setCellValueFactory(new PropertyValueFactory<TrainScheduleItem,String>("train id"));
-    schedLine.setCellValueFactory(new PropertyValueFactory<TrainScheduleItem,String>("line"));
-    schedStation.setCellValueFactory(new PropertyValueFactory<TrainScheduleItem,String>("station"));
-    schedArrival.setCellValueFactory(new PropertyValueFactory<TrainScheduleItem, String>("total time to station"));
-    schedTotalTime.setCellValueFactory(new PropertyValueFactory<TrainScheduleItem, String>("arrival time"));
+    schedTrainId.setCellValueFactory(new PropertyValueFactory
+        <TrainScheduleItem,String>("train id"));
+    schedLine.setCellValueFactory(new PropertyValueFactory
+        <TrainScheduleItem,String>("line"));
+    schedStation.setCellValueFactory(new PropertyValueFactory
+        <TrainScheduleItem,String>("station"));
+    schedArrival.setCellValueFactory(new PropertyValueFactory
+        <TrainScheduleItem, String>("total time to station"));
+    schedTotalTime.setCellValueFactory(new PropertyValueFactory
+        <TrainScheduleItem, String>("arrival time"));
     setTrainScheduleData();
     schedulerTrainSchedule.getItems().addAll(trainSchedule);
 
 
     //Bottom Label
     schedDriver.setCellValueFactory(new PropertyValueFactory<DriverScheduleItem,String>("Mike"));
-    schedDriverTrainID.setCellValueFactory(new PropertyValueFactory<DriverScheduleItem,String>(""));
+    schedDriverTrainId.setCellValueFactory(new PropertyValueFactory<DriverScheduleItem,String>(""));
     schedShiftStart.setCellValueFactory(new PropertyValueFactory<DriverScheduleItem,String>(""));
     setDriverScheduleData();
     schedulerDriverSchedule.getItems().addAll(driverSchedule);
-
-
   }
 
-  private void setTrainInfoData(){
+  private void setTrainInfoData() {
     TrainInfoItem train1 = new TrainInfoItem("Train1","Green",300.221, 556,
         120.00,140.222,23.333);
     TrainInfoItem train2 = new TrainInfoItem("Train1","Green",300.221, 556,
@@ -182,17 +184,17 @@ public class MovingBlockOverlayController implements Initializable {
     trainSchedule.addAll(train1, train2, train3);
   }
 
-  private void setDriverScheduleData(){
-    DriverScheduleItem Mike = new DriverScheduleItem("Mike","Train1","6:00",
+  private void setDriverScheduleData() {
+    DriverScheduleItem mike = new DriverScheduleItem("Mike","Train1","6:00",
         "10:30","14:00","12:00");
-    DriverScheduleItem Julissa = new DriverScheduleItem("Julissa","Train1","6:00",
+    DriverScheduleItem julissa = new DriverScheduleItem("Julissa","Train1","6:00",
         "10:30","14:00","12:00");
-    DriverScheduleItem Joseph = new DriverScheduleItem("Joseph","Train1","6:00",
+    DriverScheduleItem joseph = new DriverScheduleItem("Joseph","Train1","6:00",
         "10:30","14:00","12:00");
-    driverSchedule.addAll(Mike, Julissa, Joseph);
+    driverSchedule.addAll(mike, julissa, joseph);
   }
 
-  private static void exportCSV(String name) {
+  private static void exportCsv(String name) {
     FileWriter writer = null;
     try {
       writer = new FileWriter(name);

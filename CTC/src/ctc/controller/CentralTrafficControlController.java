@@ -1,7 +1,9 @@
 package ctc.controller;
 
 import ctc.model.CentralTrafficControl;
+import ctc.model.Schedule;
 import ctc.model.ScheduleRow;
+import ctc.model.TrackMaintenance;
 import ctc.model.TrainTracker;
 
 import java.io.BufferedReader;
@@ -51,6 +53,7 @@ import utils.alerts.AlertWindow;
 public class CentralTrafficControlController {
 
   private CentralTrafficControl ctc = CentralTrafficControl.getInstance();
+  private TrackMaintenance trackMaintenance = TrackMaintenance.getInstance();
   private Clock clock = Clock.getInstance();
 
   /* MAIN COMPONENTS */
@@ -112,6 +115,7 @@ public class CentralTrafficControlController {
   @FXML private Button setSpeedButton;
   @FXML private ChoiceBox<String> setAuthorityBlocks;
   @FXML private Button setAuthorityButton;
+  @FXML private Circle trainStatus;
 
 
   /**
@@ -148,19 +152,22 @@ public class CentralTrafficControlController {
   }
 
   private void connectDropdowns() {
-    maintenanceTracks.setItems(ctc.getTrackList());
-    maintenanceBlocks.setItems(ctc.getBlockList());
-    maintenanceActions.setItems(ctc.getActionList());
+    maintenanceTracks.setItems(trackMaintenance.getTrackList());
+    maintenanceBlocks.setItems(trackMaintenance.getBlockList());
+    maintenanceActions.setItems(trackMaintenance.getActionsList());
 
-    maintenanceTracks.setValue(ctc.getTrackList().get(0));
-    maintenanceActions.setValue(ctc.getActionList().get(0));
+    maintenanceTracks.setValue(trackMaintenance.getTrackList().get(0));
+    maintenanceActions.setValue(trackMaintenance.getActionsList().get(0));
+
     trackSelect.setItems(ctc.getTrackList());
 
-
     if (ctc.getBlockList().size() > 0) {
-      maintenanceBlocks.setValue(ctc.getBlockList().get(0));
       scheduleBlocks.setValue(ctc.getBlockList().get(0));
       setAuthorityBlocks.setValue(ctc.getBlockList().get(0));
+    }
+
+    if (trackMaintenance.getBlockList().size() > 0) {
+      maintenanceBlocks.setValue(trackMaintenance.getBlockList().get(0));
     }
 
     trackSelect.setValue(ctc.getTrackList().get(0));
@@ -227,7 +234,15 @@ public class CentralTrafficControlController {
           }
         });
 
-    addScheduleTable.setItems(ctc.getScheduleTable());
+
+    addScheduleTable.setItems(FXCollections.observableArrayList(
+        new ScheduleRow("","",""),
+        new ScheduleRow("","",""),
+        new ScheduleRow("","",""),
+        new ScheduleRow("","",""),
+        new ScheduleRow("","",""),
+        new ScheduleRow("","","")
+    ));
   }
 
   private void connectButtons() {
@@ -268,7 +283,7 @@ public class CentralTrafficControlController {
         .addListener((observableValue, oldValue, newValue) -> {
           if (trainQueueTable.getSelectionModel().getSelectedItem() != null) {
             TrainTracker selected = trainQueueTable.getSelectionModel().getSelectedItem();
-            selectedScheduleTable.setItems(selected.getSchedule());
+            selectedScheduleTable.setItems(selected.getSchedule().getStops());
           }
         });
 
@@ -278,6 +293,7 @@ public class CentralTrafficControlController {
 
             ctc.setLine(newValue);
             ctc.makeStationList();
+            ctc.makeBlockList();
 
             stopColumn.setCellFactory(ComboBoxTableCell.forTableColumn(
                 new DefaultStringConverter(), ctc.getStationList()));
@@ -287,6 +303,31 @@ public class CentralTrafficControlController {
 
             scheduleBlocks.setItems(ctc.getBlockList());
             setAuthorityBlocks.setItems(ctc.getBlockList());
+
+            // only show trains that are on the selected line
+            ctc.getTrainQueueTable().clear();
+            ctc.getDispatchTable().clear();
+            selectedScheduleTable.setItems(FXCollections.observableArrayList());
+
+            TrainTracker item;
+            ObservableList<TrainTracker> list = ctc.getTrainList();
+            for (int i = 0; i < list.size(); i++) {
+
+              item = list.get(i);
+              if (item.getLine().equals(newValue)) {
+
+                // first, set the queue table
+                if (!item.isDispatched()) {
+                  ctc.getTrainQueueTable().add(item);
+                } else { // then get the dispatch table
+                  ctc.getDispatchTable().add(item);
+                }
+              }
+            }
+
+            // then set the user interface
+            trainQueueTable.setItems(ctc.getTrainQueueTable());
+            dispatchTable.setItems(ctc.getDispatchTable());
 
             if (ctc.getBlockList().size() > 0) {
               scheduleBlocks.setValue(ctc.getBlockList().get(0));
@@ -318,22 +359,39 @@ public class CentralTrafficControlController {
 
     maintenanceBlocks.getSelectionModel().selectedItemProperty()
         .addListener((observableValue, oldValue, newValue) -> {
-          updateMaintenance();
+
+          String action = maintenanceActions.getSelectionModel().getSelectedItem();
+          String line = maintenanceTracks.getSelectionModel().getSelectedItem();
+
+          int blockId = extractBlock();
+          Block block = Track.getListOfTracks().get(line).getBlock(blockId);
+
+          if (action.equals("Toggle switch") && !block.isSwitch()) {
+            submitMaintenance.setDisable(true);
+          } else {
+            submitMaintenance.setDisable(false);
+          }
         });
 
     maintenanceTracks.getSelectionModel().selectedItemProperty()
         .addListener((observableValue, oldValue, newValue) -> {
           if (!newValue.equals("Select track")) {
 
-            maintenanceBlocks.setItems(ctc.getBlockList());
+            trackMaintenance.setLine(newValue);
+            trackMaintenance.makeBlockList();
+
+            maintenanceBlocks.setItems(trackMaintenance.getBlockList());
+
             if (ctc.getBlockList().size() > 0) {
-              maintenanceBlocks.setValue(ctc.getBlockList().get(0));
+              maintenanceBlocks.setValue(trackMaintenance.getBlockList().get(0));
             }
           } else {
             maintenanceTracks.setValue(oldValue);
           }
           updateMaintenance();
         });
+
+    trainStatus.setFill(Paint.valueOf("Grey"));
   }
 
   private boolean checkTimeFormat(String input) {
@@ -686,14 +744,11 @@ public class CentralTrafficControlController {
       }
     }
 
-    train.setSchedule(list);
-    ctc.setScheduleTable(list);
     addScheduleTable.setItems(list);
   }
 
   private void resetSchedule() {
 
-    ctc.clearScheduleTable();
     ObservableList<ScheduleRow> blank = FXCollections.observableArrayList(
         new ScheduleRow("","",""),
         new ScheduleRow("","",""),
@@ -736,14 +791,15 @@ public class CentralTrafficControlController {
         dwellData.add(dwellColumn.getCellObservableValue(item).getValue());
       }
 
+      //get line
+      String line = trackSelect.getSelectionModel().getSelectedItem();
+
       // create schedule
-      ObservableList<ScheduleRow> schedule =  FXCollections.observableArrayList();
+      Schedule schedule =  new Schedule(line);
       for (int i = 0; i < addScheduleTable.getItems().size(); i++) {
-        schedule.add(new ScheduleRow(stopData.get(i), dwellData.get(i), ""));
+        schedule.addStop(new ScheduleRow(stopData.get(i), dwellData.get(i), ""));
       }
 
-      String block = scheduleBlocks.getSelectionModel().getSelectedItem();
-      String line = trackSelect.getSelectionModel().getSelectedItem();
       String name = trainNameField.getText();
       String departingTime = departingTimeField.getText();
 
@@ -774,6 +830,8 @@ public class CentralTrafficControlController {
     }
 
     trainQueueTable.setItems(ctc.getTrainQueueTable());
+    selectedScheduleTable.setItems(FXCollections.observableArrayList());
+
   }
 
   private void dispatchTrain() {
@@ -792,6 +850,7 @@ public class CentralTrafficControlController {
       setSpeedButton.setDisable(false);
 
       TrainControllerFactory.start(selected.getId());
+      selected.setDispatched(true);
       dispatchTable.setItems(ctc.getDispatchTable());
       if (ctc.getTrainQueueTable().size() == 0) {
         selectedScheduleTable.setItems(FXCollections.observableArrayList());
@@ -849,6 +908,13 @@ public class CentralTrafficControlController {
     // remove selected train from queue
     ctc.getTrainQueueTable().remove(index);
     ctc.getDispatchTable().add(train);
+
+    setAuthorityButton.setDisable(false);
+    setSpeedButton.setDisable(false);
+
+    TrainControllerFactory.start(train.getId());
+    train.setDispatched(true);
+    dispatchTable.setItems(ctc.getDispatchTable());
 
     dispatchTable.setItems(ctc.getDispatchTable());
     if (ctc.getTrainQueueTable().size() == 0) {
