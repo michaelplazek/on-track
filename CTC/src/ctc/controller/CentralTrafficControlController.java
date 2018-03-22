@@ -112,9 +112,8 @@ public class CentralTrafficControlController {
   @FXML private TableColumn<TrainTracker, String> dispatchSpeedColumn;
   @FXML private TableColumn<TrainTracker, String> dispatchPassengersColumn;
   @FXML private TextField suggestedSpeedField;
-  @FXML private Button setSpeedButton;
+  @FXML private Button sendSignalsButton;
   @FXML private ChoiceBox<String> setAuthorityBlocks;
-  @FXML private Button setAuthorityButton;
   @FXML private Circle trainStatus;
 
 
@@ -258,8 +257,7 @@ public class CentralTrafficControlController {
     addTrainButton.setOnAction(this::handleButtonPress);
     deleteButton.setOnAction(this::handleButtonPress);
     dispatchButton.setOnAction(this::handleButtonPress);
-    setSpeedButton.setOnAction(this::handleButtonPress);
-    setAuthorityButton.setOnAction(this::handleButtonPress);
+    sendSignalsButton.setOnAction(this::handleButtonPress);
   }
 
   private void connectOthers() {
@@ -551,11 +549,8 @@ public class CentralTrafficControlController {
       case "dispatchButton":
         dispatchTrain();
         break;
-      case "setSpeedButton":
-        setSuggestedSpeed();
-        break;
-      case "setAuthorityButton":
-        setAuthority();
+      case "sendSignalButton":
+        sendTrackSignals();
         break;
       default:
         break;
@@ -846,8 +841,7 @@ public class CentralTrafficControlController {
       }
 
       ctc.getDispatchTable().add(selected);
-      setAuthorityButton.setDisable(false);
-      setSpeedButton.setDisable(false);
+      sendSignalsButton.setDisable(false);
 
       TrainControllerFactory.start(selected.getId());
       selected.setDispatched(true);
@@ -858,7 +852,7 @@ public class CentralTrafficControlController {
     }
   }
 
-  private void setSuggestedSpeed() {
+  private void sendTrackSignals() {
 
     // get selected train
     TrainTracker train = dispatchTable.getSelectionModel().getSelectedItem();
@@ -869,25 +863,10 @@ public class CentralTrafficControlController {
 
     // get suggested speed
     String speed = suggestedSpeedField.getText();
-
-    // send speed
-    control.setSuggestedSpeed(train.getLocation().getNumber(), Float.parseFloat(speed));
-  }
-
-  private void setAuthority() {
-
-    // get selected train
-    TrainTracker train = dispatchTable.getSelectionModel().getSelectedItem();
-
-    // get selected track
-    String line = trackSelect.getSelectionModel().getSelectedItem();
-    TrackControllerLineManager control = TrackControllerLineManager.getInstance(line);
-
-    // get suggested authority
     String authority = setAuthorityBlocks.getSelectionModel().getSelectedItem();
 
-    // send authority
-    control.setAuthority(train.getLocation().getNumber(), Float.parseFloat(authority));
+    // send speed
+    control.sendTrackSignals(train.getLocation().getNumber(), Float.parseFloat(speed), Float.parseFloat(authority));
   }
 
   private void dispatch() {
@@ -909,8 +888,7 @@ public class CentralTrafficControlController {
     ctc.getTrainQueueTable().remove(index);
     ctc.getDispatchTable().add(train);
 
-    setAuthorityButton.setDisable(false);
-    setSpeedButton.setDisable(false);
+    sendSignalsButton.setDisable(false);
 
     TrainControllerFactory.start(train.getId());
     train.setDispatched(true);
@@ -934,8 +912,7 @@ public class CentralTrafficControlController {
       addTrainButton.setDisable(true);
       deleteButton.setDisable(true);
       dispatchButton.setDisable(true);
-      setAuthorityButton.setDisable(true);
-      setSpeedButton.setDisable(true);
+      sendSignalsButton.setDisable(true);
       scheduleBlocks.setDisable(true);
       setAuthorityBlocks.setDisable(true);
       testRedButton.setDisable(true);
@@ -946,8 +923,7 @@ public class CentralTrafficControlController {
       addTrainButton.setDisable(false);
       deleteButton.setDisable(false);
       dispatchButton.setDisable(false);
-      setAuthorityButton.setDisable(false);
-      setSpeedButton.setDisable(false);
+      sendSignalsButton.setDisable(false);
       scheduleBlocks.setDisable(false);
       setAuthorityBlocks.setDisable(false);
       testRedButton.setDisable(false);
