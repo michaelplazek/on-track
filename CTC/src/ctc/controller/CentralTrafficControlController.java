@@ -909,6 +909,13 @@ public class CentralTrafficControlController {
     ctc.getTrainQueueTable().remove(index);
     ctc.getDispatchTable().add(train);
 
+    setAuthorityButton.setDisable(false);
+    setSpeedButton.setDisable(false);
+
+    TrainControllerFactory.start(train.getId());
+    train.setDispatched(true);
+    dispatchTable.setItems(ctc.getDispatchTable());
+
     dispatchTable.setItems(ctc.getDispatchTable());
     if (ctc.getTrainQueueTable().size() == 0) {
       selectedScheduleTable.setItems(FXCollections.observableArrayList());
