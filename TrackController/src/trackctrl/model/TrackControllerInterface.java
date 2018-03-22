@@ -1,6 +1,7 @@
 package trackctrl.model;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import trackmodel.model.Block;
 
@@ -24,6 +25,8 @@ public interface TrackControllerInterface {
 
   void setZone(HashMap<Integer, Block> blocks);
 
+  ArrayList<String> getZone();
+
   boolean addBlock(Block newBlock);
 
   boolean hasBlock(int id);
@@ -44,5 +47,7 @@ public interface TrackControllerInterface {
   boolean importLogic(File myplc);
 
   boolean checkLogic();
+
+  boolean parseLogic(String inFile);
 
 }

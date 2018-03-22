@@ -1,6 +1,7 @@
 package trackctrl.model;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import trackmodel.model.Block;
 
@@ -10,8 +11,12 @@ public class TrackController implements TrackControllerInterface {
   private int trackOffset;
   private final int capacity = 16;
   private HashMap<Integer, Block> myZone = new HashMap<Integer, Block>(capacity);
+  private ArrayList<String> blockList = new ArrayList<>();
   private TrackController neighborCtrlr1;
   private TrackController neighborCtrlr2;
+
+  //States populate from Boolean Logic
+  //private boolean[]
 
   /**
    * Constructor for a new TrackController that is uninitialized.
@@ -83,7 +88,17 @@ public class TrackController implements TrackControllerInterface {
       //Adds key-value pairs.
       //Will duplicate...
       myZone.putAll(blocks);
+
+      //Create string list upon initialization
+      for(Integer i : blocks.keySet()) {
+        blockList.add(i.toString());
+      }
     }
+  }
+
+  @Override
+  public ArrayList<String> getZone() {
+    return blockList;
   }
 
   //TODO
@@ -131,9 +146,25 @@ public class TrackController implements TrackControllerInterface {
   //TODO
   @Override
   public boolean importLogic(File myplc) {
+
+    //Set Instance PLC fields
+      //-convert to string
+      //send to parseLogic
+
+    //Throw error if row is of incorrect arity
+    assertLogic();
     return false;
   }
 
   @Override
   public boolean checkLogic() { return false; }
+
+  @Override
+  public boolean parseLogic(String logic) { return false; }
+
+  public void assertLogic() {
+    //this function picks correct state from PLC based on Occupancy and existing states
+    //it also sets infrastructure if allowed by Track Model
+  }
+
 }
