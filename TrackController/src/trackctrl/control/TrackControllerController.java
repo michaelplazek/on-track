@@ -40,7 +40,7 @@ public class TrackControllerController implements Initializable {
   @FXML
   private Button importLogic;
   @FXML
-  private Button checkLogic;;
+  private Button checkLogic;
 
   //Radio Buttons
   @FXML
@@ -130,6 +130,7 @@ public class TrackControllerController implements Initializable {
 
   private TrackController myController;
   private ClockInterface theClock;
+
   public TrackControllerController(String ctrlrId) {
     myController = TrackControllerLineManager.getController(ctrlrId);
   }
@@ -178,7 +179,7 @@ public class TrackControllerController implements Initializable {
     } else if (lightGroup.getSelectedToggle().equals(lightForkRtoL)) {
       setForkLightsRtoL();
     } else {
-
+      //Do nothing
     }
   }
 
@@ -333,10 +334,6 @@ public class TrackControllerController implements Initializable {
 
     // Find correct light status based on boolean logic
 
-
-//    lightRed.setFill(Paint.valueOf("Red"));
-//    lightGreen.setFill(Paint.valueOf("Gray"));
-
     //set images
     resetLightSwitch();
     lightSwitch.setOpacity(0);
@@ -344,26 +341,19 @@ public class TrackControllerController implements Initializable {
   }
 
   private void setForkLightsLtoR() {
-    /**
-     * Set our lights to Green
-     * Green: ON
-     * Red:   OFF
-     */
-//    lightGreen.setFill(Paint.valueOf("#24c51b"));
-//    lightRed.setFill(Paint.valueOf("Gray"));
+
+    // Find correct light status based on boolean logic
+
+
     resetLightSwitch();
     lightSwitch.setOpacity(0);
     switchForkLtoR.setOpacity(100);
   }
 
   private void setForkLightsRtoL() {
-    /**
-     * Set our lights to Red
-     * Green: OFF
-     * Red:   ON
-     */
-//    lightRed.setFill(Paint.valueOf("Red"));
-//    lightGreen.setFill(Paint.valueOf("Gray"));
+
+    // Find correct light status based on boolean logic
+
     resetLightSwitch();
     lightSwitch.setOpacity(0);
     switchForkRtoL.setOpacity(100);
@@ -419,7 +409,10 @@ public class TrackControllerController implements Initializable {
     switchFork.setText("Q100");
   }
 
-
+  /**
+   * This function is run on each tick of the clock and will update data
+   * on the blocks under the control of the accessed Controller.
+   */
   public void run() {
     //Force values on track based on occupancy and switch state
     myController.assertLogic();

@@ -90,7 +90,7 @@ public class TrackController implements TrackControllerInterface {
       myZone.putAll(blocks);
 
       //Create string list upon initialization
-      for(Integer i : blocks.keySet()) {
+      for (Integer i : blocks.keySet()) {
         blockList.add(i.toString());
       }
     }
@@ -132,11 +132,15 @@ public class TrackController implements TrackControllerInterface {
 
   //TODO
   @Override
-  public boolean toggleCrossing(int id) { return false; }
+  public boolean toggleCrossing(int id) {
+    return false;
+  }
 
   //TODO
   @Override
-  public boolean setTrackLights(int id, boolean state, boolean direction) { return false; }
+  public boolean setTrackLights(int id, boolean state, boolean direction) {
+    return false;
+  }
 
   @Override
   public int getId() {
@@ -148,8 +152,8 @@ public class TrackController implements TrackControllerInterface {
   public boolean importLogic(File myplc) {
 
     //Set Instance PLC fields
-      //-convert to string
-      //send to parseLogic
+    //-convert to string
+    //send to parseLogic
 
     //Throw error if row is of incorrect arity
     assertLogic();
@@ -157,10 +161,14 @@ public class TrackController implements TrackControllerInterface {
   }
 
   @Override
-  public boolean checkLogic() { return false; }
+  public boolean checkLogic() {
+    return false;
+  }
 
   @Override
-  public boolean parseLogic(String logic) { return false; }
+  public boolean parseLogic(String logic) {
+    return false;
+  }
 
   public void assertLogic() {
     //this function picks correct state from PLC based on Occupancy and existing states

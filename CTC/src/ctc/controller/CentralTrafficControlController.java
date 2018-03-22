@@ -866,7 +866,8 @@ public class CentralTrafficControlController {
     String authority = setAuthorityBlocks.getSelectionModel().getSelectedItem();
 
     // send speed
-    control.sendTrackSignals(train.getLocation().getNumber(), Float.parseFloat(speed), Float.parseFloat(authority));
+    control.sendTrackSignals(train.getLocation().getNumber(),
+        Float.parseFloat(speed), Float.parseFloat(authority));
   }
 
   private void dispatch() {
