@@ -60,7 +60,7 @@ public class TrainModel implements TrainModelInterface {
   private double acceleration = 0.0000001; //in m/s^2
   private double force = 0; //in N
 
-  private boolean started = false;
+  private boolean isMoving = false;
 
   private ObjectProperty<OnOffStatus> lightStatus
       = new SimpleObjectProperty<>(OnOffStatus.OFF);
@@ -87,8 +87,13 @@ public class TrainModel implements TrainModelInterface {
   // Measured from the previous boarder to front of train.
 
   private Track activeTrack;
-  private Block currentBlock;
+  private Block currentBlock; //where the head of the train is.
   private Block previousBlock;
+  
+  private Block trailingBlock; // used when train spans over 2 blocks. Maybe?
+
+
+
 
   private boolean isMovingBlockMode = false;
 
@@ -164,7 +169,7 @@ public class TrainModel implements TrainModelInterface {
    * This will start the movement of the train.
    */
   private void start() {
-    started = true;
+    isMoving = true;
     if (velocity.get() == 0) {
       acceleration = .000001;
     } else {
@@ -246,7 +251,7 @@ public class TrainModel implements TrainModelInterface {
    * Runs simulation. This will be called from main.
    */
   public void run() {
-    if (!started) {
+    if (!isMoving) {
       start();
     } else {
       updateAcceleration();
@@ -255,6 +260,15 @@ public class TrainModel implements TrainModelInterface {
       updatePosition();
       brake();
       updateOccupancy();
+    }
+  }
+
+  /**
+   * Runs all instances of Trains.
+   */
+  public static void runAllInstances() {
+    for (TrainModel train : listOfTrainModels.values()) {
+      train.run();
     }
   }
 

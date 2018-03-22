@@ -90,7 +90,7 @@ public class TrainModelController implements Initializable {
   @FXML
   private Label currentBlockStatus;
   @FXML
-  private Label currentTrackStatus;
+  private Label currentTrack;
 
   //Train Spec Group
   @FXML
@@ -243,7 +243,8 @@ public class TrainModelController implements Initializable {
     setAuthorityStatus.textProperty().setValue("1000");
     serviceBrakeStatus.textProperty().setValue("OK");
     currentBlockStatus.textProperty().setValue("WAITING");
-    currentTrackStatus.textProperty().setValue("OK");
+    currentTrack.textProperty().setValue("OK");
+    //currentTrack.textProperty().set(trainModel.getActiveTrack().getLine());
     nextStation.textProperty().setValue("Downtown");
     time.textProperty().setValue(Clock.getInstance().getFormattedTime());
     stationStatus.textProperty().setValue("IN ROUTE");
@@ -258,6 +259,7 @@ public class TrainModelController implements Initializable {
     serviceBrakeStatus.textProperty().bind(trainModel.serviceBrakeStatusProperty().asString());
     acStatus.textProperty().bind(trainModel.acStatusProperty().asString());
     heaterStatus.textProperty().bind(trainModel.heaterStatusProperty().asString());
+
   }
 
 

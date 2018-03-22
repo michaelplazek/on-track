@@ -232,7 +232,7 @@
                                     </HBox>
                                     <HBox alignment="CENTER_RIGHT">
                                        <children>
-                                          <Label fx:id="currentTrackStatus" text="Label" />
+                                          <Label fx:id="currentTrack" text="Label" />
                                        </children>
                                     </HBox>
                                  </children>
