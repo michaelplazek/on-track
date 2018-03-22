@@ -16,7 +16,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="416.0" prefWidth="375.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="415.0" prefWidth="375.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Label fx:id="instanceTitle" layoutX="117.0" layoutY="4.0" text="G-One">
          <font>
@@ -121,6 +121,26 @@
                         <Circle fx:id="forkLight1" fill="RED" layoutX="118.0" layoutY="139.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
                         <Circle fx:id="fromLight0" fill="#24c51b" layoutX="14.0" layoutY="107.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
                         <Circle fx:id="fromLight1" fill="RED" layoutX="29.0" layoutY="107.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
+                        <ImageView fx:id="switchMainLtoR" fitHeight="58.0" fitWidth="66.0" layoutX="36.0" layoutY="94.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/switch_main_LtoR.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fx:id="switchMainRtoL" fitHeight="58.0" fitWidth="66.0" layoutX="36.0" layoutY="94.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/switch_main_RtoL.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fx:id="switchForkRtoL" fitHeight="58.0" fitWidth="66.0" layoutX="36.0" layoutY="94.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/switch_fork_RtoL.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fx:id="switchForkLtoR" fitHeight="58.0" fitWidth="66.0" layoutX="36.0" layoutY="94.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/switch_fork_LtoR.png" />
+                           </image>
+                        </ImageView>
                      </children>
                   </AnchorPane>
               </content>
@@ -155,14 +175,14 @@
                                  </font>
                               </Label>
                               <RadioButton fx:id="lightMainRtoL" layoutX="10.0" layoutY="30.0" mnemonicParsing="false" text="Main" />
-                              <RadioButton fx:id="lightForkLtoR" layoutX="10.0" layoutY="52.0" mnemonicParsing="false" text="Fork" />
+                              <RadioButton fx:id="lightForkRtoL" layoutX="10.0" layoutY="52.0" mnemonicParsing="false" text="Fork" />
                               <Label layoutX="9.0" layoutY="74.0" text="Left to Right">
                                  <font>
                                     <Font size="10.0" />
                                  </font>
                               </Label>
                               <RadioButton fx:id="lightMainLtoR" layoutX="10.0" layoutY="91.0" mnemonicParsing="false" text="Main" />
-                              <RadioButton fx:id="lightForkRtoL" layoutX="10.0" layoutY="113.0" mnemonicParsing="false" text="Fork" />
+                              <RadioButton fx:id="lightForkLtoR" layoutX="10.0" layoutY="113.0" mnemonicParsing="false" text="Fork" />
                            </children>
                         </Group>
                         <Group layoutX="294.0" layoutY="18.0">
@@ -206,7 +226,7 @@
                               <Label layoutX="6.0" layoutY="2.0" text="Operational Mode" />
                            </children>
                         </Group>
-                        <Separator layoutX="128.0" layoutY="11.0" orientation="VERTICAL" prefHeight="152.0" prefWidth="8.0" />
+                        <Separator layoutX="128.0" layoutY="8.0" orientation="VERTICAL" prefHeight="155.0" prefWidth="8.0" />
                         <Button fx:id="importLogic" layoutX="4.0" layoutY="82.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="122.0" text="Import PLC" />
                         <Button fx:id="checkLogic" layoutX="4.0" layoutY="125.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="122.0" text="Check PLC" />
                         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e1e1e1" height="20.0" layoutX="294.0" layoutY="8.0" stroke="BLACK" strokeType="INSIDE" width="73.0" />
@@ -222,8 +242,8 @@
                               <Font size="14.0" />
                            </font>
                         </Label>
-                        <RadioButton fx:id="openRad1" layoutX="220.0" layoutY="110.0" mnemonicParsing="false" text="Set Block Broken" />
-                        <RadioButton fx:id="openRad11" layoutX="220.0" layoutY="134.0" mnemonicParsing="false" text="Set Block Repaired" />
+                        <RadioButton fx:id="blockBrokenRad" layoutX="220.0" layoutY="110.0" mnemonicParsing="false" text="Set Block Broken" />
+                        <RadioButton fx:id="blockRepairedRad" layoutX="220.0" layoutY="134.0" mnemonicParsing="false" text="Set Block Repaired" />
                      </children>
                   </AnchorPane>
               </content>

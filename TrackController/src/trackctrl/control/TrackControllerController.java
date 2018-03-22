@@ -39,6 +39,8 @@ public class TrackControllerController implements Initializable {
   //Buttons
   @FXML
   private Button importLogic;
+  @FXML
+  private Button checkLogic;;
 
   //Radio Buttons
   @FXML
@@ -99,6 +101,16 @@ public class TrackControllerController implements Initializable {
   private ImageView mainSwitch;
   @FXML
   private ImageView forkSwitch;
+  @FXML
+  private ImageView lightSwitch;
+  @FXML
+  private ImageView switchMainRtoL;
+  @FXML
+  private ImageView switchMainLtoR;
+  @FXML
+  private ImageView switchForkRtoL;
+  @FXML
+  private ImageView switchForkLtoR;
 
   //Labels
   @FXML
@@ -113,10 +125,11 @@ public class TrackControllerController implements Initializable {
   ToggleGroup lightGroup = new ToggleGroup();
   ToggleGroup crossingGroup = new ToggleGroup();
   ToggleGroup switchGroup = new ToggleGroup();
+  ToggleGroup repairGroup = new ToggleGroup();
+
 
   private TrackController myController;
   private ClockInterface theClock;
-
   public TrackControllerController(String ctrlrId) {
     myController = TrackControllerLineManager.getController(ctrlrId);
   }
@@ -125,13 +138,19 @@ public class TrackControllerController implements Initializable {
    * FAKE DATA FOR THE UI DEMO.
    */
   private void populateDropDowns() {
-    ObservableList<String> sectionsA = FXCollections.observableArrayList(
-             "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M");
+    ObservableList<String> blockList = FXCollections.observableArrayList(myController.getZone());
+    blockChoice.setValue("Select Block");
+    blockChoice.setItems(blockList);
 
-    ObservableList<String> sectionsN = FXCollections.observableArrayList(
-            "Select section", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z");
-    blockChoice.setValue("");
-    blockChoice.setItems(sectionsN);
+    //Action Event for block selection
+    blockChoice.getSelectionModel().selectedItemProperty()
+        .addListener((observableValue, oldValue, newValue) -> {
+          if (!(blockChoice.getSelectionModel()
+              .getSelectedItem().equals("Select Block"))) {
+            //Block selected, update UI
+            //TODO
+          }
+        });
   }
 
   private void handleOpGroup(ActionEvent event) {
@@ -147,18 +166,17 @@ public class TrackControllerController implements Initializable {
     }
   }
 
+  //TODO: add support for bidirectional/unidirectional track for lights
   private void handleLightGroup(ActionEvent event) {
 
     if (lightGroup.getSelectedToggle().equals(lightMainLtoR)) {
-      //Check that track is indeed functional
-
-      //If functional, assert green value in the GUI
+      setMainLightsLtoR();
     } else if (lightGroup.getSelectedToggle().equals(lightForkLtoR)) {
-      //Assert red value in GUI
+      setForkLightsLtoR();
     } else if (lightGroup.getSelectedToggle().equals(lightMainRtoL)) {
-      //Assert red value in GUI
-    } else if (lightGroup.getSelectedToggle().equals(lightForkLtoR)) {
-      //Assert red value in GUI
+      setMainLightsRtoL();
+    } else if (lightGroup.getSelectedToggle().equals(lightForkRtoL)) {
+      setForkLightsRtoL();
     } else {
 
     }
@@ -189,6 +207,12 @@ public class TrackControllerController implements Initializable {
     }
   }
 
+  //TODO
+  private void handleRepairGroup(ActionEvent event) {
+
+  }
+
+  //TODO
   private void handleImportLogic(ActionEvent event) {
     FileChooser fileChooser = new FileChooser();
     fileChooser.setTitle("Choose a PLC  file");
@@ -196,6 +220,15 @@ public class TrackControllerController implements Initializable {
         .addAll(new FileChooser.ExtensionFilter("PLC Files", ".plc", ".csv"));
 
     File inFile = fileChooser.showOpenDialog((Stage) importLogic.getScene().getWindow());
+
+    myController.importLogic(inFile);
+  }
+
+  //TODO
+  private void handleCheckLogic(ActionEvent event) {
+    if (!(myController.checkLogic())) {
+      //Display error
+    }
   }
 
   private void groupRadioButtons() {
@@ -242,44 +275,72 @@ public class TrackControllerController implements Initializable {
     stayRad.setToggleGroup(switchGroup);
     stayRad.setOnAction(this::handleSwitchGroup);
     alterRad.setOnAction(this::handleSwitchGroup);
+
+    //Track block maintanence
+    blockBrokenRad.setToggleGroup(repairGroup);
+    blockRepairedRad.setToggleGroup(repairGroup);
+    blockBrokenRad.setOnAction(this::handleRepairGroup);
+    blockRepairedRad.setOnAction(this::handleRepairGroup);
+
+  }
+
+  private void resetLightSwitch() {
+    switchMainRtoL.setOpacity(0);
+    switchMainLtoR.setOpacity(0);
+    switchForkRtoL.setOpacity(0);
+    switchForkLtoR.setOpacity(0);
   }
 
   private void disableRadios() {
-    redRad.setDisable(true);
-    greenRad.setDisable(true);
+    lightMainLtoR.setDisable(true);
+    lightForkLtoR.setDisable(true);
+    lightMainRtoL.setDisable(true);
+    lightForkRtoL.setDisable(true);
     closedRad.setDisable(true);
     openRad.setDisable(true);
     stayRad.setDisable(true);
     alterRad.setDisable(true);
+    blockBrokenRad.setDisable(true);
+    blockRepairedRad.setDisable(true);
   }
 
   private void enableRadios() {
-    redRad.setDisable(false);
-    greenRad.setDisable(false);
+    lightMainLtoR.setDisable(false);
+    lightForkLtoR.setDisable(false);
+    lightMainRtoL.setDisable(false);
+    lightForkRtoL.setDisable(false);
     closedRad.setDisable(false);
     openRad.setDisable(false);
     stayRad.setDisable(false);
     alterRad.setDisable(false);
+    blockBrokenRad.setDisable(false);
+    blockRepairedRad.setDisable(false);
   }
 
   private void setMainLightsLtoR() {
-    /**
-     * Set our lights to Green
-     * Green: ON
-     * Red:   OFF
-     */
-    lightGreen.setFill(Paint.valueOf("#24c51b"));
-    lightRed.setFill(Paint.valueOf("Gray"));
+    mainLight0.setFill(Paint.valueOf("#24c51b"));
+    mainLight1.setFill(Paint.valueOf("Red"));
+    fromLight0.setFill(Paint.valueOf("#24c51b"));
+    fromLight1.setFill(Paint.valueOf("Red"));
+
+    //set images
+    resetLightSwitch();
+    lightSwitch.setOpacity(0);
+    switchMainLtoR.setOpacity(100);
   }
 
   private void setMainLightsRtoL() {
-    /**
-     * Set our lights to Red
-     * Green: OFF
-     * Red:   ON
-     */
-    lightRed.setFill(Paint.valueOf("Red"));
-    lightGreen.setFill(Paint.valueOf("Gray"));
+
+    // Find correct light status based on boolean logic
+
+
+//    lightRed.setFill(Paint.valueOf("Red"));
+//    lightGreen.setFill(Paint.valueOf("Gray"));
+
+    //set images
+    resetLightSwitch();
+    lightSwitch.setOpacity(0);
+    switchMainRtoL.setOpacity(100);
   }
 
   private void setForkLightsLtoR() {
@@ -288,8 +349,11 @@ public class TrackControllerController implements Initializable {
      * Green: ON
      * Red:   OFF
      */
-    lightGreen.setFill(Paint.valueOf("#24c51b"));
-    lightRed.setFill(Paint.valueOf("Gray"));
+//    lightGreen.setFill(Paint.valueOf("#24c51b"));
+//    lightRed.setFill(Paint.valueOf("Gray"));
+    resetLightSwitch();
+    lightSwitch.setOpacity(0);
+    switchForkLtoR.setOpacity(100);
   }
 
   private void setForkLightsRtoL() {
@@ -298,8 +362,11 @@ public class TrackControllerController implements Initializable {
      * Green: OFF
      * Red:   ON
      */
-    lightRed.setFill(Paint.valueOf("Red"));
-    lightGreen.setFill(Paint.valueOf("Gray"));
+//    lightRed.setFill(Paint.valueOf("Red"));
+//    lightGreen.setFill(Paint.valueOf("Gray"));
+    resetLightSwitch();
+    lightSwitch.setOpacity(0);
+    switchForkRtoL.setOpacity(100);
   }
 
   private void setClosed() {
@@ -352,6 +419,14 @@ public class TrackControllerController implements Initializable {
     switchFork.setText("Q100");
   }
 
+
+  public void run() {
+    //Force values on track based on occupancy and switch state
+    myController.assertLogic();
+
+    //Update UI based on changes in Selected block
+  }
+
   /**
    * This method will be automatically called upon the initialization of the MVC.
    */
@@ -365,6 +440,8 @@ public class TrackControllerController implements Initializable {
     groupRadioButtons();
     setOpen();
     setSwitchInactive();
+    resetLightSwitch();
     importLogic.setOnAction(this::handleImportLogic);
+    checkLogic.setOnAction(this::handleCheckLogic);
   }
 }

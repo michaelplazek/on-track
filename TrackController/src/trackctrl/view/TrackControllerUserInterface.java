@@ -22,7 +22,7 @@ public class TrackControllerUserInterface {
       Parent root = loader.load();
       Stage stage = new Stage();
       stage.setTitle(ctrlrId);
-      stage.setScene(new Scene(root, 375, 375));
+      stage.setScene(new Scene(root, 375, 415));
       stage.setResizable(false);
       stage.show();
     } catch (IOException e) {
