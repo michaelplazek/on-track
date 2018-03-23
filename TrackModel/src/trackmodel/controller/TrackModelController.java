@@ -1,6 +1,11 @@
 package trackmodel.controller;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javafx.beans.value.ChangeListener;
@@ -69,6 +74,8 @@ public class TrackModelController {
   private Block[] blocks;
   private boolean running;
   private static HashMap<String, Track> listOfTracks = new HashMap<>();
+  private static HashMap<String, ArrayList<String>> trackSections = new HashMap<>();
+  private static HashMap<String, ArrayList<Integer>> trackBlockNum = new HashMap<>();
 
   /**
    * This method initializes many of the fields.
@@ -244,16 +251,58 @@ public class TrackModelController {
   private void handleImportTrack(ActionEvent event) {
     FileChooser fc = new FileChooser();
     fc.setTitle("Choose a track file");
-    fc.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Track Files", ".csv"));
+    fc.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("CSV", "*.csv"));
 
     File inFile = fc.showOpenDialog((Stage) uploadButton.getScene().getWindow());
+
+    if (inFile != null) {
+      importTrackData(inFile);
+    }
   }
 
   private void update() {
 
   }
 
-  private void importTrackData() {
+  private void importTrackData(File f) {
+    try {
+      BufferedReader br = new BufferedReader(new FileReader(f));
 
+      String line = br.readLine();
+      int i = 0;
+
+      String filename = f.getName();
+      int fileNamePeriodPosition = filename.indexOf('.');
+      String lineName = filename.substring(0, fileNamePeriodPosition);
+      lineName = lineName.toUpperCase();
+
+      Track newTrack = new Track(lineName);
+
+      listOfTracks.put(lineName, newTrack);
+
+      ArrayList<String> sections = new ArrayList<String>();
+      ArrayList<Integer> blocks = new ArrayList<Integer>();
+
+      while (line != null) {
+        if (i == 0) {
+          System.out.println("Header Line");
+          //System.out.println(line);
+          String[] splitLine = line.split(",");
+          if (splitLine.length != 15) {
+            //Error handler for invalid number of arguments in the CSV file.
+          }
+          line = br.readLine();
+          i++;
+        } else {
+          System.out.println(line);
+          line = br.readLine();
+        }
+      }
+
+    } catch (FileNotFoundException ex) {
+      System.out.println("Unable to find the file.");
+    } catch (IOException ex) {
+      System.out.println("Error reading file");
+    }
   }
 }
