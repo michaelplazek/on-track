@@ -29,6 +29,7 @@ public class TrainController implements TrainControllerInterface {
   private SimpleStringProperty currentStation;
   private SimpleStringProperty nextStation;
   private Block currentBlock;
+  private double integral;
 
 
   /**
@@ -50,8 +51,10 @@ public class TrainController implements TrainControllerInterface {
     this.ki = new SimpleDoubleProperty(5);
     this.currentStation = new SimpleStringProperty("N/A");
     this.nextStation = new SimpleStringProperty("N/A");
+    this.integral = 0;
+    running = false;
 
-    this.trainModel = (TrainModel) TrainModelFactory.createTrainModel(this, id, line);
+    this.trainModel = TrainModelFactory.createTrainModel(this, id, line);
   }
 
   public void setAntennaSignal(float speed, float authority) {
@@ -263,8 +266,16 @@ public class TrainController implements TrainControllerInterface {
     trainModel.setLightStatus(lightStatus);
   }
 
-  public void getLightStatus() {
-    trainModel.getLightStatus();
+  public TrainModelEnums.LightStatus getLightStatus() {
+    return trainModel.getLightStatus();
+  }
+
+  public void setIntegral(double integral) {
+    this.integral = integral;
+  }
+
+  public double getIntegral() {
+    return integral;
   }
 
   protected void start() {
