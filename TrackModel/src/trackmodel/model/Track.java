@@ -20,7 +20,7 @@ public class Track {
   public Track(String line) {
     this.track = new HashMap<>();
     this.line = line;
-    listOfTracks.put(line, this);
+    listOfTracks.put(line.toUpperCase(), this);
   }
 
   public static HashMap<String, Track> getListOfTracks() {
@@ -169,5 +169,21 @@ public class Track {
 
   public String getClosedBlocks() {
     return null;
+  }
+
+  /**
+   * This method will allow for others to get a Track based on Track Name
+   * @param trackName The name of the track the user wants
+   * @return A Track object shall be returned or null if invalid trackName
+   */
+  public static Track getTrack(String trackName) {
+
+    Track val = listOfTracks.get(trackName.toUpperCase());
+
+    if (val != null) {
+      return val;
+    } else {
+      return null;
+    }
   }
 }

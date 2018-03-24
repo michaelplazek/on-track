@@ -343,7 +343,7 @@ public class TrackModelController {
             System.out.print(next2);
 
             boolean rightStation = false;
-            if(splitLine.length > 13) {
+            if (splitLine.length > 13) {
               if (splitLine[13].equals("")) {
                 rightStation = false;
               } else {
@@ -408,7 +408,7 @@ public class TrackModelController {
             System.out.print(next1 + "\t");
 
             boolean rightStation = false;
-            if(splitLine.length > 13) {
+            if (splitLine.length > 13) {
               if (splitLine[13].equals("")) {
                 rightStation = false;
               } else {
@@ -450,6 +450,11 @@ public class TrackModelController {
     }
   }
 
+  /**
+   * This method will allow for others to get a Track based on Track Name
+   * @param trackName The name of the track the user wants
+   * @return A Track object shall be returned or null if invalid trackName
+   */
   public Track getTrack(String trackName) {
 
     Track val = listOfTracks.get(trackName.toUpperCase());
