@@ -1,7 +1,5 @@
 package trackmodel.model;
 
-import trackmodel.view.TrackModelUserInterface;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,6 +8,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import trackmodel.view.TrackModelUserInterface;
 
 public class Track {
 
@@ -38,6 +38,9 @@ public class Track {
     TrackModelUserInterface.getInstance().getController().updateTracks();
   }
 
+  /**
+   * This method will allow for the user to initialize basic tracks.
+   */
   public static void initialize() {
 
     File f = null;
@@ -77,50 +80,32 @@ public class Track {
             if (!sections.contains(splitLine[1])) {
               sections.add(splitLine[1]);
             }
-
             if (!blocks.contains(Integer.parseInt(splitLine[2]))) {
               blocks.add(Integer.parseInt(splitLine[2]));
             }
-
             Block b;
 
             if (splitLine[6].contains("SWITCH")) {
               // Create a switch for the Track
 
-              String lineId = splitLine[0];
-              //System.out.print(lineId + "\t");
-              String section = splitLine[1];
-              //System.out.print(section + "\t");
-              int number = Integer.parseInt(splitLine[2]);
-              //System.out.print(number + "\t");
-              float len = Float.parseFloat(splitLine[3]);
-              //System.out.print(len + "\t");
-              float grade = Float.parseFloat(splitLine[4]);
-              //System.out.print(grade + "\t");
-              int speedLimit = Integer.parseInt(splitLine[5]);
-              //System.out.print(speedLimit + "\t");
-              String infra = splitLine[6];
-              //System.out.print(infra + "\t");
-              float elevation = Float.parseFloat(splitLine[7]);
-              //System.out.print(elevation + "\t");
-              float cumEle = Float.parseFloat(splitLine[8]);
-              //System.out.print(cumEle + "\t");
+              final String lineId = splitLine[0];
+              final String section = splitLine[1];
+              final int number = Integer.parseInt(splitLine[2]);
+              final float len = Float.parseFloat(splitLine[3]);
+              final float grade = Float.parseFloat(splitLine[4]);
+              final int speedLimit = Integer.parseInt(splitLine[5]);
+              final String infra = splitLine[6];
+              final float elevation = Float.parseFloat(splitLine[7]);
+              final float cumEle = Float.parseFloat(splitLine[8]);
               boolean biDirectional;
               if (splitLine[9].equals("")) {
                 biDirectional = false;
               } else {
                 biDirectional = true;
               }
-              //System.out.print(biDirectional + "\t");
-              int previous  = Integer.parseInt(splitLine[10]);
-              //System.out.print(previous + "\t");
-              int next1 = Integer.parseInt(splitLine[11]);
-              //System.out.print(next1 + "\t");
-
-
-              int next2 = Integer.parseInt(splitLine[12]);
-              //System.out.print(next2);
-
+              final int previous  = Integer.parseInt(splitLine[10]);
+              final int next1 = Integer.parseInt(splitLine[11]);
+              final int next2 = Integer.parseInt(splitLine[12]);
               boolean rightStation = false;
               if (splitLine.length > 13) {
                 if (splitLine[13].equals("")) {
@@ -129,8 +114,6 @@ public class Track {
                   rightStation = true;
                 }
               }
-              //System.out.print(rightStation + "\t");
-
               boolean leftStation = false;
               if (splitLine.length > 14) {
                 if (splitLine[14].equals("")) {
@@ -139,8 +122,6 @@ public class Track {
                   leftStation = true;
                 }
               }
-              //System.out.print(leftStation + "\t");
-
               b = new Switch(lineId, section, number, len, grade, speedLimit,
                   infra, elevation, cumEle, biDirectional, previous, next1,
                   next2, leftStation, rightStation);
@@ -156,36 +137,23 @@ public class Track {
 
               //System.out.println(splitLine.length);
 
-              String lineId = splitLine[0];
-              //System.out.print(lineId + "\t");
-              String section = splitLine[1];
-              //System.out.print(section + "\t");
-              int number = Integer.parseInt(splitLine[2]);
-              //System.out.print(number + "\t");
-              float len = Float.parseFloat(splitLine[3]);
-              //System.out.print(len + "\t");
-              float grade = Float.parseFloat(splitLine[4]);
-              //System.out.print(grade + "\t");
-              int speedLimit = Integer.parseInt(splitLine[5]);
-              //System.out.print(speedLimit + "\t");
-              String infra = splitLine[6];
-              //System.out.print(infra + "\t");
-              float elevation = Float.parseFloat(splitLine[7]);
-              //System.out.print(elevation + "\t");
-              float cumEle = Float.parseFloat(splitLine[8]);
-              //System.out.print(cumEle + "\t");
+              final String lineId = splitLine[0];
+              final String section = splitLine[1];
+              final int number = Integer.parseInt(splitLine[2]);
+              final float len = Float.parseFloat(splitLine[3]);
+              final float grade = Float.parseFloat(splitLine[4]);
+              final int speedLimit = Integer.parseInt(splitLine[5]);
+              final String infra = splitLine[6];
+              final float elevation = Float.parseFloat(splitLine[7]);
+              final float cumEle = Float.parseFloat(splitLine[8]);
               boolean biDirectional;
               if (splitLine[9].equals("")) {
                 biDirectional = false;
               } else {
                 biDirectional = true;
               }
-              //System.out.print(biDirectional + "\t");
-              int previous  = Integer.parseInt(splitLine[10]);
-              //System.out.print(previous + "\t");
-              int next1 = Integer.parseInt(splitLine[11]);
-              //System.out.print(next1 + "\t");
-
+              final int previous  = Integer.parseInt(splitLine[10]);
+              final int next1 = Integer.parseInt(splitLine[11]);
               boolean rightStation = false;
               if (splitLine.length > 13) {
                 if (splitLine[13].equals("")) {
@@ -194,8 +162,6 @@ public class Track {
                   rightStation = true;
                 }
               }
-              //System.out.print(rightStation + "\t");
-
               boolean leftStation = false;
               if (splitLine.length > 14) {
                 if (splitLine[14].equals("")) {
@@ -204,7 +170,6 @@ public class Track {
                   leftStation = true;
                 }
               }
-              //System.out.print(leftStation + "\t");
 
               b = new Block(lineId, section, number, len, grade,
                   speedLimit, infra, elevation, cumEle, biDirectional,
@@ -391,7 +356,7 @@ public class Track {
   }
 
   /**
-   * This method will allow for others to get a Track based on Track Name
+   * This method will allow for others to get a Track based on Track Name.
    * @param trackName The name of the track the user wants
    * @return A Track object shall be returned or null if invalid trackName
    */
