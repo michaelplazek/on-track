@@ -1,6 +1,7 @@
 package trackctrl.model;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import trackmodel.model.Block;
 
@@ -8,10 +9,14 @@ public class TrackController implements TrackControllerInterface {
 
   private int id;
   private int trackOffset;
-  private final int capacity = 64;
+  private final int capacity = 16;
   private HashMap<Integer, Block> myZone = new HashMap<Integer, Block>(capacity);
+  private ArrayList<String> blockList = new ArrayList<>();
   private TrackController neighborCtrlr1;
   private TrackController neighborCtrlr2;
+
+  //States populate from Boolean Logic
+  //private boolean[]
 
   /**
    * Constructor for a new TrackController that is uninitialized.
@@ -41,13 +46,7 @@ public class TrackController implements TrackControllerInterface {
 
   //TODO
   @Override
-  public boolean setAuthority(int block, float authority) {
-    return false;
-  }
-
-  //TODO
-  @Override
-  public boolean setSuggestedSpeed(int block, float setSpeed) {
+  public boolean sendTrackSignals(int block, float authority, float speed) {
     return false;
   }
 
@@ -59,13 +58,13 @@ public class TrackController implements TrackControllerInterface {
 
   //TODO
   @Override
-  public boolean relayAuthority(int block, double authority) {
+  public boolean relayAuthority(int block, float authority) {
     return false;
   }
 
   //TODO
   @Override
-  public boolean relaySetSpeed(int block, double setSpeed) {
+  public boolean relaySetSpeed(int block, float setSpeed) {
     return false;
   }
 
@@ -89,7 +88,17 @@ public class TrackController implements TrackControllerInterface {
       //Adds key-value pairs.
       //Will duplicate...
       myZone.putAll(blocks);
+
+      //Create string list upon initialization
+      for (Integer i : blocks.keySet()) {
+        blockList.add(i.toString());
+      }
     }
+  }
+
+  @Override
+  public ArrayList<String> getZone() {
+    return blockList;
   }
 
   //TODO
@@ -121,6 +130,18 @@ public class TrackController implements TrackControllerInterface {
     return false;
   }
 
+  //TODO
+  @Override
+  public boolean toggleCrossing(int id) {
+    return false;
+  }
+
+  //TODO
+  @Override
+  public boolean setTrackLights(int id, boolean state, boolean direction) {
+    return false;
+  }
+
   @Override
   public int getId() {
     return this.id;
@@ -129,6 +150,29 @@ public class TrackController implements TrackControllerInterface {
   //TODO
   @Override
   public boolean importLogic(File myplc) {
+
+    //Set Instance PLC fields
+    //-convert to string
+    //send to parseLogic
+
+    //Throw error if row is of incorrect arity
+    assertLogic();
     return false;
   }
+
+  @Override
+  public boolean checkLogic() {
+    return false;
+  }
+
+  @Override
+  public boolean parseLogic(String logic) {
+    return false;
+  }
+
+  public void assertLogic() {
+    //this function picks correct state from PLC based on Occupancy and existing states
+    //it also sets infrastructure if allowed by Track Model
+  }
+
 }

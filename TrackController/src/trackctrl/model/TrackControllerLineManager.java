@@ -42,23 +42,11 @@ public class TrackControllerLineManager implements TrackControllerLineManagerInt
   }
 
   @Override
-  public boolean setAuthority(int block, float authority) {
+  public boolean sendTrackSignals(int block, float authority, float setSpeed) {
     if (lineControllers != null) {
       for (TrackController tc : lineControllers) {
         if (tc.hasBlock(block)) {
-          return tc.setAuthority(block, authority);
-        }
-      }
-    }
-    return false;
-  }
-
-  @Override
-  public boolean setSuggestedSpeed(int block, float speed) {
-    if (lineControllers != null) {
-      for (TrackController tc : lineControllers) {
-        if (tc.hasBlock(block)) {
-          return tc.setSuggestedSpeed(block, speed);
+          return tc.sendTrackSignals(block, authority, setSpeed);
         }
       }
     }
