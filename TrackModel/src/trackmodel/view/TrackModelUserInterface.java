@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import trackmodel.controller.TrackModelController;
+import trackmodel.model.Track;
 
 public class TrackModelUserInterface {
 
@@ -46,6 +47,7 @@ public class TrackModelUserInterface {
     Stage stage = new Stage();
     stage.setScene(scene);
     stage.show();
+
   }
 
   public TrackModelController getController() {
