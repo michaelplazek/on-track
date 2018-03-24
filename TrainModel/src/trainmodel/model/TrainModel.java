@@ -1,11 +1,15 @@
 package trainmodel.model;
 
 import java.util.HashMap;
+
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import mainmenu.Clock;
@@ -28,8 +32,7 @@ import utils.unitconversion.UnitConversions;
  */
 public class TrainModel implements TrainModelInterface {
 
-  //Current temp inside the train.
-  private DoubleProperty currentTemp = new SimpleDoubleProperty(70);
+
   private Clock clock = Clock.getInstance();
 
   //===========================================
@@ -43,24 +46,27 @@ public class TrainModel implements TrainModelInterface {
   //          40.9t = 40900kg
   //============================================
   //Train Dimentions
-  private SimpleDoubleProperty height = new SimpleDoubleProperty(TrainData.HEIGHT_OF_TRAIN);
-  private SimpleDoubleProperty width = new SimpleDoubleProperty(TrainData.WIDTH_OF_TRAIN);
-  private SimpleDoubleProperty lengthOfTrain = new SimpleDoubleProperty(TrainData.LENGTH_OF_TRAIN);
-  private SimpleDoubleProperty numberOfCars = new SimpleDoubleProperty(TrainData.NUMBER_OF_CARS);
+  private DoubleProperty height = new SimpleDoubleProperty(TrainData.HEIGHT_OF_TRAIN);
+  private DoubleProperty width = new SimpleDoubleProperty(TrainData.WIDTH_OF_TRAIN);
+  private DoubleProperty lengthOfTrain = new SimpleDoubleProperty(TrainData.LENGTH_OF_TRAIN);
+  private DoubleProperty numberOfCars = new SimpleDoubleProperty(TrainData.NUMBER_OF_CARS);
 
   //String Properties to be bound with UI.
-  private SimpleDoubleProperty mass = new SimpleDoubleProperty(TrainData.EMPTY_WEIGHT);
-  private SimpleDoubleProperty velocity = new SimpleDoubleProperty(0); //in m/s
+  private DoubleProperty mass = new SimpleDoubleProperty(TrainData.EMPTY_WEIGHT);
+  private DoubleProperty velocity = new SimpleDoubleProperty(0); //in m/s
+  private DoubleProperty currentTemp
+      = new SimpleDoubleProperty(70); //Current temp inside the train.
+  private DoubleProperty setTemp
+      = new SimpleDoubleProperty(70); //Set temp (will be set by TrainController)
+  private DoubleProperty setSpeed = new SimpleDoubleProperty(0); //To link UI w/ TrainController
+  private DoubleProperty setAuthority = new SimpleDoubleProperty(0); //To link UI w/ TrainController
+  private StringProperty nextStation = new SimpleStringProperty("N/A"); //To link w/ UI
+  private StringProperty trainStatus = new SimpleStringProperty("N/A"); //To link w/ UI
+
 
   //set by TrainController.
-  private SimpleDoubleProperty powerCommand = new SimpleDoubleProperty(0); //In kilo Watts.
-  private SimpleIntegerProperty numPassengers = new SimpleIntegerProperty(0);
-  private final int capacityOfTrain = TrainData.MAX_PASSENGERS * TrainData.NUMBER_OF_CARS;
-
-  private double acceleration = 0.0000001; //in m/s^2
-  private double force = 0; //in N
-
-  private boolean isMoving = false;
+  private DoubleProperty powerCommand = new SimpleDoubleProperty(0); //In kilo Watts.
+  private IntegerProperty numPassengers = new SimpleIntegerProperty(0);
 
   private ObjectProperty<OnOffStatus> lightStatus
       = new SimpleObjectProperty<>(OnOffStatus.OFF);
@@ -82,7 +88,10 @@ public class TrainModel implements TrainModelInterface {
       = new SimpleObjectProperty<>(OnOffStatus.OFF);
 
   private GpsLocation gpsLocation; //future development? 3/5/18
-
+  private double acceleration = 0.0000001; //in m/s^2
+  private double force = 0; //in N
+  private boolean isMoving = false;
+  private final int capacityOfTrain = TrainData.MAX_PASSENGERS * TrainData.NUMBER_OF_CARS;
   private double positionInBlock = 0; //The number of meters from the border of the current block.
   // Measured from the previous boarder to front of train.
 
@@ -544,35 +553,35 @@ public class TrainModel implements TrainModelInterface {
     return currentTemp;
   }
 
-  public SimpleDoubleProperty massProperty() {
+  public DoubleProperty massProperty() {
     return mass;
   }
 
-  public SimpleDoubleProperty velocityProperty() {
+  public DoubleProperty velocityProperty() {
     return velocity;
   }
 
-  public SimpleDoubleProperty powerCommandProperty() {
+  public DoubleProperty powerCommandProperty() {
     return powerCommand;
   }
 
-  public SimpleIntegerProperty numPassengersProperty() {
+  public IntegerProperty numPassengersProperty() {
     return numPassengers;
   }
 
-  public SimpleDoubleProperty heightProperty() {
+  public DoubleProperty heightProperty() {
     return height;
   }
 
-  public SimpleDoubleProperty widthProperty() {
+  public DoubleProperty widthProperty() {
     return width;
   }
 
-  public SimpleDoubleProperty lengthOfTrainProperty() {
+  public DoubleProperty lengthOfTrainProperty() {
     return lengthOfTrain;
   }
 
-  public SimpleDoubleProperty numberOfCarsProperty() {
+  public DoubleProperty numberOfCarsProperty() {
     return numberOfCars;
   }
 

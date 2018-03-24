@@ -1,4 +1,4 @@
-package trainmodel.view;
+package trainmodel.controller;
 
 import java.net.URL;
 import java.util.ResourceBundle;

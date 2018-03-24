@@ -5,7 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import trainmodel.view.TrainModelController;
+import trainmodel.controller.TrainModelController;
 
 public class TrainModelUserInterface {
 
