@@ -366,6 +366,10 @@ public class TrackModelController {
                 infra, elevation, cumEle, biDirectional, previous, next1,
                 next2, leftStation, rightStation);
 
+            if (splitLine[6].contains("YARD") && splitLine[6].contains("TO")) {
+              newTrack.setStartBlock(number);
+            }
+
             newTrack.addBlock(b);
 
           } else {
@@ -443,6 +447,17 @@ public class TrackModelController {
       System.out.println("Unable to find the file.");
     } catch (IOException ex) {
       System.out.println("Error reading file");
+    }
+  }
+
+  public Track getTrack(String trackName) {
+
+    Track val = listOfTracks.get(trackName.toUpperCase());
+
+    if (val != null) {
+      return val;
+    } else {
+      return null;
     }
   }
 }
