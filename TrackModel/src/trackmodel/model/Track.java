@@ -145,7 +145,7 @@ public class Track {
                   infra, elevation, cumEle, biDirectional, previous, next1,
                   next2, leftStation, rightStation);
 
-              if (splitLine[6].contains("YARD") && splitLine[6].contains("TO")) {
+              if (splitLine[6].contains("YARD") && splitLine[6].contains("FROM")) {
                 newTrack.setStartBlock(number);
               }
 
