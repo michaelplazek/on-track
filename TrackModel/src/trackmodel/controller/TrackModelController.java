@@ -30,6 +30,7 @@ import javafx.stage.Stage;
 import trackmodel.model.Block;
 import trackmodel.model.Switch;
 import trackmodel.model.Track;
+import trackmodel.view.TrackModelUserInterface;
 
 public class TrackModelController {
   //DROPDOWNS
@@ -82,10 +83,6 @@ public class TrackModelController {
    * This method initializes many of the fields.
    */
   public void initialize() {
-    populateDropdown();
-    populateSpinner();
-    makeBlockArray();
-
     uploadButton.setOnAction(this::handleImportTrack);
     start.setOnAction(this::toggleSelectedFailures);
     end.setOnAction(this::toggleSelectedFailures);
@@ -98,6 +95,10 @@ public class TrackModelController {
     for (String key: listOfTracks.keySet()) {
       listOfTracks.get(key).run();
     }
+  }
+
+  public void updateTracks() {
+    trackSelection.setItems(FXCollections.observableArrayList(Track.getListOfTracks().keySet()));
   }
 
   private void run() {
@@ -286,7 +287,7 @@ public class TrackModelController {
 
       while (line != null) {
         if (i == 0) {
-          System.out.println("Header Line");
+          //System.out.println("Header Line");
           //System.out.println(line);
           String[] splitLine = line.split(",");
           line = br.readLine();
@@ -309,38 +310,38 @@ public class TrackModelController {
             // Create a switch for the Track
 
             String lineId = splitLine[0];
-            System.out.print(lineId + "\t");
+            //System.out.print(lineId + "\t");
             String section = splitLine[1];
-            System.out.print(section + "\t");
+            //System.out.print(section + "\t");
             int number = Integer.parseInt(splitLine[2]);
-            System.out.print(number + "\t");
+            //System.out.print(number + "\t");
             float len = Float.parseFloat(splitLine[3]);
-            System.out.print(len + "\t");
+            //System.out.print(len + "\t");
             float grade = Float.parseFloat(splitLine[4]);
-            System.out.print(grade + "\t");
+            //System.out.print(grade + "\t");
             int speedLimit = Integer.parseInt(splitLine[5]);
-            System.out.print(speedLimit + "\t");
+            //System.out.print(speedLimit + "\t");
             String infra = splitLine[6];
-            System.out.print(infra + "\t");
+            //System.out.print(infra + "\t");
             float elevation = Float.parseFloat(splitLine[7]);
-            System.out.print(elevation + "\t");
+            //System.out.print(elevation + "\t");
             float cumEle = Float.parseFloat(splitLine[8]);
-            System.out.print(cumEle + "\t");
+            //System.out.print(cumEle + "\t");
             boolean biDirectional;
             if (splitLine[9].equals("")) {
               biDirectional = false;
             } else {
               biDirectional = true;
             }
-            System.out.print(biDirectional + "\t");
+            //System.out.print(biDirectional + "\t");
             int previous  = Integer.parseInt(splitLine[10]);
-            System.out.print(previous + "\t");
+            //System.out.print(previous + "\t");
             int next1 = Integer.parseInt(splitLine[11]);
-            System.out.print(next1 + "\t");
+            //System.out.print(next1 + "\t");
 
 
             int next2 = Integer.parseInt(splitLine[12]);
-            System.out.print(next2);
+            //System.out.print(next2);
 
             boolean rightStation = false;
             if (splitLine.length > 13) {
@@ -350,7 +351,7 @@ public class TrackModelController {
                 rightStation = true;
               }
             }
-            System.out.print(rightStation + "\t");
+            //System.out.print(rightStation + "\t");
 
             boolean leftStation = false;
             if (splitLine.length > 14) {
@@ -360,7 +361,7 @@ public class TrackModelController {
                 leftStation = true;
               }
             }
-            System.out.print(leftStation + "\t");
+            //System.out.print(leftStation + "\t");
 
             b = new Switch(lineId, section, number, len, grade, speedLimit,
                 infra, elevation, cumEle, biDirectional, previous, next1,
@@ -378,34 +379,34 @@ public class TrackModelController {
             //System.out.println(splitLine.length);
 
             String lineId = splitLine[0];
-            System.out.print(lineId + "\t");
+            //System.out.print(lineId + "\t");
             String section = splitLine[1];
-            System.out.print(section + "\t");
+            //System.out.print(section + "\t");
             int number = Integer.parseInt(splitLine[2]);
-            System.out.print(number + "\t");
+            //System.out.print(number + "\t");
             float len = Float.parseFloat(splitLine[3]);
-            System.out.print(len + "\t");
+            //System.out.print(len + "\t");
             float grade = Float.parseFloat(splitLine[4]);
-            System.out.print(grade + "\t");
+            //System.out.print(grade + "\t");
             int speedLimit = Integer.parseInt(splitLine[5]);
-            System.out.print(speedLimit + "\t");
+            //System.out.print(speedLimit + "\t");
             String infra = splitLine[6];
-            System.out.print(infra + "\t");
+            //System.out.print(infra + "\t");
             float elevation = Float.parseFloat(splitLine[7]);
-            System.out.print(elevation + "\t");
+            //System.out.print(elevation + "\t");
             float cumEle = Float.parseFloat(splitLine[8]);
-            System.out.print(cumEle + "\t");
+            //System.out.print(cumEle + "\t");
             boolean biDirectional;
             if (splitLine[9].equals("")) {
               biDirectional = false;
             } else {
               biDirectional = true;
             }
-            System.out.print(biDirectional + "\t");
+            //System.out.print(biDirectional + "\t");
             int previous  = Integer.parseInt(splitLine[10]);
-            System.out.print(previous + "\t");
+            //System.out.print(previous + "\t");
             int next1 = Integer.parseInt(splitLine[11]);
-            System.out.print(next1 + "\t");
+            //System.out.print(next1 + "\t");
 
             boolean rightStation = false;
             if (splitLine.length > 13) {
@@ -415,7 +416,7 @@ public class TrackModelController {
                 rightStation = true;
               }
             }
-            System.out.print(rightStation + "\t");
+            //System.out.print(rightStation + "\t");
 
             boolean leftStation = false;
             if (splitLine.length > 14) {
@@ -425,7 +426,7 @@ public class TrackModelController {
                 leftStation = true;
               }
             }
-            System.out.print(leftStation + "\t");
+            //System.out.print(leftStation + "\t");
 
             b = new Block(lineId, section, number, len, grade,
                 speedLimit, infra, elevation, cumEle, biDirectional,
@@ -434,7 +435,7 @@ public class TrackModelController {
             newTrack.addBlock(b);
           }
 
-          System.out.println();
+          //System.out.println();
           line = br.readLine();
         }
       }
@@ -442,7 +443,7 @@ public class TrackModelController {
       trackSections.put(lineName, sections);
       trackBlockNum.put(lineName, blocks);
 
-      System.out.println(newTrack.getNumberOfBlocks());
+      //System.out.println(newTrack.getNumberOfBlocks());
     } catch (FileNotFoundException ex) {
       System.out.println("Unable to find the file.");
     } catch (IOException ex) {

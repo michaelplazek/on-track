@@ -1,5 +1,13 @@
 package trackmodel.model;
 
+import trackmodel.view.TrackModelUserInterface;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -12,6 +20,8 @@ public class Track {
   private ArrayList<Integer> closedBlocks;
 
   private static HashMap<String, Track> listOfTracks = new HashMap<>();
+  private static HashMap<String, ArrayList<Integer>> blockNumbers = new HashMap<>();
+  private static HashMap<String, ArrayList<String>> sectionsId = new HashMap<>();
 
   /**
    * This is the constructor to create a Track.
@@ -20,7 +30,216 @@ public class Track {
   public Track(String line) {
     this.track = new HashMap<>();
     this.line = line;
-    listOfTracks.put(line.toUpperCase(), this);
+    addTrack(line.toUpperCase(), this);
+  }
+
+  public static void addTrack(String n, Track t) {
+    listOfTracks.put(n.toUpperCase(), t);
+    TrackModelUserInterface.getInstance().getController().updateTracks();
+  }
+
+  public static void initialize() {
+
+    File f = null;
+
+    try {
+      f = new File(Track.class.getResource("green.csv").toURI());
+
+      try {
+        BufferedReader br = new BufferedReader(new FileReader(f));
+
+        String line = br.readLine();
+        int i = 0;
+
+        String filename = f.getName();
+        int fileNamePeriodPosition = filename.indexOf('.');
+        String lineName = filename.substring(0, fileNamePeriodPosition);
+        lineName = lineName.toUpperCase();
+
+        Track newTrack = new Track(lineName);
+
+        listOfTracks.put(lineName, newTrack);
+
+        ArrayList<String> sections = new ArrayList<String>();
+        ArrayList<Integer> blocks = new ArrayList<Integer>();
+
+        while (line != null) {
+          if (i == 0) {
+            //System.out.println("Header Line");
+            //System.out.println(line);
+            String[] splitLine = line.split(",");
+            line = br.readLine();
+            i++;
+          } else {
+
+            String[] splitLine = line.split(",");
+
+            if (!sections.contains(splitLine[1])) {
+              sections.add(splitLine[1]);
+            }
+
+            if (!blocks.contains(Integer.parseInt(splitLine[2]))) {
+              blocks.add(Integer.parseInt(splitLine[2]));
+            }
+
+            Block b;
+
+            if (splitLine[6].contains("SWITCH")) {
+              // Create a switch for the Track
+
+              String lineId = splitLine[0];
+              //System.out.print(lineId + "\t");
+              String section = splitLine[1];
+              //System.out.print(section + "\t");
+              int number = Integer.parseInt(splitLine[2]);
+              //System.out.print(number + "\t");
+              float len = Float.parseFloat(splitLine[3]);
+              //System.out.print(len + "\t");
+              float grade = Float.parseFloat(splitLine[4]);
+              //System.out.print(grade + "\t");
+              int speedLimit = Integer.parseInt(splitLine[5]);
+              //System.out.print(speedLimit + "\t");
+              String infra = splitLine[6];
+              //System.out.print(infra + "\t");
+              float elevation = Float.parseFloat(splitLine[7]);
+              //System.out.print(elevation + "\t");
+              float cumEle = Float.parseFloat(splitLine[8]);
+              //System.out.print(cumEle + "\t");
+              boolean biDirectional;
+              if (splitLine[9].equals("")) {
+                biDirectional = false;
+              } else {
+                biDirectional = true;
+              }
+              //System.out.print(biDirectional + "\t");
+              int previous  = Integer.parseInt(splitLine[10]);
+              //System.out.print(previous + "\t");
+              int next1 = Integer.parseInt(splitLine[11]);
+              //System.out.print(next1 + "\t");
+
+
+              int next2 = Integer.parseInt(splitLine[12]);
+              //System.out.print(next2);
+
+              boolean rightStation = false;
+              if (splitLine.length > 13) {
+                if (splitLine[13].equals("")) {
+                  rightStation = false;
+                } else {
+                  rightStation = true;
+                }
+              }
+              //System.out.print(rightStation + "\t");
+
+              boolean leftStation = false;
+              if (splitLine.length > 14) {
+                if (splitLine[14].equals("")) {
+                  leftStation = false;
+                } else {
+                  leftStation = true;
+                }
+              }
+              //System.out.print(leftStation + "\t");
+
+              b = new Switch(lineId, section, number, len, grade, speedLimit,
+                  infra, elevation, cumEle, biDirectional, previous, next1,
+                  next2, leftStation, rightStation);
+
+              if (splitLine[6].contains("YARD") && splitLine[6].contains("TO")) {
+                newTrack.setStartBlock(number);
+              }
+
+              newTrack.addBlock(b);
+
+            } else {
+              //Create a Block for the Track
+
+              //System.out.println(splitLine.length);
+
+              String lineId = splitLine[0];
+              //System.out.print(lineId + "\t");
+              String section = splitLine[1];
+              //System.out.print(section + "\t");
+              int number = Integer.parseInt(splitLine[2]);
+              //System.out.print(number + "\t");
+              float len = Float.parseFloat(splitLine[3]);
+              //System.out.print(len + "\t");
+              float grade = Float.parseFloat(splitLine[4]);
+              //System.out.print(grade + "\t");
+              int speedLimit = Integer.parseInt(splitLine[5]);
+              //System.out.print(speedLimit + "\t");
+              String infra = splitLine[6];
+              //System.out.print(infra + "\t");
+              float elevation = Float.parseFloat(splitLine[7]);
+              //System.out.print(elevation + "\t");
+              float cumEle = Float.parseFloat(splitLine[8]);
+              //System.out.print(cumEle + "\t");
+              boolean biDirectional;
+              if (splitLine[9].equals("")) {
+                biDirectional = false;
+              } else {
+                biDirectional = true;
+              }
+              //System.out.print(biDirectional + "\t");
+              int previous  = Integer.parseInt(splitLine[10]);
+              //System.out.print(previous + "\t");
+              int next1 = Integer.parseInt(splitLine[11]);
+              //System.out.print(next1 + "\t");
+
+              boolean rightStation = false;
+              if (splitLine.length > 13) {
+                if (splitLine[13].equals("")) {
+                  rightStation = false;
+                } else {
+                  rightStation = true;
+                }
+              }
+              //System.out.print(rightStation + "\t");
+
+              boolean leftStation = false;
+              if (splitLine.length > 14) {
+                if (splitLine[14].equals("")) {
+                  leftStation = false;
+                } else {
+                  leftStation = true;
+                }
+              }
+              //System.out.print(leftStation + "\t");
+
+              b = new Block(lineId, section, number, len, grade,
+                  speedLimit, infra, elevation, cumEle, biDirectional,
+                  previous, next1, leftStation, rightStation);
+
+              newTrack.addBlock(b);
+            }
+
+            //System.out.println();
+            line = br.readLine();
+          }
+        }
+
+        sectionsId.put(lineName, sections);
+        blockNumbers.put(lineName, blocks);
+
+        System.out.println(newTrack.getNumberOfBlocks());
+      } catch (FileNotFoundException ex) {
+        System.out.println("Unable to find the file.");
+      } catch (IOException ex) {
+        System.out.println("Error reading file");
+      }
+
+
+    } catch (URISyntaxException ue) {
+      System.out.println("URI Error");
+    }
+
+    System.out.println(f.getAbsolutePath());
+
+    if (f.exists()) {
+      System.out.println("File Found");
+    } else {
+      System.out.println("File Not Found");
+    }
   }
 
   public static HashMap<String, Track> getListOfTracks() {
