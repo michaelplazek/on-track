@@ -29,7 +29,7 @@ public class Switch extends Block {
    * @param leftDoors If the track is on the left of the track
    * @param rightDoors If the station is on the right of the track
    */
-  public Switch(String line, String section, String number, float length,
+  public Switch(String line, String section, int number, float length,
                 float grade, int speedLimit, String infrastructure, float elevation,
                 float cumElevation, boolean biDirectional, int previous, int next1,
                 int next2, boolean leftDoors, boolean rightDoors) {
@@ -37,6 +37,8 @@ public class Switch extends Block {
     super(line, section, number, length, grade, speedLimit, infrastructure, elevation,
         cumElevation, biDirectional, previous, next1, leftDoors, rightDoors);
     this.next2 = next2;
+    this.status = next1;
+    this.switchState = true;
   }
 
   /**

@@ -74,13 +74,13 @@ public class Runner extends Application {
   private void initialize() {
 
     //TODO: Insert Track Initializer Here
-    sampleTrackMaker();
+    //sampleTrackMaker();
 
+    Track.initialize();
     clk.setInitialTime();
     clk.tick();
     ctc.initialize();
     TrackControllerInitializer.parseTrack();
-
   }
 
   // TODO: replace this awful function with a real one
