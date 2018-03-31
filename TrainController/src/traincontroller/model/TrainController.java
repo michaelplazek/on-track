@@ -290,7 +290,7 @@ public class TrainController implements TrainControllerInterface {
     trainModel.setLightStatus(lightStatus);
   }
 
-  public TrainModelEnums.LightStatus getLightStatus() {
+  public OnOffStatus getLightStatus() {
     return trainModel.getLightStatus();
   }
 

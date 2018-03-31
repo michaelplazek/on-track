@@ -14,6 +14,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import traincontroller.model.TrainController;
 import traincontroller.model.TrainControllerManager;
+import utils.train.TrainModelEnums;
 import utils.train.TrainModelEnums.DoorStatus;
 import utils.train.TrainModelEnums.OnOffStatus;
 

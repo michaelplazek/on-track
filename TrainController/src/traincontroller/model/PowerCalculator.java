@@ -24,10 +24,10 @@ public class PowerCalculator {
     double speedLimit = getSpeedLimit(tc, safeStopDistance);
     if (tc.isAutomatic()) {
       if (currentSpeed > setSpeed) {
-        tc.setServiceBrake(TrainModelEnums.BrakeStatus.ON);
+        tc.setServiceBrake(TrainModelEnums.OnOffStatus.ON);
         tc.setPowerCommand(0.0);
       } else if (safeStopDistance <= authority * 1.01) {
-        tc.setServiceBrake(TrainModelEnums.BrakeStatus.ON);
+        tc.setServiceBrake(TrainModelEnums.OnOffStatus.ON);
         tc.setPowerCommand(0.0);
       } else {
         tc.setPowerCommand(getPowerCommand(tc));
