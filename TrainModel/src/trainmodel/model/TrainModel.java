@@ -351,24 +351,6 @@ public class TrainModel implements TrainModelInterface {
     this.powerCommand.set(powerCommand);
   }
 
-  //Will get called by MBO (or TrackModel?)
-  // - to send speed and authority over antenna and pass to TrainController.
-  @Override
-  public void setAntennaSignal(float speed, float authority) {
-
-    //if Manual Mode call this
-    if (!isMovingBlockMode) {
-      this.controller.setAntennaSignal(speed, authority);
-
-      this.controller.setTrackCircuitSignal(speed, authority);
-    } else {
-      //if MBO mode call this
-      // this.controller.setAntennaSignal(mboSpeed);
-    }
-
-
-  }
-
   @Override
   public void setBeaconSignal(Byte[] beaconSignal) {
     //When in manual mode Speed/Auth and Beacon signal comes from track model.

@@ -21,33 +21,11 @@ public class TrainControllerManager {
   public static void runTrainControllers() {
     Map<String, TrainController> trains = getTrainControllers();
     for (String s : trains.keySet()) {
-      run(trains.get(s));
+      TrainController tc = trains.get(s);
+      if (tc.isRunning()) {
+        PowerCalculator.run(tc);
+      }
     }
-  }
-
-  private static void run(TrainController tc) {
-
-  }
-
-  private static float getSetSpeed() {
-    return 0;
-  }
-
-  private static float getNextSpeedLimit(Block currentBlock) {
-    return 0;
-  }
-
-  private static int checkForFailures() {
-    return 0;
-  }
-
-  private static double calculatePowerCommand(double lastSpeed,
-                                              double currentSpeed, double setSpeed) {
-    return 0;
-  }
-
-  private static void updateValues() {
-
   }
 
   /**
