@@ -23,6 +23,7 @@ import trackmodel.model.Block;
 import trackmodel.model.Switch;
 import trackmodel.model.Track;
 import traincontroller.model.TrainControllerManager;
+import trainmodel.model.TrainModel;
 
 public class Runner extends Application {
 
@@ -50,6 +51,7 @@ public class Runner extends Application {
                   clk.tick();
                   ctcc.run();
                   TrainControllerManager.runTrainControllers();
+                  TrainModel.runAllInstances();
                 }
               }
             }

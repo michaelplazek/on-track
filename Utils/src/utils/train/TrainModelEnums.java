@@ -6,23 +6,6 @@ package utils.train;
  */
 public final class TrainModelEnums {
 
-  public enum BrakeStatus {
-    ON("ON"),
-    OFF("OFF");
-
-    private String status;
-
-    private BrakeStatus(String status) {
-      this.status = status;
-    }
-
-    @Override
-    public String toString() {
-      return status;
-    }
-
-  }
-
   public enum DoorStatus {
     OPEN("OPEN"),
     CLOSED("CLOSED");
@@ -34,7 +17,7 @@ public final class TrainModelEnums {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
       return status;
     }
 
@@ -51,12 +34,13 @@ public final class TrainModelEnums {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
       return status;
     }
 
   }
 
+  //TODO: Delete. (No MBO)
   public enum AntennaStatus {
     CONNECTED("CONNECTED"),
     DISCONNECTED("DISCONNECTED");
@@ -68,27 +52,27 @@ public final class TrainModelEnums {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
       return status;
     }
 
   }
 
-  public enum LightStatus {
+  public enum OnOffStatus {
     ON("ON"),
-    OFF("OFF");
+    OFF("OFF"),
+    FAILED("FAILED");
 
     private String status;
 
-    private LightStatus(String status) {
+    private OnOffStatus(String status) {
       this.status = status;
     }
 
     @Override
-    public String toString(){
+    public String toString() {
       return status;
     }
-
   }
 
 }

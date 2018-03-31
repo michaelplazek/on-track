@@ -26,12 +26,9 @@ public class TrainModelTest {
     trainModel.addPassengers(1);
     assertEquals(1, trainModel.numPassengersProperty().get(), 0);
     assertEquals(TrainData.EMPTY_WEIGHT + TrainData.PASSENGER_WEIGHT, trainModel.getMass(), .01);
-    assertEquals(TrainData.MAX_PASSENGERS - 1, trainModel.capacityProperty().get(), 0);
     trainModel.addPassengers(299);
     assertEquals(TrainData.MAX_PASSENGERS, trainModel.numPassengersProperty().get(), 0);
     assertEquals(TrainData.EMPTY_WEIGHT + (TrainData.PASSENGER_WEIGHT * TrainData.MAX_PASSENGERS), trainModel.getMass(), .01);
-    assertEquals(0, trainModel.capacityProperty().get(), 0);
-    assertEquals(0, trainModel.capacityProperty().get());
   }
 
   @Test
@@ -39,11 +36,9 @@ public class TrainModelTest {
     trainModel.removePassengers(1);
     assertEquals(221, trainModel.numPassengersProperty().get());
     assertEquals(TrainData.EMPTY_WEIGHT + (221 * TrainData.PASSENGER_WEIGHT), trainModel.getMass(), .01);
-    assertEquals(1, trainModel.capacityProperty().get(), 0);
     trainModel.removePassengers(299);
     assertEquals(0, trainModel.numPassengersProperty().get());
     assertEquals(TrainData.EMPTY_WEIGHT, trainModel.getMass(), .01);
-    assertEquals(TrainData.MAX_PASSENGERS, trainModel.capacityProperty().get(), 0);
   }
 
   @Test

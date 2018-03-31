@@ -8,7 +8,9 @@ import trackmodel.model.Track;
 import trainmodel.model.TrainModel;
 import trainmodel.model.TrainModelFactory;
 import trainmodel.model.TrainModelInterface;
-import utils.train.TrainModelEnums;
+import utils.train.TrainModelEnums.DoorStatus;
+import utils.train.TrainModelEnums.OnOffStatus;
+
 
 public class TrainController implements TrainControllerInterface {
 
@@ -237,12 +239,12 @@ public class TrainController implements TrainControllerInterface {
     this.automatic = automatic;
   }
 
-  public void setServiceBrake(TrainModelEnums.BrakeStatus brakeStatus) {
+  public void setServiceBrake(OnOffStatus brakeStatus) {
     this.integral = 0;
     trainModel.setServiceBrakeStatus(brakeStatus);
   }
 
-  public void setEmergencyBrake(TrainModelEnums.BrakeStatus brakeStatus) {
+  public void setEmergencyBrake(OnOffStatus brakeStatus) {
     this.integral = 0;
     trainModel.setEmergencyBrakeStatus(brakeStatus);
   }
@@ -265,30 +267,30 @@ public class TrainController implements TrainControllerInterface {
 
   @Override
   public void activateEmergencyBrake() {
-    this.setEmergencyBrake(TrainModelEnums.BrakeStatus.ON);
+    this.setEmergencyBrake(OnOffStatus.ON);
   }
 
-  public void setRightDoorStatus(TrainModelEnums.DoorStatus doorStatus) {
+  public void setRightDoorStatus(DoorStatus doorStatus) {
     trainModel.setRightDoorStatus(doorStatus);
   }
 
-  public TrainModelEnums.DoorStatus getRightDoorStatus() {
+  public DoorStatus getRightDoorStatus() {
     return trainModel.getRightDoorStatus();
   }
 
-  public void setLeftDoorStatus(TrainModelEnums.DoorStatus doorStatus) {
+  public void setLeftDoorStatus(DoorStatus doorStatus) {
     trainModel.setLeftDoorStatus(doorStatus);
   }
 
-  public TrainModelEnums.DoorStatus getLeftDoorStatus() {
+  public DoorStatus getLeftDoorStatus() {
     return trainModel.getLeftDoorStatus();
   }
 
-  public void setLightStatus(TrainModelEnums.LightStatus lightStatus) {
+  public void setLightStatus(OnOffStatus lightStatus) {
     trainModel.setLightStatus(lightStatus);
   }
 
-  public TrainModelEnums.LightStatus getLightStatus() {
+  public OnOffStatus getLightStatus() {
     return trainModel.getLightStatus();
   }
 
