@@ -18,9 +18,8 @@ public class TrainData {
   public static final double HEIGHT_OF_TRAIN = 3.42; //meters
   public static final int MAX_PASSENGERS = 222;
   public static final double MAX_SPEED = 70; //km/hr
-  public static final double SERVICE_BRAKE_ACCELERATION = -1.2; // m/s^2 (@ 2/3 load)
-  public static final double EMERGENCY_BRAKE_ACCELERATION = -2.73; // m/s^2 (@ 2/3 load)
+  public static final double SERVICE_BRAKE_ACCELERATION = -1.2; // m/s^2 (when train empty)
+  public static final double EMERGENCY_BRAKE_ACCELERATION = -2.73; // m/s^2 (when train empty)
   public static final double PASSENGER_WEIGHT = 68.0389; //Weight of one passenger in kg (150lbs)
   public static final int MAX_POWER = 120; //(Max motor power = 120kW)
-
 }
