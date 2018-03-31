@@ -17,7 +17,7 @@ public final class TrainModelEnums {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
       return status;
     }
 
