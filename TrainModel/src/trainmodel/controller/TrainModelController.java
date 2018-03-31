@@ -1,6 +1,8 @@
 package trainmodel.controller;
 
 import java.net.URL;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
@@ -216,39 +218,38 @@ public class TrainModelController implements Initializable {
     //Initialize status labels. If connection fails use default ("N/A").
     //TODO: Initialize labels with real data
     StringConverter<Number> numberStringConverter = new NumberStringConverter();
+    NumberFormat formatter = new DecimalFormat("#0.00");
     Bindings.bindBidirectional(numberOfPassengers.textProperty(),
         trainModel.numPassengersProperty(), numberStringConverter);
     Bindings.bindBidirectional(weight.textProperty(),
-        trainModel.massProperty(), numberStringConverter);
+        trainModel.massProperty(), formatter);
     Bindings.bindBidirectional(powerOutputStatus.textProperty(),
-        trainModel.powerCommandProperty(), numberStringConverter);
+        trainModel.powerCommandProperty(), formatter);
     Bindings.bindBidirectional(currentSpeedStatus.textProperty(),
-        trainModel.velocityProperty(), numberStringConverter);
+        trainModel.velocityProperty(), formatter);
     Bindings.bindBidirectional(cabinTemp.textProperty(),
-        trainModel.currentTempProperty(), numberStringConverter);
+        trainModel.currentTempProperty(), formatter);
     Bindings.bindBidirectional(length.textProperty(),
-        trainModel.lengthOfTrainProperty(), numberStringConverter);
+        trainModel.lengthOfTrainProperty(), formatter);
     Bindings.bindBidirectional(width.textProperty(),
-        trainModel.widthProperty(), numberStringConverter);
+        trainModel.widthProperty(), formatter);
     Bindings.bindBidirectional(height.textProperty(),
-        trainModel.heightProperty(), numberStringConverter);
+        trainModel.heightProperty(), formatter);
     Bindings.bindBidirectional(numberOfCars.textProperty(),
-        trainModel.numberOfCarsProperty(), numberStringConverter);
+        trainModel.numberOfCarsProperty(), formatter);
 
+    currentTrack.textProperty().bind(trainModel.activeTrackProperty());
+    currentBlockStatus.textProperty().bind(trainModel.currentBlockProperty());
     capacity.setText(String.valueOf(trainModel.getCapacityOfTrain()));
 
 
     setSpeedStatus.textProperty().setValue("45"); //Will be received from TrainController
-
     setAuthorityStatus.textProperty().setValue("1000");
-    serviceBrakeStatus.textProperty().setValue("OK");
-    currentBlockStatus.textProperty().setValue("WAITING");
-    currentTrack.textProperty().setValue("OK");
     //currentTrack.textProperty().set(trainModel.getActiveTrack().getLine());
     nextStation.textProperty().setValue("Downtown");
-    time.textProperty().setValue(Clock.getInstance().getFormattedTime());
     stationStatus.textProperty().setValue("IN ROUTE");
 
+    time.textProperty().setValue(Clock.getInstance().getFormattedTime());
     beaconStatus.textProperty().bind(trainModel.trackLineStatusProperty().asString());
     gpsAntenaStatus.textProperty().bind(trainModel.antennaStatusProperty().asString());
     leftDoorStatus.textProperty().bind(trainModel.leftDoorStatusProperty().asString());

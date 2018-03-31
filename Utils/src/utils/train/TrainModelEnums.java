@@ -40,6 +40,7 @@ public final class TrainModelEnums {
 
   }
 
+  //TODO: Delete. (No MBO)
   public enum AntennaStatus {
     CONNECTED("CONNECTED"),
     DISCONNECTED("DISCONNECTED");
@@ -59,7 +60,8 @@ public final class TrainModelEnums {
 
   public enum OnOffStatus {
     ON("ON"),
-    OFF("OFF");
+    OFF("OFF"),
+    FAILED("FAILED");
 
     private String status;
 

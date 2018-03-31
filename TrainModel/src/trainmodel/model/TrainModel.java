@@ -97,12 +97,11 @@ public class TrainModel implements TrainModelInterface {
 
   private Track activeTrack;
   private Block currentBlock; //where the head of the train is.
+  private StringProperty currentBlockName = new SimpleStringProperty("Yard");
+  private StringProperty activeTrackName = new SimpleStringProperty("");
   private Block previousBlock;
   
   private Block trailingBlock; // used when train spans over 2 blocks. Maybe?
-
-
-
 
   private boolean isMovingBlockMode = false;
 
@@ -166,7 +165,6 @@ public class TrainModel implements TrainModelInterface {
       this.mass.set(
           (TrainData.EMPTY_WEIGHT + (TrainData.MAX_PASSENGERS * TrainData.PASSENGER_WEIGHT))
           - (TrainData.MAX_PASSENGERS * TrainData.PASSENGER_AVG_MASS_KG));
-
     }
   }
   
@@ -269,6 +267,7 @@ public class TrainModel implements TrainModelInterface {
       updatePosition();
       brake();
       updateOccupancy();
+      changeTemperature();
     }
   }
 
@@ -348,6 +347,49 @@ public class TrainModel implements TrainModelInterface {
     } else {
       acStatus.setValue(OnOffStatus.ON);
       heaterStatus.setValue(OnOffStatus.OFF);
+    }
+  }
+
+  /**
+   * Called in Run() method to change temperature if needed.
+   */
+  private void changeTemperature() {
+    if (this.needsCooled()) {
+      coolTrain();
+    } else if (this.needsHeated()) {
+      heatTrain();
+    }
+  }
+
+  private void coolTrain() {
+    heaterStatus.set(OnOffStatus.OFF);
+    acStatus.setValue(OnOffStatus.ON);
+
+    currentTemp.setValue(currentTemp.getValue()
+        - (TrainData.TEMPERATURE_RATE_OF_CHANGE * clock.getChangeInTime()));
+  }
+
+  private void heatTrain() {
+    heaterStatus.set(OnOffStatus.ON);
+    acStatus.setValue(OnOffStatus.OFF);
+
+    currentTemp.setValue(currentTemp.getValue()
+        + (TrainData.TEMPERATURE_RATE_OF_CHANGE * clock.getChangeInTime()));
+  }
+
+  private boolean needsCooled() {
+    if (currentTemp.getValue() > setTemp.getValue()) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  private boolean needsHeated() {
+    if (currentTemp.getValue() < setTemp.getValue()) {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -505,6 +547,7 @@ public class TrainModel implements TrainModelInterface {
   }
 
 
+
   public int getMaxPower() {
     return TrainData.MAX_POWER;
   }
@@ -541,8 +584,16 @@ public class TrainModel implements TrainModelInterface {
     return activeTrack;
   }
 
+  public StringProperty activeTrackProperty() {
+    return activeTrackName;
+  }
+
   public Block getCurrentBlock() {
     return currentBlock;
+  }
+
+  public StringProperty currentBlockProperty() {
+    return currentBlockName;
   }
 
   public Block getPreviousBlock() {
