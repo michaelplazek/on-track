@@ -1,5 +1,5 @@
 .idea
 out/
 TrainModel/src/trainmodel/view/TrainModelUIView_Moc.fxml
-
+.DS_Store
 *.uml

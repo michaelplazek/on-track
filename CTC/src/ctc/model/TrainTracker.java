@@ -55,6 +55,8 @@ public class TrainTracker {
     TrainControllerFactory.create(id, line);
   }
 
+  public void update() {}
+
   public Schedule getSchedule() {
     return schedule;
   }

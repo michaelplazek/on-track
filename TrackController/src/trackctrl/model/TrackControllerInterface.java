@@ -1,22 +1,21 @@
 package trackctrl.model;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import trackmodel.model.Block;
 
 public interface TrackControllerInterface {
 
   //To be set by the CTC
-  boolean setAuthority(int block, float authority);
+  boolean sendTrackSignals(int blockId, float speed, float authority);
 
-  boolean setSuggestedSpeed(int block, float setSpeed);
-
-  public boolean setSwitchOverride(int block, boolean state);
+  boolean setSwitchOverride(int block, boolean state);
 
   //To be relayed to the Track model
-  boolean relayAuthority(int block, double authority);
+  boolean relayAuthority(int block, float authority);
 
-  boolean relaySetSpeed(int block, double setSpeed);
+  boolean relaySetSpeed(int block, float setSpeed);
 
   //To be called by TrackController and/or CTC
   boolean setInfrastructureState(int block, boolean state);
@@ -25,6 +24,8 @@ public interface TrackControllerInterface {
   boolean setId(int id);
 
   void setZone(HashMap<Integer, Block> blocks);
+
+  ArrayList<String> getZone();
 
   boolean addBlock(Block newBlock);
 
@@ -36,9 +37,17 @@ public interface TrackControllerInterface {
 
   boolean toggleSwitch(int id);
 
+  boolean toggleCrossing(int id);
+
+  boolean setTrackLights(int id, boolean state, boolean direction);
+
   int getId();
 
   //To be called within TrackController
   boolean importLogic(File myplc);
+
+  boolean checkLogic();
+
+  boolean parseLogic(String inFile);
 
 }

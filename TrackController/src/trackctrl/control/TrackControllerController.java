@@ -12,8 +12,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.ImageView;
@@ -41,6 +39,8 @@ public class TrackControllerController implements Initializable {
   //Buttons
   @FXML
   private Button importLogic;
+  @FXML
+  private Button checkLogic;
 
   //Radio Buttons
   @FXML
@@ -48,9 +48,13 @@ public class TrackControllerController implements Initializable {
   @FXML
   private RadioButton automaticRad;
   @FXML
-  private RadioButton redRad;
+  private RadioButton lightMainLtoR;
   @FXML
-  private RadioButton greenRad;
+  private RadioButton lightForkLtoR;
+  @FXML
+  private RadioButton lightMainRtoL;
+  @FXML
+  private RadioButton lightForkRtoL;
   @FXML
   private RadioButton closedRad;
   @FXML
@@ -59,20 +63,28 @@ public class TrackControllerController implements Initializable {
   private RadioButton alterRad;
   @FXML
   private RadioButton stayRad;
+  @FXML
+  private RadioButton blockBrokenRad;
+  @FXML
+  private RadioButton blockRepairedRad;
 
   //Choice Boxes
   @FXML
-  private ChoiceBox sectionChoice;
-
-  //Spinner
-  @FXML
-  private Spinner blockSpin;
+  private ChoiceBox blockChoice;
 
   //Circles (used as lights)
   @FXML
-  private Circle lightGreen;
+  private Circle fromLight0;
   @FXML
-  private Circle lightRed;
+  private Circle fromLight1;
+  @FXML
+  private Circle mainLight0;
+  @FXML
+  private Circle mainLight1;
+  @FXML
+  private Circle forkLight0;
+  @FXML
+  private Circle forkLight1;
   @FXML
   private Circle blockStatus;
   @FXML
@@ -89,6 +101,16 @@ public class TrackControllerController implements Initializable {
   private ImageView mainSwitch;
   @FXML
   private ImageView forkSwitch;
+  @FXML
+  private ImageView lightSwitch;
+  @FXML
+  private ImageView switchMainRtoL;
+  @FXML
+  private ImageView switchMainLtoR;
+  @FXML
+  private ImageView switchForkRtoL;
+  @FXML
+  private ImageView switchForkLtoR;
 
   //Labels
   @FXML
@@ -103,6 +125,8 @@ public class TrackControllerController implements Initializable {
   ToggleGroup lightGroup = new ToggleGroup();
   ToggleGroup crossingGroup = new ToggleGroup();
   ToggleGroup switchGroup = new ToggleGroup();
+  ToggleGroup repairGroup = new ToggleGroup();
+
 
   private TrackController myController;
   private ClockInterface theClock;
@@ -115,13 +139,19 @@ public class TrackControllerController implements Initializable {
    * FAKE DATA FOR THE UI DEMO.
    */
   private void populateDropDowns() {
-    ObservableList<String> sectionsA = FXCollections.observableArrayList(
-             "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M");
+    ObservableList<String> blockList = FXCollections.observableArrayList(myController.getZone());
+    blockChoice.setValue("Select Block");
+    blockChoice.setItems(blockList);
 
-    ObservableList<String> sectionsN = FXCollections.observableArrayList(
-            "Select section", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z");
-    sectionChoice.setValue("");
-    sectionChoice.setItems(sectionsN);
+    //Action Event for block selection
+    blockChoice.getSelectionModel().selectedItemProperty()
+        .addListener((observableValue, oldValue, newValue) -> {
+          if (!(blockChoice.getSelectionModel()
+              .getSelectedItem().equals("Select Block"))) {
+            //Block selected, update UI
+            //TODO
+          }
+        });
   }
 
   private void handleOpGroup(ActionEvent event) {
@@ -137,16 +167,19 @@ public class TrackControllerController implements Initializable {
     }
   }
 
+  //TODO: add support for bidirectional/unidirectional track for lights
   private void handleLightGroup(ActionEvent event) {
 
-    if (lightGroup.getSelectedToggle().equals(greenRad)) {
-      //Check that track is indeed functional
-
-      //If functional, assert green value in the GUI
-      setGreen();
+    if (lightGroup.getSelectedToggle().equals(lightMainLtoR)) {
+      setMainLightsLtoR();
+    } else if (lightGroup.getSelectedToggle().equals(lightForkLtoR)) {
+      setForkLightsLtoR();
+    } else if (lightGroup.getSelectedToggle().equals(lightMainRtoL)) {
+      setMainLightsRtoL();
+    } else if (lightGroup.getSelectedToggle().equals(lightForkRtoL)) {
+      setForkLightsRtoL();
     } else {
-      //Assert red value in GUI
-      setRed();
+      //Do nothing
     }
   }
 
@@ -164,6 +197,7 @@ public class TrackControllerController implements Initializable {
 
   private void handleSwitchGroup(ActionEvent event) {
 
+    // TODO: store or fetch old value of radio buttons
     if (switchGroup.getSelectedToggle().equals(stayRad)) {
       //Check that switch is functional
 
@@ -174,6 +208,12 @@ public class TrackControllerController implements Initializable {
     }
   }
 
+  //TODO
+  private void handleRepairGroup(ActionEvent event) {
+
+  }
+
+  //TODO
   private void handleImportLogic(ActionEvent event) {
     FileChooser fileChooser = new FileChooser();
     fileChooser.setTitle("Choose a PLC  file");
@@ -181,11 +221,15 @@ public class TrackControllerController implements Initializable {
         .addAll(new FileChooser.ExtensionFilter("PLC Files", ".plc", ".csv"));
 
     File inFile = fileChooser.showOpenDialog((Stage) importLogic.getScene().getWindow());
+
+    myController.importLogic(inFile);
   }
 
-  private void setSpinnerBounds() {
-    SpinnerValueFactory myBlocks = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 150);
-    blockSpin.setValueFactory(myBlocks);
+  //TODO
+  private void handleCheckLogic(ActionEvent event) {
+    if (!(myController.checkLogic())) {
+      //Display error
+    }
   }
 
   private void groupRadioButtons() {
@@ -208,11 +252,15 @@ public class TrackControllerController implements Initializable {
 
 
     //Lights
-    redRad.setToggleGroup(lightGroup);
-    greenRad.setToggleGroup(lightGroup);
-    greenRad.setSelected(true);
-    greenRad.setOnAction(this::handleLightGroup);
-    redRad.setOnAction(this::handleLightGroup);
+    lightMainLtoR.setToggleGroup(lightGroup);
+    lightForkLtoR.setToggleGroup(lightGroup);
+    lightMainRtoL.setToggleGroup(lightGroup);
+    lightForkRtoL.setToggleGroup(lightGroup);
+    lightMainLtoR.setSelected(true);
+    lightMainLtoR.setOnAction(this::handleLightGroup);
+    lightForkLtoR.setOnAction(this::handleLightGroup);
+    lightMainRtoL.setOnAction(this::handleLightGroup);
+    lightForkRtoL.setOnAction(this::handleLightGroup);
 
 
     //Crossing
@@ -228,44 +276,87 @@ public class TrackControllerController implements Initializable {
     stayRad.setToggleGroup(switchGroup);
     stayRad.setOnAction(this::handleSwitchGroup);
     alterRad.setOnAction(this::handleSwitchGroup);
+
+    //Track block maintanence
+    blockBrokenRad.setToggleGroup(repairGroup);
+    blockRepairedRad.setToggleGroup(repairGroup);
+    blockBrokenRad.setOnAction(this::handleRepairGroup);
+    blockRepairedRad.setOnAction(this::handleRepairGroup);
+
+  }
+
+  private void resetLightSwitch() {
+    switchMainRtoL.setOpacity(0);
+    switchMainLtoR.setOpacity(0);
+    switchForkRtoL.setOpacity(0);
+    switchForkLtoR.setOpacity(0);
   }
 
   private void disableRadios() {
-    redRad.setDisable(true);
-    greenRad.setDisable(true);
+    lightMainLtoR.setDisable(true);
+    lightForkLtoR.setDisable(true);
+    lightMainRtoL.setDisable(true);
+    lightForkRtoL.setDisable(true);
     closedRad.setDisable(true);
     openRad.setDisable(true);
     stayRad.setDisable(true);
     alterRad.setDisable(true);
+    blockBrokenRad.setDisable(true);
+    blockRepairedRad.setDisable(true);
   }
 
   private void enableRadios() {
-    redRad.setDisable(false);
-    greenRad.setDisable(false);
+    lightMainLtoR.setDisable(false);
+    lightForkLtoR.setDisable(false);
+    lightMainRtoL.setDisable(false);
+    lightForkRtoL.setDisable(false);
     closedRad.setDisable(false);
     openRad.setDisable(false);
     stayRad.setDisable(false);
     alterRad.setDisable(false);
+    blockBrokenRad.setDisable(false);
+    blockRepairedRad.setDisable(false);
   }
 
-  private void setGreen() {
-    /**
-     * Set our lights to Green
-     * Green: ON
-     * Red:   OFF
-     */
-    lightGreen.setFill(Paint.valueOf("Green"));
-    lightRed.setFill(Paint.valueOf("Gray"));
+  private void setMainLightsLtoR() {
+    mainLight0.setFill(Paint.valueOf("#24c51b"));
+    mainLight1.setFill(Paint.valueOf("Red"));
+    fromLight0.setFill(Paint.valueOf("#24c51b"));
+    fromLight1.setFill(Paint.valueOf("Red"));
+
+    //set images
+    resetLightSwitch();
+    lightSwitch.setOpacity(0);
+    switchMainLtoR.setOpacity(100);
   }
 
-  private void setRed() {
-    /**
-     * Set our lights to Red
-     * Green: OFF
-     * Red:   ON
-     */
-    lightRed.setFill(Paint.valueOf("Red"));
-    lightGreen.setFill(Paint.valueOf("Gray"));
+  private void setMainLightsRtoL() {
+
+    // Find correct light status based on boolean logic
+
+    //set images
+    resetLightSwitch();
+    lightSwitch.setOpacity(0);
+    switchMainRtoL.setOpacity(100);
+  }
+
+  private void setForkLightsLtoR() {
+
+    // Find correct light status based on boolean logic
+
+
+    resetLightSwitch();
+    lightSwitch.setOpacity(0);
+    switchForkLtoR.setOpacity(100);
+  }
+
+  private void setForkLightsRtoL() {
+
+    // Find correct light status based on boolean logic
+
+    resetLightSwitch();
+    lightSwitch.setOpacity(0);
+    switchForkRtoL.setOpacity(100);
   }
 
   private void setClosed() {
@@ -319,6 +410,17 @@ public class TrackControllerController implements Initializable {
   }
 
   /**
+   * This function is run on each tick of the clock and will update data
+   * on the blocks under the control of the accessed Controller.
+   */
+  public void run() {
+    //Force values on track based on occupancy and switch state
+    myController.assertLogic();
+
+    //Update UI based on changes in Selected block
+  }
+
+  /**
    * This method will be automatically called upon the initialization of the MVC.
    */
   @Override
@@ -328,10 +430,11 @@ public class TrackControllerController implements Initializable {
 
     //Init UI
     populateDropDowns();
-    setSpinnerBounds();
     groupRadioButtons();
     setOpen();
     setSwitchInactive();
+    resetLightSwitch();
     importLogic.setOnAction(this::handleImportLogic);
+    checkLogic.setOnAction(this::handleCheckLogic);
   }
 }

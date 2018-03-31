@@ -66,14 +66,14 @@ public class Block {
    *@param leftStation This indicates that the station is on the left of the track
    *@param rightStation This indicates that the station is on the right of the track
    */
-  public Block(String line, String section, String number, float length,
+  public Block(String line, String section, int number, float length,
                float grade, int speedLimit, String infrastructure, float elevation,
                float cumElevation, boolean isBiDirectional, int previous, int next1,
                boolean leftStation, boolean rightStation) {
 
     setLine(line);
     setSection(section);
-    setNumber(Integer.parseInt(number));
+    setNumber(number);
     setSize(length);
     setGrade(grade);
     setSpeedLimit(speedLimit);
