@@ -22,7 +22,7 @@ public class TrainControllerManager {
     Map<String, TrainController> trains = getTrainControllers();
     for (String s : trains.keySet()) {
       TrainController tc = trains.get(s);
-      if(tc.isRunning()) {
+      if (tc.isRunning()) {
         PowerCalculator.run(tc);
       }
     }

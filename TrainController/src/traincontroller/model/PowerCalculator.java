@@ -2,6 +2,8 @@ package traincontroller.model;
 
 import mainmenu.Clock;
 import mainmenu.ClockInterface;
+import trackmodel.model.Block;
+import trackmodel.model.Track;
 import trainmodel.model.TrainModelInterface;
 import utils.train.TrainData;
 import utils.train.TrainModelEnums;
@@ -19,6 +21,7 @@ public class PowerCalculator {
     double setSpeed = tc.getSetSpeed();
     double safeStopDistance = getSafeStopDistance(tc);
     double authority = tc.getAuthority();
+    double speedLimit = getSpeedLimit(tc, safeStopDistance);
     if (tc.isAutomatic()) {
       if (currentSpeed > setSpeed) {
         tc.setServiceBrake(TrainModelEnums.BrakeStatus.ON);
@@ -32,6 +35,33 @@ public class PowerCalculator {
     }
     tc.setCurrentSpeed(currentSpeed);
     tc.setCurrentTemperature(trainModel.getCurrentTemp());
+  }
+
+  static double getSpeedLimit(TrainController tc, double safeStopDistance) {
+    double remainingDistance = safeStopDistance + tc.getDistanceIntoCurrentBlock();
+    return recursiveSpeedLimit(tc.getCurrentBlock(), tc.getLastBlock(), remainingDistance);
+  }
+
+  private static double recursiveSpeedLimit(Block currentBlock, Block lastBlock,
+                                            double remainingDistance) {
+    if (currentBlock == null) {
+      return 0;
+    }
+    double max;
+    Track track = Track.getTrack(currentBlock.getLine());
+    remainingDistance -= currentBlock.getSize();
+    if (remainingDistance <= 0) {
+      max = currentBlock.getSpeedLimit();
+    } else {
+      max = Math.max(currentBlock.getSpeedLimit(), recursiveSpeedLimit(
+          track.getNextBlock(lastBlock.getNumber(), currentBlock.getNumber()),
+          currentBlock, remainingDistance));
+      if (currentBlock.isSwitch()) {
+        max = Math.max(max, recursiveSpeedLimit(
+            track.getNextBlock2(currentBlock.getNumber()), currentBlock, remainingDistance));
+      }
+    }
+    return max;
   }
 
   static double getSafeStopDistance(TrainController tc) {
@@ -65,5 +95,4 @@ public class PowerCalculator {
 
     return power;
   }
-
 }

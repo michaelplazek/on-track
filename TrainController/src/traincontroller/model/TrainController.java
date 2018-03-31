@@ -4,6 +4,7 @@ package traincontroller.model;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import trackmodel.model.Block;
+import trackmodel.model.Track;
 import trainmodel.model.TrainModel;
 import trainmodel.model.TrainModelFactory;
 import trainmodel.model.TrainModelInterface;
@@ -29,7 +30,9 @@ public class TrainController implements TrainControllerInterface {
   private SimpleStringProperty currentStation;
   private SimpleStringProperty nextStation;
   private Block currentBlock;
+  private Block lastBlock;
   private double integral;
+  private double distanceIntoCurrentBlock;
 
 
   /**
@@ -38,6 +41,8 @@ public class TrainController implements TrainControllerInterface {
    * @param line String for line that train is running on
    */
   TrainController(String id, String line) {
+    this.trainModel = TrainModelFactory.createTrainModel(this, id, line);
+
     this.id = new SimpleStringProperty(id);
     this.line = new SimpleStringProperty(line);
     this.currentSpeed = new SimpleDoubleProperty(0);
@@ -52,12 +57,9 @@ public class TrainController implements TrainControllerInterface {
     this.currentStation = new SimpleStringProperty("N/A");
     this.nextStation = new SimpleStringProperty("N/A");
     this.integral = 0;
-    running = false;
-
-    this.trainModel = TrainModelFactory.createTrainModel(this, id, line);
-  }
-
-  public void setAntennaSignal(float speed, float authority) {
+    this.running = false;
+    this.currentBlock = Track.getListOfTracks().get(line).getStartBlock();
+    this.lastBlock = null;
 
   }
 
@@ -65,8 +67,18 @@ public class TrainController implements TrainControllerInterface {
 
   }
 
-  public void setTrackCircuitSignal(float speed, float authority) {
-
+  /**
+   * Sets set speed and authority received through track circuit,
+   * which causes the integral to reset.
+   * @param setSpeed set speed that the train should aim for
+   * @param authority authority of the train
+   */
+  public void setTrackCircuitSignal(float setSpeed, float authority) {
+    if (setSpeed != this.getSetSpeed()) {
+      this.integral = 0;
+      this.setSpeed.set(setSpeed);
+    }
+    this.authority.set(authority);
   }
 
   protected String getId() {
@@ -226,10 +238,12 @@ public class TrainController implements TrainControllerInterface {
   }
 
   public void setServiceBrake(TrainModelEnums.BrakeStatus brakeStatus) {
+    this.integral = 0;
     trainModel.setServiceBrakeStatus(brakeStatus);
   }
 
   public void setEmergencyBrake(TrainModelEnums.BrakeStatus brakeStatus) {
+    this.integral = 0;
     trainModel.setEmergencyBrakeStatus(brakeStatus);
   }
 
@@ -239,6 +253,14 @@ public class TrainController implements TrainControllerInterface {
 
   public void setCurrentBlock(Block currentBlock) {
     this.currentBlock = currentBlock;
+  }
+
+  public Block getLastBlock() {
+    return this.lastBlock;
+  }
+
+  public void setLastBlock(Block lastBlock) {
+    this.lastBlock = lastBlock;
   }
 
   @Override
@@ -276,6 +298,14 @@ public class TrainController implements TrainControllerInterface {
 
   public double getIntegral() {
     return integral;
+  }
+
+  public void setDistanceIntoCurrentBlock(double distanceIntoCurrentBlock) {
+    this.distanceIntoCurrentBlock = distanceIntoCurrentBlock;
+  }
+
+  public double getDistanceIntoCurrentBlock() {
+    return distanceIntoCurrentBlock;
   }
 
   protected void start() {
