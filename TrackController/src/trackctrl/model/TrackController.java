@@ -24,13 +24,15 @@ public class TrackController implements TrackControllerInterface {
   public TrackController() {
     //Zero Id indicates Controller is not initialized
     this.id = 0;
-    neighborCtrlr1 = new TrackController();
-    neighborCtrlr2 = new TrackController();
+//    neighborCtrlr1 = new TrackController();
+//    neighborCtrlr2 = new TrackController();
   }
 
   public TrackController(int id, int offset) {
     this.id = id;
     this.trackOffset = offset;
+    neighborCtrlr1 = new TrackController();
+    neighborCtrlr2 = new TrackController();
   }
 
   /**
@@ -104,7 +106,9 @@ public class TrackController implements TrackControllerInterface {
   //TODO
   @Override
   public boolean addBlock(Block newBlock) {
-    return false;
+
+    myZone.put(newBlock.getNumber(), newBlock);
+    return myZone.containsValue(newBlock);
   }
 
   @Override

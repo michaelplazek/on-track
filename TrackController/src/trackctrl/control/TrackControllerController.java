@@ -150,6 +150,9 @@ public class TrackControllerController implements Initializable {
               .getSelectedItem().equals("Select Block"))) {
             //Block selected, update UI
             //TODO
+            //updateLights();
+            //updateCrossing();
+            //updateSwitch();
           }
         });
   }

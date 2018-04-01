@@ -82,7 +82,8 @@ public class Runner extends Application {
     clk.setInitialTime();
     clk.tick();
     ctc.initialize();
-    TrackControllerInitializer.parseTrack();
+    TrackControllerInitializer init = new TrackControllerInitializer();
+    init.parseTrack();
   }
 
   // TODO: replace this awful function with a real one
