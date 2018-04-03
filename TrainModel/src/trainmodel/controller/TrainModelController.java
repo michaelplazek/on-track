@@ -128,10 +128,6 @@ public class TrainModelController implements Initializable {
   @FXML
   private Label beaconStatus;
   @FXML
-  private Label gpsAntenaStatus;
-  @FXML
-  private Label mboAntenaStatus;
-  @FXML
   private Label cabinTemp;
   @FXML
   private Label heaterStatus;
@@ -251,11 +247,9 @@ public class TrainModelController implements Initializable {
 
     time.textProperty().setValue(Clock.getInstance().getFormattedTime());
     beaconStatus.textProperty().bind(trainModel.trackLineStatusProperty().asString());
-    gpsAntenaStatus.textProperty().bind(trainModel.antennaStatusProperty().asString());
     leftDoorStatus.textProperty().bind(trainModel.leftDoorStatusProperty().asString());
     rightDoorStatus.textProperty().bind(trainModel.rightDoorStatusProperty().asString());
     lightStatus.textProperty().bind(trainModel.lightStatusProperty().asString());
-    mboAntenaStatus.textProperty().bind(trainModel.antennaStatusProperty().asString());
     emergencyBrakeStatus.textProperty().bind(trainModel.emergencyBrakeStatusProperty().asString());
     serviceBrakeStatus.textProperty().bind(trainModel.serviceBrakeStatusProperty().asString());
     acStatus.textProperty().bind(trainModel.acStatusProperty().asString());

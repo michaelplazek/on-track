@@ -40,24 +40,6 @@ public final class TrainModelEnums {
 
   }
 
-  //TODO: Delete. (No MBO)
-  public enum AntennaStatus {
-    CONNECTED("CONNECTED"),
-    DISCONNECTED("DISCONNECTED");
-
-    private String status;
-
-    private AntennaStatus(String status) {
-      this.status = status;
-    }
-
-    @Override
-    public String toString() {
-      return status;
-    }
-
-  }
-
   public enum OnOffStatus {
     ON("ON"),
     OFF("OFF"),

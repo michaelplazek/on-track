@@ -1,6 +1,7 @@
 package trainmodel.model;
 
 import java.util.HashMap;
+import java.util.Random;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
@@ -18,7 +19,6 @@ import trackmodel.model.Block;
 import trackmodel.model.Track;
 import traincontroller.model.TrainControllerInterface;
 import utils.train.TrainData;
-import utils.train.TrainModelEnums.AntennaStatus;
 import utils.train.TrainModelEnums.DoorStatus;
 import utils.train.TrainModelEnums.OnOffStatus;
 import utils.train.TrainModelEnums.TrackLineStatus;
@@ -74,8 +74,6 @@ public class TrainModel implements TrainModelInterface {
       = new SimpleObjectProperty<>(DoorStatus.CLOSED);
   private ObjectProperty<DoorStatus> leftDoorStatus
       = new SimpleObjectProperty<>(DoorStatus.CLOSED);
-  private ObjectProperty<AntennaStatus> antennaStatus
-      = new SimpleObjectProperty<>(AntennaStatus.CONNECTED);
   private ObjectProperty<TrackLineStatus> trackLineStatus
       = new SimpleObjectProperty<>(TrackLineStatus.CONNECTED);
   private ObjectProperty<OnOffStatus> serviceBrakeStatus
@@ -103,7 +101,9 @@ public class TrainModel implements TrainModelInterface {
   
   private Block trailingBlock; // used when train spans over 2 blocks. Maybe?
 
-  private boolean isMovingBlockMode = false;
+  private boolean isAtStation = false;
+  private boolean isStationOnLeft = false;
+  private boolean isStationOnRight = false;
 
   //Speed and Authority from MBO gets passed to TrainController in MBO mode.
   // private float mboSpeed;
@@ -167,9 +167,15 @@ public class TrainModel implements TrainModelInterface {
           - (TrainData.MAX_PASSENGERS * TrainData.PASSENGER_AVG_MASS_KG));
     }
   }
-  
-  private void setAndConvertMassToImperial(Double mass) {
-    this.mass.setValue(mass * UnitConversions.KGS_TO_LBS);
+
+  /**
+   * Called when train stops at a station.
+   * When train is at a station a random number of passengers leave the train.
+   */
+  private void randomPassengersLeave() {
+    Random randomPassengerNum = new Random();
+    int numPassengers = randomPassengerNum.nextInt(TrainData.MAX_PASSENGERS);
+    removePassengers(numPassengers);
   }
 
   /**
@@ -207,6 +213,8 @@ public class TrainModel implements TrainModelInterface {
   private void updateCurrentBlock() {
     Block next = activeTrack.getBlock(currentBlock.getNextBlock1());
     currentBlock = next;
+
+    updateStationSide();
   }
 
   /**
@@ -327,6 +335,55 @@ public class TrainModel implements TrainModelInterface {
   }
 
   /**
+   * Updates the statuses for the train to know when it is at a station
+   * and which side the station is on.
+   */
+  private void updateStationSide() {
+    if (currentBlock.isLeftStation()) {
+      this.isStationOnLeft = true;
+      this.isAtStation = true;
+    } else if (currentBlock.isRightStation()) {
+      this.isStationOnRight = true;
+      this.isAtStation = true;
+    } else {
+      this.isStationOnLeft = false;
+      this.isStationOnRight = false;
+      this.isAtStation = false;
+    }
+  }
+
+  /**
+   * Opens the left doors when at a station and stopped.
+   */
+  private void openLeftDoors() {
+    if (isAtStation && isStationOnLeft && (velocity.getValue() == 0)) {
+      leftDoorStatus.set(DoorStatus.OPEN);
+      randomPassengersLeave();
+      addPassengers(currentBlock.getPassengers(TrainData.MAX_PASSENGERS - numPassengers.get()));
+    }
+  }
+
+  /**
+   * Opens the right doors when at a station and stopped.
+   */
+  private void openRightDoors() {
+    if (isAtStation && isStationOnRight && (velocity.getValue() == 0)) {
+      rightDoorStatus.setValue(DoorStatus.OPEN);
+      randomPassengersLeave();
+      addPassengers(currentBlock.getPassengers(TrainData.MAX_PASSENGERS - numPassengers.get()));
+    }
+  }
+
+  private void closeRightDoors() {
+    rightDoorStatus.setValue(DoorStatus.CLOSED);
+  }
+
+  private void closeLeftDoors() {
+    leftDoorStatus.setValue(DoorStatus.CLOSED);
+  }
+
+
+  /**
    * Toggles status of trains heater.
    */
   public void toggleHeater() {
@@ -412,18 +469,21 @@ public class TrainModel implements TrainModelInterface {
   }
 
   @Override
-  public void setAntennaStatus(AntennaStatus antennaStatus) {
-    this.antennaStatus.set(antennaStatus);
-  }
-
-  @Override
   public void setLeftDoorStatus(DoorStatus leftDoorStatus) {
-    this.leftDoorStatus.set(leftDoorStatus);
+    if (leftDoorStatus.equals(DoorStatus.CLOSED)) {
+      closeLeftDoors();
+    } else if (leftDoorStatus.equals(DoorStatus.OPEN)) {
+      openLeftDoors();
+    }
   }
 
   @Override
   public void setRightDoorStatus(DoorStatus rightDoorStatus) {
-    this.rightDoorStatus.set(rightDoorStatus);
+    if (rightDoorStatus.equals(DoorStatus.CLOSED)) {
+      closeRightDoors();
+    } else if (rightDoorStatus.equals(DoorStatus.OPEN)) {
+      openRightDoors();
+    }
   }
 
   @Override
@@ -459,10 +519,6 @@ public class TrainModel implements TrainModelInterface {
     this.controller.setBeaconSignal(beaconSignal);
   }
 
-  public void setMovingBlockMode(boolean movingBlockMode) {
-    this.isMovingBlockMode = movingBlockMode;
-  }
-
   public void setController(TrainControllerInterface controller) {
     this.controller = controller;
   }
@@ -478,11 +534,6 @@ public class TrainModel implements TrainModelInterface {
   /**
    * Getters.
    */
-  @Override
-  public GpsLocation getGpsLocation() {
-    return gpsLocation;
-  }
-
   @Override
   public double getCurrentSpeed() {
     return velocity.getValue();
@@ -504,11 +555,6 @@ public class TrainModel implements TrainModelInterface {
   }
 
   @Override
-  public AntennaStatus getAntennaStatus() {
-    return antennaStatus.get();
-  }
-
-  @Override
   public DoorStatus getLeftDoorStatus() {
     return leftDoorStatus.get();
   }
@@ -527,8 +573,6 @@ public class TrainModel implements TrainModelInterface {
   public double getCurrentTemp() {
     return currentTemp.getValue();
   }
-
-
 
   public int getMaxPower() {
     return TrainData.MAX_POWER;
@@ -634,10 +678,6 @@ public class TrainModel implements TrainModelInterface {
     return leftDoorStatus;
   }
 
-  public ObjectProperty<AntennaStatus> antennaStatusProperty() {
-    return antennaStatus;
-  }
-
   public ObjectProperty<TrackLineStatus> trackLineStatusProperty() {
     return trackLineStatus;
   }
@@ -666,8 +706,17 @@ public class TrainModel implements TrainModelInterface {
     return FXCollections.observableArrayList(listOfTrainModels.keySet());
   }
 
-  public boolean isMovingBlockMode() {
-    return isMovingBlockMode;
+  public boolean isStationOnLeft() {
+    return isStationOnLeft;
+  }
+
+  public boolean isStationOnRight() {
+    return isStationOnRight;
+  }
+
+  public boolean isAtStation() {
+
+    return isAtStation;
   }
 
   public static TrainModel getTrainModel(String id) {

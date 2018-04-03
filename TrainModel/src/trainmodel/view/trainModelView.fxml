@@ -325,16 +325,6 @@
                                     </HBox>
                                     <HBox alignment="CENTER_LEFT">
                                        <children>
-                                          <Label text="GPS Antenna:" />
-                                       </children>
-                                    </HBox>
-                                    <HBox alignment="CENTER_LEFT">
-                                       <children>
-                                          <Label text="MBO Antenna:" />
-                                       </children>
-                                    </HBox>
-                                    <HBox alignment="CENTER_LEFT">
-                                       <children>
                                           <Label text="Temp:" />
                                        </children>
                                     </HBox>
@@ -370,16 +360,6 @@
                                     <HBox alignment="CENTER_RIGHT">
                                        <children>
                                           <Label fx:id="beaconStatus" text="Label" />
-                                       </children>
-                                    </HBox>
-                                    <HBox alignment="CENTER_RIGHT">
-                                       <children>
-                                          <Label fx:id="gpsAntenaStatus" text="Label" />
-                                       </children>
-                                    </HBox>
-                                    <HBox alignment="CENTER_RIGHT">
-                                       <children>
-                                          <Label fx:id="mboAntenaStatus" text="Label" />
                                        </children>
                                     </HBox>
                                     <HBox alignment="CENTER_RIGHT">
