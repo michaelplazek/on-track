@@ -272,9 +272,13 @@ public class TrainModel implements TrainModelInterface {
       updateAcceleration();
       updateVelocity();
       updateForce();
-      updatePosition();
+      if (this.activeTrack != null){
+        updatePosition();
+        updateOccupancy();
+        System.out.println("Train active track is null.");
+      }
+
       brake();
-      updateOccupancy();
       changeTemperature();
     }
   }
