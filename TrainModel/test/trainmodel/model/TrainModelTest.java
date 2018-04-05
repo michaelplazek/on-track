@@ -70,6 +70,15 @@ public class TrainModelTest {
     System.out.println("Acceleration: " + trainModel.getAcceleration());
     System.out.println("Velocity: " + trainModel.getVelocity());
     System.out.println("PowerCmd: " + trainModel.getPowerCommand());
+
+    trainModel.setPowerCommand(50.0);
+    trainModel.run();
+
+    System.out.println("Force: " + trainModel.getForce());
+    System.out.println("Acceleration: " + trainModel.getAcceleration());
+    System.out.println("Velocity: " + trainModel.getVelocity());
+    System.out.println("PowerCmd: " + trainModel.getPowerCommand());
+
   }
 
   @Test
@@ -116,6 +125,6 @@ public class TrainModelTest {
     assertEquals(0, trainModel.numPassengersProperty().get());
     assertEquals(TrainData.EMPTY_WEIGHT, trainModel.getMass(), .01);
   }
-  
+
 
 }

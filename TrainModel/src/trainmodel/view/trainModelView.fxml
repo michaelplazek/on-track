@@ -338,6 +338,11 @@
                                           <Label text="A/C:" />
                                        </children>
                                     </HBox>
+                                    <HBox alignment="CENTER_LEFT">
+                                       <children>
+                                          <Label text="Set Temp:" />
+                                       </children>
+                                    </HBox>
                                  </children>
                               </VBox>
                               <VBox alignment="TOP_CENTER">
@@ -378,6 +383,11 @@
                                           <Label fx:id="acStatus" text="Label" />
                                        </children>
                                     </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label fx:id="setTemperature" text="Label" />
+                                       </children>
+                                    </HBox>
                                  </children>
                               </VBox>
                            </children>
@@ -406,6 +416,12 @@
                            <children>
                               <Button fx:id="addPassenger" mnemonicParsing="false" onAction="#addPassenger" text="Add Passenger" />
                               <Button fx:id="removePassenger" mnemonicParsing="false" onAction="#removePassenger" text="Remove Passenger" />
+                           </children>
+                        </VBox>
+                        <VBox spacing="5.0">
+                           <children>
+                              <Button fx:id="demoHeatTrain" mnemonicParsing="false" onAction="#demoHeat" text="Demo heatTrain()" />
+                              <Button mnemonicParsing="false" text="Demo" />
                            </children>
                         </VBox>
                      </children>

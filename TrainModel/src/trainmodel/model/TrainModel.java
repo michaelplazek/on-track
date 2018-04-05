@@ -18,13 +18,11 @@ import mainmenu.controller.MainMenuController;
 import trackmodel.model.Block;
 import trackmodel.model.Track;
 import traincontroller.model.TrainControllerInterface;
+import utils.alerts.AlertWindow;
 import utils.train.TrainData;
 import utils.train.TrainModelEnums.DoorStatus;
 import utils.train.TrainModelEnums.OnOffStatus;
 import utils.train.TrainModelEnums.TrackLineStatus;
-import utils.unitconversion.UnitConversions;
-
-
 
 
 /**
@@ -58,6 +56,7 @@ public class TrainModel implements TrainModelInterface {
       = new SimpleDoubleProperty(70); //Current temp inside the train.
   private DoubleProperty setTemp
       = new SimpleDoubleProperty(70); //Set temp (will be set by TrainController)
+
   private DoubleProperty setSpeed = new SimpleDoubleProperty(0); //To link UI w/ TrainController
   private DoubleProperty setAuthority = new SimpleDoubleProperty(0); //To link UI w/ TrainController
   private StringProperty nextStation = new SimpleStringProperty("N/A"); //To link w/ UI
@@ -85,8 +84,7 @@ public class TrainModel implements TrainModelInterface {
   private ObjectProperty<OnOffStatus> acStatus
       = new SimpleObjectProperty<>(OnOffStatus.OFF);
 
-  private GpsLocation gpsLocation; //future development? 3/5/18
-  private double acceleration = 0.0000001; //in m/s^2
+  private double acceleration = 0.000001; //in m/s^2
   private double force = 0; //in N
   private boolean isMoving = false;
   private final int capacityOfTrain = TrainData.MAX_PASSENGERS * TrainData.NUMBER_OF_CARS;
@@ -244,7 +242,12 @@ public class TrainModel implements TrainModelInterface {
    * Updates acceleration.
    */
   private void updateAcceleration() {
-    acceleration = powerCommand.get() / (mass.get() * velocity.get());
+    if (velocity.get() == 0) {
+      acceleration = .000001;
+    } else {
+      acceleration = powerCommand.get() / (mass.get() * velocity.get());
+    }
+
   }
 
   /**
@@ -272,12 +275,10 @@ public class TrainModel implements TrainModelInterface {
       updateAcceleration();
       updateVelocity();
       updateForce();
-      if (this.activeTrack != null){
+      if (this.activeTrack != null) {
         updatePosition();
         updateOccupancy();
-        System.out.println("Train active track is null.");
       }
-
       brake();
       changeTemperature();
     }
@@ -356,6 +357,15 @@ public class TrainModel implements TrainModelInterface {
     }
   }
 
+  private void showDoorAlert() {
+    AlertWindow alert = new AlertWindow();
+    alert.setTitle("Doors can't be opened at this time.");
+    alert.setHeader("Doors can't be opened at this time.");
+    alert.setContent("Please make sure the train is stopped"
+        + " and at a station before opening the doors.");
+    alert.show();
+  }
+
   /**
    * Opens the left doors when at a station and stopped.
    */
@@ -364,6 +374,8 @@ public class TrainModel implements TrainModelInterface {
       leftDoorStatus.set(DoorStatus.OPEN);
       randomPassengersLeave();
       addPassengers(currentBlock.getPassengers(TrainData.MAX_PASSENGERS - numPassengers.get()));
+    } else {
+      showDoorAlert();
     }
   }
 
@@ -375,6 +387,8 @@ public class TrainModel implements TrainModelInterface {
       rightDoorStatus.setValue(DoorStatus.OPEN);
       randomPassengersLeave();
       addPassengers(currentBlock.getPassengers(TrainData.MAX_PASSENGERS - numPassengers.get()));
+    } else {
+      showDoorAlert();
     }
   }
 
@@ -384,31 +398,6 @@ public class TrainModel implements TrainModelInterface {
 
   private void closeLeftDoors() {
     leftDoorStatus.setValue(DoorStatus.CLOSED);
-  }
-
-
-  /**
-   * Toggles status of trains heater.
-   */
-  public void toggleHeater() {
-    if (heaterStatus.get().equals(OnOffStatus.ON)) {
-      heaterStatus.setValue(OnOffStatus.OFF);
-    } else {
-      heaterStatus.setValue(OnOffStatus.ON);
-      acStatus.setValue(OnOffStatus.OFF);
-    }
-  }
-
-  /**
-   * Toggles status of trains A/C.
-   */
-  public void toggleAc() {
-    if (acStatus.get().equals(OnOffStatus.ON)) {
-      acStatus.setValue(OnOffStatus.OFF);
-    } else {
-      acStatus.setValue(OnOffStatus.ON);
-      heaterStatus.setValue(OnOffStatus.OFF);
-    }
   }
 
   /**
@@ -422,24 +411,72 @@ public class TrainModel implements TrainModelInterface {
     }
   }
 
-  private void coolTrain() {
-    heaterStatus.set(OnOffStatus.OFF);
-    acStatus.setValue(OnOffStatus.ON);
+  private boolean almostEqual() {
+    return Math.abs(currentTemp.get() - setTemp.get()) < .0001;
+  }
 
-    currentTemp.setValue(currentTemp.getValue()
-        - (TrainData.TEMPERATURE_RATE_OF_CHANGE * clock.getChangeInTime()));
+  private void coolTrain() {
+    if (acStatus.get().equals(OnOffStatus.OFF)) {
+      heaterStatus.set(OnOffStatus.OFF);
+      acStatus.setValue(OnOffStatus.ON);
+    }
+
+
+    long deltaTime = clock.getChangeInTime();
+    double deltaTemp = deltaTime * TrainData.TEMPERATURE_RATE_OF_CHANGE;
+
+    if ((currentTemp.get() - deltaTemp) < setTemp.get()) {
+      currentTemp.setValue(setTemp.getValue());
+      acStatus.setValue(OnOffStatus.OFF);
+    } else {
+      currentTemp.setValue(currentTemp.getValue()
+          - deltaTemp);
+    }
   }
 
   private void heatTrain() {
-    heaterStatus.set(OnOffStatus.ON);
-    acStatus.setValue(OnOffStatus.OFF);
+    if (heaterStatus.get().equals(OnOffStatus.OFF)) {
+      heaterStatus.set(OnOffStatus.ON);
+      acStatus.setValue(OnOffStatus.OFF);
+    }
 
-    currentTemp.setValue(currentTemp.getValue()
-        + (TrainData.TEMPERATURE_RATE_OF_CHANGE * clock.getChangeInTime()));
+    long deltaTime = clock.getChangeInTime();
+    double deltaTemp = deltaTime * TrainData.TEMPERATURE_RATE_OF_CHANGE;
+
+    if ((currentTemp.get() + deltaTemp) > setTemp.get()) {
+      currentTemp.setValue(setTemp.getValue());
+      heaterStatus.setValue(OnOffStatus.OFF);
+    } else {
+      currentTemp.setValue(currentTemp.getValue()
+          + deltaTemp);
+    }
+  }
+
+  /**
+   * Will be used to test the heating of train.
+   * This will be used since getting the clock instance in the heatTrain() method
+   * is dependent on the CTC and the rest of the system.
+   * @param deltaT - the change in time.
+   */
+  public void heatTrainSimulation(long deltaT) {
+    if (this.needsHeated()) {
+
+      heaterStatus.set(OnOffStatus.ON);
+      acStatus.setValue(OnOffStatus.OFF);
+
+      if ((currentTemp.getValue()
+          + (TrainData.TEMPERATURE_RATE_OF_CHANGE * deltaT)) > setTemp.get()) {
+        currentTemp.setValue(setTemp.getValue());
+        heaterStatus.setValue(OnOffStatus.OFF);
+      } else {
+        currentTemp.setValue(currentTemp.getValue()
+            + (TrainData.TEMPERATURE_RATE_OF_CHANGE * deltaT));
+      }
+    }
   }
 
   private boolean needsCooled() {
-    if (currentTemp.getValue() > setTemp.getValue()) {
+    if ((currentTemp.getValue() > setTemp.get()) && !almostEqual()) {
       return true;
     } else {
       return false;
@@ -447,7 +484,7 @@ public class TrainModel implements TrainModelInterface {
   }
 
   private boolean needsHeated() {
-    if (currentTemp.getValue() < setTemp.getValue()) {
+    if ((currentTemp.getValue() < setTemp.get()) && !almostEqual()) {
       return true;
     } else {
       return false;
@@ -506,8 +543,8 @@ public class TrainModel implements TrainModelInterface {
   }
 
   @Override
-  public void setCurrentTemp(double currentTemp) {
-    this.currentTemp.setValue(currentTemp);
+  public void setTemp(double temperature) {
+    this.setTemp.setValue(temperature);
   }
 
   //Will be called by TrainController to give TrainModel the power command.
@@ -710,6 +747,14 @@ public class TrainModel implements TrainModelInterface {
     return FXCollections.observableArrayList(listOfTrainModels.keySet());
   }
 
+  public DoubleProperty setSpeedProperty() {
+    return setSpeed;
+  }
+
+  public DoubleProperty setAuthorityProperty() {
+    return setAuthority;
+  }
+
   public boolean isStationOnLeft() {
     return isStationOnLeft;
   }
@@ -721,6 +766,14 @@ public class TrainModel implements TrainModelInterface {
   public boolean isAtStation() {
 
     return isAtStation;
+  }
+
+  public DoubleProperty setTempProperty() {
+    return setTemp;
+  }
+
+  public double getSetTemp() {
+    return setTemp.get();
   }
 
   public static TrainModel getTrainModel(String id) {

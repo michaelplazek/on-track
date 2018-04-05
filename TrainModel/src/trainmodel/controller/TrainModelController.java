@@ -40,6 +40,8 @@ public class TrainModelController implements Initializable {
   private Button addPassenger;
   @FXML
   private Button removePassenger;
+  @FXML
+  private Button demoHeatTrain;
 
 
   //Main Buttons
@@ -133,6 +135,8 @@ public class TrainModelController implements Initializable {
   private Label heaterStatus;
   @FXML
   private Label acStatus;
+  @FXML
+  private Label setTemperature;
 
   /**
    * Train model && controller associated with UI (use for testing as of 3/11/18).
@@ -233,15 +237,19 @@ public class TrainModelController implements Initializable {
         trainModel.heightProperty(), formatter);
     Bindings.bindBidirectional(numberOfCars.textProperty(),
         trainModel.numberOfCarsProperty(), formatter);
+    Bindings.bindBidirectional(setSpeedStatus.textProperty(),
+        trainModel.setSpeedProperty(), formatter);
+    Bindings.bindBidirectional(setAuthorityStatus.textProperty(),
+        trainModel.setAuthorityProperty(), formatter);
+    Bindings.bindBidirectional(setTemperature.textProperty(),
+        trainModel.setTempProperty(), formatter);
+
+
 
     currentTrack.textProperty().bind(trainModel.activeTrackProperty());
     currentBlockStatus.textProperty().bind(trainModel.currentBlockProperty());
     capacity.setText(String.valueOf(trainModel.getCapacityOfTrain()));
 
-
-    setSpeedStatus.textProperty().setValue("45"); //Will be received from TrainController
-    setAuthorityStatus.textProperty().setValue("1000");
-    //currentTrack.textProperty().set(trainModel.getActiveTrack().getLine());
     nextStation.textProperty().setValue("Downtown");
     stationStatus.textProperty().setValue("IN ROUTE");
 
@@ -260,7 +268,13 @@ public class TrainModelController implements Initializable {
 
   @FXML
   private void demoClicked() throws InterruptedException {
-    runDemo();
+    System.out.println("Set Temp of train is " + trainModel.getSetTemp());
+  }
+
+  @FXML
+  private void demoHeat() {
+    trainModel.heatTrainSimulation(50000); //50ms deltaT
+    System.out.println("cabin temp is: " + trainModel.getCurrentTemp());
   }
 
 

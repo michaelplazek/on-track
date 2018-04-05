@@ -27,6 +27,6 @@ public class TrainData {
   public static final double PASSENGER_AVG_MASS_KG
       = 150 * LBS_TO_KG_CONVERSION; //assume each person is avg 150lbs
   public static final double PASSENGER_AVG_MASS_LBS = 150;
-  public static final double TEMPERATURE_RATE_OF_CHANGE = 1 / 60000;
+  public static final double TEMPERATURE_RATE_OF_CHANGE = 0.00001666666;
   //1 degree per minute = 1/60000 degree per millisecond.
 }

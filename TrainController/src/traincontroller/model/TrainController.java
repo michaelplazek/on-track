@@ -169,6 +169,7 @@ public class TrainController implements TrainControllerInterface {
 
   public void setSetTemperature(Double setTemperature) {
     this.setTemperature.set(setTemperature);
+    this.trainModel.setTemp(setTemperature);
   }
 
   public SimpleDoubleProperty getCurrentTemperatureProperty() {
