@@ -68,8 +68,6 @@ public class Track {
 
         while (line != null) {
           if (i == 0) {
-            //System.out.println("Header Line");
-            //System.out.println(line);
             String[] splitLine = line.split(",");
             line = br.readLine();
             i++;
@@ -135,8 +133,6 @@ public class Track {
             } else {
               //Create a Block for the Track
 
-              //System.out.println(splitLine.length);
-
               final String lineId = splitLine[0];
               final String section = splitLine[1];
               final int number = Integer.parseInt(splitLine[2]);
@@ -178,7 +174,6 @@ public class Track {
               newTrack.addBlock(b);
             }
 
-            //System.out.println();
             line = br.readLine();
           }
         }
@@ -186,7 +181,6 @@ public class Track {
         sectionsId.put(lineName, sections);
         blockNumbers.put(lineName, blocks);
 
-        System.out.println(newTrack.getNumberOfBlocks());
       } catch (FileNotFoundException ex) {
         System.out.println("Unable to find the file.");
       } catch (IOException ex) {
@@ -197,8 +191,6 @@ public class Track {
     } catch (URISyntaxException ue) {
       System.out.println("URI Error");
     }
-
-    System.out.println(f.getAbsolutePath());
 
     if (f.exists()) {
       System.out.println("File Found");
@@ -290,7 +282,7 @@ public class Track {
    * @param previousBlock This will return the prior block the train was on
    * @param currentBlock This will be the id of the current block the train is on
    */
-  public Block getNextBlock(int previousBlock, int currentBlock) {
+  public Block getNextBlock(int currentBlock, int previousBlock) {
     Block temp = track.get(currentBlock);
     if (temp.getPreviousBlock() == previousBlock) {
       return track.get(temp.getNextBlock1());

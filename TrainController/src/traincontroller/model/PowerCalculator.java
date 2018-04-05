@@ -54,7 +54,7 @@ public class PowerCalculator {
       max = currentBlock.getSpeedLimit();
     } else {
       max = Math.max(currentBlock.getSpeedLimit(), recursiveSpeedLimit(
-          track.getNextBlock(lastBlock.getNumber(), currentBlock.getNumber()),
+          track.getNextBlock(currentBlock.getNumber(), lastBlock.getNumber()),
           currentBlock, remainingDistance));
       if (currentBlock.isSwitch()) {
         max = Math.max(max, recursiveSpeedLimit(
