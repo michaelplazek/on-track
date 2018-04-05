@@ -173,6 +173,11 @@ public class Block {
         setUnderground(true);
       } else if (parts[i].equals("SWITCH")) {
         setSwitchHere(true);
+      } else if(parts[i].contains("SWITCH") &&
+          (parts[i].contains("TO") ||
+           parts[i].contains("FROM")) &&
+           parts[i].contains("YARD")) {
+        setSwitchHere(true);
       }
     }
   }
