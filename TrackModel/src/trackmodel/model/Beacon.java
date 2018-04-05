@@ -2,13 +2,13 @@ package trackmodel.model;
 
 public class Beacon {
 
-  public float distance;      //32
-  public byte stationId;      //8
-  public boolean right;       //1
-  public int blockId;         //32
-  public boolean underground; //1
+  private float distance;      //32
+  private byte stationId;      //8
+  private boolean right;       //1
+  private int blockId;         //32
+  private boolean underground; //1
 
-  public String userMessage;  // max of 6 characters
+  private String userMessage;  // max of 6 characters
 
   /**
    * This is the constructor for a beacon.
@@ -28,6 +28,10 @@ public class Beacon {
     this.blockId = blockId;
     this.underground = underground;
     this.userMessage = userMessage;
+  }
+
+  public Beacon() {
+
   }
 
   public float getDistance() {
