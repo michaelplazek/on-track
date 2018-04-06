@@ -204,11 +204,11 @@ public class TrainModelController implements Initializable {
     Bindings.bindBidirectional(numberOfPassengers.textProperty(),
         trainModel.numPassengersProperty(), numberStringConverter);
     Bindings.bindBidirectional(weight.textProperty(),
-        trainModel.mass_lbsProperty(), formatter);
+        trainModel.massLbsProperty(), formatter);
     Bindings.bindBidirectional(powerOutputStatus.textProperty(),
         trainModel.powerCommandProperty(), formatter);
     Bindings.bindBidirectional(currentSpeedStatus.textProperty(),
-        trainModel.velocity_mphProperty(), formatter);
+        trainModel.velocityMphProperty(), formatter);
     Bindings.bindBidirectional(cabinTemp.textProperty(),
         trainModel.currentTempProperty(), formatter);
     Bindings.bindBidirectional(length.textProperty(),
