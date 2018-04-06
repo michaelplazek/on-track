@@ -1,9 +1,11 @@
 package trackmodel.model;
 
 import ctc.model.CentralTrafficControl;
-import utils.general.Authority;
 
 import java.util.Random;
+
+import utils.general.Authority;
+
 
 public class Block {
 

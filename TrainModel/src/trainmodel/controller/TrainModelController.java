@@ -228,8 +228,6 @@ public class TrainModelController implements Initializable {
         trainModel.setSpeedProperty(), formatter);
     Bindings.bindBidirectional(setAuthorityStatus.textProperty(),
         trainModel.setAuthorityProperty(), formatter);
-    Bindings.bindBidirectional(setTemperature.textProperty(),
-        trainModel.setTempProperty(), formatter);
 
     currentTrack.textProperty().bind(trainModel.activeTrackProperty());
     currentBlockStatus.textProperty().bind(trainModel.currentBlockProperty());
@@ -244,17 +242,6 @@ public class TrainModelController implements Initializable {
     serviceBrakeStatus.textProperty().bind(trainModel.serviceBrakeStatusProperty().asString());
     acStatus.textProperty().bind(trainModel.acStatusProperty().asString());
     heaterStatus.textProperty().bind(trainModel.heaterStatusProperty().asString());
-  }
-
-
-  @FXML
-  private void demoClicked() throws InterruptedException {
-    System.out.println("Set Temp of train is " + trainModel.getSetTemp());
-  }
-
-  @FXML
-  private void demoHeat() {
-    trainModel.heatTrainSimulation(50000); //50ms deltaT
   }
 
 

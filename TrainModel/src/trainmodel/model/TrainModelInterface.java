@@ -50,8 +50,6 @@ public interface TrainModelInterface {
 
   void setAcStatus(OnOffStatus acStatus);
 
-  void setTemp(double temperature);
-
   void setPowerCommand(double powerCommand);
 
 }
