@@ -7,6 +7,7 @@ import sun.awt.image.ImageWatched;
 import trackmodel.model.Block;
 import trackmodel.model.Switch;
 import trackmodel.model.Track;
+import utils.general.Authority;
 
 public class Route {
 
@@ -14,6 +15,7 @@ public class Route {
   private Block start;
   private Block end;
   private Track line;
+  private TrainTracker train;
 
   /**
    * Default constructor.
@@ -24,10 +26,27 @@ public class Route {
     this.route = new LinkedList<>();
   }
 
-  protected Route(Block end, String line) {
+  /**
+   * Create a new route associated with a TrainTracker.
+   * @param end final block of the route
+   * @param line the line of the route
+   */
+  public Route(Block end, String line) {
 
     this.line = Track.getListOfTracks().get(line);
     createRoute(this.line.getStartBlock(), end);
+  }
+
+  /**
+   * Create a new route for rerouting a train down the track.
+   * @param start current Block
+   * @param end final Block
+   * @param line current line
+   */
+  public Route(Block start, Block end, String line) {
+
+    this.line = Track.getListOfTracks().get(line);
+    createRoute(start, end);
   }
 
   public Block getNext() {

@@ -25,7 +25,6 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
 
   private boolean isActive = false;
   private String line;
-  private String mode;
   private long time;
   private double hours;
   private int refresh;
@@ -58,7 +57,6 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
     this.refresh = 0;
     this.hours = 0.0001;
     this.totalPassengers = 0;
-    this.mode = "Fixed Block Mode";
   }
 
   /**
@@ -230,18 +228,4 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
     this.line = track;
   }
 
-  /**
-   * This is called to toggle between moving block and fixed block mode.
-   * @return the new mode after the toggle
-   */
-  public String toggleMode() {
-
-    if (this.mode.equals("Fixed Block Mode")) {
-      this.mode = "Moving Block Mode";
-      return this.mode;
-    } else {
-      this.mode = "Fixed Block Mode";
-      return this.mode;
-    }
-  }
 }
