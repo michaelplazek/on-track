@@ -231,8 +231,6 @@ public class TrainModelController implements Initializable {
     Bindings.bindBidirectional(setTemperature.textProperty(),
         trainModel.setTempProperty(), formatter);
 
-
-
     currentTrack.textProperty().bind(trainModel.activeTrackProperty());
     currentBlockStatus.textProperty().bind(trainModel.currentBlockProperty());
     capacity.setText(String.valueOf(trainModel.getCapacityOfTrain()));
@@ -246,7 +244,6 @@ public class TrainModelController implements Initializable {
     serviceBrakeStatus.textProperty().bind(trainModel.serviceBrakeStatusProperty().asString());
     acStatus.textProperty().bind(trainModel.acStatusProperty().asString());
     heaterStatus.textProperty().bind(trainModel.heaterStatusProperty().asString());
-
   }
 
 
