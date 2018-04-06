@@ -1,7 +1,5 @@
 package trainmodel.model;
 
-import trainmodel.model.GpsLocation;
-import utils.train.TrainModelEnums.AntennaStatus;
 import utils.train.TrainModelEnums.DoorStatus;
 import utils.train.TrainModelEnums.OnOffStatus;
 import utils.train.TrainModelEnums.TrackLineStatus;
@@ -26,8 +24,6 @@ public interface TrainModelInterface {
 
   TrackLineStatus getTrackLineStatus();
 
-  AntennaStatus getAntennaStatus();
-
   DoorStatus getLeftDoorStatus();
 
   DoorStatus getRightDoorStatus();
@@ -38,15 +34,11 @@ public interface TrainModelInterface {
 
   //Setters
 
-  //  void setCurrentSpeed(double currentSpeed); shouldn't be able to set current speed 2/19/18
-
   void setEmergencyBrakeStatus(OnOffStatus brakeStatus);
 
   void setServiceBrakeStatus(OnOffStatus brakeStatus);
 
   void setTrackLineStatus(TrackLineStatus trackLineStatus);
-
-  void setAntennaStatus(AntennaStatus antennaStatus);
 
   void setLeftDoorStatus(DoorStatus leftDoorStatus);
 
@@ -58,15 +50,6 @@ public interface TrainModelInterface {
 
   void setAcStatus(OnOffStatus acStatus);
 
-  void setCurrentTemp(double currentTemp);
-
   void setPowerCommand(double powerCommand);
-
-  /**
-   * The following methods are getters/setters for data going to the Moving Block Overlay.
-   */
-  GpsLocation getGpsLocation();
-
-
 
 }

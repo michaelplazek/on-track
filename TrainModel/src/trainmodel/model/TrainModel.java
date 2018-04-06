@@ -1,6 +1,7 @@
 package trainmodel.model;
 
 import java.util.HashMap;
+import java.util.Random;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
@@ -21,13 +22,9 @@ import trackmodel.model.Block;
 import trackmodel.model.Track;
 import traincontroller.model.TrainControllerInterface;
 import utils.train.TrainData;
-import utils.train.TrainModelEnums.AntennaStatus;
 import utils.train.TrainModelEnums.DoorStatus;
 import utils.train.TrainModelEnums.OnOffStatus;
 import utils.train.TrainModelEnums.TrackLineStatus;
-import utils.unitconversion.UnitConversions;
-
-
 
 
 /**
@@ -63,13 +60,9 @@ public class TrainModel implements TrainModelInterface {
 
   private DoubleProperty currentTemp
       = new SimpleDoubleProperty(70); //Current temp inside the train.
-  private DoubleProperty setTemp
-      = new SimpleDoubleProperty(70); //Set temp (will be set by TrainController)
+
   private DoubleProperty setSpeed = new SimpleDoubleProperty(0); //To link UI w/ TrainController
   private DoubleProperty setAuthority = new SimpleDoubleProperty(0); //To link UI w/ TrainController
-  private StringProperty nextStation = new SimpleStringProperty("N/A"); //To link w/ UI
-  private StringProperty trainStatus = new SimpleStringProperty("N/A"); //To link w/ UI
-
 
   //set by TrainController.
   private DoubleProperty powerCommand = new SimpleDoubleProperty(0); //In kilo Watts.
@@ -81,8 +74,6 @@ public class TrainModel implements TrainModelInterface {
       = new SimpleObjectProperty<>(DoorStatus.CLOSED);
   private ObjectProperty<DoorStatus> leftDoorStatus
       = new SimpleObjectProperty<>(DoorStatus.CLOSED);
-  private ObjectProperty<AntennaStatus> antennaStatus
-      = new SimpleObjectProperty<>(AntennaStatus.CONNECTED);
   private ObjectProperty<TrackLineStatus> trackLineStatus
       = new SimpleObjectProperty<>(TrackLineStatus.CONNECTED);
   private ObjectProperty<OnOffStatus> serviceBrakeStatus
@@ -94,8 +85,7 @@ public class TrainModel implements TrainModelInterface {
   private ObjectProperty<OnOffStatus> acStatus
       = new SimpleObjectProperty<>(OnOffStatus.OFF);
 
-  private GpsLocation gpsLocation; //future development? 3/5/18
-  private double acceleration = 0.0000001; //in m/s^2
+  private double acceleration = 0.000001; //in m/s^2
   private double force = 0; //in N
   private boolean isMoving = false;
   private final int capacityOfTrain = TrainData.MAX_PASSENGERS * TrainData.NUMBER_OF_CARS;
@@ -109,18 +99,6 @@ public class TrainModel implements TrainModelInterface {
   private Block previousBlock;
   
   private Block trailingBlock; // used when train spans over 2 blocks. Maybe?
-
-  private boolean isMovingBlockMode = false;
-
-  //Speed and Authority from MBO gets passed to TrainController in MBO mode.
-  // private float mboSpeed;
-  // private float mboAuthority;
-
-  //Speed and Authority from trackModel gets passed to TrainController in Manual Mode
-  // private float trackModelSpeed;
-  // private float trackModelAuthority;
-
-  private Byte[] beaconSignal;
 
   private static HashMap<String, TrainModel> listOfTrainModels = new HashMap<>();
 
@@ -179,9 +157,15 @@ public class TrainModel implements TrainModelInterface {
       this.mass_lbs.set(mass.get() * UnitConversions.KGS_TO_LBS);
     }
   }
-  
-  private void setAndConvertMassToImperial(Double mass) {
-    this.mass.setValue(mass * UnitConversions.KGS_TO_LBS);
+
+  /**
+   * Called when train stops at a station.
+   * When train is at a station a random number of passengers leave the train.
+   */
+  private void randomPassengersLeave() {
+    Random randomPassengerNum = new Random();
+    int numPassengers = randomPassengerNum.nextInt(TrainData.MAX_PASSENGERS);
+    removePassengers(numPassengers);
   }
 
   /**
@@ -250,7 +234,12 @@ public class TrainModel implements TrainModelInterface {
    * Updates acceleration.
    */
   private void updateAcceleration() {
-    acceleration = powerCommand.get() / (mass.get() * velocity.get());
+    if (velocity.get() == 0) {
+      acceleration = .000001;
+    } else {
+      acceleration = powerCommand.get() / (mass.get() * velocity.get());
+    }
+
   }
 
   /**
@@ -278,10 +267,12 @@ public class TrainModel implements TrainModelInterface {
       updateAcceleration();
       updateVelocity();
       updateForce();
-      updatePosition();
+      if (this.activeTrack != null) {
+        updatePosition();
+        updateOccupancy();
+      }
       updateSpeedAuth();
       brake();
-      updateOccupancy();
       changeTemperature();
 
     }
@@ -354,70 +345,52 @@ public class TrainModel implements TrainModelInterface {
   }
 
   /**
-   * Toggles status of trains heater.
+   * Opens the left doors when at a station and stopped.
    */
-  public void toggleHeater() {
-    if (heaterStatus.get().equals(OnOffStatus.ON)) {
-      heaterStatus.setValue(OnOffStatus.OFF);
-    } else {
-      heaterStatus.setValue(OnOffStatus.ON);
-      acStatus.setValue(OnOffStatus.OFF);
-    }
+  private void openLeftDoors() {
+    leftDoorStatus.set(DoorStatus.OPEN);
+    randomPassengersLeave();
+    addPassengers(currentBlock.getPassengers(TrainData.MAX_PASSENGERS - numPassengers.get()));
   }
 
   /**
-   * Toggles status of trains A/C.
+   * Opens the right doors when at a station and stopped.
    */
-  public void toggleAc() {
-    if (acStatus.get().equals(OnOffStatus.ON)) {
-      acStatus.setValue(OnOffStatus.OFF);
-    } else {
-      acStatus.setValue(OnOffStatus.ON);
-      heaterStatus.setValue(OnOffStatus.OFF);
-    }
+  private void openRightDoors() {
+    rightDoorStatus.setValue(DoorStatus.OPEN);
+    randomPassengersLeave();
+    addPassengers(currentBlock.getPassengers(TrainData.MAX_PASSENGERS - numPassengers.get()));
+  }
+
+  private void closeRightDoors() {
+    rightDoorStatus.setValue(DoorStatus.CLOSED);
+  }
+
+  private void closeLeftDoors() {
+    leftDoorStatus.setValue(DoorStatus.CLOSED);
   }
 
   /**
    * Called in Run() method to change temperature if needed.
    */
   private void changeTemperature() {
-    if (this.needsCooled()) {
+    if (this.acStatus.getValue() == OnOffStatus.ON) {
       coolTrain();
-    } else if (this.needsHeated()) {
+    } else if (this.heaterStatus.getValue() == OnOffStatus.ON) {
       heatTrain();
     }
   }
 
   private void coolTrain() {
-    heaterStatus.set(OnOffStatus.OFF);
-    acStatus.setValue(OnOffStatus.ON);
-
-    currentTemp.setValue(currentTemp.getValue()
-        - (TrainData.TEMPERATURE_RATE_OF_CHANGE * clock.getChangeInTime()));
+    long deltaTime = clock.getChangeInTime();
+    double deltaTemp = deltaTime * TrainData.TEMPERATURE_RATE_OF_CHANGE;
+    currentTemp.setValue(currentTemp.getValue() - deltaTemp);
   }
 
   private void heatTrain() {
-    heaterStatus.set(OnOffStatus.ON);
-    acStatus.setValue(OnOffStatus.OFF);
-
-    currentTemp.setValue(currentTemp.getValue()
-        + (TrainData.TEMPERATURE_RATE_OF_CHANGE * clock.getChangeInTime()));
-  }
-
-  private boolean needsCooled() {
-    if (currentTemp.getValue() > setTemp.getValue()) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  private boolean needsHeated() {
-    if (currentTemp.getValue() < setTemp.getValue()) {
-      return true;
-    } else {
-      return false;
-    }
+    long deltaTime = clock.getChangeInTime();
+    double deltaTemp = deltaTime * TrainData.TEMPERATURE_RATE_OF_CHANGE;
+    currentTemp.setValue(currentTemp.getValue() + deltaTemp);
   }
 
   /**
@@ -439,18 +412,21 @@ public class TrainModel implements TrainModelInterface {
   }
 
   @Override
-  public void setAntennaStatus(AntennaStatus antennaStatus) {
-    this.antennaStatus.set(antennaStatus);
-  }
-
-  @Override
   public void setLeftDoorStatus(DoorStatus leftDoorStatus) {
-    this.leftDoorStatus.set(leftDoorStatus);
+    if (leftDoorStatus.equals(DoorStatus.CLOSED)) {
+      closeLeftDoors();
+    } else if (leftDoorStatus.equals(DoorStatus.OPEN)) {
+      openLeftDoors();
+    }
   }
 
   @Override
   public void setRightDoorStatus(DoorStatus rightDoorStatus) {
-    this.rightDoorStatus.set(rightDoorStatus);
+    if (rightDoorStatus.equals(DoorStatus.CLOSED)) {
+      closeRightDoors();
+    } else if (rightDoorStatus.equals(DoorStatus.OPEN)) {
+      openRightDoors();
+    }
   }
 
   @Override
@@ -468,19 +444,10 @@ public class TrainModel implements TrainModelInterface {
     this.acStatus.set(acStatus);
   }
 
-  @Override
-  public void setCurrentTemp(double currentTemp) {
-    this.currentTemp.setValue(currentTemp);
-  }
-
   //Will be called by TrainController to give TrainModel the power command.
   @Override
   public void setPowerCommand(double powerCommand) {
     this.powerCommand.set(powerCommand);
-  }
-
-  public void setMovingBlockMode(boolean movingBlockMode) {
-    this.isMovingBlockMode = movingBlockMode;
   }
 
   public void setController(TrainControllerInterface controller) {
@@ -498,11 +465,6 @@ public class TrainModel implements TrainModelInterface {
   /**
    * Getters.
    */
-  @Override
-  public GpsLocation getGpsLocation() {
-    return gpsLocation;
-  }
-
   @Override
   public double getCurrentSpeed() {
     return velocity.getValue();
@@ -524,11 +486,6 @@ public class TrainModel implements TrainModelInterface {
   }
 
   @Override
-  public AntennaStatus getAntennaStatus() {
-    return antennaStatus.get();
-  }
-
-  @Override
   public DoorStatus getLeftDoorStatus() {
     return leftDoorStatus.get();
   }
@@ -547,8 +504,6 @@ public class TrainModel implements TrainModelInterface {
   public double getCurrentTemp() {
     return currentTemp.getValue();
   }
-
-
 
   public int getMaxPower() {
     return TrainData.MAX_POWER;
@@ -662,10 +617,6 @@ public class TrainModel implements TrainModelInterface {
     return leftDoorStatus;
   }
 
-  public ObjectProperty<AntennaStatus> antennaStatusProperty() {
-    return antennaStatus;
-  }
-
   public ObjectProperty<TrackLineStatus> trackLineStatusProperty() {
     return trackLineStatus;
   }
@@ -694,8 +645,12 @@ public class TrainModel implements TrainModelInterface {
     return FXCollections.observableArrayList(listOfTrainModels.keySet());
   }
 
-  public boolean isMovingBlockMode() {
-    return isMovingBlockMode;
+  public DoubleProperty setSpeedProperty() {
+    return setSpeed;
+  }
+
+  public DoubleProperty setAuthorityProperty() {
+    return setAuthority;
   }
 
   public static TrainModel getTrainModel(String id) {
