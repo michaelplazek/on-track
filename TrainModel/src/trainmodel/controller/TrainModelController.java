@@ -114,11 +114,7 @@ public class TrainModelController implements Initializable {
   @FXML
   private Label numberOfPassengers;
   @FXML
-  private Label nextStation;
-  @FXML
   private Label time;
-  @FXML
-  private Label stationStatus;
 
   //Operation Group
   @FXML
@@ -240,9 +236,6 @@ public class TrainModelController implements Initializable {
     currentTrack.textProperty().bind(trainModel.activeTrackProperty());
     currentBlockStatus.textProperty().bind(trainModel.currentBlockProperty());
     capacity.setText(String.valueOf(trainModel.getCapacityOfTrain()));
-
-    nextStation.textProperty().setValue("Downtown");
-    stationStatus.textProperty().setValue("IN ROUTE");
 
     time.textProperty().setValue(Clock.getInstance().getFormattedTime());
     beaconStatus.textProperty().bind(trainModel.trackLineStatusProperty().asString());

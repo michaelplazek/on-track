@@ -370,26 +370,18 @@ public class TrainModel implements TrainModelInterface {
    * Opens the left doors when at a station and stopped.
    */
   private void openLeftDoors() {
-    if (isAtStation && isStationOnLeft && (velocity.getValue() == 0)) {
       leftDoorStatus.set(DoorStatus.OPEN);
       randomPassengersLeave();
       addPassengers(currentBlock.getPassengers(TrainData.MAX_PASSENGERS - numPassengers.get()));
-    } else {
-      showDoorAlert();
-    }
   }
 
   /**
    * Opens the right doors when at a station and stopped.
    */
   private void openRightDoors() {
-    if (isAtStation && isStationOnRight && (velocity.getValue() == 0)) {
       rightDoorStatus.setValue(DoorStatus.OPEN);
       randomPassengersLeave();
       addPassengers(currentBlock.getPassengers(TrainData.MAX_PASSENGERS - numPassengers.get()));
-    } else {
-      showDoorAlert();
-    }
   }
 
   private void closeRightDoors() {

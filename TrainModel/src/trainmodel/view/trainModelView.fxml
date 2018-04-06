@@ -177,16 +177,6 @@
                                           <Label text="Service Brake:" />
                                        </children>
                                     </HBox>
-                                    <HBox alignment="CENTER_LEFT">
-                                       <children>
-                                          <Label text="Current Block:" />
-                                       </children>
-                                    </HBox>
-                                    <HBox alignment="CENTER_LEFT">
-                                       <children>
-                                          <Label text="Track:" />
-                                       </children>
-                                    </HBox>
                                  </children>
                               </VBox>
                               <VBox alignment="TOP_CENTER">
@@ -225,16 +215,6 @@
                                           <Label fx:id="serviceBrakeStatus" text="Label" />
                                        </children>
                                     </HBox>
-                                    <HBox alignment="CENTER_RIGHT">
-                                       <children>
-                                          <Label fx:id="currentBlockStatus" text="Label" />
-                                       </children>
-                                    </HBox>
-                                    <HBox alignment="CENTER_RIGHT">
-                                       <children>
-                                          <Label fx:id="currentTrack" text="Label" />
-                                       </children>
-                                    </HBox>
                                  </children>
                               </VBox>
                            </children>
@@ -254,17 +234,17 @@
                                     </HBox>
                                     <HBox alignment="CENTER_LEFT">
                                        <children>
-                                          <Label text="Next Station:" />
-                                       </children>
-                                    </HBox>
-                                    <HBox alignment="CENTER_LEFT">
-                                       <children>
                                           <Label text="Time:" />
                                        </children>
                                     </HBox>
                                     <HBox alignment="CENTER_LEFT">
                                        <children>
-                                          <Label text="Status:" />
+                                          <Label text="Current Block:" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT">
+                                       <children>
+                                          <Label text="Track:" />
                                        </children>
                                     </HBox>
                                  </children>
@@ -278,17 +258,17 @@
                                     </HBox>
                                     <HBox alignment="CENTER_RIGHT">
                                        <children>
-                                          <Label fx:id="nextStation" text="Label" />
-                                       </children>
-                                    </HBox>
-                                    <HBox alignment="CENTER_RIGHT">
-                                       <children>
                                           <Label fx:id="time" text="Label" />
                                        </children>
                                     </HBox>
                                     <HBox alignment="CENTER_RIGHT">
                                        <children>
-                                          <Label fx:id="stationStatus" text="Label" />
+                                          <Label fx:id="currentBlockStatus" text="Label" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label fx:id="currentTrack" text="Label" />
                                        </children>
                                     </HBox>
                                  </children>
