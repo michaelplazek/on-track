@@ -284,8 +284,9 @@ public class TrainModel implements TrainModelInterface {
     }
   }
 
-  private void updateSpeedAuth(){
-    this.controller.setTrackCircuitSignal(currentBlock.getSetPointSpeed(), currentBlock.getAuthority());
+  private void updateSpeedAuth() {
+    this.controller.setTrackCircuitSignal(currentBlock.getSetPointSpeed(),
+        currentBlock.getAuthority());
   }
 
   private void updateBeacon() {
