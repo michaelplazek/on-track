@@ -80,20 +80,13 @@ public class TrainModelController implements Initializable {
 
   //Velocity Group
   @FXML
-  private Label setSpeedStatus;
-  @FXML
   private Label currentSpeedStatus;
-  @FXML
-  private Label setAuthorityStatus;
   @FXML
   private Label powerOutputStatus;
   @FXML
   private Label emergencyBrakeStatus;
   @FXML
   private Label serviceBrakeStatus;
-  @FXML
-  private Label currentBlockStatus;
-  @FXML
   private Label currentTrack;
 
   //Train Spec Group
@@ -131,8 +124,6 @@ public class TrainModelController implements Initializable {
   private Label heaterStatus;
   @FXML
   private Label acStatus;
-  @FXML
-  private Label setTemperature;
 
   /**
    * Train model && controller associated with UI (use for testing as of 3/11/18).
@@ -182,7 +173,6 @@ public class TrainModelController implements Initializable {
   }
 
   @FXML
-  private void emergency_Brake_Engaged() {
     if (emergencyBrakeStatus.textProperty().getValue().equals(Constants.ON)) {
       trainModel.setEmergencyBrakeStatus(OnOffStatus.OFF);
     } else {
@@ -224,14 +214,6 @@ public class TrainModelController implements Initializable {
     Bindings.bindBidirectional(height.textProperty(),
         trainModel.heightProperty(), formatter);
     Bindings.bindBidirectional(numberOfCars.textProperty(),
-        trainModel.numberOfCarsProperty(), formatter);
-    Bindings.bindBidirectional(setSpeedStatus.textProperty(),
-        trainModel.setSpeedProperty(), formatter);
-    Bindings.bindBidirectional(setAuthorityStatus.textProperty(),
-        trainModel.setAuthorityProperty(), formatter);
-
-    currentTrack.textProperty().bind(trainModel.activeTrackProperty());
-    currentBlockStatus.textProperty().bind(trainModel.currentBlockProperty());
     capacity.setText(String.valueOf(trainModel.getCapacityOfTrain()));
 
     time.textProperty().setValue(Clock.getInstance().getFormattedTime());
@@ -247,7 +229,6 @@ public class TrainModelController implements Initializable {
 
 
   @FXML
-  private void toggleLights() {
     if (lightStatus.getText().equals(OnOffStatus.ON.toString())) {
       trainModel.lightStatusProperty().set(OnOffStatus.OFF);
     } else {
@@ -256,30 +237,20 @@ public class TrainModelController implements Initializable {
   }
 
   @FXML
-  private void toggleLeftDoor() {
-    if (leftDoorStatus.getText().equals(DoorStatus.OPEN.toString())) {
-      trainModel.leftDoorStatusProperty().set(DoorStatus.CLOSED);
     } else {
-      trainModel.leftDoorStatusProperty().set(DoorStatus.OPEN);
     }
   }
 
   @FXML
-  private void toggleRightDoor() {
-    if (rightDoorStatus.getText().equals(DoorStatus.OPEN.toString())) {
-      trainModel.rightDoorStatusProperty().set(DoorStatus.CLOSED);
     } else {
-      trainModel.rightDoorStatusProperty().set(DoorStatus.OPEN);
     }
   }
 
   @FXML
-  private void addPassenger() {
     this.trainModel.addPassengers(1);
   }
 
   @FXML
-  private void removePassenger() {
     this.trainModel.removePassengers(1);
   }
 

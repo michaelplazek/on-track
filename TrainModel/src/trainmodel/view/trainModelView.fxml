@@ -54,7 +54,7 @@
                               <Button fx:id="endButton" mnemonicParsing="false" text="END" />
                            </children>
                         </HBox>
-                        <Button fx:id="emergencyBrakeButton" mnemonicParsing="false" onAction="#emergency_Brake_Engaged" text="EMERGENCY BRAKE" />
+                        <Button fx:id="emergencyBrakeButton" mnemonicParsing="false" text="EMERGENCY BRAKE" />
                      </children>
                   </VBox>
                </content>
@@ -149,17 +149,7 @@
                                  <children>
                                     <HBox alignment="CENTER_LEFT">
                                        <children>
-                                          <Label text="Set Speed:" />
-                                       </children>
-                                    </HBox>
-                                    <HBox alignment="CENTER_LEFT">
-                                       <children>
                                           <Label text="Current Speed:" />
-                                       </children>
-                                    </HBox>
-                                    <HBox alignment="CENTER_LEFT">
-                                       <children>
-                                          <Label text="Set Authority:" />
                                        </children>
                                     </HBox>
                                     <HBox alignment="CENTER_LEFT">
@@ -183,20 +173,8 @@
                                  <children>
                                     <HBox alignment="CENTER_RIGHT" spacing="5.0">
                                        <children>
-                                          <Label fx:id="setSpeedStatus" text="Label" />
-                                          <Label text="(mph)" />
-                                       </children>
-                                    </HBox>
-                                    <HBox alignment="CENTER_RIGHT" spacing="5.0">
-                                       <children>
                                           <Label fx:id="currentSpeedStatus" text="Label" />
                                           <Label text="(mph)" />
-                                       </children>
-                                    </HBox>
-                                    <HBox alignment="CENTER_RIGHT" spacing="5.0">
-                                       <children>
-                                          <Label fx:id="setAuthorityStatus" text="Label" />
-                                          <Label text="(yards)" />
                                        </children>
                                     </HBox>
                                     <HBox alignment="CENTER_RIGHT" spacing="5.0">
@@ -318,11 +296,6 @@
                                           <Label text="A/C:" />
                                        </children>
                                     </HBox>
-                                    <HBox alignment="CENTER_LEFT">
-                                       <children>
-                                          <Label text="Set Temp:" />
-                                       </children>
-                                    </HBox>
                                  </children>
                               </VBox>
                               <VBox alignment="TOP_CENTER">
@@ -363,11 +336,6 @@
                                           <Label fx:id="acStatus" text="Label" />
                                        </children>
                                     </HBox>
-                                    <HBox alignment="CENTER_RIGHT">
-                                       <children>
-                                          <Label fx:id="setTemperature" text="Label" />
-                                       </children>
-                                    </HBox>
                                  </children>
                               </VBox>
                            </children>
@@ -382,25 +350,25 @@
                      <children>
                         <VBox spacing="5.0">
                            <children>
-                              <Button fx:id="demoButton" mnemonicParsing="false" onAction="#demoClicked" text="Demo Acceleration" />
-                              <Button fx:id="toggleLights" mnemonicParsing="false" onAction="#toggleLights" text="Toggle Lights" />
+                              <Button fx:id="demoButton" mnemonicParsing="false" text="Demo Acceleration" />
+                              <Button fx:id="toggleLights" mnemonicParsing="false" text="Toggle Lights" />
                            </children>
                         </VBox>
                         <VBox spacing="5.0">
                            <children>
-                              <Button fx:id="toggleLeftDoor" mnemonicParsing="false" onAction="#toggleLeftDoor" text="Toggle Left Door" />
-                              <Button fx:id="toggleRightDoor" mnemonicParsing="false" onAction="#toggleRightDoor" text="Toggle Right Door" />
+                              <Button fx:id="toggleLeftDoor" mnemonicParsing="false" text="Toggle Left Door" />
+                              <Button fx:id="toggleRightDoor" mnemonicParsing="false" text="Toggle Right Door" />
                            </children>
                         </VBox>
                         <VBox spacing="5.0">
                            <children>
-                              <Button fx:id="addPassenger" mnemonicParsing="false" onAction="#addPassenger" text="Add Passenger" />
-                              <Button fx:id="removePassenger" mnemonicParsing="false" onAction="#removePassenger" text="Remove Passenger" />
+                              <Button fx:id="addPassenger" mnemonicParsing="false" text="Add Passenger" />
+                              <Button fx:id="removePassenger" mnemonicParsing="false" text="Remove Passenger" />
                            </children>
                         </VBox>
                         <VBox spacing="5.0">
                            <children>
-                              <Button mnemonicParsing="false" onAction="#demoHeat" text="Demo heatTrain()" />
+                              <Button mnemonicParsing="false" text="Demo heatTrain()" />
                               <Button mnemonicParsing="false" text="Demo" />
                            </children>
                         </VBox>

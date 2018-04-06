@@ -47,7 +47,7 @@ public class TrainModel implements TrainModelInterface {
   private DoubleProperty height = new SimpleDoubleProperty(TrainData.HEIGHT_OF_TRAIN * UnitConversions.METERS_TO_FT);
   private DoubleProperty width = new SimpleDoubleProperty(TrainData.WIDTH_OF_TRAIN * UnitConversions.METERS_TO_FT);
   private DoubleProperty lengthOfTrain = new SimpleDoubleProperty(TrainData.LENGTH_OF_TRAIN * UnitConversions.METERS_TO_FT);
-  private DoubleProperty numberOfCars = new SimpleDoubleProperty(TrainData.NUMBER_OF_CARS);
+  private IntegerProperty numberOfCars = new SimpleIntegerProperty(TrainData.NUMBER_OF_CARS);
 
   //String Properties to be bound with UI.
   private DoubleProperty mass = new SimpleDoubleProperty(TrainData.EMPTY_WEIGHT);
@@ -58,9 +58,6 @@ public class TrainModel implements TrainModelInterface {
 
   private DoubleProperty currentTemp
       = new SimpleDoubleProperty(70); //Current temp inside the train.
-
-  private DoubleProperty setSpeed = new SimpleDoubleProperty(0); //To link UI w/ TrainController
-  private DoubleProperty setAuthority = new SimpleDoubleProperty(0); //To link UI w/ TrainController
 
   //set by TrainController.
   private DoubleProperty powerCommand = new SimpleDoubleProperty(0); //In kilo Watts.
@@ -272,7 +269,6 @@ public class TrainModel implements TrainModelInterface {
       updateSpeedAuth();
       brake();
       changeTemperature();
-
     }
   }
 
@@ -348,7 +344,9 @@ public class TrainModel implements TrainModelInterface {
   private void openLeftDoors() {
     leftDoorStatus.set(DoorStatus.OPEN);
     randomPassengersLeave();
-    addPassengers(currentBlock.getPassengers(TrainData.MAX_PASSENGERS - numPassengers.get()));
+    if (currentBlock != null) {
+      addPassengers(currentBlock.getPassengers(TrainData.MAX_PASSENGERS - numPassengers.get()));
+    }
   }
 
   /**
@@ -357,7 +355,9 @@ public class TrainModel implements TrainModelInterface {
   private void openRightDoors() {
     rightDoorStatus.setValue(DoorStatus.OPEN);
     randomPassengersLeave();
-    addPassengers(currentBlock.getPassengers(TrainData.MAX_PASSENGERS - numPassengers.get()));
+    if (currentBlock != null){
+      addPassengers(currentBlock.getPassengers(TrainData.MAX_PASSENGERS - numPassengers.get()));
+    }
   }
 
   private void closeRightDoors() {
@@ -595,7 +595,7 @@ public class TrainModel implements TrainModelInterface {
     return lengthOfTrain;
   }
 
-  public DoubleProperty numberOfCarsProperty() {
+  public IntegerProperty numberOfCarsProperty() {
     return numberOfCars;
   }
 
@@ -641,14 +641,6 @@ public class TrainModel implements TrainModelInterface {
 
   public static ObservableList<String> getObservableListOfTrainModels() {
     return FXCollections.observableArrayList(listOfTrainModels.keySet());
-  }
-
-  public DoubleProperty setSpeedProperty() {
-    return setSpeed;
-  }
-
-  public DoubleProperty setAuthorityProperty() {
-    return setAuthority;
   }
 
   public static TrainModel getTrainModel(String id) {
