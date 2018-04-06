@@ -1,10 +1,6 @@
 package ctc.controller;
 
-import ctc.model.CentralTrafficControl;
-import ctc.model.Schedule;
-import ctc.model.ScheduleRow;
-import ctc.model.TrackMaintenance;
-import ctc.model.TrainTracker;
+import ctc.model.*;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -26,12 +22,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Toggle;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
@@ -49,6 +42,7 @@ import trackmodel.model.Switch;
 import trackmodel.model.Track;
 import traincontroller.model.TrainControllerFactory;
 import utils.alerts.AlertWindow;
+import utils.general.Authority;
 
 public class CentralTrafficControlController {
 
@@ -57,9 +51,6 @@ public class CentralTrafficControlController {
   private Clock clock = Clock.getInstance();
 
   /* MAIN COMPONENTS */
-  @FXML private RadioButton fixedBlockRadio;
-  @FXML private RadioButton movingBlockRadio;
-  @FXML private ToggleGroup mode;
   @FXML private Label throughput;
   @FXML private Label time;
   @FXML private Button startButton;
@@ -112,7 +103,8 @@ public class CentralTrafficControlController {
   @FXML private TableColumn<TrainTracker, String> dispatchSpeedColumn;
   @FXML private TableColumn<TrainTracker, String> dispatchPassengersColumn;
   @FXML private TextField suggestedSpeedField;
-  @FXML private Button sendSignalsButton;
+  @FXML private Button setAuthorityButton;
+  @FXML private Button setSpeedButton;
   @FXML private ChoiceBox<String> setAuthorityBlocks;
   @FXML private Circle trainStatus;
 
@@ -257,25 +249,11 @@ public class CentralTrafficControlController {
     addTrainButton.setOnAction(this::handleButtonPress);
     deleteButton.setOnAction(this::handleButtonPress);
     dispatchButton.setOnAction(this::handleButtonPress);
-    sendSignalsButton.setOnAction(this::handleButtonPress);
+    setSpeedButton.setOnAction(this::handleButtonPress);
+    setAuthorityButton.setOnAction(this::handleButtonPress);
   }
 
   private void connectOthers() {
-
-    TableView.TableViewSelectionModel<ScheduleRow> defaultModel =
-        addScheduleTable.getSelectionModel();
-
-    // connect the toggle buttons for mode of operation
-    mode.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
-      public void changed(
-          ObservableValue<? extends Toggle> ov, Toggle oldToggle, Toggle newToggle) {
-
-        if (mode.getSelectedToggle() != null) {
-          RadioButton btn = (RadioButton) newToggle.getToggleGroup().getSelectedToggle();
-          changeMode(btn.getText(), defaultModel);
-        }
-      }
-    });
 
     trainQueueTable.getSelectionModel().selectedItemProperty()
         .addListener((observableValue, oldValue, newValue) -> {
@@ -549,8 +527,11 @@ public class CentralTrafficControlController {
       case "dispatchButton":
         dispatchTrain();
         break;
-      case "sendSignalButton":
-        sendTrackSignals();
+      case "setSpeedButton":
+        setSuggestedSpeed();
+        break;
+      case "setAuthorityButton":
+        setAuthority();
         break;
       default:
         break;
@@ -841,7 +822,8 @@ public class CentralTrafficControlController {
       }
 
       ctc.getDispatchTable().add(selected);
-      sendSignalsButton.setDisable(false);
+      setAuthorityButton.setDisable(false);
+      setSpeedButton.setDisable(false);
 
       TrainControllerFactory.start(selected.getId());
       selected.setDispatched(true);
@@ -852,7 +834,7 @@ public class CentralTrafficControlController {
     }
   }
 
-  private void sendTrackSignals() {
+  private void setAuthority() {
 
     // get selected train
     TrainTracker train = dispatchTable.getSelectionModel().getSelectedItem();
@@ -861,13 +843,46 @@ public class CentralTrafficControlController {
     String line = trackSelect.getSelectionModel().getSelectedItem();
     TrackControllerLineManager control = TrackControllerLineManager.getInstance(line);
 
-    // get suggested speed
-    String speed = suggestedSpeedField.getText();
-    String authority = setAuthorityBlocks.getSelectionModel().getSelectedItem();
+    // get block of of authority
+    Track track = Track.getListOfTracks().get(line);
+    String blockId = setAuthorityBlocks.getSelectionModel().getSelectedItem();
+    Block end = track.getBlock(Integer.parseInt(blockId.replaceAll("[\\D]", "")));
+    Block location = train.getLocation();
+
+    // make new route with the new authority
+    Route route = new Route(location, end, line);
+    train.setRoute(route);
+
+    // get new authority that is set inside of setRoute
+    Authority authority = train.getAuthority();
+
+    // get current speed
+    float speed = train.getSpeed();
 
     // send speed
     control.sendTrackSignals(train.getLocation().getNumber(),
-        Float.parseFloat(speed), Float.parseFloat(authority));
+        authority, speed);
+  }
+
+  private void setSuggestedSpeed() {
+
+    // get selected train
+    TrainTracker train = dispatchTable.getSelectionModel().getSelectedItem();
+
+    // get selected track
+    String line = trackSelect.getSelectionModel().getSelectedItem();
+    TrackControllerLineManager control = TrackControllerLineManager.getInstance(line);
+
+    // get the signals
+    float speed = Float.parseFloat(suggestedSpeedField.getText());
+    Authority authority = train.getAuthority();
+
+    // set the new speed on the train
+    train.setSpeed(speed);
+
+    // send signals
+    control.sendTrackSignals(train.getLocation().getNumber(),
+        authority, speed);
   }
 
   private void dispatch() {
@@ -889,7 +904,8 @@ public class CentralTrafficControlController {
     ctc.getTrainQueueTable().remove(index);
     ctc.getDispatchTable().add(train);
 
-    sendSignalsButton.setDisable(false);
+    setAuthorityButton.setDisable(false);
+    setSpeedButton.setDisable(false);
 
     TrainControllerFactory.start(train.getId());
     train.setDispatched(true);
@@ -898,38 +914,6 @@ public class CentralTrafficControlController {
     dispatchTable.setItems(ctc.getDispatchTable());
     if (ctc.getTrainQueueTable().size() == 0) {
       selectedScheduleTable.setItems(FXCollections.observableArrayList());
-    }
-  }
-
-  private void changeMode(
-      String mode,
-      TableView.TableViewSelectionModel<ScheduleRow> defaultModel) {
-
-    ctc.toggleMode();
-
-    // disable buttons
-    if (mode.equals("Moving Block Mode")) {
-      resetButton.setDisable(true);
-      addTrainButton.setDisable(true);
-      deleteButton.setDisable(true);
-      dispatchButton.setDisable(true);
-      sendSignalsButton.setDisable(true);
-      scheduleBlocks.setDisable(true);
-      setAuthorityBlocks.setDisable(true);
-      testRedButton.setDisable(true);
-      testGreenButton.setDisable(true);
-      addScheduleTable.setSelectionModel(null);
-    } else { // re-enable buttons
-      resetButton.setDisable(false);
-      addTrainButton.setDisable(false);
-      deleteButton.setDisable(false);
-      dispatchButton.setDisable(false);
-      sendSignalsButton.setDisable(false);
-      scheduleBlocks.setDisable(false);
-      setAuthorityBlocks.setDisable(false);
-      testRedButton.setDisable(false);
-      testGreenButton.setDisable(false);
-      addScheduleTable.setSelectionModel(defaultModel);
     }
   }
 }
