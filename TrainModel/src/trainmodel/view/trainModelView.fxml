@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <center>
       <VBox BorderPane.alignment="CENTER">
          <children>
@@ -177,16 +177,6 @@
                                           <Label text="Service Brake:" />
                                        </children>
                                     </HBox>
-                                    <HBox alignment="CENTER_LEFT">
-                                       <children>
-                                          <Label text="Current Block:" />
-                                       </children>
-                                    </HBox>
-                                    <HBox alignment="CENTER_LEFT">
-                                       <children>
-                                          <Label text="Track:" />
-                                       </children>
-                                    </HBox>
                                  </children>
                               </VBox>
                               <VBox alignment="TOP_CENTER">
@@ -225,16 +215,6 @@
                                           <Label fx:id="serviceBrakeStatus" text="Label" />
                                        </children>
                                     </HBox>
-                                    <HBox alignment="CENTER_RIGHT">
-                                       <children>
-                                          <Label fx:id="currentBlockStatus" text="Label" />
-                                       </children>
-                                    </HBox>
-                                    <HBox alignment="CENTER_RIGHT">
-                                       <children>
-                                          <Label fx:id="currentTrack" text="Label" />
-                                       </children>
-                                    </HBox>
                                  </children>
                               </VBox>
                            </children>
@@ -254,17 +234,17 @@
                                     </HBox>
                                     <HBox alignment="CENTER_LEFT">
                                        <children>
-                                          <Label text="Next Station:" />
-                                       </children>
-                                    </HBox>
-                                    <HBox alignment="CENTER_LEFT">
-                                       <children>
                                           <Label text="Time:" />
                                        </children>
                                     </HBox>
                                     <HBox alignment="CENTER_LEFT">
                                        <children>
-                                          <Label text="Status:" />
+                                          <Label text="Current Block:" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT">
+                                       <children>
+                                          <Label text="Track:" />
                                        </children>
                                     </HBox>
                                  </children>
@@ -278,17 +258,17 @@
                                     </HBox>
                                     <HBox alignment="CENTER_RIGHT">
                                        <children>
-                                          <Label fx:id="nextStation" text="Label" />
-                                       </children>
-                                    </HBox>
-                                    <HBox alignment="CENTER_RIGHT">
-                                       <children>
                                           <Label fx:id="time" text="Label" />
                                        </children>
                                     </HBox>
                                     <HBox alignment="CENTER_RIGHT">
                                        <children>
-                                          <Label fx:id="stationStatus" text="Label" />
+                                          <Label fx:id="currentBlockStatus" text="Label" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label fx:id="currentTrack" text="Label" />
                                        </children>
                                     </HBox>
                                  </children>
@@ -325,16 +305,6 @@
                                     </HBox>
                                     <HBox alignment="CENTER_LEFT">
                                        <children>
-                                          <Label text="GPS Antenna:" />
-                                       </children>
-                                    </HBox>
-                                    <HBox alignment="CENTER_LEFT">
-                                       <children>
-                                          <Label text="MBO Antenna:" />
-                                       </children>
-                                    </HBox>
-                                    <HBox alignment="CENTER_LEFT">
-                                       <children>
                                           <Label text="Temp:" />
                                        </children>
                                     </HBox>
@@ -346,6 +316,11 @@
                                     <HBox alignment="CENTER_LEFT">
                                        <children>
                                           <Label text="A/C:" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT">
+                                       <children>
+                                          <Label text="Set Temp:" />
                                        </children>
                                     </HBox>
                                  </children>
@@ -374,16 +349,6 @@
                                     </HBox>
                                     <HBox alignment="CENTER_RIGHT">
                                        <children>
-                                          <Label fx:id="gpsAntenaStatus" text="Label" />
-                                       </children>
-                                    </HBox>
-                                    <HBox alignment="CENTER_RIGHT">
-                                       <children>
-                                          <Label fx:id="mboAntenaStatus" text="Label" />
-                                       </children>
-                                    </HBox>
-                                    <HBox alignment="CENTER_RIGHT">
-                                       <children>
                                           <Label fx:id="cabinTemp" text="Label" />
                                           <Label text="(Degrees F)" />
                                        </children>
@@ -396,6 +361,11 @@
                                     <HBox alignment="CENTER_RIGHT">
                                        <children>
                                           <Label fx:id="acStatus" text="Label" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label fx:id="setTemperature" text="Label" />
                                        </children>
                                     </HBox>
                                  </children>
@@ -426,6 +396,12 @@
                            <children>
                               <Button fx:id="addPassenger" mnemonicParsing="false" onAction="#addPassenger" text="Add Passenger" />
                               <Button fx:id="removePassenger" mnemonicParsing="false" onAction="#removePassenger" text="Remove Passenger" />
+                           </children>
+                        </VBox>
+                        <VBox spacing="5.0">
+                           <children>
+                              <Button mnemonicParsing="false" onAction="#demoHeat" text="Demo heatTrain()" />
+                              <Button mnemonicParsing="false" text="Demo" />
                            </children>
                         </VBox>
                      </children>

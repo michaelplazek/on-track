@@ -40,6 +40,8 @@ public class TrainModelController implements Initializable {
   private Button addPassenger;
   @FXML
   private Button removePassenger;
+  @FXML
+  private Button demoHeatTrain;
 
 
   //Main Buttons
@@ -112,11 +114,7 @@ public class TrainModelController implements Initializable {
   @FXML
   private Label numberOfPassengers;
   @FXML
-  private Label nextStation;
-  @FXML
   private Label time;
-  @FXML
-  private Label stationStatus;
 
   //Operation Group
   @FXML
@@ -128,15 +126,13 @@ public class TrainModelController implements Initializable {
   @FXML
   private Label beaconStatus;
   @FXML
-  private Label gpsAntenaStatus;
-  @FXML
-  private Label mboAntenaStatus;
-  @FXML
   private Label cabinTemp;
   @FXML
   private Label heaterStatus;
   @FXML
   private Label acStatus;
+  @FXML
+  private Label setTemperature;
 
   /**
    * Train model && controller associated with UI (use for testing as of 3/11/18).
@@ -195,15 +191,6 @@ public class TrainModelController implements Initializable {
 
   }
 
-  @FXML
-  private void end_failure_mode() {
-    System.out.println("end failure called");
-    if (emergencyBrakeStatus.textProperty().getValue().equals("ENGAGED")) {
-      emergencyBrakeStatus.textProperty().setValue("NOT ENGAGED");
-      System.out.println("end failure if statement called");
-    }
-  }
-
   @Override
   public void initialize(URL location, ResourceBundle resources) {
     initializeStatusLabels();
@@ -237,36 +224,24 @@ public class TrainModelController implements Initializable {
         trainModel.heightProperty(), formatter);
     Bindings.bindBidirectional(numberOfCars.textProperty(),
         trainModel.numberOfCarsProperty(), formatter);
+    Bindings.bindBidirectional(setSpeedStatus.textProperty(),
+        trainModel.setSpeedProperty(), formatter);
+    Bindings.bindBidirectional(setAuthorityStatus.textProperty(),
+        trainModel.setAuthorityProperty(), formatter);
 
     currentTrack.textProperty().bind(trainModel.activeTrackProperty());
     currentBlockStatus.textProperty().bind(trainModel.currentBlockProperty());
     capacity.setText(String.valueOf(trainModel.getCapacityOfTrain()));
 
-
-    setSpeedStatus.textProperty().setValue("45"); //Will be received from TrainController
-    setAuthorityStatus.textProperty().setValue("1000");
-    //currentTrack.textProperty().set(trainModel.getActiveTrack().getLine());
-    nextStation.textProperty().setValue("Downtown");
-    stationStatus.textProperty().setValue("IN ROUTE");
-
     time.textProperty().setValue(Clock.getInstance().getFormattedTime());
     beaconStatus.textProperty().bind(trainModel.trackLineStatusProperty().asString());
-    gpsAntenaStatus.textProperty().bind(trainModel.antennaStatusProperty().asString());
     leftDoorStatus.textProperty().bind(trainModel.leftDoorStatusProperty().asString());
     rightDoorStatus.textProperty().bind(trainModel.rightDoorStatusProperty().asString());
     lightStatus.textProperty().bind(trainModel.lightStatusProperty().asString());
-    mboAntenaStatus.textProperty().bind(trainModel.antennaStatusProperty().asString());
     emergencyBrakeStatus.textProperty().bind(trainModel.emergencyBrakeStatusProperty().asString());
     serviceBrakeStatus.textProperty().bind(trainModel.serviceBrakeStatusProperty().asString());
     acStatus.textProperty().bind(trainModel.acStatusProperty().asString());
     heaterStatus.textProperty().bind(trainModel.heaterStatusProperty().asString());
-
-  }
-
-
-  @FXML
-  private void demoClicked() throws InterruptedException {
-    runDemo();
   }
 
 
