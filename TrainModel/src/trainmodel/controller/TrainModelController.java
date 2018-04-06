@@ -195,15 +195,6 @@ public class TrainModelController implements Initializable {
 
   }
 
-  @FXML
-  private void end_failure_mode() {
-    System.out.println("end failure called");
-    if (emergencyBrakeStatus.textProperty().getValue().equals("ENGAGED")) {
-      emergencyBrakeStatus.textProperty().setValue("NOT ENGAGED");
-      System.out.println("end failure if statement called");
-    }
-  }
-
   @Override
   public void initialize(URL location, ResourceBundle resources) {
     initializeStatusLabels();
@@ -274,7 +265,6 @@ public class TrainModelController implements Initializable {
   @FXML
   private void demoHeat() {
     trainModel.heatTrainSimulation(50000); //50ms deltaT
-    System.out.println("cabin temp is: " + trainModel.getCurrentTemp());
   }
 
 
