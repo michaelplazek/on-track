@@ -62,8 +62,6 @@ public interface TrainModelInterface {
 
   void setPowerCommand(double powerCommand);
 
-  void setBeaconSignal(Byte[] beaconSignal);
-
   /**
    * The following methods are getters/setters for data going to the Moving Block Overlay.
    */
