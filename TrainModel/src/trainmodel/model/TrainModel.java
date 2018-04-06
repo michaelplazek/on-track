@@ -3,7 +3,6 @@ package trainmodel.model;
 import java.util.HashMap;
 import java.util.Random;
 
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
@@ -16,8 +15,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import mainmenu.Clock;
 import mainmenu.controller.MainMenuController;
-import sun.tools.jconsole.Plotter;
-import trackmodel.model.Beacon;
 import trackmodel.model.Block;
 import trackmodel.model.Track;
 import traincontroller.model.TrainControllerInterface;
@@ -25,6 +22,7 @@ import utils.train.TrainData;
 import utils.train.TrainModelEnums.DoorStatus;
 import utils.train.TrainModelEnums.OnOffStatus;
 import utils.train.TrainModelEnums.TrackLineStatus;
+import utils.unitconversion.UnitConversions;
 
 
 /**
