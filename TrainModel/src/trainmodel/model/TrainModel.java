@@ -59,9 +59,6 @@ public class TrainModel implements TrainModelInterface {
 
   private DoubleProperty setSpeed = new SimpleDoubleProperty(0); //To link UI w/ TrainController
   private DoubleProperty setAuthority = new SimpleDoubleProperty(0); //To link UI w/ TrainController
-  private StringProperty nextStation = new SimpleStringProperty("N/A"); //To link w/ UI
-  private StringProperty trainStatus = new SimpleStringProperty("N/A"); //To link w/ UI
-
 
   //set by TrainController.
   private DoubleProperty powerCommand = new SimpleDoubleProperty(0); //In kilo Watts.
@@ -110,8 +107,6 @@ public class TrainModel implements TrainModelInterface {
   //Speed and Authority from trackModel gets passed to TrainController in Manual Mode
   // private float trackModelSpeed;
   // private float trackModelAuthority;
-
-  private Byte[] beaconSignal;
 
   private static HashMap<String, TrainModel> listOfTrainModels = new HashMap<>();
 
