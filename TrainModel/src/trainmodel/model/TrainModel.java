@@ -18,7 +18,6 @@ import mainmenu.controller.MainMenuController;
 import trackmodel.model.Block;
 import trackmodel.model.Track;
 import traincontroller.model.TrainControllerInterface;
-import utils.alerts.AlertWindow;
 import utils.train.TrainData;
 import utils.train.TrainModelEnums.DoorStatus;
 import utils.train.TrainModelEnums.OnOffStatus;
@@ -95,18 +94,6 @@ public class TrainModel implements TrainModelInterface {
   private Block previousBlock;
   
   private Block trailingBlock; // used when train spans over 2 blocks. Maybe?
-
-  private boolean isAtStation = false;
-  private boolean isStationOnLeft = false;
-  private boolean isStationOnRight = false;
-
-  //Speed and Authority from MBO gets passed to TrainController in MBO mode.
-  // private float mboSpeed;
-  // private float mboAuthority;
-
-  //Speed and Authority from trackModel gets passed to TrainController in Manual Mode
-  // private float trackModelSpeed;
-  // private float trackModelAuthority;
 
   private static HashMap<String, TrainModel> listOfTrainModels = new HashMap<>();
 
@@ -206,8 +193,6 @@ public class TrainModel implements TrainModelInterface {
   private void updateCurrentBlock() {
     Block next = activeTrack.getBlock(currentBlock.getNextBlock1());
     currentBlock = next;
-
-    updateStationSide();
   }
 
   /**
@@ -335,48 +320,21 @@ public class TrainModel implements TrainModelInterface {
   }
 
   /**
-   * Updates the statuses for the train to know when it is at a station
-   * and which side the station is on.
-   */
-  private void updateStationSide() {
-    if (currentBlock.isLeftStation()) {
-      this.isStationOnLeft = true;
-      this.isAtStation = true;
-    } else if (currentBlock.isRightStation()) {
-      this.isStationOnRight = true;
-      this.isAtStation = true;
-    } else {
-      this.isStationOnLeft = false;
-      this.isStationOnRight = false;
-      this.isAtStation = false;
-    }
-  }
-
-  private void showDoorAlert() {
-    AlertWindow alert = new AlertWindow();
-    alert.setTitle("Doors can't be opened at this time.");
-    alert.setHeader("Doors can't be opened at this time.");
-    alert.setContent("Please make sure the train is stopped"
-        + " and at a station before opening the doors.");
-    alert.show();
-  }
-
-  /**
    * Opens the left doors when at a station and stopped.
    */
   private void openLeftDoors() {
-      leftDoorStatus.set(DoorStatus.OPEN);
-      randomPassengersLeave();
-      addPassengers(currentBlock.getPassengers(TrainData.MAX_PASSENGERS - numPassengers.get()));
+    leftDoorStatus.set(DoorStatus.OPEN);
+    randomPassengersLeave();
+    addPassengers(currentBlock.getPassengers(TrainData.MAX_PASSENGERS - numPassengers.get()));
   }
 
   /**
    * Opens the right doors when at a station and stopped.
    */
   private void openRightDoors() {
-      rightDoorStatus.setValue(DoorStatus.OPEN);
-      randomPassengersLeave();
-      addPassengers(currentBlock.getPassengers(TrainData.MAX_PASSENGERS - numPassengers.get()));
+    rightDoorStatus.setValue(DoorStatus.OPEN);
+    randomPassengersLeave();
+    addPassengers(currentBlock.getPassengers(TrainData.MAX_PASSENGERS - numPassengers.get()));
   }
 
   private void closeRightDoors() {
@@ -542,8 +500,6 @@ public class TrainModel implements TrainModelInterface {
 
   @Override
   public void setBeaconSignal(Byte[] beaconSignal) {
-    //When in manual mode Speed/Auth and Beacon signal comes from track model.
-    //when in manual mode call this.
     this.controller.setBeaconSignal(beaconSignal);
   }
 
@@ -740,19 +696,6 @@ public class TrainModel implements TrainModelInterface {
 
   public DoubleProperty setAuthorityProperty() {
     return setAuthority;
-  }
-
-  public boolean isStationOnLeft() {
-    return isStationOnLeft;
-  }
-
-  public boolean isStationOnRight() {
-    return isStationOnRight;
-  }
-
-  public boolean isAtStation() {
-
-    return isAtStation;
   }
 
   public DoubleProperty setTempProperty() {
