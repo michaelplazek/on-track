@@ -69,7 +69,7 @@ public class TrainModelController implements Initializable {
   @FXML
   private Circle signalFailureStatusIcon;
 
-  //CheckBoxes
+  //Status Labels
   @FXML
   private Label brakeFailureStatus;
   @FXML
@@ -87,7 +87,6 @@ public class TrainModelController implements Initializable {
   private Label emergencyBrakeStatus;
   @FXML
   private Label serviceBrakeStatus;
-  private Label currentTrack;
 
   //Train Spec Group
   @FXML
@@ -108,6 +107,10 @@ public class TrainModelController implements Initializable {
   private Label numberOfPassengers;
   @FXML
   private Label time;
+  @FXML
+  private Label currentBlockStatus;
+  @FXML
+  private Label currentTrack;
 
   //Operation Group
   @FXML
@@ -173,6 +176,7 @@ public class TrainModelController implements Initializable {
   }
 
   @FXML
+  private void emergency_Brake_Engaged(ActionEvent event) {
     if (emergencyBrakeStatus.textProperty().getValue().equals(Constants.ON)) {
       trainModel.setEmergencyBrakeStatus(OnOffStatus.OFF);
     } else {
@@ -214,6 +218,9 @@ public class TrainModelController implements Initializable {
     Bindings.bindBidirectional(height.textProperty(),
         trainModel.heightProperty(), formatter);
     Bindings.bindBidirectional(numberOfCars.textProperty(),
+        trainModel.numberOfCarsProperty(), numberStringConverter);
+
+
     capacity.setText(String.valueOf(trainModel.getCapacityOfTrain()));
 
     time.textProperty().setValue(Clock.getInstance().getFormattedTime());
@@ -229,6 +236,7 @@ public class TrainModelController implements Initializable {
 
 
   @FXML
+  private void toggleLights(ActionEvent event) {
     if (lightStatus.getText().equals(OnOffStatus.ON.toString())) {
       trainModel.lightStatusProperty().set(OnOffStatus.OFF);
     } else {
@@ -236,21 +244,33 @@ public class TrainModelController implements Initializable {
     }
   }
 
+
+
   @FXML
+  private void toggleRightDoor(ActionEvent event) {
+    if (rightDoorStatus.getText().equals(DoorStatus.OPEN.toString())) {
+      trainModel.rightDoorStatusProperty().set(DoorStatus.CLOSED);
     } else {
+      trainModel.rightDoorStatusProperty().set(DoorStatus.OPEN);
     }
   }
 
   @FXML
+  private void toggleLeftDoor(ActionEvent event) {
+    if (leftDoorStatus.getText().equals(DoorStatus.OPEN.toString())) {
+      trainModel.leftDoorStatusProperty().set(DoorStatus.CLOSED);
     } else {
+      trainModel.leftDoorStatusProperty().set(DoorStatus.OPEN);
     }
   }
 
   @FXML
+  private void addPassenger(ActionEvent event) {
     this.trainModel.addPassengers(1);
   }
 
   @FXML
+  private void removePassenger(ActionEvent event) {
     this.trainModel.removePassengers(1);
   }
 
@@ -270,7 +290,15 @@ public class TrainModelController implements Initializable {
   private void initializeButtonHandlers() {
     startButton.setOnAction(this::toggleSelectedFailures);
     endButton.setOnAction(this::toggleSelectedFailures);
+    toggleLeftDoor.setOnAction(this::toggleLeftDoor);
+    toggleRightDoor.setOnAction(this::toggleRightDoor);
+    toggleLights.setOnAction(this::toggleLights);
+    addPassenger.setOnAction(this::addPassenger);
+    removePassenger.setOnAction(this::removePassenger);
+    emergencyBrakeButton.setOnAction(this::emergency_Brake_Engaged);
   }
+
+
 
   private void startEngineFailure() {
     engineFailureStatusIcon.setFill(Paint.valueOf(Constants.RED));
