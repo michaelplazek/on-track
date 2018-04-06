@@ -2,6 +2,7 @@ package trainmodel.model;
 
 import java.util.HashMap;
 
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
@@ -14,6 +15,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import mainmenu.Clock;
 import mainmenu.controller.MainMenuController;
+import sun.tools.jconsole.Plotter;
 import trackmodel.model.Beacon;
 import trackmodel.model.Block;
 import trackmodel.model.Track;
@@ -47,14 +49,18 @@ public class TrainModel implements TrainModelInterface {
   //          40.9t = 40900kg
   //============================================
   //Train Dimentions
-  private DoubleProperty height = new SimpleDoubleProperty(TrainData.HEIGHT_OF_TRAIN);
-  private DoubleProperty width = new SimpleDoubleProperty(TrainData.WIDTH_OF_TRAIN);
-  private DoubleProperty lengthOfTrain = new SimpleDoubleProperty(TrainData.LENGTH_OF_TRAIN);
+  private DoubleProperty height = new SimpleDoubleProperty(TrainData.HEIGHT_OF_TRAIN * UnitConversions.METERS_TO_FT);
+  private DoubleProperty width = new SimpleDoubleProperty(TrainData.WIDTH_OF_TRAIN * UnitConversions.METERS_TO_FT);
+  private DoubleProperty lengthOfTrain = new SimpleDoubleProperty(TrainData.LENGTH_OF_TRAIN * UnitConversions.METERS_TO_FT);
   private DoubleProperty numberOfCars = new SimpleDoubleProperty(TrainData.NUMBER_OF_CARS);
 
   //String Properties to be bound with UI.
   private DoubleProperty mass = new SimpleDoubleProperty(TrainData.EMPTY_WEIGHT);
+  private DoubleProperty mass_lbs = new SimpleDoubleProperty(mass.get() * UnitConversions.KGS_TO_LBS);
+
   private DoubleProperty velocity = new SimpleDoubleProperty(0); //in m/s
+  private DoubleProperty velocity_mph = new SimpleDoubleProperty(velocity.get() * UnitConversions.MPS_TO_MPH);
+
   private DoubleProperty currentTemp
       = new SimpleDoubleProperty(70); //Current temp inside the train.
   private DoubleProperty setTemp
@@ -133,6 +139,7 @@ public class TrainModel implements TrainModelInterface {
     this.controller = controller;
     this.id = id;
     this.line = line;
+
   }
 
   /**
@@ -145,11 +152,13 @@ public class TrainModel implements TrainModelInterface {
     if (numberOfPassengers <= availableSeats) {
       this.numPassengers.set(numPassengers.get() + numberOfPassengers);
       this.mass.set(mass.get() + (TrainData.PASSENGER_WEIGHT * numberOfPassengers));
+      this.mass_lbs.set(mass.get() * UnitConversions.KGS_TO_LBS);
     } else {
       //If numberOfPassengers is >= available seats as the most you can.
       int passengersTotal = this.numPassengers.get() + availableSeats;
       this.numPassengers.set(passengersTotal);
       this.mass.set(TrainData.EMPTY_WEIGHT + (TrainData.PASSENGER_WEIGHT * passengersTotal));
+      this.mass_lbs.set(mass.get() * UnitConversions.KGS_TO_LBS);
     }
   }
 
@@ -161,11 +170,13 @@ public class TrainModel implements TrainModelInterface {
     if ((this.numPassengers.get() - numberOfPassengers) >= 0) {
       this.numPassengers.set(numPassengers.get() - numberOfPassengers);
       this.mass.set(mass.get() - (TrainData.PASSENGER_WEIGHT * numberOfPassengers));
+      this.mass_lbs.set(mass.get() * UnitConversions.KGS_TO_LBS);
     } else {
       this.numPassengers.set(0);
       this.mass.set(
           (TrainData.EMPTY_WEIGHT + (TrainData.MAX_PASSENGERS * TrainData.PASSENGER_WEIGHT))
           - (TrainData.MAX_PASSENGERS * TrainData.PASSENGER_AVG_MASS_KG));
+      this.mass_lbs.set(mass.get() * UnitConversions.KGS_TO_LBS);
     }
   }
   
@@ -232,6 +243,7 @@ public class TrainModel implements TrainModelInterface {
    */
   private void updateVelocity() {
     velocity.set(powerCommand.get() / (mass.get() * acceleration));
+    velocity_mph.set(velocity.getValue() * UnitConversions.MPS_TO_MPH);
   }
 
   /**
@@ -598,8 +610,16 @@ public class TrainModel implements TrainModelInterface {
     return mass;
   }
 
+  public DoubleProperty mass_lbsProperty() {
+    return mass_lbs;
+  }
+
   public DoubleProperty velocityProperty() {
     return velocity;
+  }
+
+  public DoubleProperty velocity_mphProperty() {
+    return velocity_mph;
   }
 
   public DoubleProperty powerCommandProperty() {

@@ -219,14 +219,15 @@ public class TrainModelController implements Initializable {
     //TODO: Initialize labels with real data
     StringConverter<Number> numberStringConverter = new NumberStringConverter();
     NumberFormat formatter = new DecimalFormat("#0.00");
+
     Bindings.bindBidirectional(numberOfPassengers.textProperty(),
         trainModel.numPassengersProperty(), numberStringConverter);
     Bindings.bindBidirectional(weight.textProperty(),
-        trainModel.massProperty(), formatter);
+        trainModel.mass_lbsProperty(), formatter);
     Bindings.bindBidirectional(powerOutputStatus.textProperty(),
         trainModel.powerCommandProperty(), formatter);
     Bindings.bindBidirectional(currentSpeedStatus.textProperty(),
-        trainModel.velocityProperty(), formatter);
+        trainModel.velocity_mphProperty(), formatter);
     Bindings.bindBidirectional(cabinTemp.textProperty(),
         trainModel.currentTempProperty(), formatter);
     Bindings.bindBidirectional(length.textProperty(),

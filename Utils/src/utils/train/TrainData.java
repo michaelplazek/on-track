@@ -22,6 +22,7 @@ public class TrainData {
   public static final double EMERGENCY_BRAKE_ACCELERATION = -3.433; // m/s^2 (when train empty)
   public static final double PASSENGER_WEIGHT = 68.0389; //Weight of one passenger in kg (150lbs)
   public static final int MAX_POWER = 120; //(Max motor power = 120kW)
+
   public static final double KG_TO_LBS_CONVERSION = 2.20462262185; //1kg = 2.20462262185 lbs;
   public static final double LBS_TO_KG_CONVERSION = 0.45359237; //1lb = 0.45359237 kgs;
   public static final double PASSENGER_AVG_MASS_KG
