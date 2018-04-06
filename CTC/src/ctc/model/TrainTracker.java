@@ -3,6 +3,7 @@ package ctc.model;
 import trackmodel.model.Block;
 import trackmodel.model.Track;
 import traincontroller.model.TrainControllerFactory;
+import utils.general.Authority;
 
 /**
  * This class is used to map the train instances to their routes.
@@ -16,7 +17,7 @@ public class TrainTracker {
   private boolean isDispatched;
   private float speed;
   private int passengers;
-  private float authority;
+  private Authority authority;
   private float distanceTravelled;
   private String line;
   private Block location;
@@ -45,17 +46,27 @@ public class TrainTracker {
     this.isDispatched = false;
     this.speed = 0;
     this.passengers = 0;
-    this.authority = 0;
+    this.authority = Authority.STRAIGHT_AT_SWITCH;
     this.line = line;
     this.track = Track.getListOfTracks().get(line);
-    // this.location = track.getStartBlock();
-    // this.locationId = location.getSection() + location.getNumber();
-    this.route = new Route();
+    this.location = track.getStartBlock();
+    this.locationId = location.getSection() + location.getNumber();
+    this.route = new Route(line);
 
     TrainControllerFactory.create(id, line);
   }
 
-  public void update() {}
+
+  /**
+   * This is called every clock tick to update the train.
+   */
+  public void update() {
+
+    // update the authority
+    computeAuthority();
+  }
+
+  private void computeAuthority() {}
 
   public Schedule getSchedule() {
     return schedule;
@@ -93,16 +104,12 @@ public class TrainTracker {
     return passengers;
   }
 
-  public void updatePassengers(int passengers) {
+  protected void updatePassengers(int passengers) {
     this.passengers += passengers;
   }
 
-  public float getAuthority() {
+  public Authority getAuthority() {
     return authority;
-  }
-
-  public void setAuthority(float authority) {
-    this.authority = authority;
   }
 
   public Block getLocation() {
@@ -147,7 +154,14 @@ public class TrainTracker {
     return route;
   }
 
+  /**
+   * Give the train a new route.
+   * @param route new Route
+   */
   public void setRoute(Route route) {
     this.route = route;
+
+    // update the authority
+    computeAuthority();
   }
 }

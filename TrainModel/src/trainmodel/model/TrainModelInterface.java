@@ -54,6 +54,4 @@ public interface TrainModelInterface {
 
   void setPowerCommand(double powerCommand);
 
-  void setBeaconSignal(Byte[] beaconSignal);
-
 }

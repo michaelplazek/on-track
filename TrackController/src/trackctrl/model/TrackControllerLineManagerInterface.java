@@ -4,10 +4,11 @@ package trackctrl.model;
 import java.util.ArrayList;
 
 import javafx.collections.ObservableList;
+import utils.general.Authority;
 
 public interface TrackControllerLineManagerInterface {
 
-  public boolean sendTrackSignals(int blockId, float speed, float authority);
+  public boolean sendTrackSignals(int blockId, Authority speed, float authority);
 
   public boolean setSwitchOverride(int block, boolean state);
 

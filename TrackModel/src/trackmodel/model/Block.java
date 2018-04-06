@@ -1,6 +1,7 @@
 package trackmodel.model;
 
 import ctc.model.CentralTrafficControl;
+import utils.general.Authority;
 
 import java.util.Random;
 
@@ -39,7 +40,7 @@ public class Block {
 
   //Track Signal
   private float setPointSpeed;
-  private float authority;
+  private Authority authority;
   private boolean hasBeacon;
   
   //Neighbors
@@ -175,6 +176,10 @@ public class Block {
         setUnderground(true);
       } else if (parts[i].equals("SWITCH")) {
         setSwitchHere(true);
+      } else if (parts[i].contains("SWITCH")
+          && (parts[i].contains("TO") || parts[i].contains("FROM"))
+          && parts[i].contains("YARD")) {
+        setSwitchHere(true);
       }
     }
   }
@@ -305,11 +310,11 @@ public class Block {
     this.setPointSpeed = setPointSpeed;
   }
 
-  public float getAuthority() {
+  public Authority getAuthority() {
     return authority;
   }
 
-  public void setAuthority(float authority) {
+  public void setAuthority(Authority authority) {
     this.authority = authority;
   }
 
@@ -317,7 +322,7 @@ public class Block {
     return hasBeacon;
   }
 
-  public byte[] getBeacon() {
+  public Beacon getBeacon() {
     return null;
   }
 

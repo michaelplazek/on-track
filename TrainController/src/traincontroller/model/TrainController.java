@@ -1,13 +1,17 @@
 
 package traincontroller.model;
 
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
+import trackmodel.model.Beacon;
 import trackmodel.model.Block;
 import trackmodel.model.Track;
-import trainmodel.model.TrainModel;
+import traincontroller.enums.Mode;
 import trainmodel.model.TrainModelFactory;
 import trainmodel.model.TrainModelInterface;
+import utils.general.Authority;
 import utils.train.TrainModelEnums.DoorStatus;
 import utils.train.TrainModelEnums.OnOffStatus;
 
@@ -15,6 +19,7 @@ import utils.train.TrainModelEnums.OnOffStatus;
 public class TrainController implements TrainControllerInterface {
 
   private boolean automatic;
+  private Mode mode;
 
   private TrainModelInterface trainModel;
   private SimpleStringProperty id;
@@ -22,7 +27,7 @@ public class TrainController implements TrainControllerInterface {
   private boolean running;
   private SimpleDoubleProperty currentSpeed;
   private SimpleDoubleProperty setSpeed;
-  private SimpleDoubleProperty authority;
+  private ObjectProperty<Authority> authority;
   private SimpleDoubleProperty powerCommand;
   private SimpleDoubleProperty driverSetSpeed;
   private SimpleDoubleProperty setTemperature;
@@ -48,7 +53,7 @@ public class TrainController implements TrainControllerInterface {
     this.id = new SimpleStringProperty(id);
     this.line = new SimpleStringProperty(line);
     this.currentSpeed = new SimpleDoubleProperty(0);
-    this.authority = new SimpleDoubleProperty(0);
+    this.authority = new SimpleObjectProperty<>(Authority.SERVICE_BRAKE_STOP);
     this.setSpeed = new SimpleDoubleProperty(0);
     this.powerCommand = new SimpleDoubleProperty(0);
     this.driverSetSpeed = new SimpleDoubleProperty(0);
@@ -65,7 +70,7 @@ public class TrainController implements TrainControllerInterface {
 
   }
 
-  public void setBeaconSignal(Byte[] signal) {
+  public void setBeaconSignal(Beacon signal) {
 
   }
 
@@ -75,7 +80,7 @@ public class TrainController implements TrainControllerInterface {
    * @param setSpeed set speed that the train should aim for
    * @param authority authority of the train
    */
-  public void setTrackCircuitSignal(float setSpeed, float authority) {
+  public void setTrackCircuitSignal(float setSpeed, Authority authority) {
     if (setSpeed != this.getSetSpeed()) {
       this.integral = 0;
       this.setSpeed.set(setSpeed);
@@ -91,6 +96,14 @@ public class TrainController implements TrainControllerInterface {
     return line.getValue();
   }
 
+  Mode getMode() {
+    return mode;
+  }
+
+  void setMode(Mode mode) {
+    this.mode = mode;
+  }
+
   public TrainModelInterface getTrainModel() {
     return trainModel;
   }
@@ -99,15 +112,15 @@ public class TrainController implements TrainControllerInterface {
     return running;
   }
 
-  public SimpleDoubleProperty getAuthorityProperty() {
+  public ObjectProperty<Authority> getAuthorityProperty() {
     return authority;
   }
 
-  public Double getAuthority() {
+  public Authority getAuthority() {
     return authority.getValue();
   }
 
-  public void setAuthority(Double authority) {
+  public void setAuthority(Authority authority) {
     this.authority.set(authority);
   }
 
