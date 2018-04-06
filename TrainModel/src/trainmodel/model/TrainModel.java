@@ -14,6 +14,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import mainmenu.Clock;
 import mainmenu.controller.MainMenuController;
+import trackmodel.model.Beacon;
 import trackmodel.model.Block;
 import trackmodel.model.Track;
 import traincontroller.model.TrainControllerInterface;
@@ -207,6 +208,7 @@ public class TrainModel implements TrainModelInterface {
   private void updateCurrentBlock() {
     Block next = activeTrack.getBlock(currentBlock.getNextBlock1());
     currentBlock = next;
+    updateBeacon();
   }
 
   /**
@@ -265,9 +267,11 @@ public class TrainModel implements TrainModelInterface {
       updateVelocity();
       updateForce();
       updatePosition();
+      updateSpeedAuth();
       brake();
       updateOccupancy();
       changeTemperature();
+
     }
   }
 
@@ -277,6 +281,17 @@ public class TrainModel implements TrainModelInterface {
   public static void runAllInstances() {
     for (TrainModel train : listOfTrainModels.values()) {
       train.run();
+    }
+  }
+
+  private void updateSpeedAuth() {
+    this.controller.setTrackCircuitSignal(currentBlock.getSetPointSpeed(),
+        currentBlock.getAuthority());
+  }
+
+  private void updateBeacon() {
+    if (currentBlock.getBeacon() != null) {
+      this.controller.setBeaconSignal(currentBlock.getBeacon());
     }
   }
 
@@ -450,13 +465,6 @@ public class TrainModel implements TrainModelInterface {
   @Override
   public void setPowerCommand(double powerCommand) {
     this.powerCommand.set(powerCommand);
-  }
-
-  @Override
-  public void setBeaconSignal(Byte[] beaconSignal) {
-    //When in manual mode Speed/Auth and Beacon signal comes from track model.
-    //when in manual mode call this.
-    this.controller.setBeaconSignal(beaconSignal);
   }
 
   public void setMovingBlockMode(boolean movingBlockMode) {
