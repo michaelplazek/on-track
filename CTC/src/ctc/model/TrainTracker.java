@@ -1,7 +1,5 @@
 package ctc.model;
 
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import trackmodel.model.Block;
 import trackmodel.model.Track;
 import traincontroller.model.TrainControllerFactory;
@@ -25,7 +23,8 @@ public class TrainTracker {
   private Block location;
   private String locationId;
   private Route route;
-  private StringProperty displayAuthority = new SimpleStringProperty();
+  private String displayAuthority;
+  private int nextStationIndex;
 
   /**
    * Default constructor.
@@ -55,10 +54,10 @@ public class TrainTracker {
     this.location = track.getStartBlock();
     this.locationId = location.getSection() + location.getNumber();
     this.route = new Route(line, this);
+    this.nextStationIndex = 0;
 
     TrainControllerFactory.create(id, line);
   }
-
 
   /**
    * This is called every clock tick to update the train.
@@ -66,12 +65,30 @@ public class TrainTracker {
   public void update() {
 
     // update the authority
-    computeAuthority();
+    computeDisplay();
   }
 
-  private void computeAuthority() {
+  private void computeDisplay() {
+    computeDisplayAuthority();
+    computeDisplayLocation();
+  }
 
-    displayAuthority.setValue(route.getLast().getSection() + route.getLast().getNumber());
+  private void computeDisplayLocation() {
+    this.locationId = location.getSection() + location.getNumber();
+  }
+
+  private void computeDisplayAuthority() {
+
+    String stop = schedule.getStops().get(nextStationIndex).getStop();
+    if (stop.compareTo("") != 0) {
+      stop = schedule.getStops().get(nextStationIndex).getStop();
+    } else if (route.getLast().getNumber() != -1) {
+        stop = route.getLast().getSection() + route.getLast().getNumber();
+    } else {
+      stop = "Yard";
+    }
+
+    this.displayAuthority = stop;
   }
 
   public Schedule getSchedule() {
@@ -114,7 +131,7 @@ public class TrainTracker {
     this.passengers += passengers;
   }
 
-  public StringProperty getDisplayAuthority() {
+  public String getDisplayAuthority() {
     return displayAuthority;
   }
 
@@ -152,6 +169,14 @@ public class TrainTracker {
     this.distanceTravelled = distanceTravelled;
   }
 
+  public String getLocationId() {
+    return locationId;
+  }
+
+  public void setLocationId(String locationId) {
+    this.locationId = locationId;
+  }
+
   public String getLine() {
     return line;
   }
@@ -171,7 +196,6 @@ public class TrainTracker {
   public void setRoute(Route route) {
     this.route = route;
 
-    // update the authority
-    computeAuthority();
+    computeDisplay();
   }
 }
