@@ -349,11 +349,20 @@ public class Track {
    * @param currentBlock This will be the id of the current block the train is on
    */
   public Block getNextBlock(int currentBlock, int previousBlock) {
-    Block temp = track.get(currentBlock);
-    if (temp.getPreviousBlock() == previousBlock) {
-      return track.get(temp.getNextBlock1());
+
+    Block cur = track.get(currentBlock);
+    Block next = track.get(cur.getNextBlock1());
+
+    // track is coming from the opposite direction
+    if (!next.isBiDirectional()
+        && track.get(next.getNextBlock1()) == cur) {
+      return null;
     } else {
-      return track.get(temp.getPreviousBlock());
+      if (cur.getPreviousBlock() == previousBlock) {
+        return track.get(cur.getNextBlock1());
+      } else {
+        return track.get(cur.getPreviousBlock());
+      }
     }
   }
 
@@ -361,7 +370,7 @@ public class Track {
    * This method will return the other possible block for the track.
    * @param currentBlock The current block the train is on
    * @param previousBlock This will return the prior block the train was on
-   * @return A Block that the train will be going to
+   * @return Returns null if the fork is illegal. Otherwise returns the next block
    */
   public Block getNextBlock2(int currentBlock, int previousBlock) {
 
@@ -378,8 +387,6 @@ public class Track {
             && (fork.getNextBlock1() != s.getNumber())) {
           return track.get(s.getNextBlock2());
         }
-      } else {
-        return track.get(temp.getPreviousBlock());
       }
     }
 

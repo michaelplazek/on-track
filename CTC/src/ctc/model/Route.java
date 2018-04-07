@@ -63,47 +63,44 @@ public class Route {
     return new Block();
   }
 
+  private boolean checkPath(Block current) {
+
+    boolean valid;
+
+    // if we reached the last block
+    if ((current == this.end)
+        || current.getStationName().equals(nextStation)
+        || current.isSwitch()) {
+      if (nextStationIndex < train.getSchedule().getStops().size()) {
+        nextStation = train.getSchedule().getStops().get(nextStationIndex++).getStop();
+      }
+      return true;
+    } else {
+      valid = checkPath(line.getBlock(current.getNextBlock1()));
+    }
+
+    return valid;
+  }
+
   /**
    * Use to test a fork and decide with path to take.
-   * @param current Block
    * @return return true if you should fork and false otherwise
    */
-  private boolean shouldFork(Block current) {
+  private boolean shouldFork(Switch sw) {
 
-    boolean isPath = false;
+    boolean fork;
+    boolean straight;
 
-    // check if current block is a switch
-    if (current.isSwitch()) {
+    // check main path
+    straight = checkPath(line.getBlock(sw.getNextBlock1()));
 
-      Switch sw = (Switch) current;
-      if (line.getNextBlock2(sw.getNumber(), sw.getPreviousBlock()) != null) {
-        isPath = shouldFork(line.getBlock(sw.getNextBlock2()));
-
-        // if we reached the last block
-        if ((current == this.end) || current.getStationName().equals(nextStation)) {
-          if (nextStationIndex < train.getSchedule().getStops().size()) {
-            nextStation = train.getSchedule().getStops().get(nextStationIndex++).getStop();
-          }
-          return true;
-        }
-      }
+    // check forked path
+    if (!straight) {
+      fork = checkPath(line.getBlock(sw.getNextBlock2()));
+      return fork;
     }
 
-    if (!isPath) {
-
-      // continue up the path
-      isPath = shouldFork(line.getBlock(current.getNextBlock1()));
-
-      // if we reached the last block
-      if ((current == this.end) || current.getStationName().equals(nextStation)) {
-        if (nextStationIndex < train.getSchedule().getStops().size()) {
-          nextStation = train.getSchedule().getStops().get(nextStationIndex++).getStop();
-        }
-        return true;
-      }
-    }
-
-    return isPath;
+    return false;
   }
 
   /**
@@ -115,21 +112,60 @@ public class Route {
       return;
     }
 
-    boolean shouldFork = false;
-    Block next;
+    boolean shouldFork;
+
+    // TODO: track previous block - but you're getting there!
+
+    Block next = line.getNextBlock(current, previous);
 
     // add current block to path
     path.add(current);
 
-    if (current.isSwitch()) {
-      shouldFork = shouldFork(current);
-    }
+    if (next.isSwitch()) {
 
-    if (!shouldFork) {
-      next = line.getNextBlock(current.getNumber(), current.getPreviousBlock());
-      traverse(next, path);
+      // add next block - switch - to path
+      path.add(next);
+
+      Block fork = line.getNextBlock2(next.getNumber(), current.getNumber());
+      Block straight = line.getNextBlock(next.getNumber(), current.getNumber());
+
+      // if we are entering the wrong side of switch and have to go straight
+      if (fork == null) {
+
+        if (next.getPreviousBlock() == current.getNumber()) {
+          next = line.getBlock(next.getNextBlock1());
+        } else {
+          next = line.getBlock(next.getPreviousBlock());
+        }
+
+        traverse(next, path);
+
+      } else if (straight == null) {
+
+        if (next.getPreviousBlock() == current.getNumber()) {
+          next = fork;
+        } else {
+          next = line.getBlock(next.getPreviousBlock());
+        }
+
+        traverse(next, path);
+
+      } else {
+
+        // determine what to do
+        shouldFork = shouldFork((Switch) next);
+
+        // make the move
+        if (!shouldFork) {
+          next = line.getNextBlock(next.getNumber(), current.getNumber());
+          traverse(next, path);
+        } else {
+          next = line.getNextBlock2(next.getNumber(), current.getNumber());
+          traverse(next, path);
+        }
+      }
     } else {
-      next = line.getNextBlock2(current.getNumber(), current.getPreviousBlock());
+      next = line.getNextBlock(current.getNumber(), current.getPreviousBlock());
       traverse(next, path);
     }
   }
@@ -147,13 +183,14 @@ public class Route {
 
     LinkedList<Block> path = new LinkedList<>();
 
+
     // check if we're starting from the first block
     if (start == line.getStartBlock()) {
 
       path.add(start);
 
       Block current = line.getBlock(start.getNextBlock1());
-      traverse(current, path);
+      traverse(current, current.getPreviousBlock(), path);
     } else {
       traverse(start, path);
     }
