@@ -106,7 +106,7 @@ public class Route {
   /**
    * Use to build the route.
    */
-  private void traverse(Block current, LinkedList<Block> path) {
+  private void traverse(Block current, Block previous, LinkedList<Block> path) {
 
     if (current == this.end) {
       return;
@@ -114,9 +114,7 @@ public class Route {
 
     boolean shouldFork;
 
-    // TODO: track previous block - but you're getting there!
-
-    Block next = line.getNextBlock(current, previous);
+    Block next = line.getNextBlock(current.getNumber(), previous.getNumber());
 
     // add current block to path
     path.add(current);
@@ -138,7 +136,7 @@ public class Route {
           next = line.getBlock(next.getPreviousBlock());
         }
 
-        traverse(next, path);
+        traverse(next, current, path);
 
       } else if (straight == null) {
 
@@ -148,7 +146,7 @@ public class Route {
           next = line.getBlock(next.getPreviousBlock());
         }
 
-        traverse(next, path);
+        traverse(next, current, path);
 
       } else {
 
@@ -158,15 +156,15 @@ public class Route {
         // make the move
         if (!shouldFork) {
           next = line.getNextBlock(next.getNumber(), current.getNumber());
-          traverse(next, path);
+          traverse(next, current, path);
         } else {
           next = line.getNextBlock2(next.getNumber(), current.getNumber());
-          traverse(next, path);
+          traverse(next, current, path);
         }
       }
     } else {
       next = line.getNextBlock(current.getNumber(), current.getPreviousBlock());
-      traverse(next, path);
+      traverse(next, current, path);
     }
   }
 
@@ -190,9 +188,9 @@ public class Route {
       path.add(start);
 
       Block current = line.getBlock(start.getNextBlock1());
-      traverse(current, current.getPreviousBlock(), path);
+      traverse(current, line.getBlock(current.getPreviousBlock()), path);
     } else {
-      traverse(start, path);
+      traverse(start, line.getBlock(start.getPreviousBlock()), path);
     }
 
     this.route = path;

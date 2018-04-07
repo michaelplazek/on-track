@@ -245,7 +245,6 @@ public class Track {
 
 
         newTrack.addStations(stations);
-        stationId = 1;
 
       } catch (FileNotFoundException ex) {
         System.out.println("Unable to find the file.");
