@@ -15,7 +15,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import mainmenu.Clock;
 import mainmenu.controller.MainMenuController;
-import trackmodel.model.Beacon;
 import trackmodel.model.Block;
 import trackmodel.model.Track;
 import traincontroller.model.TrainControllerInterface;
@@ -23,6 +22,7 @@ import utils.train.TrainData;
 import utils.train.TrainModelEnums.DoorStatus;
 import utils.train.TrainModelEnums.OnOffStatus;
 import utils.train.TrainModelEnums.TrackLineStatus;
+import utils.unitconversion.UnitConversions;
 
 
 /**
@@ -44,19 +44,25 @@ public class TrainModel implements TrainModelInterface {
   //          40.9t = 40900kg
   //============================================
   //Train Dimentions
-  private DoubleProperty height = new SimpleDoubleProperty(TrainData.HEIGHT_OF_TRAIN);
-  private DoubleProperty width = new SimpleDoubleProperty(TrainData.WIDTH_OF_TRAIN);
-  private DoubleProperty lengthOfTrain = new SimpleDoubleProperty(TrainData.LENGTH_OF_TRAIN);
-  private DoubleProperty numberOfCars = new SimpleDoubleProperty(TrainData.NUMBER_OF_CARS);
+  private DoubleProperty height
+      = new SimpleDoubleProperty(TrainData.HEIGHT_OF_TRAIN * UnitConversions.METERS_TO_FT);
+  private DoubleProperty width
+      = new SimpleDoubleProperty(TrainData.WIDTH_OF_TRAIN * UnitConversions.METERS_TO_FT);
+  private DoubleProperty lengthOfTrain
+      = new SimpleDoubleProperty(TrainData.LENGTH_OF_TRAIN * UnitConversions.METERS_TO_FT);
+  private IntegerProperty numberOfCars = new SimpleIntegerProperty(TrainData.NUMBER_OF_CARS);
 
   //String Properties to be bound with UI.
   private DoubleProperty mass = new SimpleDoubleProperty(TrainData.EMPTY_WEIGHT);
+  private DoubleProperty massLbs
+      = new SimpleDoubleProperty(mass.get() * UnitConversions.KGS_TO_LBS);
+
   private DoubleProperty velocity = new SimpleDoubleProperty(0); //in m/s
+  private DoubleProperty velocityMph
+      = new SimpleDoubleProperty(velocity.get() * UnitConversions.MPS_TO_MPH);
+
   private DoubleProperty currentTemp
       = new SimpleDoubleProperty(70); //Current temp inside the train.
-
-  private DoubleProperty setSpeed = new SimpleDoubleProperty(0); //To link UI w/ TrainController
-  private DoubleProperty setAuthority = new SimpleDoubleProperty(0); //To link UI w/ TrainController
 
   //set by TrainController.
   private DoubleProperty powerCommand = new SimpleDoubleProperty(0); //In kilo Watts.
@@ -111,6 +117,7 @@ public class TrainModel implements TrainModelInterface {
     this.controller = controller;
     this.id = id;
     this.line = line;
+
   }
 
   /**
@@ -123,11 +130,13 @@ public class TrainModel implements TrainModelInterface {
     if (numberOfPassengers <= availableSeats) {
       this.numPassengers.set(numPassengers.get() + numberOfPassengers);
       this.mass.set(mass.get() + (TrainData.PASSENGER_WEIGHT * numberOfPassengers));
+      this.massLbs.set(mass.get() * UnitConversions.KGS_TO_LBS);
     } else {
       //If numberOfPassengers is >= available seats as the most you can.
       int passengersTotal = this.numPassengers.get() + availableSeats;
       this.numPassengers.set(passengersTotal);
       this.mass.set(TrainData.EMPTY_WEIGHT + (TrainData.PASSENGER_WEIGHT * passengersTotal));
+      this.massLbs.set(mass.get() * UnitConversions.KGS_TO_LBS);
     }
   }
 
@@ -139,11 +148,13 @@ public class TrainModel implements TrainModelInterface {
     if ((this.numPassengers.get() - numberOfPassengers) >= 0) {
       this.numPassengers.set(numPassengers.get() - numberOfPassengers);
       this.mass.set(mass.get() - (TrainData.PASSENGER_WEIGHT * numberOfPassengers));
+      this.massLbs.set(mass.get() * UnitConversions.KGS_TO_LBS);
     } else {
       this.numPassengers.set(0);
       this.mass.set(
           (TrainData.EMPTY_WEIGHT + (TrainData.MAX_PASSENGERS * TrainData.PASSENGER_WEIGHT))
           - (TrainData.MAX_PASSENGERS * TrainData.PASSENGER_AVG_MASS_KG));
+      this.massLbs.set(mass.get() * UnitConversions.KGS_TO_LBS);
     }
   }
 
@@ -216,6 +227,7 @@ public class TrainModel implements TrainModelInterface {
    */
   private void updateVelocity() {
     velocity.set(powerCommand.get() / (mass.get() * acceleration));
+    velocityMph.set(velocity.getValue() * UnitConversions.MPS_TO_MPH);
   }
 
   /**
@@ -262,7 +274,6 @@ public class TrainModel implements TrainModelInterface {
       updateSpeedAuth();
       brake();
       changeTemperature();
-
     }
   }
 
@@ -338,7 +349,9 @@ public class TrainModel implements TrainModelInterface {
   private void openLeftDoors() {
     leftDoorStatus.set(DoorStatus.OPEN);
     randomPassengersLeave();
-    addPassengers(currentBlock.getPassengers(TrainData.MAX_PASSENGERS - numPassengers.get()));
+    if (currentBlock != null) {
+      addPassengers(currentBlock.getPassengers(TrainData.MAX_PASSENGERS - numPassengers.get()));
+    }
   }
 
   /**
@@ -347,7 +360,9 @@ public class TrainModel implements TrainModelInterface {
   private void openRightDoors() {
     rightDoorStatus.setValue(DoorStatus.OPEN);
     randomPassengersLeave();
-    addPassengers(currentBlock.getPassengers(TrainData.MAX_PASSENGERS - numPassengers.get()));
+    if (currentBlock != null) {
+      addPassengers(currentBlock.getPassengers(TrainData.MAX_PASSENGERS - numPassengers.get()));
+    }
   }
 
   private void closeRightDoors() {
@@ -553,8 +568,16 @@ public class TrainModel implements TrainModelInterface {
     return mass;
   }
 
+  public DoubleProperty massLbsProperty() {
+    return massLbs;
+  }
+
   public DoubleProperty velocityProperty() {
     return velocity;
+  }
+
+  public DoubleProperty velocityMphProperty() {
+    return velocityMph;
   }
 
   public DoubleProperty powerCommandProperty() {
@@ -577,7 +600,7 @@ public class TrainModel implements TrainModelInterface {
     return lengthOfTrain;
   }
 
-  public DoubleProperty numberOfCarsProperty() {
+  public IntegerProperty numberOfCarsProperty() {
     return numberOfCars;
   }
 
@@ -623,14 +646,6 @@ public class TrainModel implements TrainModelInterface {
 
   public static ObservableList<String> getObservableListOfTrainModels() {
     return FXCollections.observableArrayList(listOfTrainModels.keySet());
-  }
-
-  public DoubleProperty setSpeedProperty() {
-    return setSpeed;
-  }
-
-  public DoubleProperty setAuthorityProperty() {
-    return setAuthority;
   }
 
   public static TrainModel getTrainModel(String id) {
