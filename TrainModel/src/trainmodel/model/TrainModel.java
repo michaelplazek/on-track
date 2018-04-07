@@ -26,6 +26,7 @@ import utils.train.TrainModelEnums.TrackLineStatus;
 import utils.unitconversion.UnitConversions;
 
 
+
 /**
  * Created by jeremyzang on 2/16/18.
  */
@@ -39,8 +40,8 @@ public class TrainModel implements TrainModelInterface {
   //Max Speed = 70km/hr
   //Assumed w/ 2/3 load:
   //  Medium acceleration 0.5 m/s^2
-  //  Service brake deceleration 1.2 m/s^2
-  //  Emergency brake deceleration 2.73 m/s^2
+  //  Service Brake deceleration 1.2 m/s^2
+  //  Emergency Brake deceleration 2.73 m/s^2
   //Empty Car Weight = 40.9tonnes (Metric ton) 1 metric ton = 1000kg
   //          40.9t = 40900kg
   //============================================
@@ -90,6 +91,7 @@ public class TrainModel implements TrainModelInterface {
   private double force = 0; //in N
   private double frictionForce = mass.get() * Constants.STEEL_FRICTION * Constants.GRAVITY;
   private boolean isMoving = false;
+  private boolean isDispatched = false;
   private final int capacityOfTrain = TrainData.MAX_PASSENGERS * TrainData.NUMBER_OF_CARS;
   private double positionInBlock = 0; //The number of meters from the border of the current block.
   // Measured from the previous boarder to front of train.
@@ -119,6 +121,9 @@ public class TrainModel implements TrainModelInterface {
     this.controller = controller;
     this.id = id;
     this.line = line;
+
+    this.activeTrack = Track.getTrack(line);
+    this.currentBlock = activeTrack.getStartBlock();
 
   }
 
@@ -173,7 +178,18 @@ public class TrainModel implements TrainModelInterface {
   /**
    * This will start the movement of the train.
    */
-  private void start() {
+  @Override
+  public void start() {
+    isDispatched = true;
+    isMoving = true;
+    startEngine();
+  }
+
+  /**
+   * Starts a train engine.
+   */
+  @Override
+  public void startEngine() {
     isMoving = true;
     if (velocity.get() == 0) {
       acceleration = .000001;
@@ -181,6 +197,7 @@ public class TrainModel implements TrainModelInterface {
       acceleration = powerCommand.get() / (mass.get() * velocity.get());
     }
   }
+
 
   /**
    * Updates position in current block.
@@ -249,13 +266,13 @@ public class TrainModel implements TrainModelInterface {
    */
   private void updateForce() {
     double tempForce = mass.get() * acceleration;
+    force = tempForce;
 
-    if (tempForce - frictionForce < 0) {
-      force = 0;
-    } else {
-      force = tempForce - frictionForce;
-    }
-
+//    if (tempForce - frictionForce < 0) {
+//      force = 0;
+//    } else {
+//      force = tempForce - frictionForce;
+//    }
   }
 
   /**
@@ -270,21 +287,15 @@ public class TrainModel implements TrainModelInterface {
    * Runs simulation. This will be called from main.
    */
   public void run() {
-    if (!isMoving) {
-      start();
-    } else {
-      updateAcceleration();
-      updateVelocity();
-      updateForce();
-      if (this.activeTrack != null) {
-        updatePosition();
-        updateOccupancy();
-        updateSpeedAuth();
-      }
+    updateAcceleration();
+    updateVelocity();
+    updateForce();
+    updatePosition();
+    updateOccupancy();
+    updateSpeedAuth();
+    checkBrakes();
+    changeTemperature();
 
-      brake();
-      changeTemperature();
-    }
   }
 
   /**
@@ -310,7 +321,7 @@ public class TrainModel implements TrainModelInterface {
   /**
    * Slows train down if brakes are engaged.
    */
-  private void brake() {
+  private void checkBrakes() {
     double deceleration = 0;
     if (emergencyBrakeStatus.toString().equals(OnOffStatus.ON.toString())) {
       deceleration = TrainData.EMERGENCY_BRAKE_ACCELERATION * clock.getChangeInTime();

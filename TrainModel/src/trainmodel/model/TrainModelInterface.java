@@ -34,6 +34,10 @@ public interface TrainModelInterface {
 
   //Setters
 
+  void start();
+
+  void startEngine();
+
   void setEmergencyBrakeStatus(OnOffStatus brakeStatus);
 
   void setServiceBrakeStatus(OnOffStatus brakeStatus);
