@@ -187,7 +187,7 @@ public class Route {
 
       path.add(start);
 
-      Block current = line.getBlock(start.getNextBlock1());
+      Block current = line.getBlock()
       traverse(current, line.getBlock(current.getPreviousBlock()), path);
     } else {
       traverse(start, line.getBlock(start.getPreviousBlock()), path);
