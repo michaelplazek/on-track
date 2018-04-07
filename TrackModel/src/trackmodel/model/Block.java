@@ -2,6 +2,11 @@ package trackmodel.model;
 
 import ctc.model.CentralTrafficControl;
 
+import java.util.Random;
+
+import utils.general.Authority;
+
+
 public class Block {
 
   //ID
@@ -37,7 +42,7 @@ public class Block {
 
   //Track Signal
   private float setPointSpeed;
-  private float authority;
+  private Authority authority;
   private boolean hasBeacon;
   private Beacon blockBeacon;
   
@@ -188,10 +193,9 @@ public class Block {
    * This will be called by the TrainModel when it arrives at a station.
    * @return number of passengers added to train
   **/
-  public int getPassengers() {
-
-    // TODO: generate random number of passengers, using limit - passengers as max
-    int passengers = 0;
+  public int getPassengers(int availableSeats) {
+    Random randomPassengers = new Random();
+    int passengers = randomPassengers.nextInt(availableSeats);
 
     // set passengers for train in CTC
     CentralTrafficControl.getInstance().addPassengers(this, passengers);
@@ -311,11 +315,11 @@ public class Block {
     this.setPointSpeed = setPointSpeed;
   }
 
-  public float getAuthority() {
+  public Authority getAuthority() {
     return authority;
   }
 
-  public void setAuthority(float authority) {
+  public void setAuthority(Authority authority) {
     this.authority = authority;
   }
 
@@ -323,7 +327,7 @@ public class Block {
     return hasBeacon;
   }
 
-  public byte[] getBeacon() {
+  public Beacon getBeacon() {
     return null;
   }
 

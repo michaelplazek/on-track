@@ -189,10 +189,7 @@ public class TrainControllerController implements Initializable {
    * This function initalizes Status Labels on UI.
    */
   private void initializeStatusLabels() {
-    authority.textProperty().bindBidirectional(trainController.getAuthorityProperty(),
-        new DecimalFormat("#0.00"));
-    currentSpeed.textProperty().bindBidirectional(trainController.getAuthorityProperty(),
-        new DecimalFormat("#0.00"));
+    authority.textProperty().bind(trainController.getAuthorityProperty().asString());
     powerCommand.textProperty().bindBidirectional(trainController.getPowerCommandProperty(),
         new DecimalFormat("#0.00"));
     currentSpeed.textProperty().bindBidirectional(trainController.getCurrentSpeedProperty(),

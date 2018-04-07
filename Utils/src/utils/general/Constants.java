@@ -14,4 +14,5 @@ public class Constants {
   public static final String ON = "ON";
 
   public static final String LABEL_STATUS_UNAVAILABLE = "N/A";
+  public static final double STEEL_FRICTION = 0.78;
 }
