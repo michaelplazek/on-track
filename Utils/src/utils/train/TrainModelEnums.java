@@ -23,13 +23,13 @@ public final class TrainModelEnums {
 
   }
 
-  public enum TrackLineStatus {
-    CONNECTED("CONNECTED"),
-    DISCONNECTED("DISCONNECTED");
+  public enum Failure {
+    FAILED("FAILED"),
+    WORKING("WORKING");
 
     private String status;
 
-    private TrackLineStatus(String status) {
+    private Failure(String status) {
       this.status = status;
     }
 
