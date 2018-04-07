@@ -63,6 +63,11 @@ public class Route {
     return new Block();
   }
 
+  public Block getLast() {
+
+    return this.end;
+  }
+
   private boolean checkPath(Block current) {
 
     boolean valid;

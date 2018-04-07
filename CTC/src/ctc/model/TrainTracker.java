@@ -1,5 +1,7 @@
 package ctc.model;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import trackmodel.model.Block;
 import trackmodel.model.Track;
 import traincontroller.model.TrainControllerFactory;
@@ -23,6 +25,7 @@ public class TrainTracker {
   private Block location;
   private String locationId;
   private Route route;
+  private StringProperty displayAuthority = new SimpleStringProperty();
 
   /**
    * Default constructor.
@@ -66,7 +69,10 @@ public class TrainTracker {
     computeAuthority();
   }
 
-  private void computeAuthority() {}
+  private void computeAuthority() {
+
+    displayAuthority.setValue(route.getLast().getSection() + route.getLast().getNumber());
+  }
 
   public Schedule getSchedule() {
     return schedule;
@@ -106,6 +112,10 @@ public class TrainTracker {
 
   protected void updatePassengers(int passengers) {
     this.passengers += passengers;
+  }
+
+  public StringProperty getDisplayAuthority() {
+    return displayAuthority;
   }
 
   public Authority getAuthority() {
