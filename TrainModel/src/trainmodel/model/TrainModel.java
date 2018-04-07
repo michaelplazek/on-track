@@ -3,14 +3,7 @@ package trainmodel.model;
 import java.util.HashMap;
 import java.util.Random;
 
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import mainmenu.Clock;
@@ -19,10 +12,11 @@ import trackmodel.model.Block;
 import trackmodel.model.Track;
 import traincontroller.model.TrainControllerInterface;
 import utils.general.Constants;
+import utils.train.DoorStatus;
+import utils.train.Failure;
+import utils.train.OnOffStatus;
 import utils.train.TrainData;
 import utils.unitconversion.UnitConversions;
-
-
 
 /**
  * Created by jeremyzang on 2/16/18.
