@@ -83,7 +83,7 @@ public class TrainTracker {
     if (stop.compareTo("") != 0) {
       stop = schedule.getStops().get(nextStationIndex).getStop();
     } else if (route.getLast().getNumber() != -1) {
-        stop = route.getLast().getSection() + route.getLast().getNumber();
+      stop = route.getLast().getSection() + route.getLast().getNumber();
     } else {
       stop = "Yard";
     }
