@@ -741,8 +741,6 @@ public class CentralTrafficControlController {
 
   private void addTrainToQueue() {
 
-    // TODO: create route and add it to TrainTracker
-
     if (trackSelect.getSelectionModel().getSelectedItem().equals("Select track")) {
 
       AlertWindow alert = new AlertWindow();
