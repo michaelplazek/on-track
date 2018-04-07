@@ -37,6 +37,7 @@ public class TrainControllerManager {
       return false;
     }
     temp.start();
+    temp.getTrainModel().start();
     return true;
   }
 

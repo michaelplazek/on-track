@@ -277,7 +277,7 @@ public class TrainModelController implements Initializable {
   }
 
   private void runDemo() throws InterruptedException {
-    trainModel.run();
+
   }
 
   /**
