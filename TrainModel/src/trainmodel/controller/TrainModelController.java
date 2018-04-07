@@ -316,6 +316,7 @@ public class TrainModelController implements Initializable {
   private void startSignalFailure() {
     signalFailureStatusIcon.setFill(Paint.valueOf(Constants.RED));
     trainModel.trackLineFailureStatusProperty().set(Failure.FAILED);
+
   }
 
   private void endEngineFailure() {
@@ -331,7 +332,7 @@ public class TrainModelController implements Initializable {
 
   private void endSignalFailure() {
     signalFailureStatusIcon.setFill(Paint.valueOf(Constants.GREEN));
-    trainModel.trackLineFailureStatusProperty().set(Failure.FAILED);
+    trainModel.trackLineFailureStatusProperty().set(Failure.WORKING);
   }
 
 }
