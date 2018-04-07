@@ -165,6 +165,11 @@ public class Track {
 
               if (splitLine[6].contains("YARD") && splitLine[6].contains("FROM")) {
                 newTrack.setStartBlock(number);
+
+                Block yard = new Block(lineId, "", -1, 0, 0, 0, "",
+                    0, 0, true, -2, number, false, false, null);
+
+                newTrack.addBlock(yard);
               }
 
               newTrack.addBlock(b);
