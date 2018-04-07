@@ -18,6 +18,7 @@ import mainmenu.controller.MainMenuController;
 import trackmodel.model.Block;
 import trackmodel.model.Track;
 import traincontroller.model.TrainControllerInterface;
+import utils.general.Constants;
 import utils.train.TrainData;
 import utils.train.TrainModelEnums.DoorStatus;
 import utils.train.TrainModelEnums.OnOffStatus;
@@ -87,6 +88,7 @@ public class TrainModel implements TrainModelInterface {
 
   private double acceleration = 0.000001; //in m/s^2
   private double force = 0; //in N
+  private double frictionForce = mass.get() * Constants.STEEL_FRICTION * Constants.GRAVITY;
   private boolean isMoving = false;
   private final int capacityOfTrain = TrainData.MAX_PASSENGERS * TrainData.NUMBER_OF_CARS;
   private double positionInBlock = 0; //The number of meters from the border of the current block.
@@ -246,7 +248,14 @@ public class TrainModel implements TrainModelInterface {
    * Updates force.
    */
   private void updateForce() {
-    force = mass.get() * acceleration;
+    double tempForce = mass.get() * acceleration;
+
+    if (tempForce - frictionForce < 0) {
+      force = 0;
+    } else {
+      force = tempForce - frictionForce;
+    }
+
   }
 
   /**

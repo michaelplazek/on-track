@@ -1,4 +1,3 @@
-
 Line,Section,Number,Length,Grade,Speed Limit,Infrastructure,Elevation,Cumulative Elevation,Bidirectional,Previous,Next Block 1,Next Block 2,Right Statoin,Left Station,Beacon,Distance,Station ID,Right,Underground,User Message
 GREEN,A,1,100,0.5,55,,0.5,0.5,,6,2,,,,,,,,,
 GREEN,A,2,100,1,55,STATION;POINEER,1,1.5,,1,3,,,1,,,,,,
