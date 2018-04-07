@@ -21,8 +21,10 @@ import mainmenu.Clock;
 import traincontroller.model.TrainControllerInterface;
 import trainmodel.model.TrainModel;
 import utils.general.Constants;
-import utils.train.TrainModelEnums.DoorStatus;
-import utils.train.TrainModelEnums.OnOffStatus;
+import utils.train.DoorStatus;
+import utils.train.Failure;
+import utils.train.OnOffStatus;
+
 
 
 public class TrainModelController implements Initializable {
@@ -224,7 +226,7 @@ public class TrainModelController implements Initializable {
     capacity.setText(String.valueOf(trainModel.getCapacityOfTrain()));
 
     time.textProperty().setValue(Clock.getInstance().getFormattedTime());
-    beaconStatus.textProperty().bind(trainModel.trackLineStatusProperty().asString());
+    beaconStatus.textProperty().bind(trainModel.trackLineFailureStatusProperty().asString());
     leftDoorStatus.textProperty().bind(trainModel.leftDoorStatusProperty().asString());
     rightDoorStatus.textProperty().bind(trainModel.rightDoorStatusProperty().asString());
     lightStatus.textProperty().bind(trainModel.lightStatusProperty().asString());
@@ -302,35 +304,35 @@ public class TrainModelController implements Initializable {
 
   private void startEngineFailure() {
     engineFailureStatusIcon.setFill(Paint.valueOf(Constants.RED));
-    trainModel.setEmergencyBrakeStatus(OnOffStatus.ON);
-    trainModel.cutEnginePower();
+    trainModel.engineFailureStatusProperty().set(Failure.FAILED);
   }
 
   private void startBrakeFailure() {
     brakeFailureStatusIcon.setFill(Paint.valueOf(Constants.RED));
-    trainModel.setEmergencyBrakeStatus(OnOffStatus.ON);
-    trainModel.cutEnginePower();
+    trainModel.brakeFailureStatusProperty().set(Failure.FAILED);
+    trainModel.serviceBrakeStatusProperty().set(OnOffStatus.FAILED);
   }
 
   private void startSignalFailure() {
     signalFailureStatusIcon.setFill(Paint.valueOf(Constants.RED));
-    trainModel.setEmergencyBrakeStatus(OnOffStatus.ON);
-    trainModel.cutEnginePower();
+    trainModel.trackLineFailureStatusProperty().set(Failure.FAILED);
+
   }
 
   private void endEngineFailure() {
     engineFailureStatusIcon.setFill(Paint.valueOf(Constants.GREEN));
-    trainModel.setEmergencyBrakeStatus(OnOffStatus.OFF);
+    trainModel.engineFailureStatusProperty().set(Failure.WORKING);
   }
 
   private void endBrakeFailure() {
     brakeFailureStatusIcon.setFill(Paint.valueOf(Constants.GREEN));
-    trainModel.setEmergencyBrakeStatus(OnOffStatus.OFF);
+    trainModel.brakeFailureStatusProperty().set(Failure.WORKING);
+    trainModel.serviceBrakeStatusProperty().set(OnOffStatus.ON);
   }
 
   private void endSignalFailure() {
     signalFailureStatusIcon.setFill(Paint.valueOf(Constants.GREEN));
-    trainModel.setEmergencyBrakeStatus(OnOffStatus.OFF);
+    trainModel.trackLineFailureStatusProperty().set(Failure.WORKING);
   }
 
 }

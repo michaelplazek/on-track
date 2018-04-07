@@ -79,7 +79,6 @@ public class Track {
 
         while (line != null) {
           if (i == 0) {
-            String[] splitLine = line.split(",");
             line = br.readLine();
             i++;
           } else {
@@ -104,8 +103,8 @@ public class Track {
             }
 
             if (splitLine[6].contains("SWITCH")) {
-              // Create a switch for the Track
 
+              // Create a switch for the Track
               final String lineId = splitLine[0];
               final String section = splitLine[1];
               final int number = Integer.parseInt(splitLine[2]);
@@ -165,12 +164,17 @@ public class Track {
 
               if (splitLine[6].contains("YARD") && splitLine[6].contains("FROM")) {
                 newTrack.setStartBlock(number);
+
+                Block yard = new Block(lineId, "", -1, 0, 0, 0, "",
+                    0, 0, false, -2, number, false, false, null);
+
+                newTrack.addBlock(yard);
               }
 
               newTrack.addBlock(b);
 
             } else {
-              
+
               //Create a Block for the Track
               final String lineId = splitLine[0];
               final String section = splitLine[1];
@@ -241,7 +245,6 @@ public class Track {
 
 
         newTrack.addStations(stations);
-        stationId = 1;
 
       } catch (FileNotFoundException ex) {
         System.out.println("Unable to find the file.");
@@ -345,25 +348,49 @@ public class Track {
    * @param currentBlock This will be the id of the current block the train is on
    */
   public Block getNextBlock(int currentBlock, int previousBlock) {
-    Block temp = track.get(currentBlock);
-    if (temp.getPreviousBlock() == previousBlock) {
-      return track.get(temp.getNextBlock1());
+
+    Block cur = track.get(currentBlock);
+    Block next = track.get(cur.getNextBlock1());
+
+    if (cur.getPreviousBlock() == previousBlock) {
+
+      // track is coming from the opposite direction
+      if (!next.isBiDirectional()
+          && track.get(next.getNextBlock1()) == cur) {
+        return null;
+      } else {
+        return track.get(cur.getNextBlock1());
+      }
     } else {
-      return track.get(temp.getPreviousBlock());
+      return track.get(cur.getPreviousBlock());
     }
   }
 
   /**
    * This method will return the other possible block for the track.
    * @param currentBlock The current block the train is on
-   * @return A Block that the train will be going to
+   * @param previousBlock This will return the prior block the train was on
+   * @return Returns null if the fork is illegal. Otherwise returns the next block
    */
-  public Block getNextBlock2(int currentBlock) {
+  public Block getNextBlock2(int currentBlock, int previousBlock) {
+
     Block temp = track.get(currentBlock);
+
     if (temp.isSwitch()) {
+
       Switch s = (Switch) temp;
-      return track.get(s.getNextBlock2());
+      if (previousBlock == s.getPreviousBlock()) {
+
+        Block fork = track.get(s.getNextBlock2());
+        if (fork.getNumber() == -1) {
+          return fork;
+        } else if (!fork.isBiDirectional()
+            && (fork.getNextBlock1() != s.getNumber())) {
+          return fork;
+        }
+      }
     }
+
     return null;
   }
 

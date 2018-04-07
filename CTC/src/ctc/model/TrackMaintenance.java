@@ -55,6 +55,7 @@ public class TrackMaintenance {
 
     if (track != null) {
       blockList.addAll(track.getBlockList());
+      blockList.remove("-1");
     }
   }
 

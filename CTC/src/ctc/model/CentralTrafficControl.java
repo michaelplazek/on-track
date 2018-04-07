@@ -121,7 +121,9 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
     blockList.clear();
 
     if (track != null) {
+      blockList.add("Yard");
       blockList.addAll(track.getBlockList());
+      blockList.remove("-1");
     }
   }
 

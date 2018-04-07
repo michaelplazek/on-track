@@ -14,9 +14,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import traincontroller.model.TrainController;
 import traincontroller.model.TrainControllerManager;
-import utils.train.TrainModelEnums;
-import utils.train.TrainModelEnums.DoorStatus;
-import utils.train.TrainModelEnums.OnOffStatus;
+import utils.train.DoorStatus;
+import utils.train.OnOffStatus;
 
 
 public class TrainControllerController implements Initializable {
@@ -137,7 +136,7 @@ public class TrainControllerController implements Initializable {
       rightDoorButton.setSelected(false);
       return;
     }
-    if (trainController.getTrainModel().getRightDoorStatus() == TrainModelEnums.DoorStatus.OPEN) {
+    if (trainController.getTrainModel().getRightDoorStatus() == DoorStatus.OPEN) {
       rightDoorButton.textProperty().setValue("CLOSE");
       trainController.setRightDoorStatus(DoorStatus.CLOSED);
     } else {
