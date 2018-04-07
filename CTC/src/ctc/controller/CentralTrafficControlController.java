@@ -787,7 +787,7 @@ public class CentralTrafficControlController {
         // get last block
         String end = scheduleBlocks.getSelectionModel().getSelectedItem();
         Block lastBlock;
-        if (end.equals("Yard")) {
+        if (end.compareTo("Yard") == 0) {
           lastBlock = Track.getListOfTracks().get(line).getBlock(-1);
         } else {
           lastBlock = Track.getListOfTracks().get(line).getBlock(extractBlock(scheduleBlocks));

@@ -166,7 +166,7 @@ public class Track {
                 newTrack.setStartBlock(number);
 
                 Block yard = new Block(lineId, "", -1, 0, 0, 0, "",
-                    0, 0, true, -2, number, false, false, null);
+                    0, 0, false, -2, number, false, false, null);
 
                 newTrack.addBlock(yard);
               }
@@ -364,7 +364,6 @@ public class Track {
     } else {
       return track.get(cur.getPreviousBlock());
     }
-
   }
 
   /**
@@ -383,10 +382,11 @@ public class Track {
       if (previousBlock == s.getPreviousBlock()) {
 
         Block fork = track.get(s.getNextBlock2());
-        if (fork != null
-            && !fork.isBiDirectional()
+        if (fork.getNumber() == -1) {
+          return fork;
+        } else if (!fork.isBiDirectional()
             && (fork.getNextBlock1() != s.getNumber())) {
-          return track.get(s.getNextBlock2());
+          return fork;
         }
       }
     }

@@ -69,12 +69,13 @@ public class Route {
 
     // if we reached the last block
     if ((current == this.end)
-        || current.getStationName().equals(nextStation)
-        || current.isSwitch()) {
+        || current.getStationName().equals(nextStation)) {
       if (nextStationIndex < train.getSchedule().getStops().size()) {
         nextStation = train.getSchedule().getStops().get(nextStationIndex++).getStop();
       }
       return true;
+    } else if (current.isSwitch()) {
+      return false;
     } else {
       valid = checkPath(line.getBlock(current.getNextBlock1()));
     }
