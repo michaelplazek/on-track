@@ -79,10 +79,13 @@ public class TrackControllerLineManager implements TrackControllerLineManagerInt
 
   @Override
   public boolean addController(TrackController newCtrl) {
-    if (lineControllers != null) {
-      lineControllerIds.add(line + " " + newCtrl.getId());
-      return lineControllers.add(newCtrl);
-    }
+    //OLD CODE: not sure wtf I was thinking or what this does
+//    if (lineControllers != null) {
+//      lineControllerIds.add(line + " " + newCtrl.getId());
+//      return lineControllers.add(newCtrl);
+//    }
+//    return lineControllers.add(newCtrl);
+    lineControllerIds.add(line + " " + newCtrl.getId());
     return lineControllers.add(newCtrl);
   }
 

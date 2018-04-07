@@ -25,6 +25,8 @@ public interface TrackControllerInterface {
 
   void setZone(HashMap<Integer, Block> blocks);
 
+  int getBlockCount();
+
   ArrayList<String> getZone();
 
   boolean addBlock(Block newBlock);

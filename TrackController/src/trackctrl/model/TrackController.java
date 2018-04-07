@@ -103,6 +103,11 @@ public class TrackController implements TrackControllerInterface {
     return blockList;
   }
 
+  @Override
+  public int getBlockCount() {
+    return blockList.size();
+  }
+
   //TODO
   @Override
   public boolean addBlock(Block newBlock) {
