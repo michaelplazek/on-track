@@ -21,10 +21,9 @@ import mainmenu.Clock;
 import traincontroller.model.TrainControllerInterface;
 import trainmodel.model.TrainModel;
 import utils.general.Constants;
-import utils.train.TrainModelEnums;
-import utils.train.TrainModelEnums.DoorStatus;
-import utils.train.TrainModelEnums.Failure;
-import utils.train.TrainModelEnums.OnOffStatus;
+import utils.train.DoorStatus;
+import utils.train.Failure;
+import utils.train.OnOffStatus;
 
 
 
@@ -311,6 +310,7 @@ public class TrainModelController implements Initializable {
   private void startBrakeFailure() {
     brakeFailureStatusIcon.setFill(Paint.valueOf(Constants.RED));
     trainModel.brakeFailureStatusProperty().set(Failure.FAILED);
+    trainModel.serviceBrakeStatusProperty().set(OnOffStatus.FAILED);
   }
 
   private void startSignalFailure() {
@@ -326,6 +326,7 @@ public class TrainModelController implements Initializable {
   private void endBrakeFailure() {
     brakeFailureStatusIcon.setFill(Paint.valueOf(Constants.GREEN));
     trainModel.brakeFailureStatusProperty().set(Failure.WORKING);
+    trainModel.serviceBrakeStatusProperty().set(OnOffStatus.ON);
   }
 
   private void endSignalFailure() {

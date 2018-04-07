@@ -19,9 +19,9 @@ import trackmodel.model.Block;
 import trackmodel.model.Track;
 import traincontroller.model.TrainControllerInterface;
 import utils.train.TrainData;
-import utils.train.TrainModelEnums.DoorStatus;
-import utils.train.TrainModelEnums.OnOffStatus;
-import utils.train.TrainModelEnums.Failure;
+import utils.train.DoorStatus;
+import utils.train.OnOffStatus;
+import utils.train.Failure;
 import utils.unitconversion.UnitConversions;
 
 
