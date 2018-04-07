@@ -79,7 +79,6 @@ public class Track {
 
         while (line != null) {
           if (i == 0) {
-            String[] splitLine = line.split(",");
             line = br.readLine();
             i++;
           } else {
@@ -104,8 +103,8 @@ public class Track {
             }
 
             if (splitLine[6].contains("SWITCH")) {
-              // Create a switch for the Track
 
+              // Create a switch for the Track
               final String lineId = splitLine[0];
               final String section = splitLine[1];
               final int number = Integer.parseInt(splitLine[2]);
@@ -175,7 +174,7 @@ public class Track {
               newTrack.addBlock(b);
 
             } else {
-              
+
               //Create a Block for the Track
               final String lineId = splitLine[0];
               final String section = splitLine[1];
@@ -361,14 +360,29 @@ public class Track {
   /**
    * This method will return the other possible block for the track.
    * @param currentBlock The current block the train is on
+   * @param previousBlock This will return the prior block the train was on
    * @return A Block that the train will be going to
    */
-  public Block getNextBlock2(int currentBlock) {
+  public Block getNextBlock2(int currentBlock, int previousBlock) {
+
     Block temp = track.get(currentBlock);
+
     if (temp.isSwitch()) {
+
       Switch s = (Switch) temp;
-      return track.get(s.getNextBlock2());
+      if (previousBlock == s.getPreviousBlock()) {
+
+        Block fork = track.get(s.getNextBlock2());
+        if (fork != null
+            && !fork.isBiDirectional()
+            && (fork.getNextBlock1() != s.getNumber())) {
+          return track.get(s.getNextBlock2());
+        }
+      } else {
+        return track.get(temp.getPreviousBlock());
+      }
     }
+
     return null;
   }
 

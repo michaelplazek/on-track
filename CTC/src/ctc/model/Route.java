@@ -1,13 +1,9 @@
 package ctc.model;
 
 import java.util.LinkedList;
-import java.util.ListIterator;
-
-import sun.awt.image.ImageWatched;
 import trackmodel.model.Block;
 import trackmodel.model.Switch;
 import trackmodel.model.Track;
-import utils.general.Authority;
 
 public class Route {
 
@@ -16,13 +12,17 @@ public class Route {
   private Block end;
   private Track line;
   private TrainTracker train;
+  private String nextStation;
+  private int nextStationIndex;
 
   /**
    * Default constructor.
    */
-  protected Route(String line) {
+  protected Route(String line, TrainTracker train) {
 
     this.line = Track.getListOfTracks().get(line);
+    this.train = train;
+    this.nextStationIndex = 0;
     this.route = new LinkedList<>();
   }
 
@@ -31,9 +31,11 @@ public class Route {
    * @param end final block of the route
    * @param line the line of the route
    */
-  public Route(Block end, String line) {
+  public Route(Block end, String line, TrainTracker train) {
 
     this.line = Track.getListOfTracks().get(line);
+    this.train = train;
+    this.nextStationIndex = 0;
     createRoute(this.line.getStartBlock(), end);
   }
 
@@ -43,9 +45,11 @@ public class Route {
    * @param end final Block
    * @param line current line
    */
-  public Route(Block start, Block end, String line) {
+  public Route(Block start, Block end, String line, TrainTracker train) {
 
     this.line = Track.getListOfTracks().get(line);
+    this.train = train;
+    this.nextStationIndex = 0;
     createRoute(start, end);
   }
 
@@ -59,34 +63,75 @@ public class Route {
     return new Block();
   }
 
-  @SuppressWarnings("unchecked")
-  private void traverse(Block current, LinkedList<Block> path) {
+  /**
+   * Use to test a fork and decide with path to take.
+   * @param current Block
+   * @return return true if you should fork and false otherwise
+   */
+  private boolean shouldFork(Block current) {
 
-    // add current block to the path
-    path.add(current);
+    boolean isPath = false;
 
-    // if we reached the last block
-    if (current == this.end) {
-
-      this.route = (LinkedList<Block>) path.clone();
-      return;
-    }
-
-    // return if we reach the end of the track and we still haven't reached the target block
-    if (current.getNumber() == -1) {
-      return;
-    }
-
+    // check if current block is a switch
     if (current.isSwitch()) {
 
       Switch sw = (Switch) current;
+      if (line.getNextBlock2(sw.getNumber(), sw.getPreviousBlock()) != null) {
+        isPath = shouldFork(line.getBlock(sw.getNextBlock2()));
 
-      traverse(line.getBlock(sw.getNextBlock1()), path);
-      traverse(line.getBlock(sw.getNextBlock2()), path);
-    } else {
-      traverse(line.getBlock(current.getNextBlock1()), path);
+        // if we reached the last block
+        if ((current == this.end) || current.getStationName().equals(nextStation)) {
+          if (nextStationIndex < train.getSchedule().getStops().size()) {
+            nextStation = train.getSchedule().getStops().get(nextStationIndex++).getStop();
+          }
+          return true;
+        }
+      }
     }
 
+    if (!isPath) {
+
+      // continue up the path
+      isPath = shouldFork(line.getBlock(current.getNextBlock1()));
+
+      // if we reached the last block
+      if ((current == this.end) || current.getStationName().equals(nextStation)) {
+        if (nextStationIndex < train.getSchedule().getStops().size()) {
+          nextStation = train.getSchedule().getStops().get(nextStationIndex++).getStop();
+        }
+        return true;
+      }
+    }
+
+    return isPath;
+  }
+
+  /**
+   * Use to build the route.
+   */
+  private void traverse(Block current, LinkedList<Block> path) {
+
+    if (current == this.end) {
+      return;
+    }
+
+    boolean shouldFork = false;
+    Block next;
+
+    // add current block to path
+    path.add(current);
+
+    if (current.isSwitch()) {
+      shouldFork = shouldFork(current);
+    }
+
+    if (!shouldFork) {
+      next = line.getNextBlock(current.getNumber(), current.getPreviousBlock());
+      traverse(next, path);
+    } else {
+      next = line.getNextBlock2(current.getNumber(), current.getPreviousBlock());
+      traverse(next, path);
+    }
   }
 
   /**
@@ -112,6 +157,8 @@ public class Route {
     } else {
       traverse(start, path);
     }
+
+    this.route = path;
 
     return true;
   }

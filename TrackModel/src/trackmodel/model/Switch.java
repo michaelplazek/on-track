@@ -55,6 +55,7 @@ public class Switch extends Block {
    * @return A integer will be returned
    */
   public int getNextBlock2() {
+
     return next2;
   }
 

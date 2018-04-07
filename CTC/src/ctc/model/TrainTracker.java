@@ -51,7 +51,7 @@ public class TrainTracker {
     this.track = Track.getListOfTracks().get(line);
     this.location = track.getStartBlock();
     this.locationId = location.getSection() + location.getNumber();
-    this.route = new Route(line);
+    this.route = new Route(line, this);
 
     TrainControllerFactory.create(id, line);
   }
