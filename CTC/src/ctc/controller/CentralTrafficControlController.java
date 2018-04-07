@@ -322,7 +322,7 @@ public class CentralTrafficControlController {
             String action = maintenanceActions.getSelectionModel().getSelectedItem();
             String line = maintenanceTracks.getSelectionModel().getSelectedItem();
 
-            int blockId = extractBlock();
+            int blockId = extractBlock(maintenanceBlocks);
             Block block = Track.getListOfTracks().get(line).getBlock(blockId);
 
             if (action.equals("Toggle switch") && !block.isSwitch()) {
@@ -339,7 +339,7 @@ public class CentralTrafficControlController {
           String action = maintenanceActions.getSelectionModel().getSelectedItem();
           String line = maintenanceTracks.getSelectionModel().getSelectedItem();
 
-          int blockId = extractBlock();
+          int blockId = extractBlock(maintenanceBlocks);
           Block block = Track.getListOfTracks().get(line).getBlock(blockId);
 
           if (action.equals("Toggle switch") && !block.isSwitch()) {
@@ -556,12 +556,12 @@ public class CentralTrafficControlController {
     ctc.setActive(false);
   }
 
-  private int extractBlock() {
+  private int extractBlock(ChoiceBox<String> blocks) {
 
     StringBuilder blockName = new StringBuilder();
 
-    if (!maintenanceBlocks.getSelectionModel().isEmpty()) {
-      char[] temp = maintenanceBlocks.getSelectionModel().getSelectedItem().toCharArray();
+    if (!blocks.getSelectionModel().isEmpty()) {
+      char[] temp = blocks.getSelectionModel().getSelectedItem().toCharArray();
 
       for (int i = 0; i < temp.length; i++) {
         if (!Character.isLetter(temp[i])) {
@@ -580,7 +580,7 @@ public class CentralTrafficControlController {
     String line = maintenanceTracks.getSelectionModel().getSelectedItem();
     TrackControllerLineManagerInterface manager = TrackControllerLineManager.getInstance(line);
 
-    int blockId = extractBlock();
+    int blockId = extractBlock(maintenanceBlocks);
     String action = maintenanceActions.getSelectionModel().getSelectedItem();
 
     switch (action) {
@@ -615,7 +615,7 @@ public class CentralTrafficControlController {
       maintenanceActions.setDisable(false);
       submitMaintenance.setDisable(false);
 
-      int blockId = extractBlock();
+      int blockId = extractBlock(maintenanceBlocks);
       Block block = Track.getListOfTracks().get(line).getBlock(blockId);
 
       if (block.isClosedForMaintenance()) {
@@ -741,8 +741,6 @@ public class CentralTrafficControlController {
 
   private void addTrainToQueue() {
 
-    // TODO: create route and add it to TrainTracker
-
     if (trackSelect.getSelectionModel().getSelectedItem().equals("Select track")) {
 
       AlertWindow alert = new AlertWindow();
@@ -767,7 +765,7 @@ public class CentralTrafficControlController {
         dwellData.add(dwellColumn.getCellObservableValue(item).getValue());
       }
 
-      //get line
+      // get line
       String line = trackSelect.getSelectionModel().getSelectedItem();
 
       // create schedule
@@ -783,6 +781,18 @@ public class CentralTrafficControlController {
 
         TrainTracker train = new TrainTracker(name, departingTime, line, schedule);
         train.setLine(ctc.getLine()); // set the track that is current set
+
+        // get last block
+        String end = scheduleBlocks.getSelectionModel().getSelectedItem();
+        Block lastBlock;
+        if (end.compareTo("Yard") == 0) {
+          lastBlock = Track.getListOfTracks().get(line).getBlock(-1);
+        } else {
+          lastBlock = Track.getListOfTracks().get(line).getBlock(extractBlock(scheduleBlocks));
+        }
+
+        // create route
+        train.setRoute(new Route(lastBlock, line, train));
 
         // create item in queue
         trainQueueTable.setItems(ctc.getTrainQueueTable());
@@ -850,7 +860,7 @@ public class CentralTrafficControlController {
     Block location = train.getLocation();
 
     // make new route with the new authority
-    Route route = new Route(location, end, line);
+    Route route = new Route(location, end, line, train);
     train.setRoute(route);
 
     // get new authority that is set inside of setRoute
