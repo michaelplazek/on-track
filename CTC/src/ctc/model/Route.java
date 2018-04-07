@@ -10,6 +10,7 @@ public class Route {
   private LinkedList<Block> route;
   private Block start;
   private Block end;
+  private int currentIndex;
   private Track line;
   private TrainTracker train;
   private String nextStation;
@@ -23,6 +24,7 @@ public class Route {
     this.line = Track.getListOfTracks().get(line);
     this.train = train;
     this.nextStationIndex = 0;
+    this.currentIndex = 0;
     this.route = new LinkedList<>();
   }
 
@@ -36,6 +38,7 @@ public class Route {
     this.line = Track.getListOfTracks().get(line);
     this.train = train;
     this.nextStationIndex = 0;
+    this.currentIndex = 0;
     createRoute(this.line.getStartBlock(), end);
   }
 
@@ -50,17 +53,23 @@ public class Route {
     this.line = Track.getListOfTracks().get(line);
     this.train = train;
     this.nextStationIndex = 0;
+    this.currentIndex = 0;
     createRoute(start, end);
   }
 
   public Block getNext() {
 
-    return new Block();
+    return route.get(currentIndex);
   }
 
   public Block getFirst() {
 
-    return new Block();
+    return this.start;
+  }
+
+  public Block getLast() {
+
+    return this.end;
   }
 
   private boolean checkPath(Block current) {

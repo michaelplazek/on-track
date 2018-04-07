@@ -186,7 +186,7 @@ public class CentralTrafficControlController {
     dispatchLocationColumn.setCellValueFactory(
         new PropertyValueFactory<TrainTracker, String>("locationId"));
     dispatchAuthorityColumn.setCellValueFactory(
-        new PropertyValueFactory<TrainTracker, String>("authority"));
+        new PropertyValueFactory<TrainTracker, String>("displayAuthority"));
     dispatchSpeedColumn.setCellValueFactory(
         new PropertyValueFactory<TrainTracker, String>("speed"));
     dispatchPassengersColumn.setCellValueFactory(
