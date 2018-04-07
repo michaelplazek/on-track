@@ -18,10 +18,11 @@ import mainmenu.controller.MainMenuController;
 import trackmodel.model.Block;
 import trackmodel.model.Track;
 import traincontroller.model.TrainControllerInterface;
-import utils.train.TrainData;
+
 import utils.train.DoorStatus;
-import utils.train.OnOffStatus;
 import utils.train.Failure;
+import utils.train.OnOffStatus;
+import utils.train.TrainData;
 import utils.unitconversion.UnitConversions;
 
 

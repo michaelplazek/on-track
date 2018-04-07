@@ -1,8 +1,8 @@
 package trainmodel.model;
 
 import utils.train.DoorStatus;
-import utils.train.OnOffStatus;
 import utils.train.Failure;
+import utils.train.OnOffStatus;
 
 
 /**
