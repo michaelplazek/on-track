@@ -5,6 +5,7 @@ import mainmenu.ClockInterface;
 import trackmodel.model.Block;
 import trackmodel.model.Track;
 import trainmodel.model.TrainModelInterface;
+import utils.general.Authority;
 import utils.train.TrainData;
 import utils.train.TrainModelEnums;
 
@@ -20,19 +21,8 @@ public class PowerCalculator {
     double currentSpeed = trainModel.getCurrentSpeed();
     double setSpeed = tc.getSetSpeed();
     double safeStopDistance = getSafeStopDistance(tc);
-    double authority = tc.getAuthority();
+    Authority authority = tc.getAuthority();
     double speedLimit = getSpeedLimit(tc, safeStopDistance);
-    if (tc.isAutomatic()) {
-      if (currentSpeed > setSpeed) {
-        tc.setServiceBrake(TrainModelEnums.OnOffStatus.ON);
-        tc.setPowerCommand(0.0);
-      } else if (safeStopDistance <= authority * 1.01) {
-        tc.setServiceBrake(TrainModelEnums.OnOffStatus.ON);
-        tc.setPowerCommand(0.0);
-      } else {
-        tc.setPowerCommand(getPowerCommand(tc));
-      }
-    }
     tc.setCurrentSpeed(currentSpeed);
     tc.setCurrentTemperature(trainModel.getCurrentTemp());
   }
@@ -54,7 +44,7 @@ public class PowerCalculator {
       max = currentBlock.getSpeedLimit();
     } else {
       max = Math.max(currentBlock.getSpeedLimit(), recursiveSpeedLimit(
-          track.getNextBlock(lastBlock.getNumber(), currentBlock.getNumber()),
+          track.getNextBlock(currentBlock.getNumber(), lastBlock.getNumber()),
           currentBlock, remainingDistance));
       if (currentBlock.isSwitch()) {
         max = Math.max(max, recursiveSpeedLimit(

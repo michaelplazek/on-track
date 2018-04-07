@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import trackmodel.model.Block;
+import utils.general.Authority;
 
 public class TrackController implements TrackControllerInterface {
 
@@ -48,7 +49,7 @@ public class TrackController implements TrackControllerInterface {
 
   //TODO
   @Override
-  public boolean sendTrackSignals(int block, float authority, float speed) {
+  public boolean sendTrackSignals(int block, Authority authority, float speed) {
     return false;
   }
 

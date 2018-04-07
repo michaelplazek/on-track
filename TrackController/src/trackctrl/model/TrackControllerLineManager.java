@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import utils.general.Authority;
 
 public class TrackControllerLineManager implements TrackControllerLineManagerInterface {
 
@@ -42,7 +43,7 @@ public class TrackControllerLineManager implements TrackControllerLineManagerInt
   }
 
   @Override
-  public boolean sendTrackSignals(int block, float authority, float setSpeed) {
+  public boolean sendTrackSignals(int block, Authority authority, float setSpeed) {
     if (lineControllers != null) {
       for (TrackController tc : lineControllers) {
         if (tc.hasBlock(block)) {

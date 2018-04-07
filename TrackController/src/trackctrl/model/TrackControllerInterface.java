@@ -4,11 +4,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import trackmodel.model.Block;
+import utils.general.Authority;
 
 public interface TrackControllerInterface {
 
   //To be set by the CTC
-  boolean sendTrackSignals(int blockId, float speed, float authority);
+  boolean sendTrackSignals(int blockId, Authority speed, float authority);
 
   boolean setSwitchOverride(int block, boolean state);
 
