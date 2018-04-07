@@ -279,8 +279,9 @@ public class TrainModel implements TrainModelInterface {
       if (this.activeTrack != null) {
         updatePosition();
         updateOccupancy();
+        updateSpeedAuth();
       }
-      updateSpeedAuth();
+
       brake();
       changeTemperature();
     }
