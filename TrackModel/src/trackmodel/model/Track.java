@@ -352,17 +352,19 @@ public class Track {
     Block cur = track.get(currentBlock);
     Block next = track.get(cur.getNextBlock1());
 
-    // track is coming from the opposite direction
-    if (!next.isBiDirectional()
-        && track.get(next.getNextBlock1()) == cur) {
-      return null;
-    } else {
-      if (cur.getPreviousBlock() == previousBlock) {
-        return track.get(cur.getNextBlock1());
+    if (cur.getPreviousBlock() == previousBlock) {
+
+      // track is coming from the opposite direction
+      if (!next.isBiDirectional()
+          && track.get(next.getNextBlock1()) == cur) {
+        return null;
       } else {
-        return track.get(cur.getPreviousBlock());
+        return track.get(cur.getNextBlock1());
       }
+    } else {
+      return track.get(cur.getPreviousBlock());
     }
+
   }
 
   /**

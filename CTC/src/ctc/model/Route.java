@@ -126,27 +126,28 @@ public class Route {
 
       Block fork = line.getNextBlock2(next.getNumber(), current.getNumber());
       Block straight = line.getNextBlock(next.getNumber(), current.getNumber());
+      Block after;
 
       // if we are entering the wrong side of switch and have to go straight
       if (fork == null) {
 
         if (next.getPreviousBlock() == current.getNumber()) {
-          next = line.getBlock(next.getNextBlock1());
+          after = line.getBlock(next.getNextBlock1());
         } else {
-          next = line.getBlock(next.getPreviousBlock());
+          after = line.getBlock(next.getPreviousBlock());
         }
 
-        traverse(next, current, path);
+        traverse(after, next, path);
 
       } else if (straight == null) {
 
         if (next.getPreviousBlock() == current.getNumber()) {
-          next = fork;
+          after = fork;
         } else {
-          next = line.getBlock(next.getPreviousBlock());
+          after = line.getBlock(next.getPreviousBlock());
         }
 
-        traverse(next, current, path);
+        traverse(after, next, path);
 
       } else {
 
@@ -155,15 +156,15 @@ public class Route {
 
         // make the move
         if (!shouldFork) {
-          next = line.getNextBlock(next.getNumber(), current.getNumber());
-          traverse(next, current, path);
+          after = line.getNextBlock(next.getNumber(), current.getNumber());
+          traverse(after, next, path);
         } else {
-          next = line.getNextBlock2(next.getNumber(), current.getNumber());
-          traverse(next, current, path);
+          after = line.getNextBlock2(next.getNumber(), current.getNumber());
+          traverse(after, next, path);
         }
       }
     } else {
-      next = line.getNextBlock(current.getNumber(), current.getPreviousBlock());
+      next = line.getNextBlock(current.getNumber(), previous.getNumber());
       traverse(next, current, path);
     }
   }
@@ -187,7 +188,7 @@ public class Route {
 
       path.add(start);
 
-      Block current = line.getBlock()
+      Block current = line.getNextBlock(start.getNumber(), -1);
       traverse(current, line.getBlock(current.getPreviousBlock()), path);
     } else {
       traverse(start, line.getBlock(start.getPreviousBlock()), path);
