@@ -18,10 +18,11 @@ import mainmenu.controller.MainMenuController;
 import trackmodel.model.Block;
 import trackmodel.model.Track;
 import traincontroller.model.TrainControllerInterface;
+
+import utils.train.DoorStatus;
+import utils.train.Failure;
+import utils.train.OnOffStatus;
 import utils.train.TrainData;
-import utils.train.TrainModelEnums.DoorStatus;
-import utils.train.TrainModelEnums.OnOffStatus;
-import utils.train.TrainModelEnums.TrackLineStatus;
 import utils.unitconversion.UnitConversions;
 
 
@@ -74,8 +75,6 @@ public class TrainModel implements TrainModelInterface {
       = new SimpleObjectProperty<>(DoorStatus.CLOSED);
   private ObjectProperty<DoorStatus> leftDoorStatus
       = new SimpleObjectProperty<>(DoorStatus.CLOSED);
-  private ObjectProperty<TrackLineStatus> trackLineStatus
-      = new SimpleObjectProperty<>(TrackLineStatus.CONNECTED);
   private ObjectProperty<OnOffStatus> serviceBrakeStatus
       = new SimpleObjectProperty<>(OnOffStatus.OFF);
   private ObjectProperty<OnOffStatus> emergencyBrakeStatus
@@ -84,6 +83,15 @@ public class TrainModel implements TrainModelInterface {
       = new SimpleObjectProperty<>(OnOffStatus.OFF);
   private ObjectProperty<OnOffStatus> acStatus
       = new SimpleObjectProperty<>(OnOffStatus.OFF);
+
+  //Failure Statuses
+  private ObjectProperty<Failure> trackLineFailureStatus
+      = new SimpleObjectProperty<>(Failure.WORKING);
+  private ObjectProperty<Failure> engineFailureStatus
+      = new SimpleObjectProperty<>(Failure.WORKING);
+  private ObjectProperty<Failure> brakeFailureStatus
+      = new SimpleObjectProperty<>(Failure.WORKING);
+
 
   private double acceleration = 0.000001; //in m/s^2
   private double force = 0; //in N
@@ -410,8 +418,8 @@ public class TrainModel implements TrainModelInterface {
   }
 
   @Override
-  public void setTrackLineStatus(TrackLineStatus trackLineStatus) {
-    this.trackLineStatus.set(trackLineStatus);
+  public void setTrackLineFailureStatus(Failure trackLineFailureStatus) {
+    this.trackLineFailureStatus.set(trackLineFailureStatus);
   }
 
   @Override
@@ -484,8 +492,18 @@ public class TrainModel implements TrainModelInterface {
   }
 
   @Override
-  public TrackLineStatus getTrackLineStatus() {
-    return trackLineStatus.get();
+  public Failure getTrackLineFailureStatus() {
+    return trackLineFailureStatus.get();
+  }
+
+  @Override
+  public Failure getEngineFailureStatus() {
+    return engineFailureStatus.get();
+  }
+
+  @Override
+  public Failure getBrakeFailureStatus() {
+    return brakeFailureStatus.get();
   }
 
   @Override
@@ -620,8 +638,17 @@ public class TrainModel implements TrainModelInterface {
     return leftDoorStatus;
   }
 
-  public ObjectProperty<TrackLineStatus> trackLineStatusProperty() {
-    return trackLineStatus;
+  public ObjectProperty<Failure> trackLineFailureStatusProperty() {
+    return trackLineFailureStatus;
+  }
+
+  public ObjectProperty<Failure> engineFailureStatusProperty() {
+    return engineFailureStatus;
+  }
+
+
+  public ObjectProperty<Failure> brakeFailureStatusProperty() {
+    return brakeFailureStatus;
   }
 
   public ObjectProperty<OnOffStatus> serviceBrakeStatusProperty() {

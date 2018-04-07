@@ -7,7 +7,6 @@ import trackmodel.model.Track;
 import trainmodel.model.TrainModelInterface;
 import utils.general.Authority;
 import utils.train.TrainData;
-import utils.train.TrainModelEnums;
 
 public class PowerCalculator {
   private static ClockInterface clock = Clock.getInstance();
