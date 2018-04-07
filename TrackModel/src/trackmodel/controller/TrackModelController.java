@@ -1,10 +1,5 @@
 package trackmodel.controller;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -24,7 +19,6 @@ import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import trackmodel.model.Block;
@@ -42,9 +36,6 @@ public class TrackModelController {
   //BLOCK SPINNER
   @FXML
   private Spinner blockNumber;
-
-  //UPLOAD BUTTON
-  @FXML private Button uploadButton;
 
   //Output Labels
   @FXML private Label blockSize;
@@ -83,9 +74,10 @@ public class TrackModelController {
    * This method initializes many of the fields.
    */
   public void initialize() {
-    uploadButton.setOnAction(this::handleImportTrack);
     start.setOnAction(this::toggleSelectedFailures);
     end.setOnAction(this::toggleSelectedFailures);
+
+
   }
 
   /**
@@ -146,271 +138,15 @@ public class TrackModelController {
   }
 
   private void populateDropdown() {
-    ObservableList<String> track = FXCollections.observableArrayList(
-        "Select track", "Blue");
-    trackSelection.setValue("Select track");
-    trackSelection.setItems(track);
 
-    ObservableList<String> block = FXCollections.observableArrayList(
-        "Section", "A");
-    blockSelection.setValue("Section");
-    blockSelection.setItems(block);
   }
 
   private void populateSpinner() {
-    blockNumber.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(
-        1, 15, 1, 1));
 
-    blockNumber.valueProperty().addListener(new ChangeListener<Integer>() {
-      @Override
-      public void changed(ObservableValue<? extends Integer> observable,
-                          Integer oldVal, Integer newVal) {
-        Block picked = blocks[newVal - 1];
-
-        blockSize.setText(Float.toString(picked.getSize()));
-        blockGrade.setText(Float.toString(picked.getGrade()));
-        blockElevation.setText(Float.toString(picked.getElevation()));
-        blockCumElevation.setText(Float.toString(picked.getCumElevation()));
-        blockSpeedLimit.setText(Float.toString(picked.getSpeedLimit()));
-
-        if (picked.getBrokenRailStatus()) {
-          railStatus.setFill(Color.GREEN);
-        } else {
-          railStatus.setFill(Color.WHITE);
-        }
-
-        if (picked.getPowerStatus()) {
-          powerStatus.setFill(Color.GREEN);
-        } else {
-          powerStatus.setFill(Color.WHITE);
-        }
-
-        if (picked.getTrackCircuitStatus()) {
-          circuitStatus.setFill(Color.GREEN);
-        } else {
-          circuitStatus.setFill(Color.WHITE);
-        }
-        
-        if (picked.hasBeacon()) {
-          beaconStatus.setFill(Color.GREEN);
-        } else {
-          beaconStatus.setFill(Color.WHITE);
-        }
-
-        if (picked.isOccupied()) {
-          occupiedStatus.setFill(Color.GREEN);
-        } else {
-          occupiedStatus.setFill(Color.WHITE);
-        }
-
-        if (picked.isHeated()) {
-          trackHeating.setFill(Color.GREEN);
-        } else {
-          trackHeating.setFill(Color.WHITE);
-        }
-      }
-    });
-  }
-
-  private void makeBlockArray() {
-
-    blocks = new Block[15];
-
-    for (int i = 1; i <= 15; i++) {
-      Block b = new Block();
-
-      b.setLine("Blue");
-      b.setSection("A");
-      b.setNumber(i);
-      b.setSize(i * (float)2.5);
-      b.setGrade((float).2);
-      b.setSpeedLimit(55);
-      b.setElevation((float).2);
-      b.setCumElevation((float).35);
-
-      if (i % 2 == 0) {
-        b.setHeated(true);
-      }
-
-      if (i == 2) {
-        b.setOccupied(true);
-      }
-
-      if (i == 3) {
-        b.setInfrastructure("STATION;PIONEER");
-      } else if (i == 4) {
-        b.setInfrastructure("RAILWAY");
-      } else if (i == 9) {
-        b.setInfrastructure("UNDERGROUND");
-      } else {
-        b.setInfrastructure("");
-      }
-
-      blocks[i - 1] = b;
-    }
-  }
-
-  private void handleImportTrack(ActionEvent event) {
-    FileChooser fc = new FileChooser();
-    fc.setTitle("Choose a track file");
-    fc.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("CSV", "*.csv"));
-
-    File inFile = fc.showOpenDialog((Stage) uploadButton.getScene().getWindow());
-
-    if (inFile != null) {
-      importTrackData(inFile);
-    }
   }
 
   private void update() {
 
-  }
-
-  private void importTrackData(File f) {
-    try {
-      BufferedReader br = new BufferedReader(new FileReader(f));
-
-      String line = br.readLine();
-      int i = 0;
-
-      String filename = f.getName();
-      int fileNamePeriodPosition = filename.indexOf('.');
-      String lineName = filename.substring(0, fileNamePeriodPosition);
-      lineName = lineName.toUpperCase();
-
-      Track newTrack = new Track(lineName);
-
-      listOfTracks.put(lineName, newTrack);
-
-      ArrayList<String> sections = new ArrayList<String>();
-      ArrayList<Integer> blocks = new ArrayList<Integer>();
-
-      while (line != null) {
-        if (i == 0) {
-          //System.out.println("Header Line");
-          //System.out.println(line);
-          String[] splitLine = line.split(",");
-          line = br.readLine();
-          i++;
-        } else {
-
-          String[] splitLine = line.split(",");
-
-          if (!sections.contains(splitLine[1])) {
-            sections.add(splitLine[1]);
-          }
-          if (!blocks.contains(Integer.parseInt(splitLine[2]))) {
-            blocks.add(Integer.parseInt(splitLine[2]));
-          }
-          Block b;
-
-          if (splitLine[6].contains("SWITCH")) {
-            // Create a switch for the Track
-
-            final String lineId = splitLine[0];
-            final String section = splitLine[1];
-            final int number = Integer.parseInt(splitLine[2]);
-            final float len = Float.parseFloat(splitLine[3]);
-            final float grade = Float.parseFloat(splitLine[4]);
-            final int speedLimit = Integer.parseInt(splitLine[5]);
-            final String infra = splitLine[6];
-            final float elevation = Float.parseFloat(splitLine[7]);
-            final float cumEle = Float.parseFloat(splitLine[8]);
-            boolean biDirectional;
-            if (splitLine[9].equals("")) {
-              biDirectional = false;
-            } else {
-              biDirectional = true;
-            }
-            final int previous  = Integer.parseInt(splitLine[10]);
-            final int next1 = Integer.parseInt(splitLine[11]);
-            final int next2 = Integer.parseInt(splitLine[12]);
-            boolean rightStation = false;
-            if (splitLine.length > 13) {
-              if (splitLine[13].equals("")) {
-                rightStation = false;
-              } else {
-                rightStation = true;
-              }
-            }
-            boolean leftStation = false;
-            if (splitLine.length > 14) {
-              if (splitLine[14].equals("")) {
-                leftStation = false;
-              } else {
-                leftStation = true;
-              }
-            }
-            b = new Switch(lineId, section, number, len, grade, speedLimit,
-                infra, elevation, cumEle, biDirectional, previous, next1,
-                next2, leftStation, rightStation);
-
-            if (splitLine[6].contains("YARD") && splitLine[6].contains("FROM")) {
-              newTrack.setStartBlock(number);
-            }
-
-            newTrack.addBlock(b);
-
-          } else {
-            //Create a Block for the Track
-
-            //System.out.println(splitLine.length);
-
-            final String lineId = splitLine[0];
-            final String section = splitLine[1];
-            final int number = Integer.parseInt(splitLine[2]);
-            final float len = Float.parseFloat(splitLine[3]);
-            final float grade = Float.parseFloat(splitLine[4]);
-            final int speedLimit = Integer.parseInt(splitLine[5]);
-            final String infra = splitLine[6];
-            final float elevation = Float.parseFloat(splitLine[7]);
-            final float cumEle = Float.parseFloat(splitLine[8]);
-            boolean biDirectional;
-            if (splitLine[9].equals("")) {
-              biDirectional = false;
-            } else {
-              biDirectional = true;
-            }
-            final int previous  = Integer.parseInt(splitLine[10]);
-            final int next1 = Integer.parseInt(splitLine[11]);
-            boolean rightStation = false;
-            if (splitLine.length > 13) {
-              if (splitLine[13].equals("")) {
-                rightStation = false;
-              } else {
-                rightStation = true;
-              }
-            }
-            boolean leftStation = false;
-            if (splitLine.length > 14) {
-              if (splitLine[14].equals("")) {
-                leftStation = false;
-              } else {
-                leftStation = true;
-              }
-            }
-
-            b = new Block(lineId, section, number, len, grade,
-                speedLimit, infra, elevation, cumEle, biDirectional,
-                previous, next1, leftStation, rightStation);
-
-            newTrack.addBlock(b);
-          }
-
-          //System.out.println();
-          line = br.readLine();
-        }
-      }
-
-      trackSections.put(lineName, sections);
-      trackBlockNum.put(lineName, blocks);
-
-      System.out.println(newTrack.getNumberOfBlocks());
-    } catch (FileNotFoundException ex) {
-      System.out.println("Unable to find the file.");
-    } catch (IOException ex) {
-      System.out.println("Error reading file");
-    }
   }
 
   /**

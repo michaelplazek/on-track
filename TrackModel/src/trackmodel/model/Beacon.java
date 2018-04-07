@@ -22,12 +22,12 @@ public class Beacon {
   public Beacon(float distance, byte stationId,
                 boolean right, int blockId,
                 boolean underground, String userMessage) {
-    this.distance = distance;
-    this.stationId = stationId;
-    this.right = right;
-    this.blockId = blockId;
-    this.underground = underground;
-    this.userMessage = userMessage;
+    setDistance(distance);
+    setStationId(stationId);
+    setRight(right);
+    setBlockId(blockId);
+    setUnderground(underground);
+    setUserMessage(userMessage);
   }
 
   public Beacon() {
