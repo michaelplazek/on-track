@@ -19,6 +19,7 @@ import javafx.util.Duration;
 import mainmenu.Clock;
 import mainmenu.controller.MainMenuController;
 import trackctrl.model.TrackControllerInitializer;
+import trackctrl.model.TrackControllerLineManager;
 import trackmodel.model.Block;
 import trackmodel.model.Switch;
 import trackmodel.model.Track;
@@ -50,6 +51,7 @@ public class Runner extends Application {
                 if (ctc.isActive()) {
                   clk.tick();
                   ctcc.run();
+                  TrackControllerLineManager.runTrackControllers();
                   TrainControllerManager.runTrainControllers();
                   TrainModel.runAllInstances();
                 }

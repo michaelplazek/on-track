@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import trackmodel.model.Block;
+import trackmodel.model.Track;
 import utils.general.Authority;
 
 public class TrackControllerLineManager implements TrackControllerLineManagerInterface {
@@ -55,37 +57,26 @@ public class TrackControllerLineManager implements TrackControllerLineManagerInt
   }
 
   @Override
-  public boolean setSwitchOverride(int block, boolean state) {
+  public boolean getOccupancy(int id) {
     if (lineControllers != null) {
       for (TrackController tc : lineControllers) {
-        if (tc.hasBlock(block)) {
-          return tc.setSwitchOverride(block, state);
+        if (tc.hasBlock(id)) {
+          return tc.getOccupancy(id);
         }
       }
     }
-    return false;
-  }
-
-  //TODO
-  @Override
-  public boolean getOccupancy(int id) {
-    return false;
-  }
-
-  //TODO
-  @Override
-  public boolean getInfrastructure(int id) {
+    //DEBUG: this could cause some problems if not checked properly above
     return false;
   }
 
   @Override
   public boolean addController(TrackController newCtrl) {
     //OLD CODE: not sure wtf I was thinking or what this does
-//    if (lineControllers != null) {
-//      lineControllerIds.add(line + " " + newCtrl.getId());
-//      return lineControllers.add(newCtrl);
-//    }
-//    return lineControllers.add(newCtrl);
+    //if (lineControllers != null) {
+    //  lineControllerIds.add(line + " " + newCtrl.getId());
+    //  return lineControllers.add(newCtrl);
+    // }
+    //  return lineControllers.add(newCtrl);
     lineControllerIds.add(line + " " + newCtrl.getId());
     return lineControllers.add(newCtrl);
   }
@@ -174,6 +165,26 @@ public class TrackControllerLineManager implements TrackControllerLineManagerInt
       return lines;
     } else {
       return lines = new ArrayList<TrackControllerLineManager>();
+    }
+  }
+
+  /** This iterates through all controllers of the current line and runs the
+   * respective run function within the controller.
+   */
+  public void runMyControllers() {
+    if (lineControllers != null) {
+      for (TrackController tc : lineControllers) {
+        tc.run();
+      }
+    }
+  }
+
+  /** Static method used to iterate through static list of lines.
+   *
+   */
+  public static void runTrackControllers() {
+    for (TrackControllerLineManager tclm : lines) {
+      tclm.runMyControllers();
     }
   }
 

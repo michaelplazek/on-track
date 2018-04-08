@@ -3,7 +3,11 @@ package trackctrl.model;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+
 import trackmodel.model.Block;
+import trackmodel.model.Switch;
+import trackmodel.model.Track;
 import utils.general.Authority;
 
 public class TrackController implements TrackControllerInterface {
@@ -12,9 +16,11 @@ public class TrackController implements TrackControllerInterface {
   private int trackOffset;
   private final int capacity = 16;
   private HashMap<Integer, Block> myZone = new HashMap<Integer, Block>(capacity);
-  private ArrayList<String> blockList = new ArrayList<>();
+  private ArrayList<Integer> blockList = new ArrayList<>();
   private TrackController neighborCtrlr1;
   private TrackController neighborCtrlr2;
+  private Track myLine;
+
 
   //States populate from Boolean Logic
   //private boolean[]
@@ -25,15 +31,24 @@ public class TrackController implements TrackControllerInterface {
   public TrackController() {
     //Zero Id indicates Controller is not initialized
     this.id = 0;
-//    neighborCtrlr1 = new TrackController();
-//    neighborCtrlr2 = new TrackController();
+    //neighborCtrlr1 = new TrackController();
+    //neighborCtrlr2 = new TrackController();
   }
 
-  public TrackController(int id, int offset) {
+  /** This constructor accepts some common arguments used when creating
+   * TrackControllers.
+   *
+   * @param id sets id of the track controller to be created
+   * @param offset indicates the first part of the track controller zone encountered
+   *               coming from the yard
+   * @param line string indicating the line this track controller belongs to
+   */
+  public TrackController(int id, int offset, String line) {
     this.id = id;
     this.trackOffset = offset;
     neighborCtrlr1 = new TrackController();
     neighborCtrlr2 = new TrackController();
+    myLine = Track.getTrack(line);
   }
 
   /**
@@ -47,27 +62,12 @@ public class TrackController implements TrackControllerInterface {
     this.neighborCtrlr2 = tc.neighborCtrlr2;
   }
 
-  //TODO
   @Override
   public boolean sendTrackSignals(int block, Authority authority, float speed) {
-    return false;
-  }
-
-  //TODO
-  @Override
-  public boolean setSwitchOverride(int block, boolean state) {
-    return false;
-  }
-
-  //TODO
-  @Override
-  public boolean relayAuthority(int block, float authority) {
-    return false;
-  }
-
-  //TODO
-  @Override
-  public boolean relaySetSpeed(int block, float setSpeed) {
+    if (myLine != null) {
+      myLine.getBlock(block).setAuthority(authority);
+      myLine.getBlock(block).setSetPointSpeed(speed);
+    }
     return false;
   }
 
@@ -84,6 +84,15 @@ public class TrackController implements TrackControllerInterface {
   }
 
   @Override
+  public boolean setLine(String lineName) {
+    if (myLine != null) {
+      myLine = Track.getTrack(lineName);
+      return true;
+    }
+    return false;
+  }
+
+  @Override
   public void setZone(HashMap<Integer, Block> blocks) {
     if (myZone == null) {
       myZone = new HashMap<Integer, Block>(blocks);
@@ -94,13 +103,17 @@ public class TrackController implements TrackControllerInterface {
 
       //Create string list upon initialization
       for (Integer i : blocks.keySet()) {
-        blockList.add(i.toString());
+        blockList.add(i);
       }
     }
   }
 
   @Override
-  public ArrayList<String> getZone() {
+  public ArrayList<Integer> getZone() {
+
+    for (Map.Entry<Integer, Block> b : myZone.entrySet()) {
+      blockList.add(b.getKey());
+    }
     return blockList;
   }
 
@@ -109,7 +122,11 @@ public class TrackController implements TrackControllerInterface {
     return blockList.size();
   }
 
-  //TODO
+  @Override
+  public boolean getOccupancy(int id) {
+    return myLine.getBlock(id).isOccupied();
+  }
+
   @Override
   public boolean addBlock(Block newBlock) {
 
@@ -122,33 +139,47 @@ public class TrackController implements TrackControllerInterface {
     return myZone.containsKey(id);
   }
 
-  //TODO
   @Override
   public boolean closeBlock(int id) {
-    return false;
+    myLine.getBlock(id).setBrokenRailStatus(true);
+    return myLine.getBlock(id).getBrokenRailStatus() == true;
   }
 
-  //TODO
   @Override
   public boolean repairBlock(int id) {
-    return false;
+    myLine.getBlock(id).setBrokenRailStatus(false);
+    return myLine.getBlock(id).getBrokenRailStatus() == false;
   }
 
-  //TODO
   @Override
   public boolean toggleSwitch(int id) {
+    Block toggle = myLine.getBlock(id);
+    if (toggle.isSwitch()) {
+      Switch toggleSwitch = (Switch) toggle;
+      boolean before = toggleSwitch.getSwitchState();
+      toggleSwitch.toggle();
+      boolean after = toggleSwitch.getSwitchState();
+      return before & after;
+    }
     return false;
   }
 
-  //TODO
   @Override
   public boolean toggleCrossing(int id) {
+    Block toggle = myLine.getBlock(id);
+    if (toggle.isCrossing()) {
+      boolean before = toggle.getCrossingStatus();
+      toggle.setCrossing(!before);
+      boolean after = toggle.getCrossingStatus();
+      return before & after;
+    }
     return false;
   }
 
   //TODO
   @Override
   public boolean setTrackLights(int id, boolean state, boolean direction) {
+    //Takes in id of switch and its state/directionality, sets track lights accordingly
     return false;
   }
 
@@ -180,9 +211,24 @@ public class TrackController implements TrackControllerInterface {
     return false;
   }
 
+  public void run() {
+    readOccupancy();
+
+  }
+
+  private void readOccupancy() {
+    for (Map.Entry<Integer, Block> b : myZone.entrySet()) {
+      b.getValue();
+    }
+  }
+
+  /** Uses block occupancies read on this tick to safely change switches/crossings/lights.
+   *
+   */
   public void assertLogic() {
     //this function picks correct state from PLC based on Occupancy and existing states
     //it also sets infrastructure if allowed by Track Model
+    //Also, it
   }
 
 }

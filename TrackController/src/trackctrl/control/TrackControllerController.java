@@ -139,7 +139,7 @@ public class TrackControllerController implements Initializable {
    * FAKE DATA FOR THE UI DEMO.
    */
   private void populateDropDowns() {
-    ObservableList<String> blockList = FXCollections.observableArrayList(myController.getZone());
+    ObservableList<Integer> blockList = FXCollections.observableArrayList(myController.getZone());
     blockChoice.setValue("Select Block");
     blockChoice.setItems(blockList);
 
@@ -412,6 +412,10 @@ public class TrackControllerController implements Initializable {
     switchFork.setText("Q100");
   }
 
+  private void updateControllerInfo() {
+
+  }
+
   /**
    * This function is run on each tick of the clock and will update data
    * on the blocks under the control of the accessed Controller.
@@ -437,7 +441,15 @@ public class TrackControllerController implements Initializable {
     setOpen();
     setSwitchInactive();
     resetLightSwitch();
+    initializeSwitchElements();
     importLogic.setOnAction(this::handleImportLogic);
     checkLogic.setOnAction(this::handleCheckLogic);
+  }
+
+  private void initializeSwitchElements() {
+    //Check if Switch elements should be enabled or disabled for this particular Controller
+
+    //Check if a track around switch is bi-directional or not and disable un-needed lights
+
   }
 }
