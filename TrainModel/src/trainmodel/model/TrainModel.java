@@ -9,7 +9,10 @@ import javafx.collections.ObservableList;
 import mainmenu.Clock;
 import mainmenu.controller.MainMenuController;
 import trackmodel.model.Block;
+import trackmodel.model.Switch;
 import trackmodel.model.Track;
+import traincontroller.model.PowerCalculator;
+import traincontroller.model.TrainController;
 import traincontroller.model.TrainControllerInterface;
 import utils.general.Constants;
 import utils.train.DoorStatus;
@@ -18,25 +21,24 @@ import utils.train.OnOffStatus;
 import utils.train.TrainData;
 import utils.unitconversion.UnitConversions;
 
-/**
- * Created by jeremyzang on 2/16/18.
- */
+
 public class TrainModel implements TrainModelInterface {
 
 
   private Clock clock = Clock.getInstance();
 
-  //===========================================
-  //SPEC SHEET INFO:
-  //Max Speed = 70km/hr
-  //Assumed w/ 2/3 load:
-  //  Medium acceleration 0.5 m/s^2
-  //  Service Brake deceleration 1.2 m/s^2
-  //  Emergency Brake deceleration 2.73 m/s^2
-  //Empty Car Weight = 40.9tonnes (Metric ton) 1 metric ton = 1000kg
-  //          40.9t = 40900kg
-  //============================================
-  //Train Dimentions
+  /* ===========================================
+    SPEC SHEET INFO:
+    Max Speed = 70km/hr
+    Assumed w/ 2/3 load:
+    Medium acceleration 0.5 m/s^2
+    Service Brake deceleration 1.2 m/s^2
+    Emergency Brake deceleration 2.73 m/s^2
+    Empty Car Weight = 40.9tonnes (Metric ton) 1 metric ton = 1000kg
+            40.9t = 40900kg
+  ============================================ */
+
+//  Train Dimensions
   private DoubleProperty height
       = new SimpleDoubleProperty(TrainData.HEIGHT_OF_TRAIN * UnitConversions.METERS_TO_FT);
   private DoubleProperty width
@@ -85,7 +87,7 @@ public class TrainModel implements TrainModelInterface {
       = new SimpleObjectProperty<>(Failure.WORKING);
 
 
-  private double acceleration = 0.000001; //in m/s^2
+  private double acceleration = 0; //in m/s^2
   private double force = 0; //in N
   private double frictionForce = mass.get() * Constants.STEEL_FRICTION * Constants.GRAVITY;
   private boolean isMoving = false;
@@ -119,10 +121,9 @@ public class TrainModel implements TrainModelInterface {
     this.controller = controller;
     this.id = id;
     this.line = line;
-
     this.activeTrack = Track.getTrack(line);
     this.currentBlock = activeTrack.getStartBlock();
-
+    this.previousBlock = activeTrack.getBlock(-1);
   }
 
   /**
@@ -190,12 +191,9 @@ public class TrainModel implements TrainModelInterface {
   public void startEngine() {
     isMoving = true;
     if (velocity.get() == 0) {
-      acceleration = .000001;
-    } else {
-      acceleration = powerCommand.get() / (mass.get() * velocity.get());
+      velocity.set(0.001);
     }
   }
-
 
   /**
    * Updates position in current block.
@@ -203,32 +201,44 @@ public class TrainModel implements TrainModelInterface {
    *  and the current position in the updated block.
    */
   private void updatePosition() {
+
     double changeInDist = changeInDist();
+
     if (isCrossingBlock(changeInDist)) {
       positionInBlock = (positionInBlock + changeInDist) - currentBlock.getSize();
       updateCurrentBlock();
-      updatePreviousBlock();
     } else {
       positionInBlock = positionInBlock + changeInDist;
     }
 
+    System.out.println("Change in position: " + changeInDist);
+    System.out.println("Location in block: " + positionInBlock);
+    System.out.println("Current block: " + currentBlock.getSize());
   }
 
   /**
    * Updates current block to next block.
    */
   private void updateCurrentBlock() {
-    Block next = activeTrack.getBlock(currentBlock.getNextBlock1());
-    currentBlock = next;
-    updateBeacon();
-  }
 
-  /**
-   * Updates previous block.
-   */
-  private void updatePreviousBlock() {
-    Block previous = activeTrack.getBlock(currentBlock.getPreviousBlock());
-    previousBlock = previous;
+    if (currentBlock.isSwitch()) {
+      Switch sw = (Switch) currentBlock;
+
+      if (activeTrack.getBlock(sw.getNextBlock1()) == previousBlock
+          || activeTrack.getBlock(sw.getNextBlock2()) == previousBlock) {
+        previousBlock = currentBlock;
+        currentBlock = activeTrack.getBlock(sw.getPreviousBlock());
+      } else {
+        previousBlock = currentBlock;
+        currentBlock = activeTrack.getBlock(sw.getStatus());
+      }
+    } else {
+      Block temp = currentBlock;
+      currentBlock = activeTrack.getNextBlock(currentBlock.getNumber(), previousBlock.getNumber());
+      previousBlock = temp;
+    }
+
+    updateBeacon();
   }
 
   /**
@@ -243,7 +253,13 @@ public class TrainModel implements TrainModelInterface {
    * Updates velocity.
    */
   private void updateVelocity() {
-    velocity.set(powerCommand.get() / (mass.get() * acceleration));
+    if (acceleration == 0) {
+      velocity.set(0.001);
+    } else {
+      double v = velocity.get() + (acceleration * (clock.getChangeInTime() / 1000.0));
+      velocity.set(v);
+    }
+
     velocityMph.set(velocity.getValue() * UnitConversions.MPS_TO_MPH);
   }
 
@@ -251,19 +267,18 @@ public class TrainModel implements TrainModelInterface {
    * Updates acceleration.
    */
   private void updateAcceleration() {
-    if (velocity.get() == 0) {
-      acceleration = .000001;
-    } else {
-      acceleration = powerCommand.get() / (mass.get() * velocity.get());
-    }
-
+//    if (velocity.get() == 0) {
+//      acceleration = 1;
+//    } else {
+    acceleration = force / mass.get();
+//    }
   }
 
   /**
    * Updates force.
    */
   private void updateForce() {
-    double tempForce = mass.get() * acceleration;
+    double tempForce = powerCommand.get() / velocity.get();
     force = tempForce;
 
 //    if (tempForce - frictionForce < 0) {
@@ -278,22 +293,31 @@ public class TrainModel implements TrainModelInterface {
    * @return the change in distance based on velocity of train and change in time.
    */
   private double changeInDist() {
-    return velocity.get() / clock.getChangeInTime();
+    double time = clock.getChangeInTime() / 1000.0; // time in seconds
+    return (velocity.get() * time) + (0.5 * acceleration * time * time);
   }
 
   /**
    * Runs simulation. This will be called from main.
    */
   public void run() {
+
+    powerCommand.set(PowerCalculator.getPowerCommand((TrainController) this.controller));
+    updateForce();
     updateAcceleration();
     updateVelocity();
-    updateForce();
+
     updatePosition();
     updateOccupancy();
     updateSpeedAuth();
     checkBrakes();
     changeTemperature();
 
+    System.out.println("Block: " + currentBlock.getSection() + currentBlock.getNumber());
+    System.out.println("Acceleration: " + acceleration);
+    System.out.println("Velocity: " + velocity.get());
+    System.out.println("Force: " + force);
+    System.out.println("Power: " + powerCommand.get());
   }
 
   /**
@@ -336,7 +360,7 @@ public class TrainModel implements TrainModelInterface {
    * @param distChange The distance the train moved.
    * @return true if train crosses block boarder, false otherwise.
    */
-  private boolean isCrossingBlock(Double distChange) {
+  private boolean isCrossingBlock(double distChange) {
     return ((positionInBlock + distChange) > currentBlock.getSize());
   }
 

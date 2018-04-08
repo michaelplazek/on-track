@@ -96,7 +96,7 @@ public class Track {
               String[] splitLine2 = (splitLine[6]).split(";");
               for (int j = 0; j < splitLine2.length; j++) {
                 if (splitLine2[j].equals("STATION")) {
-                  stations.put(stationId, splitLine2[j++]);
+                  stations.put(stationId, splitLine2[j + 1]);
                 }
                 stationId++;
               }
@@ -163,7 +163,7 @@ public class Track {
                   next2, leftStation, rightStation, blockBeacon);
 
               if (splitLine[6].contains("YARD") && splitLine[6].contains("FROM")) {
-                newTrack.setStartBlock(number);
+                newTrack.setStartBlock(b.getNumber());
 
                 Block yard = new Block(lineId, "", -1, 0, 0, 0, "",
                     0, 0, false, -2, number, false, false, null);

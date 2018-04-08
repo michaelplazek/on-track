@@ -10,5 +10,4 @@ public interface TrainControllerInterface {
   void setTrackCircuitSignal(float speed, Authority authority);
 
   void activateEmergencyBrake();
-
 }

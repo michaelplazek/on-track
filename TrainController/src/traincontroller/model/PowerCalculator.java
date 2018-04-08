@@ -61,7 +61,7 @@ public class PowerCalculator {
     return velocity * time + .5 * acceleration * time * time;
   }
 
-  static double getPowerCommand(TrainController tc) {
+  public static double getPowerCommand(TrainController tc) {
     double currentSpeed = tc.getTrainModel().getCurrentSpeed();
     double setSpeed = tc.getSetSpeed();
     double lastIntegral = tc.getIntegral();
@@ -83,6 +83,8 @@ public class PowerCalculator {
 
     tc.setIntegral(integral);
 
-    return power;
+    return 100;
+
+//    return power;
   }
 }
