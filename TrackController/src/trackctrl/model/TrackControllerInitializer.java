@@ -115,14 +115,14 @@ public class TrackControllerInitializer {
               && (isAdded(track.getBlock(currSwitch.getNextBlock1()))
               || isAdded(track.getBlock(currSwitch.getNextBlock2())))) {
             //Yard found
-            System.out.println("Yard found");
+            //System.out.println("Yard found");
             return;
           }
 
           //Adds controller to lms and calls function
           //Should do all switch checks here since I add controllers in this function
-          System.out.println("Block detected as switch: " + currBlock.getSection()
-              + " " + currBlock.getNumber());
+          //System.out.println("Block detected as switch: " + currBlock.getSection()
+          //    + " " + currBlock.getNumber());
           TrackController newSwitchCtrlr = new TrackController(tc.getId()
               + 1, currBlock.getNumber(), currBlock.getLine());
           lms[lineNum].addController(newSwitchCtrlr);
@@ -138,7 +138,7 @@ public class TrackControllerInitializer {
           if (!isAdded(currBlock)) {
             TrackController newSegmentCtrlr = new TrackController(tc.getId()
                 + 1, currBlock.getNumber(), currBlock.getLine());
-            System.out.println(currBlock.getNumber() + " -- ADDING AGAIN");
+            //System.out.println(currBlock.getNumber() + " -- ADDING AGAIN");
             addSectionController(currBlock, newSegmentCtrlr, track);
           } else {
             break;
@@ -174,9 +174,9 @@ public class TrackControllerInitializer {
         &&  (isAdded(track.getBlock(create.getNextBlock1()))
         || isAdded(track.getBlock(create.getNextBlock2())))) {
       //Yard found
-      System.out.println("Yard found");
+      //System.out.println("Yard found");
     } else {
-      System.out.println("In the ELSE");
+      //System.out.println("In the ELSE");
       //Create Controller for switch and direct neighboring blocks
       //Call addSegmentController on each divergent path starting with
       //the switch nextBlock1 and nextBlock2
@@ -194,8 +194,8 @@ public class TrackControllerInitializer {
         TrackController seg1Ctrlr =
             new TrackController(tc.getId() + 1, seg1.getNumber(), seg1.getLine());
         addSectionController(seg1, seg1Ctrlr, track);
-        System.out.println("Seg1: " + seg1.getSection() + " " + seg1.getNumber());
-        System.out.println("Seg1.isSwitch?: " + seg1.isSwitch());
+        //System.out.println("Seg1: " + seg1.getSection() + " " + seg1.getNumber());
+        //System.out.println("Seg1.isSwitch?: " + seg1.isSwitch());
       }
 
       if (seg2 != null) {
@@ -204,8 +204,8 @@ public class TrackControllerInitializer {
         TrackController seg2Ctrlr =
             new TrackController(tc.getId() + 2, seg2.getNumber(), seg2.getLine());
         addSectionController(seg2, seg2Ctrlr, track);
-        System.out.println("Seg2: " + seg2.getSection() + " " + seg2.getNumber());
-        System.out.println("Seg2.isSwitch?: " + seg2.isSwitch());
+        //System.out.println("Seg2: " + seg2.getSection() + " " + seg2.getNumber());
+        //System.out.println("Seg2.isSwitch?: " + seg2.isSwitch());
       }
     }
   }
