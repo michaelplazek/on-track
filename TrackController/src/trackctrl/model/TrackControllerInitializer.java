@@ -33,7 +33,7 @@ public class TrackControllerInitializer {
       currBlock =
           trackEntry.getValue().getBlock(trackEntry.getValue().getStartBlock().getNextBlock1());
       TrackController currCtrlr =
-          new TrackController(0, currBlock.getNumber(), currBlock.getLine());
+          new TrackController(1, currBlock.getNumber(), currBlock.getLine());
       lms[lineNum].addController(currCtrlr);
       addSectionController(currBlock, currCtrlr, trackEntry.getValue());
       lineNum++;
