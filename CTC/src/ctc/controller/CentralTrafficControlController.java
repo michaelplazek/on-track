@@ -7,13 +7,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import ctc.view.CentralTrafficControlUserInterface;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -738,7 +735,7 @@ public class CentralTrafficControlController {
       double ratioY = map.getFitHeight() / image.getHeight();
 
       double reducCoeff = 0;
-      if(ratioX >= ratioY) {
+      if (ratioX >= ratioY) {
         reducCoeff = ratioY;
       } else {
         reducCoeff = ratioX;
