@@ -1,6 +1,10 @@
 package trackctrl.model;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -62,6 +66,7 @@ public class TrackController implements TrackControllerInterface {
     this.neighborCtrlr2 = tc.neighborCtrlr2;
   }
 
+  //TODO
   @Override
   public boolean sendTrackSignals(int block, Authority authority, float speed) {
     if (myLine != null) {
@@ -192,6 +197,32 @@ public class TrackController implements TrackControllerInterface {
   @Override
   public boolean importLogic(File myplc) {
 
+    try {
+      BufferedReader br = new BufferedReader(new FileReader(myplc));
+
+      String line = br.readLine();
+      int i = 0;
+
+      String filename = myplc.getName();
+      int period = filename.indexOf('.');
+      String lineName = filename.substring(0, period);
+      lineName = lineName.toUpperCase();
+
+      System.out.println("Hii");
+
+    } catch (FileNotFoundException ex) {
+      System.out.println("Unable to find the file.");
+    } catch (IOException ex) {
+      System.out.println("Error reading file");
+    }
+
+
+    if (myplc.exists()) {
+      System.out.println("File Found");
+    } else {
+      System.out.println("File Not Found");
+    }
+
     //Set Instance PLC fields
     //-convert to string
     //send to parseLogic
@@ -228,7 +259,6 @@ public class TrackController implements TrackControllerInterface {
   public void assertLogic() {
     //this function picks correct state from PLC based on Occupancy and existing states
     //it also sets infrastructure if allowed by Track Model
-    //Also, it
   }
 
 }

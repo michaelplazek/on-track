@@ -9,8 +9,8 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="MainMenu" />
     <orderEntry type="module" module-name="TrainController" />
-    <orderEntry type="library" name="org.testfx:testfx-core:4.0.6-alpha" level="project" />
     <orderEntry type="module" module-name="TrackController" />
     <orderEntry type="module" module-name="TrackModel" />
+    <orderEntry type="module" module-name="Utils" />
   </component>
 </module>

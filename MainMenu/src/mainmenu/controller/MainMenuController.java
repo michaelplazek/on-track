@@ -14,7 +14,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import mainmenu.model.MainMenuModel;
-import mbo.view.MovingBlockOverlayUserInterface;
 import trackctrl.model.TrackControllerLineManager;
 import trackctrl.view.TrackControllerUserInterface;
 import trackmodel.view.TrackModelUserInterface;
@@ -34,9 +33,6 @@ public class MainMenuController implements Initializable {
 
   private CentralTrafficControlUserInterface ctcui =
       CentralTrafficControlUserInterface.getInstance();
-
-  private MovingBlockOverlayUserInterface mboui =
-      MovingBlockOverlayUserInterface.getInstance();
 
   private TrackModelUserInterface tmui =
       TrackModelUserInterface.getInstance();
@@ -132,7 +128,6 @@ public class MainMenuController implements Initializable {
   @FXML
   private void openMovingBlockOverlay(ActionEvent event) {
     try {
-      mboui.load();
     } catch (Exception e) {
       e.printStackTrace();
     }
