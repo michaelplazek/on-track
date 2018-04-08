@@ -7,11 +7,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import ctc.view.CentralTrafficControlUserInterface;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -28,6 +30,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
@@ -59,9 +62,8 @@ public class CentralTrafficControlController {
   @FXML private Button decrementButton;
   @FXML private Button incrementButton;
   @FXML private Label multiplier;
-  @FXML private Button testGreenButton;
-  @FXML private Button testRedButton;
   @FXML private ChoiceBox<String> trackSelect;
+  @FXML private ImageView map;
 
   /* MAINTENANCE COMPONENTS */
   @FXML private ChoiceBox<String> maintenanceTracks;
@@ -246,8 +248,6 @@ public class CentralTrafficControlController {
     startButton.setOnAction(this::handleButtonPress);
     stopButton.setOnAction(this::handleButtonPress);
     submitMaintenance.setOnAction(this::handleButtonPress);
-    testGreenButton.setOnAction(this::handleButtonPress);
-    testRedButton.setOnAction(this::handleButtonPress);
     importScheduleButton.setOnAction(this::handleButtonPress);
     resetButton.setOnAction(this::handleButtonPress);
     addTrainButton.setOnAction(this::handleButtonPress);
@@ -307,6 +307,12 @@ public class CentralTrafficControlController {
 
             // get the line manager associated with that track
             this.controller = TrackControllerLineManager.getInstance(newValue);
+
+            // load image of the track
+            Image image = new Image(CentralTrafficControlController
+                .class.getResourceAsStream("images/GREEN.jpg"));
+            map.setImage(image);
+            centerImage(image, map);
 
             // then set the user interface
             trainQueueTable.setItems(ctc.getTrainQueueTable());
@@ -511,12 +517,6 @@ public class CentralTrafficControlController {
       case "submitMaintenance":
         submitMaintenance();
         break;
-      case "testGreenButton":
-        testGreen();
-        break;
-      case "testRedButton":
-        testRed();
-        break;
       case "importScheduleButton":
         importSchedule();
         break;
@@ -656,13 +656,6 @@ public class CentralTrafficControlController {
     }
   }
 
-  private void testGreen() {
-
-    ctc.addPassengers(new Block(), 20);
-  }
-
-  private void testRed(){}
-
   private void importSchedule() {
 
     // create file chooser
@@ -716,6 +709,13 @@ public class CentralTrafficControlController {
     } catch (IOException e) {
       e.printStackTrace();
     } finally {
+
+      // set the image
+      Image image = new Image(CentralTrafficControlController
+          .class.getResourceAsStream("images/GREEN.jpg"));
+      map.setImage(image);
+      centerImage(image, map);
+
       if (br != null) {
         try {
           br.close();
@@ -726,6 +726,30 @@ public class CentralTrafficControlController {
     }
 
     addScheduleTable.setItems(list);
+  }
+
+  private void centerImage(Image image, ImageView map) {
+
+    if (map != null) {
+      double w;
+      double h;
+
+      double ratioX = map.getFitWidth() / image.getWidth();
+      double ratioY = map.getFitHeight() / image.getHeight();
+
+      double reducCoeff = 0;
+      if(ratioX >= ratioY) {
+        reducCoeff = ratioY;
+      } else {
+        reducCoeff = ratioX;
+      }
+
+      w = image.getWidth() * reducCoeff;
+      h = image.getHeight() * reducCoeff;
+
+      map.setX((map.getFitWidth() - w) / 2);
+      map.setY((map.getFitHeight() - h) / 2);
+    }
   }
 
   private void resetSchedule() {
