@@ -302,22 +302,25 @@ public class TrainModel implements TrainModelInterface {
    */
   public void run() {
 
-    powerCommand.set(PowerCalculator.getPowerCommand((TrainController) this.controller));
-    updateForce();
-    updateAcceleration();
-    updateVelocity();
+    if (isDispatched) {
 
-    updatePosition();
-    updateOccupancy();
-    updateSpeedAuth();
-    checkBrakes();
-    changeTemperature();
+      powerCommand.set(PowerCalculator.getPowerCommand((TrainController) this.controller));
+      updateForce();
+      updateAcceleration();
+      updateVelocity();
 
-    System.out.println("Block: " + currentBlock.getSection() + currentBlock.getNumber());
-    System.out.println("Acceleration: " + acceleration);
-    System.out.println("Velocity: " + velocity.get());
-    System.out.println("Force: " + force);
-    System.out.println("Power: " + powerCommand.get());
+      updatePosition();
+      updateOccupancy();
+      updateSpeedAuth();
+      checkBrakes();
+      changeTemperature();
+
+      System.out.println("Block: " + currentBlock.getSection() + currentBlock.getNumber());
+      System.out.println("Acceleration: " + acceleration);
+      System.out.println("Velocity: " + velocity.get());
+      System.out.println("Force: " + force);
+      System.out.println("Power: " + powerCommand.get());
+    }
   }
 
   /**

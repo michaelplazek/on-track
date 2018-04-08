@@ -46,7 +46,6 @@ public class Runner extends Application {
             new EventHandler<ActionEvent>() {
               @Override public void handle(ActionEvent actionEvent) {
 
-                // TODO: add other module run() functions inside this event handler
                 if (ctc.isActive()) {
                   clk.tick();
                   ctcc.run();

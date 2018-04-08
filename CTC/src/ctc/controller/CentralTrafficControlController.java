@@ -48,6 +48,7 @@ public class CentralTrafficControlController {
 
   private CentralTrafficControl ctc = CentralTrafficControl.getInstance();
   private TrackMaintenance trackMaintenance = TrackMaintenance.getInstance();
+  private TrackControllerLineManager controller;
   private Clock clock = Clock.getInstance();
 
   /* MAIN COMPONENTS */
@@ -122,10 +123,13 @@ public class CentralTrafficControlController {
    * each tick of the clock.
    */
   public void run() {
-    ctc.updateDisplayTime();
-    ctc.calculateThroughput();
+    ctc.run();
     dispatch();
-    trackTrains();
+    updateDisplays();
+  }
+
+  void updateDisplays() {
+    dispatchTable.refresh();
   }
 
   public CentralTrafficControl getCtc() {
@@ -300,6 +304,9 @@ public class CentralTrafficControlController {
                 }
               }
             }
+
+            // get the line manager associated with that track
+            this.controller = TrackControllerLineManager.getInstance(newValue);
 
             // then set the user interface
             trainQueueTable.setItems(ctc.getTrainQueueTable());
@@ -477,8 +484,6 @@ public class CentralTrafficControlController {
       }
     });
   }
-
-  private void trackTrains(){}
 
   private void bindClock() {
     time.textProperty().bind(ctc.getDisplayTime());
@@ -695,7 +700,7 @@ public class CentralTrafficControlController {
         ScheduleRow trainStop = new ScheduleRow();
 
         // determine station
-        word = row[1].split(": ");
+        word = row[1].split(":");
         trainStop.setStop(word[1]);
 
         // determine dwell
@@ -801,6 +806,15 @@ public class CentralTrafficControlController {
 
         // create train
         ctc.addTrain(train);
+      } else {
+
+        AlertWindow alert = new AlertWindow();
+
+        alert.setTitle("Error Submitting");
+        alert.setHeader("Empty Fields");
+        alert.setContent("Please fill out all the fields before submitting.");
+
+        alert.show();
       }
     }
   }
@@ -822,25 +836,40 @@ public class CentralTrafficControlController {
 
   private void dispatchTrain() {
 
-    // remove selected train from queue
-    TrainTracker selected = trainQueueTable.getSelectionModel().getSelectedItem();
-    if (selected != null) {
-      for (int i = 0; i < ctc.getTrainQueueTable().size(); i++) {
-        if (ctc.getTrainQueueTable().get(i).getId().equals(selected.getId())) {
-          ctc.getTrainQueueTable().remove(i);
+    // first check that initial block isn't occupied
+    Track line = Track.getListOfTracks().get(trackSelect.getValue());
+    if (!line.getStartBlock().isOccupied() && ctc.isActive()) {
+
+    // TODO: hook this up once the Track Controller is ready
+//    if (!controller.getOccupancy(line.getStartBlock().getNumber())) {
+
+      // remove selected train from queue
+      TrainTracker selected = trainQueueTable.getSelectionModel().getSelectedItem();
+      if (selected != null) {
+        for (int i = 0; i < ctc.getTrainQueueTable().size(); i++) {
+          if (ctc.getTrainQueueTable().get(i).getId().equals(selected.getId())) {
+            ctc.getTrainQueueTable().remove(i);
+          }
+        }
+
+        ctc.getDispatchTable().add(selected);
+        setAuthorityButton.setDisable(false);
+        setSpeedButton.setDisable(false);
+
+        TrainControllerFactory.start(selected.getId());
+        selected.setDispatched(true);
+        dispatchTable.setItems(ctc.getDispatchTable());
+        if (ctc.getTrainQueueTable().size() == 0) {
+          selectedScheduleTable.setItems(FXCollections.observableArrayList());
         }
       }
+    } else if (ctc.isActive()) {
 
-      ctc.getDispatchTable().add(selected);
-      setAuthorityButton.setDisable(false);
-      setSpeedButton.setDisable(false);
-
-      TrainControllerFactory.start(selected.getId());
-      selected.setDispatched(true);
-      dispatchTable.setItems(ctc.getDispatchTable());
-      if (ctc.getTrainQueueTable().size() == 0) {
-        selectedScheduleTable.setItems(FXCollections.observableArrayList());
-      }
+      AlertWindow alert = new AlertWindow();
+      alert.setTitle("Error");
+      alert.setHeader("Problem Dispatching Train");
+      alert.setContent("Must wait until track is clear before dispatching.");
+      alert.show();
     }
   }
 
@@ -897,10 +926,14 @@ public class CentralTrafficControlController {
 
   private void dispatch() {
 
+    // TODO: change this to a call to the Track Controller ot check occupancy of the first block
     ObservableList<TrainTracker> trains = ctc.getTrainQueueTable();
     for (int i = 0; i < trains.size(); i++) {
       if (trains.get(i).getDeparture().equals(clock.getFormattedTime())
-          && !ctc.getDispatchTable().contains(trains.get(i))) {
+          && !ctc.getDispatchTable().contains(trains.get(i))
+          && ctc.isActive()
+          && !Track.getListOfTracks()
+          .get(trackSelect.getSelectionModel().getSelectedItem()).getStartBlock().isOccupied()) {
         autoDispatchTrain(i);
       }
     }

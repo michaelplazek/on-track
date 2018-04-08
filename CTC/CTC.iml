@@ -11,5 +11,6 @@
     <orderEntry type="module" module-name="TrainController" />
     <orderEntry type="module" module-name="TrackController" />
     <orderEntry type="module" module-name="TrackModel" />
+    <orderEntry type="module" module-name="Utils" />
   </component>
 </module>
