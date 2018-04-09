@@ -61,6 +61,11 @@ public class PowerCalculator {
     return velocity * time + .5 * acceleration * time * time;
   }
 
+  /**
+   * Called by the TrainModel to get the currently generated power.
+   * @param tc associated TrainController
+   * @return the generated power
+   */
   public static double getPowerCommand(TrainController tc) {
     double currentSpeed = tc.getTrainModel().getCurrentSpeed();
     double setSpeed = tc.getSetSpeed();

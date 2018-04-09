@@ -228,13 +228,7 @@
                         </AnchorPane>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="178.0" prefWidth="240.0">
                            <children>
-                              <Label layoutX="120.0" layoutY="15.0" text="Testing">
-                                 <font>
-                                    <Font name="System Bold" size="14.0" />
-                                 </font>
-                              </Label>
-                              <Button fx:id="testGreenButton" layoutX="51.0" layoutY="94.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="189.0" text="Test Green Track" />
-                              <Button fx:id="testRedButton" layoutX="51.0" layoutY="157.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="189.0" text="Test Red Track" />
+                              <ImageView fx:id="map" fitHeight="269.0" fitWidth="287.0" pickOnBounds="true" preserveRatio="true" />
                            </children>
                         </AnchorPane>
                     </items>

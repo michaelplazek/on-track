@@ -52,7 +52,6 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
     this.blockList = FXCollections.observableArrayList();
     this.trackList = FXCollections.observableArrayList("Select track");
 
-
     this.time = 0;
     this.refresh = 0;
     this.hours = 0.0001;
@@ -82,9 +81,24 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
   }
 
   /**
+   * Main run function. Update all the trains being tracked and send track circuit signals.
+   */
+  public void run() {
+
+    updateDisplayTime();
+    calculateThroughput();
+
+    for (TrainTracker train : trainList) {
+      if (train.isDispatched()) {
+        train.update();
+      }
+    }
+  }
+
+  /**
    * Display time of clock is updated.
    */
-  public void updateDisplayTime() {
+  private void updateDisplayTime() {
 
     displayTime.setValue(clock.getFormattedTime());
     time += clock.getChangeInTime();
@@ -165,9 +179,9 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
 
     totalPassengers += passengers;
 
-    for (int i = 0; i < trainList.size(); i++) {
-      if (trainList.get(i).getLocation() == block) {
-        trainList.get(i).updatePassengers(passengers);
+    for (TrainTracker train : trainList) {
+      if (train.getLocation() == block) {
+        train.updatePassengers(passengers);
       }
     }
   }
@@ -175,7 +189,7 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
   /**
    * Called by controller to calculate the throughput each tick.
    */
-  public void calculateThroughput() {
+  private void calculateThroughput() {
 
     hours += ((float) clock.getChangeInTime() / (3600 * 1000));
     throughput = (double) totalPassengers / hours;
@@ -214,6 +228,11 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
     trainQueueTable.add(train);
   }
 
+  void removeTrain(TrainTracker train) {
+    this.trainList.remove(train);
+    this.dispatchTable.remove(train);
+  }
+
   public ObservableList<TrainTracker> getTrainQueueTable() {
     return trainQueueTable;
   }
@@ -229,5 +248,4 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
   public void setLine(String track) {
     this.line = track;
   }
-
 }
