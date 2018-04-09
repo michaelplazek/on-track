@@ -68,7 +68,7 @@ public class TrainController implements TrainControllerInterface {
     this.integral = 0;
     this.running = false;
     this.currentBlock = Track.getListOfTracks().get(line).getStartBlock();
-    this.lastBlock = null;
+    this.lastBlock = Track.getTrack(line).getBlock(-1);
 
   }
 
@@ -172,7 +172,7 @@ public class TrainController implements TrainControllerInterface {
     return powerCommand.getValue();
   }
 
-  public void setPowerCommand(Double powerCommand) {
+  public void setPowerCommand(double powerCommand) {
     trainModel.setPowerCommand(powerCommand);
     this.powerCommand.set(powerCommand);
   }
