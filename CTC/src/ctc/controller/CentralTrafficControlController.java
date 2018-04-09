@@ -7,8 +7,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javafx.application.Platform;
@@ -43,6 +44,7 @@ import trackmodel.model.Track;
 import traincontroller.model.TrainControllerFactory;
 import utils.alerts.AlertWindow;
 import utils.general.Authority;
+import utils.unitconversion.UnitConversions;
 
 public class CentralTrafficControlController {
 
@@ -820,6 +822,40 @@ public class CentralTrafficControlController {
         // create route
         train.setRoute(new Route(lastBlock, line, train));
 
+        // find predicted distance to each stop
+        float distance = 0;
+        float speedLimit = 0;
+        float count = 0;
+        float totalTime = 0;
+        Block current;
+        LinkedList<Block> path = train.getRoute().getPath();
+        LinkedList<String> visited = new LinkedList<>();
+
+        for (int i = 0; i < path.size(); i++) {
+
+          current = path.get(i);
+          distance += current.getSize();
+          speedLimit += current.getSpeedLimit();
+          count++;
+          for (int j = 0; j < schedule.getStops().size(); j++) {
+            if (current.getStationName().compareTo(schedule.getStops().get(j).getStop()) == 0
+                && current.getStationName().compareTo("") != 0
+                && !visited.contains(current.getStationName())) {
+              double time = distance * (UnitConversions.MPS_TO_MPH) / (speedLimit / count);
+              totalTime += time;
+              schedule.getStops().get(j)
+                  .setTime(String.format("%.2f", (totalTime / 60)));
+              visited.add(current.getStationName());
+              totalTime += (convertTimeToMilliseconds(schedule.getStops()
+                  .get(j).getDwell()) / 1000);
+              count = 0;
+              speedLimit = 0;
+              distance = 0;
+            }
+          }
+
+        }
+
         // create item in queue
         trainQueueTable.setItems(ctc.getTrainQueueTable());
 
@@ -837,6 +873,20 @@ public class CentralTrafficControlController {
 
         alert.show();
       }
+    }
+  }
+
+  private long convertTimeToMilliseconds(String time) {
+
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+    try {
+      Date date = sdf.parse("1970-01-01 " + time);
+      long t = date.getTime();
+      return t;
+    } catch (ParseException e) {
+      System.out.println(e);
+      return 0;
     }
   }
 

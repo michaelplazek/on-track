@@ -159,6 +159,10 @@ public class Route {
 
   }
 
+  public LinkedList<Block> getPath() {
+    return this.route;
+  }
+
   private boolean checkPath(Block current) {
 
     boolean valid;

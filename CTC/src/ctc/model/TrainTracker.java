@@ -194,10 +194,10 @@ public class TrainTracker {
 
   private long convertTimeToMilliseconds(String time) {
 
-    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
     try {
-      Date date = sdf.parse("1970-01-01" + time);
+      Date date = sdf.parse("1970-01-01 " + time);
       return date.getTime();
     } catch (ParseException e) {
       System.out.println(e);

@@ -211,9 +211,9 @@ public class TrainModel implements TrainModelInterface {
       positionInBlock = positionInBlock + changeInDist;
     }
 
-    System.out.println("Change in position: " + changeInDist);
-    System.out.println("Location in block: " + positionInBlock);
-    System.out.println("Current block: " + currentBlock.getSize());
+//    System.out.println("Change in position: " + changeInDist);
+//    System.out.println("Location in block: " + positionInBlock);
+//    System.out.println("Current block: " + currentBlock.getSize());
   }
 
   /**
@@ -315,11 +315,11 @@ public class TrainModel implements TrainModelInterface {
       checkBrakes();
       changeTemperature();
 
-      System.out.println("Block: " + currentBlock.getSection() + currentBlock.getNumber());
-      System.out.println("Acceleration: " + acceleration);
-      System.out.println("Velocity: " + velocity.get());
-      System.out.println("Force: " + force);
-      System.out.println("Power: " + powerCommand.get());
+//      System.out.println("Block: " + currentBlock.getSection() + currentBlock.getNumber());
+//      System.out.println("Acceleration: " + acceleration);
+//      System.out.println("Velocity: " + velocity.get());
+//      System.out.println("Force: " + force);
+//      System.out.println("Power: " + powerCommand.get());
     }
   }
 
