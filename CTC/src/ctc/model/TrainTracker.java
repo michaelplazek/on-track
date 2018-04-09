@@ -3,6 +3,7 @@ package ctc.model;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 
 import mainmenu.Clock;
@@ -116,10 +117,27 @@ public class TrainTracker {
 
     Block next = route.getNext();
 
-    if (next != null && next.isOccupied()) {
+    if (next != null && next.isOccupied() && checkNeighboringTrains()) {
       this.location = next;
       this.route.incrementCurrentIndex();
     }
+  }
+
+  /**
+   * To checks blocks around a train before setting the position. Used to detect trains
+   * that are on neighboring blocks.
+   * @return true is block is OK to move to.
+   */
+  private boolean checkNeighboringTrains() {
+
+    List<TrainTracker> trains = ctc.getTrainList();
+    for (TrainTracker train : trains) {
+      if (train.getLocation() == route.getNext()) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   private void updateLifecycle() {

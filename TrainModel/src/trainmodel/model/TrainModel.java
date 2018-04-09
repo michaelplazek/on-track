@@ -246,7 +246,6 @@ public class TrainModel implements TrainModelInterface {
    */
   private void updateOccupancy() {
     currentBlock.setOccupied(true);
-    previousBlock.setOccupied(false);
   }
 
   /**
@@ -363,6 +362,7 @@ public class TrainModel implements TrainModelInterface {
    * @return true if train crosses block boarder, false otherwise.
    */
   private boolean isCrossingBlock(double distChange) {
+    previousBlock.setOccupied(false);
     return ((positionInBlock + distChange) > currentBlock.getSize());
   }
 
