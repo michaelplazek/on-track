@@ -20,6 +20,13 @@ public class TrainController implements TrainControllerInterface {
 
   private boolean automatic;
   private Mode mode;
+  private boolean underground;
+  private Block currentBlock;
+  private Block lastBlock;
+  private double integral;
+  private double distanceIntoCurrentBlock;
+  private double distanceToStation;
+  private Beacon beacon;
 
   private TrainModelInterface trainModel;
   private SimpleStringProperty id;
@@ -36,11 +43,6 @@ public class TrainController implements TrainControllerInterface {
   private SimpleDoubleProperty ki;
   private SimpleStringProperty currentStation;
   private SimpleStringProperty nextStation;
-  private Block currentBlock;
-  private Block lastBlock;
-  private double integral;
-  private double distanceIntoCurrentBlock;
-
 
   /**
    * Base constructor for TrainController.
@@ -66,12 +68,21 @@ public class TrainController implements TrainControllerInterface {
     this.integral = 0;
     this.running = false;
     this.currentBlock = Track.getListOfTracks().get(line).getStartBlock();
-    this.lastBlock = null;
+    this.lastBlock = Track.getTrack(line).getBlock(-1);
 
   }
 
+  /**
+   * Pass beacon signal to the train controller.
+   * @param signal Beacon signal from track.
+   */
   public void setBeaconSignal(Beacon signal) {
-
+    if (signal.getStationId() >= 0) {
+      distanceToStation = signal.getDistance();
+      setCurrentStation(Track.getListOfTracks().get(getLine())
+          .getStationList().get(signal.getStationId()));
+    }
+    beacon = signal;
   }
 
   /**
@@ -85,7 +96,24 @@ public class TrainController implements TrainControllerInterface {
       this.integral = 0;
       this.setSpeed.set(setSpeed);
     }
-    this.authority.set(authority);
+    if (authority != null && getAuthority() != authority) {
+      this.authority.set(authority);
+      switch (authority) {
+        case SERVICE_BRAKE_STOP:
+          setMode(Mode.CTC_BRAKE);
+          break;
+        case SEND_POWER:
+          setMode(Mode.NORMAL);
+          break;
+        case STOP_AT_NEXT_STATION:
+          setMode(Mode.STATION_BRAKE);
+          break;
+        case EMERGENCY_BRAKE_STOP:
+        default:
+          setMode(Mode.CTC_EMERGENCY_BRAKE);
+          break;
+      }
+    }
   }
 
   protected String getId() {
@@ -144,7 +172,8 @@ public class TrainController implements TrainControllerInterface {
     return powerCommand.getValue();
   }
 
-  public void setPowerCommand(Double powerCommand) {
+  public void setPowerCommand(double powerCommand) {
+    trainModel.setPowerCommand(powerCommand);
     this.powerCommand.set(powerCommand);
   }
 
@@ -325,5 +354,29 @@ public class TrainController implements TrainControllerInterface {
 
   protected void start() {
     running = true;
+  }
+
+  public boolean isUnderground() {
+    return underground;
+  }
+
+  public void setUnderground(boolean underground) {
+    this.underground = underground;
+  }
+
+  public Beacon getBeacon() {
+    return beacon;
+  }
+
+  public void setBeacon(Beacon beacon) {
+    this.beacon = beacon;
+  }
+
+  public double getDistanceToStation() {
+    return distanceToStation;
+  }
+
+  public void setDistanceToStation(double distanceToStation) {
+    this.distanceToStation = distanceToStation;
   }
 }

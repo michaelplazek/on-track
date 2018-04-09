@@ -304,7 +304,6 @@ public class TrainModel implements TrainModelInterface {
 
     if (isDispatched) {
 
-      powerCommand.set(PowerCalculator.getPowerCommand((TrainController) this.controller));
       updateForce();
       updateAcceleration();
       updateVelocity();
