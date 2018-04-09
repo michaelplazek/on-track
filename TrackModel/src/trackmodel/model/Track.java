@@ -9,6 +9,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import trackmodel.model.Beacon;
 import trackmodel.view.TrackModelUserInterface;
 
 public class Track {
@@ -18,6 +19,7 @@ public class Track {
   private int startBlock;
   private ArrayList<Integer> occupiedBlocks;
   private ArrayList<Integer> closedBlocks;
+  private HashMap<Integer, String> trackStations;
 
   private static HashMap<String, Track> listOfTracks = new HashMap<>();
   private static HashMap<String, ArrayList<Integer>> blockNumbers = new HashMap<>();
@@ -33,6 +35,10 @@ public class Track {
     addTrack(line.toUpperCase(), this);
   }
 
+  public void addStations(HashMap<Integer, String> stations) {
+    this.trackStations = stations;
+  }
+
   public static void addTrack(String n, Track t) {
     listOfTracks.put(n.toUpperCase(), t);
     TrackModelUserInterface.getInstance().getController().updateTracks();
@@ -45,10 +51,15 @@ public class Track {
 
     File f = null;
 
+    int stationId = 1;
+
     try {
       f = new File(Track.class.getResource("green.csv").toURI());
 
       try {
+
+        HashMap<Integer, String> stations = new HashMap<Integer, String>();
+
         BufferedReader br = new BufferedReader(new FileReader(f));
 
         String line = br.readLine();
@@ -68,13 +79,11 @@ public class Track {
 
         while (line != null) {
           if (i == 0) {
-            String[] splitLine = line.split(",");
             line = br.readLine();
             i++;
           } else {
 
             String[] splitLine = line.split(",");
-
             if (!sections.contains(splitLine[1])) {
               sections.add(splitLine[1]);
             }
@@ -83,9 +92,19 @@ public class Track {
             }
             Block b;
 
-            if (splitLine[6].contains("SWITCH")) {
-              // Create a switch for the Track
+            if (splitLine[6].contains("STATION")) {
+              String[] splitLine2 = (splitLine[6]).split(";");
+              for (int j = 0; j < splitLine2.length; j++) {
+                if (splitLine2[j].equals("STATION")) {
+                  stations.put(stationId, splitLine2[j + 1]);
+                }
+                stationId++;
+              }
+            }
 
+            if (splitLine[6].contains("SWITCH")) {
+
+              // Create a switch for the Track
               final String lineId = splitLine[0];
               final String section = splitLine[1];
               final int number = Integer.parseInt(splitLine[2]);
@@ -120,19 +139,43 @@ public class Track {
                   leftStation = true;
                 }
               }
+              Beacon blockBeacon = null;
+              if (splitLine.length == 21) {
+                float distance = Float.parseFloat(splitLine[16]);
+                byte station = Byte.parseByte(splitLine[17]);
+                boolean right = Integer.parseInt(splitLine[18]) == 1;
+                boolean underground = Integer.parseInt(splitLine[19]) == 1;
+                String message = splitLine[20];
+
+                blockBeacon = new Beacon(distance, station,
+                              right, number, underground, message);
+              } else if (splitLine.length == 20) {
+                float distance = Float.parseFloat(splitLine[16]);
+                byte station = Byte.parseByte(splitLine[17]);
+                boolean right = Integer.parseInt(splitLine[18]) == 1;
+                boolean underground = Integer.parseInt(splitLine[19]) == 1;
+
+                blockBeacon = new Beacon(distance, station,
+                    right, number, underground, "");
+              }
               b = new Switch(lineId, section, number, len, grade, speedLimit,
                   infra, elevation, cumEle, biDirectional, previous, next1,
-                  next2, leftStation, rightStation);
+                  next2, leftStation, rightStation, blockBeacon);
 
               if (splitLine[6].contains("YARD") && splitLine[6].contains("FROM")) {
-                newTrack.setStartBlock(number);
+                newTrack.setStartBlock(b.getNumber());
+
+                Block yard = new Block(lineId, "", -1, 0, 0, 0, "",
+                    0, 0, false, -2, number, false, false, null);
+
+                newTrack.addBlock(yard);
               }
 
               newTrack.addBlock(b);
 
             } else {
-              //Create a Block for the Track
 
+              //Create a Block for the Track
               final String lineId = splitLine[0];
               final String section = splitLine[1];
               final int number = Integer.parseInt(splitLine[2]);
@@ -166,10 +209,29 @@ public class Track {
                   leftStation = true;
                 }
               }
+              Beacon blockBeacon = null;
+              if (splitLine.length == 21) {
+                float distance = Float.parseFloat(splitLine[16]);
+                byte station = Byte.parseByte(splitLine[17]);
+                boolean right = Integer.parseInt(splitLine[18]) == 1;
+                boolean underground = Integer.parseInt(splitLine[19]) == 1;
+                String message = splitLine[20];
+
+                blockBeacon = new Beacon(distance, station,
+                    right, number, underground, message);
+              } else if (splitLine.length == 20) {
+                float distance = Float.parseFloat(splitLine[16]);
+                byte station = Byte.parseByte(splitLine[17]);
+                boolean right = Integer.parseInt(splitLine[18]) == 1;
+                boolean underground = Integer.parseInt(splitLine[19]) == 1;
+
+                blockBeacon = new Beacon(distance, station,
+                    right, number, underground, "");
+              }
 
               b = new Block(lineId, section, number, len, grade,
                   speedLimit, infra, elevation, cumEle, biDirectional,
-                  previous, next1, leftStation, rightStation);
+                  previous, next1, leftStation, rightStation, blockBeacon);
 
               newTrack.addBlock(b);
             }
@@ -180,6 +242,9 @@ public class Track {
 
         sectionsId.put(lineName, sections);
         blockNumbers.put(lineName, blocks);
+
+
+        newTrack.addStations(stations);
 
       } catch (FileNotFoundException ex) {
         System.out.println("Unable to find the file.");
@@ -283,25 +348,49 @@ public class Track {
    * @param currentBlock This will be the id of the current block the train is on
    */
   public Block getNextBlock(int currentBlock, int previousBlock) {
-    Block temp = track.get(currentBlock);
-    if (temp.getPreviousBlock() == previousBlock) {
-      return track.get(temp.getNextBlock1());
+
+    Block cur = track.get(currentBlock);
+    Block next = track.get(cur.getNextBlock1());
+
+    if (cur.getPreviousBlock() == previousBlock) {
+
+      // track is coming from the opposite direction
+      if (!next.isBiDirectional()
+          && track.get(next.getNextBlock1()) == cur) {
+        return null;
+      } else {
+        return track.get(cur.getNextBlock1());
+      }
     } else {
-      return track.get(temp.getPreviousBlock());
+      return track.get(cur.getPreviousBlock());
     }
   }
 
   /**
    * This method will return the other possible block for the track.
    * @param currentBlock The current block the train is on
-   * @return A Block that the train will be going to
+   * @param previousBlock This will return the prior block the train was on
+   * @return Returns null if the fork is illegal. Otherwise returns the next block
    */
-  public Block getNextBlock2(int currentBlock) {
+  public Block getNextBlock2(int currentBlock, int previousBlock) {
+
     Block temp = track.get(currentBlock);
+
     if (temp.isSwitch()) {
+
       Switch s = (Switch) temp;
-      return track.get(s.getNextBlock2());
+      if (previousBlock == s.getPreviousBlock()) {
+
+        Block fork = track.get(s.getNextBlock2());
+        if (fork.getNumber() == -1) {
+          return fork;
+        } else if (!fork.isBiDirectional()
+            && (fork.getNextBlock1() != s.getNumber())) {
+          return fork;
+        }
+      }
     }
+
     return null;
   }
 
@@ -362,4 +451,25 @@ public class Track {
       return null;
     }
   }
+
+  /**
+   * This will allow the user to set a block to closed for maintenance.
+   * @param blockId The id for a block to close
+   * @param status The new status for closed for maintenance
+   * @return A boolean value for if the change went through
+   */
+  public boolean setClosedForMaintenance(int blockId, boolean status) {
+
+    Block b = this.getBlock(blockId);
+
+    b.setClosedForMaintenance(status);
+
+    if (b.isClosedForMaintenance() == status) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+
 }

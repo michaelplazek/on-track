@@ -1,8 +1,8 @@
 package trainmodel.model;
 
-import utils.train.TrainModelEnums.DoorStatus;
-import utils.train.TrainModelEnums.OnOffStatus;
-import utils.train.TrainModelEnums.TrackLineStatus;
+import utils.train.DoorStatus;
+import utils.train.Failure;
+import utils.train.OnOffStatus;
 
 
 /**
@@ -22,7 +22,11 @@ public interface TrainModelInterface {
 
   OnOffStatus getServiceBrakeStatus();
 
-  TrackLineStatus getTrackLineStatus();
+  Failure getTrackLineFailureStatus();
+
+  Failure getEngineFailureStatus();
+
+  Failure getBrakeFailureStatus();
 
   DoorStatus getLeftDoorStatus();
 
@@ -34,11 +38,15 @@ public interface TrainModelInterface {
 
   //Setters
 
+  void start();
+
+  void startEngine();
+
   void setEmergencyBrakeStatus(OnOffStatus brakeStatus);
 
   void setServiceBrakeStatus(OnOffStatus brakeStatus);
 
-  void setTrackLineStatus(TrackLineStatus trackLineStatus);
+  void setTrackLineFailureStatus(Failure trackLineFailureStatus);
 
   void setLeftDoorStatus(DoorStatus leftDoorStatus);
 

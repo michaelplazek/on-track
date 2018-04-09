@@ -12,8 +12,8 @@ import traincontroller.enums.Mode;
 import trainmodel.model.TrainModelFactory;
 import trainmodel.model.TrainModelInterface;
 import utils.general.Authority;
-import utils.train.TrainModelEnums.DoorStatus;
-import utils.train.TrainModelEnums.OnOffStatus;
+import utils.train.DoorStatus;
+import utils.train.OnOffStatus;
 
 
 public class TrainController implements TrainControllerInterface {

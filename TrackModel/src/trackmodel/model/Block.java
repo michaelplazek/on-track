@@ -44,6 +44,7 @@ public class Block {
   private float setPointSpeed;
   private Authority authority;
   private boolean hasBeacon;
+  private Beacon blockBeacon;
   
   //Neighbors
   private boolean isBiDirectional;
@@ -70,11 +71,12 @@ public class Block {
    *@param next1 This indicates the next logical block for the track after the current block
    *@param leftStation This indicates that the station is on the left of the track
    *@param rightStation This indicates that the station is on the right of the track
+   *@param blockBeacon This is the beacon stored on the track
    */
   public Block(String line, String section, int number, float length,
                float grade, int speedLimit, String infrastructure, float elevation,
                float cumElevation, boolean isBiDirectional, int previous, int next1,
-               boolean leftStation, boolean rightStation) {
+               boolean leftStation, boolean rightStation, Beacon blockBeacon) {
 
     setLine(line);
     setSection(section);
@@ -94,7 +96,7 @@ public class Block {
     setNextBlock1(next1);
     setLeftStation(leftStation);
     setRightStation(rightStation);
-
+    setBeaconValues(blockBeacon);
   }
 
   public String getLine() {
@@ -171,15 +173,16 @@ public class Block {
     for (int i = 0; i < parts.length; i++) {
       if (parts[i].equals("STATION")) {
         setStationName(parts[i + 1]);
-      } else if (parts[i].equals("RAILWAY CROSSING")) {
+      } else if (parts[i].contains("RAILWAY CROSSING")) {
         setCrossing(true);
         setCrossingStatus(false);
-      } else if (parts[i].equals("UNDERGROUND")) {
+      } else if (parts[i].contains("UNDERGROUND")) {
         setUnderground(true);
       } else if (parts[i].equals("SWITCH")) {
         setSwitchHere(true);
       } else if (parts[i].contains("SWITCH")
-          && (parts[i].contains("TO") || parts[i].contains("FROM"))
+          && (parts[i].contains("TO")
+          || parts[i].contains("FROM"))
           && parts[i].contains("YARD")) {
         setSwitchHere(true);
       }
@@ -354,6 +357,24 @@ public class Block {
 
   public void setNextBlock1(int nextBlock1) {
     this.nextBlock1 = nextBlock1;
+  }
+
+  public Beacon getBeaconValues() {
+    return blockBeacon;
+  }
+
+  /**
+   * This method will set up the beacon on the block.
+   * @param blockBeacon The beacon object for the block.
+   */
+  public void setBeaconValues(Beacon blockBeacon) {
+    if (blockBeacon == null) {
+      setBeacon(false);
+    } else {
+      setBeacon(true);
+    }
+
+    this.blockBeacon = blockBeacon;
   }
 
   public String getUiData() {

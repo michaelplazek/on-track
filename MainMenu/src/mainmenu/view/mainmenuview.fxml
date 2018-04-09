@@ -23,16 +23,7 @@
             </Label>
             <HBox prefHeight="195.0" prefWidth="392.0">
                <children>
-                  <Button mnemonicParsing="false" onAction="#openCentralTrafficControl" prefHeight="80.0" prefWidth="220.0" text="Central Traffic Control">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Button>
-               </children>
-            </HBox>
-            <HBox prefHeight="195.0">
-               <children>
-                  <Button mnemonicParsing="false" onAction="#openMovingBlockOverlay" prefHeight="80.0" prefWidth="220.0" text="Moving Block Overlay">
+                  <Button mnemonicParsing="false" onAction="#openCentralTrafficControl" prefHeight="138.0" prefWidth="392.0" text="Central Traffic Control">
                      <font>
                         <Font size="18.0" />
                      </font>
@@ -46,7 +37,7 @@
                         <Font size="18.0" />
                      </font>
                   </Button>
-                  <VBox prefHeight="175.0" prefWidth="145.0">
+                  <VBox prefHeight="95.0" prefWidth="145.0">
                      <children>
                         <ChoiceBox fx:id="trackControllerLineChoiceBox" prefHeight="35.0" prefWidth="145.0" translateY="-3.0" />
                         <ChoiceBox fx:id="trackControllerIdChoiceBox" disable="true" prefHeight="35.0" prefWidth="145.0" translateY="4.0" />

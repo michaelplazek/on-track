@@ -7,7 +7,6 @@ import trackmodel.model.Track;
 import trainmodel.model.TrainModelInterface;
 import utils.general.Authority;
 import utils.train.TrainData;
-import utils.train.TrainModelEnums;
 
 public class PowerCalculator {
   private static ClockInterface clock = Clock.getInstance();
@@ -48,7 +47,8 @@ public class PowerCalculator {
           currentBlock, remainingDistance));
       if (currentBlock.isSwitch()) {
         max = Math.max(max, recursiveSpeedLimit(
-            track.getNextBlock2(currentBlock.getNumber()), currentBlock, remainingDistance));
+            track.getNextBlock2(currentBlock.getNumber(), currentBlock.getPreviousBlock()),
+            currentBlock, remainingDistance));
       }
     }
     return max;
@@ -61,7 +61,7 @@ public class PowerCalculator {
     return velocity * time + .5 * acceleration * time * time;
   }
 
-  static double getPowerCommand(TrainController tc) {
+  public static double getPowerCommand(TrainController tc) {
     double currentSpeed = tc.getTrainModel().getCurrentSpeed();
     double setSpeed = tc.getSetSpeed();
     double lastIntegral = tc.getIntegral();
@@ -83,6 +83,8 @@ public class PowerCalculator {
 
     tc.setIntegral(integral);
 
-    return power;
+    return 100;
+
+//    return power;
   }
 }

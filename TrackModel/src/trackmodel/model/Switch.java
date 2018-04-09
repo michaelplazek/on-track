@@ -28,14 +28,15 @@ public class Switch extends Block {
    * @param next2 The second of two possible next blocks in the track
    * @param leftDoors If the track is on the left of the track
    * @param rightDoors If the station is on the right of the track
+   * @param beacon Beacon object for a block
    */
   public Switch(String line, String section, int number, float length,
                 float grade, int speedLimit, String infrastructure, float elevation,
                 float cumElevation, boolean biDirectional, int previous, int next1,
-                int next2, boolean leftDoors, boolean rightDoors) {
+                int next2, boolean leftDoors, boolean rightDoors, Beacon beacon) {
 
     super(line, section, number, length, grade, speedLimit, infrastructure, elevation,
-        cumElevation, biDirectional, previous, next1, leftDoors, rightDoors);
+        cumElevation, biDirectional, previous, next1, leftDoors, rightDoors, beacon);
     this.next2 = next2;
     this.status = next1;
     this.switchState = true;
@@ -54,6 +55,7 @@ public class Switch extends Block {
    * @return A integer will be returned
    */
   public int getNextBlock2() {
+
     return next2;
   }
 
