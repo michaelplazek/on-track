@@ -49,8 +49,7 @@ public class PowerCalculator {
     if (tc.getTrainModel().getServiceBrakeStatus() == OnOffStatus.ON) {
       double lastSpeed = tc.getCurrentSpeed();
       double acceleration = Math.abs(currentSpeed - lastSpeed) / delta;
-      System.out.println(acceleration);
-      if (!(acceleration == 0)) {
+      if (acceleration != 0 && delta != 0) {
         tc.setWeight(TrainController.FORCE_BRAKE_TRAIN_EMPTY / acceleration);
       }
     }
@@ -114,6 +113,7 @@ public class PowerCalculator {
     TrainModelInterface tm = tc.getTrainModel();
     Beacon beacon = tc.getBeacon();
     activateServiceBrake(tc);
+    tc.setPowerCommand(0);
     tc.setWeight(TrainData.EMPTY_WEIGHT * TrainData.NUMBER_OF_CARS
         + TrainData.MAX_PASSENGERS * 2 * 150 * UnitConversions.LBS_TO_KGS);
     if (beacon.isRight() && tm.getRightDoorStatus() != DoorStatus.OPEN) {
@@ -128,6 +128,7 @@ public class PowerCalculator {
     if (tc.getBeacon() != null) {
       if (tc.getDistanceToStation() - 1 <= safeStoppingDistance) {
         activateServiceBrake(tc);
+        tc.setPowerCommand(0);
       } else if (Math.abs(tc.getDistanceToStation()) <= 1 && tc.getCurrentSpeed() == 0) {
         tc.setMode(Mode.AT_STATION);
       } else {
@@ -150,7 +151,7 @@ public class PowerCalculator {
 
     if (currentSpeed > setSpeed || currentSpeed > speedLimit) {
       activateServiceBrake(tc);
-      tc.getTrainModel().setPowerCommand(0);
+      tc.setPowerCommand(0);
     } else {
       deactivateServiceBrake(tc);
 
@@ -166,7 +167,7 @@ public class PowerCalculator {
 
       deactivateServiceBrake(tc);
       tc.setIntegral(integral);
-      tc.setPowerCommand(80);
+      tc.setPowerCommand(power);
     }
   }
 
@@ -179,6 +180,8 @@ public class PowerCalculator {
                                             double remainingDistance) {
     if (currentBlock == null) {
       return 70;
+    } else if (Double.isNaN(remainingDistance)) {
+      return currentBlock.getSpeedLimit();
     }
     double max;
     Track track = Track.getTrack(currentBlock.getLine());

@@ -325,7 +325,8 @@ public class TrainController implements TrainControllerInterface {
 
   @Override
   public void activateEmergencyBrake() {
-    System.out.println("here");
+    setPowerCommand(0);
+    setAutomatic(false);
     this.setEmergencyBrake(OnOffStatus.ON);
   }
 
