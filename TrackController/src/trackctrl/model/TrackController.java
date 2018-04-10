@@ -20,7 +20,7 @@ public class TrackController implements TrackControllerInterface {
   private int trackOffset;
   private final int capacity = 16;
   private HashMap<Integer, Block> myZone = new HashMap<Integer, Block>(capacity);
-  private ArrayList<Integer> blockList = new ArrayList<>();
+  private ArrayList<String> blockList = new ArrayList<>();
   private TrackController neighborCtrlr1;
   private TrackController neighborCtrlr2;
   private Track myLine;
@@ -108,18 +108,34 @@ public class TrackController implements TrackControllerInterface {
 
       //Create string list upon initialization
       for (Integer i : blocks.keySet()) {
-        blockList.add(i);
+        if(myLine.getBlock(i).isSwitch()) {
+          blockList.add("Switch " + i.toString());
+        } else {
+          blockList.add("Block " + i.toString());
+        }
       }
     }
   }
 
   @Override
-  public ArrayList<Integer> getZone() {
+  public ArrayList<String> getZone() {
 
     for (Map.Entry<Integer, Block> b : myZone.entrySet()) {
-      blockList.add(b.getKey());
+      if(b.getValue().isSwitch()) {
+        blockList.add("Switch" + " " + b.getKey().toString());
+      } else {
+        blockList.add("Block" + " " + b.getKey().toString());
+      }
     }
     return blockList;
+  }
+
+  public Block getBlock(int id) {
+    return myZone.get(id);
+  }
+
+  public String getLine() {
+    return myLine.getLine();
   }
 
   @Override
