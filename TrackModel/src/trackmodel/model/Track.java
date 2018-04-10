@@ -252,7 +252,6 @@ public class Track {
         System.out.println("Error reading file");
       }
 
-
     } catch (URISyntaxException ue) {
       System.out.println("URI Error");
     }

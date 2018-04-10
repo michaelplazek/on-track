@@ -1,6 +1,15 @@
 package ctc.model;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.TimeZone;
+
+import mainmenu.Clock;
+import trackctrl.model.TrackControllerLineManager;
 import trackmodel.model.Block;
+import trackmodel.model.Switch;
 import trackmodel.model.Track;
 import traincontroller.model.TrainControllerFactory;
 import utils.general.Authority;
@@ -15,8 +24,11 @@ public class TrainTracker {
   private String id;
   private String departure;
   private boolean isDispatched;
+  private boolean isStopped;
+  private boolean isDone;
   private float speed;
   private int passengers;
+  private double currentDwell;
   private Authority authority;
   private float distanceTravelled;
   private String line;
@@ -24,7 +36,9 @@ public class TrainTracker {
   private String locationId;
   private Route route;
   private String displayAuthority;
-  private int nextStationIndex;
+  private TrackControllerLineManager controller;
+  private CentralTrafficControl ctc;
+  private Clock clock;
 
   /**
    * Default constructor.
@@ -45,16 +59,18 @@ public class TrainTracker {
     this.id = id;
     this.departure = departure;
     this.schedule = schedule;
-    this.isDispatched = false;
-    this.speed = 0;
     this.passengers = 0;
-    this.authority = Authority.STRAIGHT_AT_SWITCH;
+    this.authority = Authority.SEND_POWER;
+    this.currentDwell = 0;
     this.line = line;
     this.track = Track.getListOfTracks().get(line);
     this.location = track.getStartBlock();
     this.locationId = location.getSection() + location.getNumber();
     this.route = new Route(line, this);
-    this.nextStationIndex = 0;
+    this.speed = location.getSpeedLimit();
+    this.controller = TrackControllerLineManager.getInstance(line);
+    this.ctc = CentralTrafficControl.getInstance();
+    this.clock = Clock.getInstance();
 
     TrainControllerFactory.create(id, line);
   }
@@ -62,15 +78,138 @@ public class TrainTracker {
   /**
    * This is called every clock tick to update the train.
    */
-  public void update() {
+  void update() {
 
-    // update the authority
-    computeDisplay();
+    // update the user interface
+    updateDisplay();
+
+    if (!isStopped) {
+
+      // update the position of the train
+      updatePosition();
+
+      // simulate the track controller
+      simulateController();
+
+      // update the speed and authority
+      updateTrackSignals();
+
+      // see if the train has completed its run
+      updateLifecycle();
+
+    } else {
+      currentDwell = currentDwell - clock.getChangeInTime();
+      if (currentDwell < 0) {
+        isStopped = false;
+      }
+    }
   }
 
-  private void computeDisplay() {
+  // TODO: remove this once the Track Controller is connected
+  private void simulateController() {
+
+    if (location.isSwitch() && route.getPrevious().getNumber() == location.getPreviousBlock()) {
+
+      Switch sw = (Switch) location;
+      Block nextBlock = route.getNext();
+
+      if (nextBlock != null) {
+        sw.setStatus(nextBlock.getNumber());
+      } else {
+        sw.setStatus(-1);
+      }
+    }
+  }
+
+  private void updateDisplay() {
     computeDisplayAuthority();
     computeDisplayLocation();
+  }
+
+  private void updatePosition() {
+
+    // TODO: use this call once the Track Controller is connected
+//    if (controller.getOccupancy(route.getNext().getNumber())) {
+//      this.location = route.getNext();
+//      this.route.incrementCurrentIndex();
+//    }
+
+    Block next = route.getNext();
+
+    if (next != null && next.isOccupied() && checkNeighboringTrains()) {
+      this.location = next;
+      this.route.incrementCurrentIndex();
+    }
+  }
+
+  /**
+   * To checks blocks around a train before setting the position. Used to detect trains
+   * that are on neighboring blocks.
+   * @return true is block is OK to move to.
+   */
+  private boolean checkNeighboringTrains() {
+
+    List<TrainTracker> trains = ctc.getTrainList();
+    for (TrainTracker train : trains) {
+      if (train.getLocation() == route.getNext()) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  private void updateLifecycle() {
+
+    // check if train has reached the yard
+    if (route.getCurrent().getNumber() == -1) {
+      isDispatched = false;
+      isDone = true;
+      route.getCurrent().setOccupied(false);
+    }
+  }
+
+  private void updateTrackSignals() {
+
+    ScheduleRow stop = route.getNextStop();
+
+    // check to see if we have reached a station
+    if ((location.isLeftStation() || location.isLeftStation())
+        && location.getStationName().compareTo(stop.getStop()) == 0) {
+      isStopped = true;
+      currentDwell = convertTimeToMilliseconds(stop.getTime());
+      route.incrementNextStationIndex();
+    }
+
+    // when we reach a switch, we check the next fork
+    if (location.isSwitch()) {
+//      speed = route.getNextDirection() ? (-1 * speed) : speed;
+      speed = location.getSpeedLimit();
+    }
+
+    String nextStationOnSchedule = stop.getStop();
+
+    // determine next authority
+    String nextStationOnRoute = route.getNextStation();
+    if (!isStopped) {
+      if (nextStationOnSchedule != null
+          && nextStationOnRoute != null) {
+
+        if (nextStationOnRoute.compareTo(nextStationOnSchedule) == 0) {
+          authority = Authority.STOP_AT_NEXT_STATION;
+        }
+      } else {
+        authority = Authority.SEND_POWER;
+      }
+    } else {
+      authority = Authority.SERVICE_BRAKE_STOP;
+    }
+
+    // TODO: use this call once the Track Controller is ready
+//    controller.sendTrackSignals(location.getNumber(), authority, speed);
+
+    location.setAuthority(authority);
+    location.setSetPointSpeed(speed);
   }
 
   private void computeDisplayLocation() {
@@ -79,16 +218,29 @@ public class TrainTracker {
 
   private void computeDisplayAuthority() {
 
-    String stop = schedule.getStops().get(nextStationIndex).getStop();
-    if (stop.compareTo("") != 0) {
-      stop = schedule.getStops().get(nextStationIndex).getStop();
-    } else if (route.getLast().getNumber() != -1) {
-      stop = route.getLast().getSection() + route.getLast().getNumber();
-    } else {
-      stop = "Yard";
+    String stop = route.getNextStop().getStop();
+    if (stop == null || stop.compareTo("") == 0) {
+      if (route.getLast().getNumber() != -1) {
+        stop = route.getLast().getSection() + route.getLast().getNumber();
+      } else {
+        stop = "Yard";
+      }
     }
 
     this.displayAuthority = stop;
+  }
+
+  private long convertTimeToMilliseconds(String time) {
+
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+    try {
+      Date date = sdf.parse("1970-01-01 " + time);
+      return date.getTime();
+    } catch (ParseException e) {
+      System.out.println(e);
+      return 0;
+    }
   }
 
   public Schedule getSchedule() {
@@ -127,7 +279,7 @@ public class TrainTracker {
     return passengers;
   }
 
-  protected void updatePassengers(int passengers) {
+  void updatePassengers(int passengers) {
     this.passengers += passengers;
   }
 
@@ -185,6 +337,14 @@ public class TrainTracker {
     this.line = line;
   }
 
+  public boolean isDone() {
+    return isDone;
+  }
+
+  public void setDone(boolean done) {
+    isDone = done;
+  }
+
   public Route getRoute() {
     return route;
   }
@@ -196,6 +356,6 @@ public class TrainTracker {
   public void setRoute(Route route) {
     this.route = route;
 
-    computeDisplay();
+    updateDisplay();
   }
 }

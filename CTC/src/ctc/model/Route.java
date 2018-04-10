@@ -19,7 +19,7 @@ public class Route {
   /**
    * Default constructor.
    */
-  protected Route(String line, TrainTracker train) {
+  Route(String line, TrainTracker train) {
 
     this.line = Track.getListOfTracks().get(line);
     this.train = train;
@@ -57,19 +57,110 @@ public class Route {
     createRoute(start, end);
   }
 
-  public Block getNext() {
+  Block getNext() {
+    if (currentIndex < route.size() - 1) {
+      return route.get(currentIndex + 1);
+    }
+    return null;
+  }
 
+  Block getCurrent() {
     return route.get(currentIndex);
   }
 
-  public Block getFirst() {
+  Block getPrevious() {
+    if (currentIndex > 0) {
+      return route.get(currentIndex - 1);
+    }
+    return null;
+  }
 
+  public Block getFirst() {
     return this.start;
   }
 
-  public Block getLast() {
-
+  Block getLast() {
     return this.end;
+  }
+
+  void incrementCurrentIndex() {
+    this.currentIndex++;
+  }
+
+  void incrementNextStationIndex() {
+    this.nextStationIndex++;
+  }
+
+  ScheduleRow getNextStop() {
+
+    Schedule schedule = train.getSchedule();
+    if (schedule.getStops().size() > 0 && nextStationIndex < schedule.getStops().size()) {
+      return schedule.getStops().get(nextStationIndex);
+    }
+
+    return null;
+  }
+
+  String getNextStation() {
+
+    Block current = getCurrent();
+    int index = currentIndex;
+    while ((!current.isRightStation() && !current.isLeftStation())
+        && current != end
+        && index < route.size()) {
+      current = route.get(index++);
+    }
+
+    if (current != end) {
+      return current.getStationName();
+    } else {
+      return null;
+    }
+  }
+
+  private Switch getNextSwitch(int index) {
+
+    Block current = route.get(index);
+
+    while (!current.isSwitch() && current != end) {
+      current = route.get(index++);
+    }
+
+    if (current != end) {
+      return (Switch) current;
+    } else {
+      return null;
+    }
+  }
+
+  /*
+    Return TRUE for RIGHT
+    Return FALSE for LEFT
+   */
+  boolean getNextDirection() {
+
+    Switch sw = getNextSwitch(currentIndex);
+    if (sw == null) {
+      return true;
+    }
+
+    int index = route.indexOf(sw);
+    if (index > 0) {
+      while (sw.getPreviousBlock() != route.get(index - 1).getNumber()) {
+        index = route.indexOf(sw);
+        sw = getNextSwitch(index);
+      }
+
+      // nextBlock2 == LEFT && nextBlock1 == RIGHT
+      return sw.getNextBlock1() == route.get(index - 1).getNumber();
+    }
+
+    return true; // doesn't matter
+
+  }
+
+  public LinkedList<Block> getPath() {
+    return this.route;
   }
 
   private boolean checkPath(Block current) {
@@ -183,20 +274,20 @@ public class Route {
    * Use by the CTC to create a new route or reroute a train.
    * @param start starting block of the route
    * @param end final block of the route
-   * @return true if operation was a success and false otherwise
    */
-  public boolean createRoute(Block start, Block end) {
+  private void createRoute(Block start, Block end) {
 
     this.start = start;
     this.end = end;
 
     LinkedList<Block> path = new LinkedList<>();
 
-
     // check if we're starting from the first block
     if (start == line.getStartBlock()) {
 
+      path.add(line.getBlock(-1));
       path.add(start);
+      currentIndex = 1;
 
       Block current = line.getNextBlock(start.getNumber(), -1);
       traverse(current, line.getBlock(current.getPreviousBlock()), path);
@@ -204,8 +295,8 @@ public class Route {
       traverse(start, line.getBlock(start.getPreviousBlock()), path);
     }
 
+    nextStationIndex = 0; // reset index
+    path.add(end);
     this.route = path;
-
-    return true;
   }
 }
