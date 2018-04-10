@@ -274,9 +274,8 @@ public class Route {
    * Use by the CTC to create a new route or reroute a train.
    * @param start starting block of the route
    * @param end final block of the route
-   * @return true if operation was a success and false otherwise
    */
-  private boolean createRoute(Block start, Block end) {
+  private void createRoute(Block start, Block end) {
 
     this.start = start;
     this.end = end;
@@ -299,8 +298,5 @@ public class Route {
     nextStationIndex = 0; // reset index
     path.add(end);
     this.route = path;
-
-
-    return true;
   }
 }

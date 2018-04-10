@@ -130,9 +130,9 @@ public class CentralTrafficControlController {
    */
   public void run() {
     ctc.run();
-//    ctc.cleanup();
     dispatch();
     updateDisplays();
+    updateMaintenance();
   }
 
   private void updateDisplays() {
@@ -359,6 +359,8 @@ public class CentralTrafficControlController {
 
           int blockId = extractBlock(maintenanceBlocks);
           Block block = Track.getListOfTracks().get(line).getBlock(blockId);
+
+          updateMaintenance();
 
           if (action.equals("Toggle switch") && !block.isSwitch()) {
             submitMaintenance.setDisable(true);
@@ -589,19 +591,26 @@ public class CentralTrafficControlController {
 
     String line = maintenanceTracks.getSelectionModel().getSelectedItem();
     TrackControllerLineManagerInterface manager = TrackControllerLineManager.getInstance(line);
-
+    Track track = Track.getListOfTracks().get(line);
     int blockId = extractBlock(maintenanceBlocks);
     String action = maintenanceActions.getSelectionModel().getSelectedItem();
 
+    // TODO: hook up Track Controller once it's ready
     switch (action) {
       case "Close block":
-        manager.closeBlock(blockId);
+        track.setClosedForMaintenance(blockId,true);
+        updateMaintenance();
+//        manager.closeBlock(blockId);
         break;
       case "Repair block":
-        manager.repairBlock(blockId);
+        track.setClosedForMaintenance(blockId,false);
+        updateMaintenance();
+//        manager.repairBlock(blockId);
         break;
       case "Toggle switch":
-        manager.toggleSwitch(blockId);
+        Switch sw = (Switch) track.getBlock(blockId);
+        sw.toggle();
+//        manager.toggleSwitch(blockId);
         break;
       default:
         break;

@@ -92,23 +92,21 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
     for (TrainTracker train : trainList) {
       if (train.isDispatched()) {
         train.update();
-      } else if (train.isDone()) {
-        this.dispatchTable.remove(train);
-        this.trainList.remove(train);
-        TrainControllerFactory.delete(train.getId());
       }
     }
 
+    cleanup();
   }
 
   /**
    * Remove any finished trains.
    */
-  public void cleanup() {
-    for (TrainTracker train : trainList) {
+  private void cleanup() {
+    for (int i = 0; i < trainList.size(); i++) {
+      TrainTracker train = trainList.get(i);
       if (train.isDone()) {
-        TrainControllerFactory.delete(train.getId());
         removeTrain(train);
+        TrainControllerFactory.delete(train.getId());
       }
     }
   }
@@ -172,9 +170,9 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
     trainQueueTable.add(train);
   }
 
-  void removeTrain(TrainTracker train) {
+  private void removeTrain(TrainTracker train) {
     this.trainList.remove(train);
-
+    this.dispatchTable.remove(train);
   }
 
   /**
