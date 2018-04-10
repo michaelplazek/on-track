@@ -26,7 +26,6 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
 
   private boolean isActive = false;
   private String line;
-  private long time;
   private double hours;
   private int refresh;
   private int totalPassengers;
@@ -53,7 +52,6 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
     this.blockList = FXCollections.observableArrayList();
     this.trackList = FXCollections.observableArrayList("Select track");
 
-    this.time = 0;
     this.refresh = 0;
     this.hours = 0.0001;
     this.totalPassengers = 0;
@@ -115,9 +113,7 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
    * Display time of clock is updated.
    */
   private void updateDisplayTime() {
-
     displayTime.setValue(clock.getFormattedTime());
-    time += clock.getChangeInTime();
   }
 
   /**
