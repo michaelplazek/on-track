@@ -139,7 +139,7 @@ public class TrackControllerController implements Initializable {
    * FAKE DATA FOR THE UI DEMO.
    */
   private void populateDropDowns() {
-    ObservableList<Integer> blockList = FXCollections.observableArrayList(myController.getZone());
+    ObservableList<String> blockList = FXCollections.observableArrayList(myController.getZone());
     blockChoice.setValue("Select Block");
     blockChoice.setItems(blockList);
 
