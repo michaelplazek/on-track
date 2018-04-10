@@ -23,6 +23,10 @@ import mainmenu.Clock;
 import mainmenu.ClockInterface;
 import trackctrl.model.TrackController;
 import trackctrl.model.TrackControllerLineManager;
+import trackmodel.model.Block;
+import trackmodel.model.Switch;
+import trackmodel.model.Track;
+import utils.general.Constants;
 
 public class TrackControllerController implements Initializable {
 
@@ -129,17 +133,19 @@ public class TrackControllerController implements Initializable {
 
 
   private TrackController myController;
+  private Track myLine;
   private ClockInterface theClock;
 
   public TrackControllerController(String ctrlrId) {
     myController = TrackControllerLineManager.getController(ctrlrId);
+    myLine = Track.getTrack(myController.getLine());
   }
 
   /**
    * FAKE DATA FOR THE UI DEMO.
    */
   private void populateDropDowns() {
-    ObservableList<Integer> blockList = FXCollections.observableArrayList(myController.getZone());
+    ObservableList<String> blockList = FXCollections.observableArrayList(myController.getZone());
     blockChoice.setValue("Select Block");
     blockChoice.setItems(blockList);
 
@@ -150,9 +156,11 @@ public class TrackControllerController implements Initializable {
               .getSelectedItem().equals("Select Block"))) {
             //Block selected, update UI
             //TODO
-            //updateLights();
-            //updateCrossing();
-            //updateSwitch();
+            String sel = newValue.toString();
+
+            sel = sel.split(" ")[1];
+
+            updateControllerUI(Integer.parseInt(sel));
           }
         });
   }
@@ -322,9 +330,9 @@ public class TrackControllerController implements Initializable {
   }
 
   private void setMainLightsLtoR() {
-    mainLight0.setFill(Paint.valueOf("#24c51b"));
+    mainLight0.setFill(Paint.valueOf(Constants.GREEN));
     mainLight1.setFill(Paint.valueOf("Red"));
-    fromLight0.setFill(Paint.valueOf("#24c51b"));
+    fromLight0.setFill(Paint.valueOf(Constants.GREEN));
     fromLight1.setFill(Paint.valueOf("Red"));
 
     //set images
@@ -392,27 +400,65 @@ public class TrackControllerController implements Initializable {
     mainSwitch.setOpacity(100);
     inactiveSwitch.setOpacity(0);
     forkSwitch.setOpacity(0);
-
-    //Find values of selected block if it contains a switch
-    demoSwitchLabels();
   }
 
   private void setSwitchAlter() {
     forkSwitch.setOpacity(100);
     inactiveSwitch.setOpacity(0);
     mainSwitch.setOpacity(0);
-
-    //Find values of selected block if it contains a switch
-    demoSwitchLabels();
   }
 
-  private void demoSwitchLabels() {
-    switchFrom.setText("N85");
-    switchMain.setText("O86");
-    switchFork.setText("Q100");
+  /**
+   * UPDATE UI FUNCTIONS
+   */
+
+  private void updateControllerUI(int id) {
+
+    Block update = myController.getBlock(id);
+
+    updateBlockStatus(update);
+    updateSwitchState(update);
+
   }
 
-  private void updateControllerInfo() {
+  private void updateBlockStatus(Block update) {
+    if(update.isOccupied()) {
+      blockOccupancy.setFill(Paint.valueOf(Constants.GREEN));
+    } else {
+      blockOccupancy.setFill(Paint.valueOf("Gray"));
+    }
+
+    if(update.isClosedForMaintenance()) {
+      blockOccupancy.setFill(Paint.valueOf(Constants.RED));
+    } else {
+      blockOccupancy.setFill(Paint.valueOf(Constants.GREEN));
+    }
+  }
+
+  private void updateSwitchState(Block update) {
+
+    if(update.isSwitch()) {
+      Switch updateSwitch = (Switch) update;
+      int p = updateSwitch.getPreviousBlock();
+      int n1 = updateSwitch.getNextBlock1();
+      int n2 = updateSwitch.getNextBlock2();
+
+      Block previous = myLine.getBlock(p);
+      Block next1 = myLine.getBlock(n1);
+      Block next2 = myLine.getBlock(n2);
+
+      switchFrom.setText(previous.getSection() + p);
+      switchMain.setText(next1.getSection() + n1);
+      switchFork.setText(next2.getSection() + n2);
+
+      if(updateSwitch.getStatus() == n1) {
+        setSwitchStay();
+      } else {
+        setSwitchAlter();
+      }
+    } else {
+      setSwitchInactive();
+    }
 
   }
 
@@ -441,15 +487,7 @@ public class TrackControllerController implements Initializable {
     setOpen();
     setSwitchInactive();
     resetLightSwitch();
-    initializeSwitchElements();
     importLogic.setOnAction(this::handleImportLogic);
     checkLogic.setOnAction(this::handleCheckLogic);
-  }
-
-  private void initializeSwitchElements() {
-    //Check if Switch elements should be enabled or disabled for this particular Controller
-
-    //Check if a track around switch is bi-directional or not and disable un-needed lights
-
   }
 }
