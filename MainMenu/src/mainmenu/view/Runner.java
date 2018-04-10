@@ -82,6 +82,6 @@ public class Runner extends Application {
     clk.tick();
     ctc.initialize();
     TrackControllerInitializer init = new TrackControllerInitializer();
-    init.parseTrack();
+    init.parseConfig();
   }
 }

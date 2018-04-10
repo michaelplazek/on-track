@@ -1,5 +1,10 @@
 package trackctrl.model;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import trackctrl.model.TrackController;
@@ -13,178 +18,71 @@ public class TrackControllerInitializer {
 
   private int lineNum = 0;
   private TrackControllerLineManager[] lms;
+  private String path = "Utils/src/utils/general/";
+  private final String track = "trackCtrlrList.csv";
+
 
   /**
-   * Searches the Track Model instances and populates TrackControllerLineManagers
-   * and TrackControllers.
+   * Initialized track controllers based on config file in Utils
    */
-  public void parseTrack() {
+  public void parseConfig() {
 
-    boolean ctrlrInit = true;
-    HashMap<String,Track> track = Track.getListOfTracks();
-    lms = new TrackControllerLineManager[track.size()];
+    File trackFile = new File(path + track);
 
-    // Create TrackControllerLineManagers
-    for (Map.Entry<String, Track> trackEntry : track.entrySet()) {
+    try {
+      BufferedReader br = new BufferedReader(new FileReader(trackFile));
 
-      lms[lineNum] = new TrackControllerLineManager(trackEntry.getKey());
-      Block startBlock;
-      Switch startSwitch;
+      //Read twice to ignore comments
+      String line = br.readLine();
+      line = br.readLine();;
+      int i = 0;
 
-      startBlock = trackEntry.getValue().getStartBlock();
-      TrackController startCtrlr = new TrackController(1, startBlock.getNumber(), trackEntry.getValue().getLine());
-      startSwitch = (Switch) startBlock;
-      addSwitchController(startSwitch, startCtrlr, trackEntry.getValue());
+      while ((line = br.readLine()) != null) {
+        String[] splitLine = line.split(",");
 
-      lineNum++;
-    }
-  }
+        //Fetch Track Instance
+        Track track = Track.getTrack(splitLine[0]);
+        String hexColor = splitLine[1];
+        Integer controllers = Integer.parseInt(splitLine[2]);
 
+        //Create new Line manager based on first line info
+        TrackControllerLineManager addManager = new TrackControllerLineManager(track.getLine());
 
-  /** This function creates a TrackController for a particular
-   * section or multiple sections, and continues creating until
-   * a switch is Encountered.
-   * @param start - This is the first block of the track from yard
-   * @param tc - This is the TrackController we are adding the new Blocks to
-   * @param track - This is the Track object we are currently parsing
-   */
-  private void addSectionController(Block start, TrackController tc, Track track) {
+        for (i = 0; i < controllers; i++) {
+          line = br.readLine();
+          splitLine = line.split(",");
 
-    int blocksAdded = 0;
-    Block currBlock = start;
-    Switch currSwitch;
+          int id = Integer.parseInt(splitLine[0]);
+          int offset = Integer.parseInt(splitLine[1]);
+          TrackController tc = new TrackController(id, offset, track.getLine());
+          int endBlock = Integer.parseInt(splitLine[2]);
 
-    //DEBUG 1: checking condition from NRM switch
-    if (!isAdded(currBlock) && !track.getBlock(currBlock.getPreviousBlock()).isSwitch()) {
-      lms[lineNum].addController(tc);
-      //tc.addBlock(currBlock);
-    } else {
-      return;
-    }
-
-    while (true) {
-      if (blocksAdded <= 16) {
-        if (!(currBlock.isSwitch())) {
-          tc.addBlock(currBlock);
-          blocksAdded++;
-          currBlock = track.getBlock(currBlock.getNextBlock1());
-        } else {
-
-          currSwitch = (Switch) currBlock;
-
-          //if(isAdded(currBlock)) {
-            //if (currBlock == track.getStartBlock()) {
-              //currSwitch = (Switch) currBlock;
-              //addSwitchController(currSwitch, tc, track);
-            //}
-            //return;
-          //}
-
-          System.out.println("currBlock.getNumber() " + currBlock.getNumber());
-          System.out.println("track.getStartBlock().getPreviousBlock() " + track.getStartBlock().getPreviousBlock());
-
-          //Adds controller to lms and calls function
-          //Should do all switch checks here since I add controllers in this function
-          //System.out.println("Block detected as switch: " + currBlock.getSection()
-          //    + " " + currBlock.getNumber());
-          TrackController newSwitchCtrlr = new TrackController(tc.getId()
-              + 1, currBlock.getNumber(), currBlock.getLine());
-          lms[lineNum].addController(newSwitchCtrlr);
-          addSwitchController(currSwitch, newSwitchCtrlr, track);
-        }
-      } else {
-
-        if (!(currBlock.isSwitch())) {
-          //call self with new tc instance and keep searching
-
-          if (!isAdded(currBlock)) {
-            TrackController newSegmentCtrlr = new TrackController(tc.getId()
-                + 1, currBlock.getNumber(), currBlock.getLine());
-            //System.out.println(currBlock.getNumber() + " -- ADDING AGAIN");
-            addSectionController(currBlock, newSegmentCtrlr, track);
-          } else {
-            break;
+          for (int j = offset; j <= endBlock; j++) {
+            tc.addBlock(track.getBlock(j));
           }
 
-        } else {
-          //Switch detected, call switch adding function
-          TrackController newSwitchCtrlr = new TrackController(tc.getId()
-              + 1, currBlock.getNumber(), currBlock.getLine());
-          lms[lineNum].addController(newSwitchCtrlr);
-          currSwitch = (Switch) currBlock;
-          addSwitchController(currSwitch, newSwitchCtrlr, track);
+          if (splitLine.length > 3) {
+            offset = Integer.parseInt(splitLine[3]);
+            endBlock = Integer.parseInt(splitLine[4]);
+            for (int j = offset; j <= endBlock; j++) {
+              tc.addBlock(track.getBlock(j));
+            }
+          }
+
+          addManager.addController(tc);
         }
       }
+
+    } catch (FileNotFoundException ex) {
+      System.out.println("Unable to find the file.");
+    } catch (IOException ex) {
+      System.out.println("Error reading file");
     }
-  }
 
-  /** This function creates a TrackController for an encountered Switch.
-   * @param create - This is the Switch object to get a TrackController
-   * @param tc - This is the TrackController to add the Switch to
-   * @param track - This is the Track object we are currently parsing
-   */
-  private void addSwitchController(Switch create, TrackController tc, Track track) {
-    //Check for ending switch
-    if (create.getNextBlock1() < 0) {
-      //SWITCH FROM YARD
-      System.out.println("Yard found");
-
-      if(!isAdded(track.getBlock(create.getPreviousBlock()))) {
-
-        TrackController newSegmentCtrlr =
-            new TrackController(tc.getId() + 1, create.getNumber(), create.getLine());
-        addSectionController(track.getBlock(create.getPreviousBlock()), newSegmentCtrlr, track);
-      } else if (!isAdded((track.getBlock(create.getNextBlock2())))) {
-        TrackController newSegmentCtrlr =
-            new TrackController(tc.getId() + 1, create.getNumber(), create.getLine());
-        addSectionController(track.getBlock(create.getNextBlock2()), newSegmentCtrlr, track);
-      }
+    if (trackFile.exists()) {
+      System.out.println("File Found");
     } else {
-      System.out.println("In the ELSE");
-      //Create Controller for switch and direct neighboring blocks
-      //Call addSegmentController on each divergent path starting with
-      //the switch nextBlock1 and nextBlock2
-      tc.addBlock(create);
-      tc.addBlock(track.getBlock(create.getNextBlock1()));
-
-      Block segN = track.getBlock(create.getNextBlock2());
-      Block segP = track.getBlock(create.getPreviousBlock());
-
-
-      if(segN != null) {
-        tc.addBlock(segN);
-        //segN = track.getBlock(segN.getNextBlock1());
-        TrackController segNCtrlr =
-            new TrackController(tc.getId()+1, segN.getNumber(), segN.getLine());
-        System.out.println("segN: " + segN.getSection() + " " + segN.getNumber());
-        System.out.println("segN.isSwitch?: " + segN.isSwitch());
-        addSectionController(segN, segNCtrlr, track);
-      }
-
-      if(segP != null) {
-        tc.addBlock(segP);
-        //segP = track.getBlock(segP.getPreviousBlock());
-        TrackController segPCtrlr =
-            new TrackController(tc.getId()+2, segP.getNumber(), segP.getLine());
-        System.out.println("segP: " + segP.getSection() + " " + segP.getNumber());
-        System.out.println("segP.isSwitch?: " + segP.isSwitch());
-        addSectionController(segP, segPCtrlr, track);
-      }
+      System.out.println("File Not Found");
     }
   }
-
-  private boolean isAdded(Block checkBlock) {
-
-    if (checkBlock != null) {
-      for (TrackController check : lms[lineNum].getControllersList()) {
-
-        if (check.hasBlock(checkBlock.getNumber())) {
-          //Block already parsed, break.
-          return true;
-        }
-      }
-    }
-    return false;
-  }
-
 }
