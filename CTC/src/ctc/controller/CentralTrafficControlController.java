@@ -811,7 +811,7 @@ public class CentralTrafficControlController {
       String name = trainNameField.getText();
       String departingTime = departingTimeField.getText();
 
-      if (!name.equals("") && departingTime.length() == 8) {
+      if (!(name.compareTo("") == 0) && departingTime.length() == 8) {
 
         TrainTracker train = new TrainTracker(name, departingTime, line, schedule);
         train.setLine(ctc.getLine()); // set the track that is current set
@@ -955,29 +955,35 @@ public class CentralTrafficControlController {
     // get selected train
     TrainTracker train = dispatchTable.getSelectionModel().getSelectedItem();
 
-    // get selected track
-    String line = trackSelect.getSelectionModel().getSelectedItem();
-    TrackControllerLineManager control = TrackControllerLineManager.getInstance(line);
+    if (train != null) {
 
-    // get block of of authority
-    Track track = Track.getListOfTracks().get(line);
-    String blockId = setAuthorityBlocks.getSelectionModel().getSelectedItem();
-    Block end = track.getBlock(Integer.parseInt(blockId.replaceAll("[\\D]", "")));
-    Block location = train.getLocation();
+      // get selected track
+      String line = trackSelect.getSelectionModel().getSelectedItem();
+      TrackControllerLineManager control = TrackControllerLineManager.getInstance(line);
 
-    // make new route with the new authority
-    Route route = new Route(location, end, line, train);
-    train.setRoute(route);
+      // get block of of authority
+      Track track = Track.getListOfTracks().get(line);
+      String blockId = setAuthorityBlocks.getSelectionModel().getSelectedItem();
+      Block end = track.getBlock(Integer.parseInt(blockId.replaceAll("[\\D]", "")));
+      Block location = train.getLocation();
 
-    // get new authority that is set inside of setRoute
-    Authority authority = train.getAuthority();
+      // make new route with the new authority
+      Route route = new Route(location, end, line, train);
+      train.setRoute(route);
 
-    // get current speed
-    float speed = train.getSpeed();
+      // get new authority that is set inside of setRoute
+      Authority authority = train.getAuthority();
 
-    // send speed
-    control.sendTrackSignals(train.getLocation().getNumber(),
-        authority, speed);
+      // get current speed
+      float speed = train.getSpeed();
+
+      // send speed
+      // TODO: set this once the Track Controller is ready
+//    control.sendTrackSignals(train.getLocation().getNumber(),
+//        authority, speed);
+
+      train.getLocation().setAuthority(authority);
+    }
   }
 
   private void setSuggestedSpeed() {
@@ -985,20 +991,26 @@ public class CentralTrafficControlController {
     // get selected train
     TrainTracker train = dispatchTable.getSelectionModel().getSelectedItem();
 
-    // get selected track
-    String line = trackSelect.getSelectionModel().getSelectedItem();
-    TrackControllerLineManager control = TrackControllerLineManager.getInstance(line);
+    if (train != null) {
 
-    // get the signals
-    float speed = Float.parseFloat(suggestedSpeedField.getText());
-    Authority authority = train.getAuthority();
+      // get selected track
+      String line = trackSelect.getSelectionModel().getSelectedItem();
+      TrackControllerLineManager control = TrackControllerLineManager.getInstance(line);
 
-    // set the new speed on the train
-    train.setSpeed(speed);
+      // get the signals
+      float speed = Float.parseFloat(suggestedSpeedField.getText());
+      Authority authority = train.getAuthority();
 
-    // send signals
-    control.sendTrackSignals(train.getLocation().getNumber(),
-        authority, speed);
+      // set the new speed on the train
+      train.setSpeed(speed);
+
+      // send signals
+      // TODO: set this once the Track Controller is ready
+//    control.sendTrackSignals(train.getLocation().getNumber(),
+//        authority, speed);
+
+      train.getLocation().setSetPointSpeed(speed);
+    }
   }
 
   private void dispatch() {
