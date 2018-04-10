@@ -132,6 +132,7 @@ public class CentralTrafficControlController {
     ctc.run();
     dispatch();
     updateDisplays();
+    updateMaintenance();
   }
 
   private void updateDisplays() {
@@ -358,6 +359,8 @@ public class CentralTrafficControlController {
 
           int blockId = extractBlock(maintenanceBlocks);
           Block block = Track.getListOfTracks().get(line).getBlock(blockId);
+
+          updateMaintenance();
 
           if (action.equals("Toggle switch") && !block.isSwitch()) {
             submitMaintenance.setDisable(true);
