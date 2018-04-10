@@ -30,7 +30,7 @@ public class PowerCalculator {
 
   static void updateEstimates(TrainController tc) {
     TrainModelInterface tm = tc.getTrainModel();
-    long delta = clock.getChangeInTime();
+    double delta = clock.getChangeInTime() / 1000.0;
     double currentSpeed = tm.getCurrentSpeed();
     double distanceTraveled = currentSpeed * delta;
     double distanceIntoCurrentBlock = tc.getDistanceIntoCurrentBlock() + distanceTraveled;
@@ -48,8 +48,11 @@ public class PowerCalculator {
     }
     if (tc.getTrainModel().getServiceBrakeStatus() == OnOffStatus.ON) {
       double lastSpeed = tc.getCurrentSpeed();
-      double acceleration = (currentSpeed - lastSpeed) / delta;
-      tc.setWeight(TrainController.FORCE_BRAKE_TRAIN_EMPTY / acceleration);
+      double acceleration = Math.abs(currentSpeed - lastSpeed) / delta;
+      System.out.println(acceleration);
+      if (!(acceleration == 0)) {
+        tc.setWeight(TrainController.FORCE_BRAKE_TRAIN_EMPTY / acceleration);
+      }
     }
   }
 
@@ -88,6 +91,9 @@ public class PowerCalculator {
 
   static double getSafeStopDistance(TrainController tc) {
     double acceleration = TrainController.FORCE_BRAKE_TRAIN_EMPTY / tc.getWeight();
+    if (acceleration == 0) {
+      acceleration = 1.102018; //decceleration of fully loaded train
+    }
     double velocity = tc.getTrainModel().getCurrentSpeed();
     double time = velocity / acceleration;
     return velocity * time + .5 * acceleration * time * time;
@@ -148,10 +154,10 @@ public class PowerCalculator {
     } else {
       deactivateServiceBrake(tc);
 
-      integral = lastIntegral + clock.getChangeInTime() / 2
-          * (Math.abs(currentSpeed - setSpeed) + Math.abs(lastSpeed - setSpeed));
+      integral = lastIntegral + clock.getChangeInTime() / 1000.0 / 2
+          * ((setSpeed - currentSpeed) + (setSpeed - lastSpeed));
 
-      double power = kp * Math.abs(currentSpeed - setSpeed) + ki * integral;
+      double power = kp * (setSpeed - currentSpeed) + ki * integral;
 
       if (power > TrainData.MAX_POWER) {
         power = TrainData.MAX_POWER;

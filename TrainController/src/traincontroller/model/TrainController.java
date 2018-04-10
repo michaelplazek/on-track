@@ -107,7 +107,7 @@ public class TrainController implements TrainControllerInterface {
    * @param authority authority of the train
    */
   public void setTrackCircuitSignal(float setSpeed, Authority authority) {
-    double speed = setSpeed * UnitConversions.MPH_TO_KPH * 3.6;
+    double speed = setSpeed * UnitConversions.MPH_TO_KPH * 1000.0 / 3600.0;
     if (speed != this.getSetSpeed()) {
       this.integral = 0;
       this.setSpeed.set(speed);
