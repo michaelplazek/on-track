@@ -4,6 +4,7 @@ import mainmenu.Clock;
 import mainmenu.ClockInterface;
 import trackmodel.model.Beacon;
 import trackmodel.model.Block;
+import trackmodel.model.Switch;
 import trackmodel.model.Track;
 import traincontroller.enums.Mode;
 import trainmodel.model.TrainModelInterface;
@@ -36,11 +37,10 @@ public class PowerCalculator {
     double distanceIntoCurrentBlock = tc.getDistanceIntoCurrentBlock() + distanceTraveled;
     Block currentBlock = tc.getCurrentBlock();
     if (distanceIntoCurrentBlock >= currentBlock.getSize()) {
-      Block lastBlock = tc.getLastBlock();
       Track track = Track.getTrack(tc.getLine());
-      Block temp = track.getNextBlock(currentBlock.getNumber(), lastBlock.getNumber());
-      tc.setCurrentBlock(track.getBlock(temp.getNumber()));
-      tc.setLastBlock(track.getBlock(currentBlock.getNumber()));
+      Block temp = tc.getCurrentBlock();
+      tc.setCurrentBlock(nextBlock(temp, tc.getLastBlock(), track));
+      tc.setLastBlock(temp);
     }
     Beacon current = tc.getBeacon();
     if (current != null) {
@@ -53,6 +53,23 @@ public class PowerCalculator {
         tc.setWeight(TrainController.FORCE_BRAKE_TRAIN_EMPTY / acceleration);
       }
     }
+  }
+
+  static Block nextBlock(Block currentBlock, Block previousBlock, Track activeTrack) {
+    Block nextBlock;
+    if (currentBlock.isSwitch()) {
+      Switch sw = (Switch) currentBlock;
+
+      if (activeTrack.getBlock(sw.getNextBlock1()) == previousBlock
+          || activeTrack.getBlock(sw.getNextBlock2()) == previousBlock) {
+        nextBlock = activeTrack.getBlock(sw.getPreviousBlock());
+      } else {
+        nextBlock = activeTrack.getBlock(sw.getStatus());
+      }
+    } else {
+      nextBlock = activeTrack.getNextBlock(currentBlock.getNumber(), previousBlock.getNumber());
+    }
+    return nextBlock;
   }
 
   static void updateFailures(TrainController tc) {
@@ -190,7 +207,7 @@ public class PowerCalculator {
       max = currentBlock.getSpeedLimit();
     } else {
       max = Math.max(currentBlock.getSpeedLimit(), recursiveSpeedLimit(
-        track.getNextBlock(currentBlock.getNumber(), lastBlock.getNumber()),
+        nextBlock(currentBlock, lastBlock, track),
         currentBlock, remainingDistance));
       if (currentBlock.isSwitch()) {
         max = Math.max(max, recursiveSpeedLimit(
