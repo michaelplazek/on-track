@@ -165,6 +165,7 @@ public class TrainTracker {
     if (route.getCurrent().getNumber() == -1) {
       isDispatched = false;
       isDone = true;
+      route.getCurrent().setOccupied(false);
     }
   }
 

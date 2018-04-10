@@ -130,7 +130,6 @@ public class CentralTrafficControlController {
    */
   public void run() {
     ctc.run();
-//    ctc.cleanup();
     dispatch();
     updateDisplays();
   }
