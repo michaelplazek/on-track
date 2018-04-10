@@ -1,6 +1,7 @@
 
 package traincontroller.model;
 
+import java.util.HashMap;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -14,9 +15,14 @@ import trainmodel.model.TrainModelInterface;
 import utils.general.Authority;
 import utils.train.DoorStatus;
 import utils.train.OnOffStatus;
+import utils.train.TrainData;
+import utils.unitconversion.UnitConversions;
+
 
 
 public class TrainController implements TrainControllerInterface {
+
+  public static final double FORCE_BRAKE_TRAIN_EMPTY = 123436.2;
 
   private boolean automatic;
   private Mode mode;
@@ -27,6 +33,8 @@ public class TrainController implements TrainControllerInterface {
   private double distanceIntoCurrentBlock;
   private double distanceToStation;
   private Beacon beacon;
+  private HashMap<Integer, Beacon> beacons;
+  private double weight;
 
   private TrainModelInterface trainModel;
   private SimpleStringProperty id;
@@ -69,7 +77,9 @@ public class TrainController implements TrainControllerInterface {
     this.running = false;
     this.currentBlock = Track.getListOfTracks().get(line).getStartBlock();
     this.lastBlock = Track.getTrack(line).getBlock(-1);
-
+    this.beacons = new HashMap<>();
+    this.weight = TrainData.EMPTY_WEIGHT * TrainData.NUMBER_OF_CARS
+        + TrainData.MAX_PASSENGERS * 2 * 150 * UnitConversions.LBS_TO_KGS;
   }
 
   /**
@@ -77,12 +87,17 @@ public class TrainController implements TrainControllerInterface {
    * @param signal Beacon signal from track.
    */
   public void setBeaconSignal(Beacon signal) {
-    if (signal.getStationId() >= 0) {
-      distanceToStation = signal.getDistance();
-      setCurrentStation(Track.getListOfTracks().get(getLine())
-          .getStationList().get(signal.getStationId()));
+    if (beacons.get(signal.getBlockId()) == null) {
+      beacon = new Beacon(signal);
+      beacons.put(signal.getBlockId(), beacon);
+      if (signal.getStationId() >= 0) {
+        distanceToStation = signal.getDistance();
+        setCurrentStation(Track.getListOfTracks().get(getLine())
+            .getStationList().get(signal.getStationId()));
+      }
+    } else {
+      beacons.remove(signal.getBlockId());
     }
-    beacon = signal;
   }
 
   /**
@@ -92,9 +107,10 @@ public class TrainController implements TrainControllerInterface {
    * @param authority authority of the train
    */
   public void setTrackCircuitSignal(float setSpeed, Authority authority) {
-    if (setSpeed != this.getSetSpeed()) {
+    double speed = setSpeed * UnitConversions.MPH_TO_KPH * 1000.0 / 3600.0;
+    if (speed != this.getSetSpeed()) {
       this.integral = 0;
-      this.setSpeed.set(setSpeed);
+      this.setSpeed.set(speed);
     }
     if (authority != null && getAuthority() != authority) {
       this.authority.set(authority);
@@ -309,6 +325,8 @@ public class TrainController implements TrainControllerInterface {
 
   @Override
   public void activateEmergencyBrake() {
+    setPowerCommand(0);
+    setAutomatic(false);
     this.setEmergencyBrake(OnOffStatus.ON);
   }
 
@@ -378,5 +396,17 @@ public class TrainController implements TrainControllerInterface {
 
   public void setDistanceToStation(double distanceToStation) {
     this.distanceToStation = distanceToStation;
+  }
+
+  public HashMap<Integer, Beacon> getBeacons() {
+    return beacons;
+  }
+
+  public double getWeight() {
+    return weight;
+  }
+
+  public void setWeight(double weight) {
+    this.weight = weight;
   }
 }

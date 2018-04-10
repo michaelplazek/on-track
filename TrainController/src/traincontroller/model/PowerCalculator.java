@@ -4,6 +4,7 @@ import mainmenu.Clock;
 import mainmenu.ClockInterface;
 import trackmodel.model.Beacon;
 import trackmodel.model.Block;
+import trackmodel.model.Switch;
 import trackmodel.model.Track;
 import traincontroller.enums.Mode;
 import trainmodel.model.TrainModelInterface;
@@ -11,6 +12,7 @@ import utils.train.DoorStatus;
 import utils.train.Failure;
 import utils.train.OnOffStatus;
 import utils.train.TrainData;
+import utils.unitconversion.UnitConversions;
 
 public class PowerCalculator {
   private static ClockInterface clock = Clock.getInstance();
@@ -20,10 +22,54 @@ public class PowerCalculator {
    * @param tc pass train controller to update
    */
   static void run(TrainController tc) {
+    updateEstimates(tc);
     updateFailures(tc);
     executeAction(tc);
     updateTemperature(tc);
     updateModelValues(tc);
+  }
+
+  static void updateEstimates(TrainController tc) {
+    TrainModelInterface tm = tc.getTrainModel();
+    double delta = clock.getChangeInTime() / 1000.0;
+    double currentSpeed = tm.getCurrentSpeed();
+    double distanceTraveled = currentSpeed * delta;
+    double distanceIntoCurrentBlock = tc.getDistanceIntoCurrentBlock() + distanceTraveled;
+    Block currentBlock = tc.getCurrentBlock();
+    if (distanceIntoCurrentBlock >= currentBlock.getSize()) {
+      Track track = Track.getTrack(tc.getLine());
+      Block temp = tc.getCurrentBlock();
+      tc.setCurrentBlock(nextBlock(temp, tc.getLastBlock(), track));
+      tc.setLastBlock(temp);
+    }
+    Beacon current = tc.getBeacon();
+    if (current != null) {
+      current.setDistance((float)(current.getDistance() - distanceTraveled));
+    }
+    if (tc.getTrainModel().getServiceBrakeStatus() == OnOffStatus.ON) {
+      double lastSpeed = tc.getCurrentSpeed();
+      double acceleration = Math.abs(currentSpeed - lastSpeed) / delta;
+      if (acceleration != 0 && delta != 0) {
+        tc.setWeight(TrainController.FORCE_BRAKE_TRAIN_EMPTY / acceleration);
+      }
+    }
+  }
+
+  static Block nextBlock(Block currentBlock, Block previousBlock, Track activeTrack) {
+    Block nextBlock;
+    if (currentBlock.isSwitch()) {
+      Switch sw = (Switch) currentBlock;
+
+      if (activeTrack.getBlock(sw.getNextBlock1()) == previousBlock
+          || activeTrack.getBlock(sw.getNextBlock2()) == previousBlock) {
+        nextBlock = activeTrack.getBlock(sw.getPreviousBlock());
+      } else {
+        nextBlock = activeTrack.getBlock(sw.getStatus());
+      }
+    } else {
+      nextBlock = activeTrack.getNextBlock(currentBlock.getNumber(), previousBlock.getNumber());
+    }
+    return nextBlock;
   }
 
   static void updateFailures(TrainController tc) {
@@ -60,7 +106,10 @@ public class PowerCalculator {
   }
 
   static double getSafeStopDistance(TrainController tc) {
-    double acceleration = TrainData.SERVICE_BRAKE_ACCELERATION;
+    double acceleration = TrainController.FORCE_BRAKE_TRAIN_EMPTY / tc.getWeight();
+    if (acceleration == 0) {
+      acceleration = 1.102018; //decceleration of fully loaded train
+    }
     double velocity = tc.getTrainModel().getCurrentSpeed();
     double time = velocity / acceleration;
     return velocity * time + .5 * acceleration * time * time;
@@ -78,9 +127,12 @@ public class PowerCalculator {
   }
 
   static void executeAtStation(TrainController tc) {
+    activateServiceBrake(tc);
+    tc.setPowerCommand(0);
+    tc.setWeight(TrainData.EMPTY_WEIGHT * TrainData.NUMBER_OF_CARS
+        + TrainData.MAX_PASSENGERS * 2 * 150 * UnitConversions.LBS_TO_KGS);
     TrainModelInterface tm = tc.getTrainModel();
     Beacon beacon = tc.getBeacon();
-    activateServiceBrake(tc);
     if (beacon.isRight() && tm.getRightDoorStatus() != DoorStatus.OPEN) {
       tm.setRightDoorStatus(DoorStatus.OPEN);
     } else if (!beacon.isRight() && tm.getLeftDoorStatus() != DoorStatus.OPEN) {
@@ -93,6 +145,7 @@ public class PowerCalculator {
     if (tc.getBeacon() != null) {
       if (tc.getDistanceToStation() - 1 <= safeStoppingDistance) {
         activateServiceBrake(tc);
+        tc.setPowerCommand(0);
       } else if (Math.abs(tc.getDistanceToStation()) <= 1 && tc.getCurrentSpeed() == 0) {
         tc.setMode(Mode.AT_STATION);
       } else {
@@ -115,14 +168,14 @@ public class PowerCalculator {
 
     if (currentSpeed > setSpeed || currentSpeed > speedLimit) {
       activateServiceBrake(tc);
-      tc.getTrainModel().setPowerCommand(0);
+      tc.setPowerCommand(0);
     } else {
       deactivateServiceBrake(tc);
 
-      integral = lastIntegral + clock.getChangeInTime() / 2
-          * (Math.abs(currentSpeed - setSpeed) + Math.abs(lastSpeed - setSpeed));
+      integral = lastIntegral + clock.getChangeInTime() / 1000.0 / 2
+          * ((setSpeed - currentSpeed) + (setSpeed - lastSpeed));
 
-      double power = kp * Math.abs(currentSpeed - setSpeed) + ki * integral;
+      double power = kp * (setSpeed - currentSpeed) + ki * integral;
 
       if (power > TrainData.MAX_POWER) {
         power = TrainData.MAX_POWER;
@@ -131,7 +184,7 @@ public class PowerCalculator {
 
       deactivateServiceBrake(tc);
       tc.setIntegral(integral);
-      tc.setPowerCommand(80);
+      tc.setPowerCommand(power);
     }
   }
 
@@ -144,15 +197,17 @@ public class PowerCalculator {
                                             double remainingDistance) {
     if (currentBlock == null) {
       return 70;
+    } else if (Double.isNaN(remainingDistance)) {
+      return currentBlock.getSpeedLimit();
     }
     double max;
     Track track = Track.getTrack(currentBlock.getLine());
-    remainingDistance -= currentBlock.getSize();
+    remainingDistance -= (double)currentBlock.getSize();
     if (remainingDistance <= 0) {
       max = currentBlock.getSpeedLimit();
     } else {
       max = Math.max(currentBlock.getSpeedLimit(), recursiveSpeedLimit(
-        track.getNextBlock(currentBlock.getNumber(), lastBlock.getNumber()),
+        nextBlock(currentBlock, lastBlock, track),
         currentBlock, remainingDistance));
       if (currentBlock.isSwitch()) {
         max = Math.max(max, recursiveSpeedLimit(

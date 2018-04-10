@@ -34,6 +34,19 @@ public class Beacon {
 
   }
 
+  /**
+   * Copy a beacon object.
+   * @param beacon Beacon to be copied.
+   */
+  public Beacon(Beacon beacon) {
+    this.stationId = beacon.stationId;
+    this.distance = beacon.distance;
+    this.blockId = beacon.blockId;
+    this.underground = beacon.underground;
+    this.right = beacon.right;
+    this.userMessage = beacon.userMessage;
+  }
+
   public float getDistance() {
     return distance;
   }
