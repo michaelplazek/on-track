@@ -1,6 +1,7 @@
 
 package traincontroller.model;
 
+import java.util.HashMap;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -17,7 +18,6 @@ import utils.train.OnOffStatus;
 import utils.train.TrainData;
 import utils.unitconversion.UnitConversions;
 
-import java.util.HashMap;
 
 
 public class TrainController implements TrainControllerInterface {

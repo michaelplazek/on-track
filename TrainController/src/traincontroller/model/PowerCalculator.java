@@ -43,7 +43,7 @@ public class PowerCalculator {
       tc.setLastBlock(track.getBlock(currentBlock.getNumber()));
     }
     Beacon current = tc.getBeacon();
-    if(current != null) {
+    if (current != null) {
       current.setDistance((float)(current.getDistance() - distanceTraveled));
     }
     if (tc.getTrainModel().getServiceBrakeStatus() == OnOffStatus.ON) {
@@ -110,12 +110,12 @@ public class PowerCalculator {
   }
 
   static void executeAtStation(TrainController tc) {
-    TrainModelInterface tm = tc.getTrainModel();
-    Beacon beacon = tc.getBeacon();
     activateServiceBrake(tc);
     tc.setPowerCommand(0);
     tc.setWeight(TrainData.EMPTY_WEIGHT * TrainData.NUMBER_OF_CARS
         + TrainData.MAX_PASSENGERS * 2 * 150 * UnitConversions.LBS_TO_KGS);
+    TrainModelInterface tm = tc.getTrainModel();
+    Beacon beacon = tc.getBeacon();
     if (beacon.isRight() && tm.getRightDoorStatus() != DoorStatus.OPEN) {
       tm.setRightDoorStatus(DoorStatus.OPEN);
     } else if (!beacon.isRight() && tm.getLeftDoorStatus() != DoorStatus.OPEN) {
