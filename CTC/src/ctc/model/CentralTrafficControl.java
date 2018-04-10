@@ -101,7 +101,7 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
   /**
    * Remove any finished trains.
    */
-  public void cleanup() {
+  private void cleanup() {
     for (int i = 0; i < trainList.size(); i++) {
       TrainTracker train = trainList.get(i);
       if (train.isDone()) {
@@ -170,10 +170,9 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
     trainQueueTable.add(train);
   }
 
-  void removeTrain(TrainTracker train) {
+  private void removeTrain(TrainTracker train) {
     this.trainList.remove(train);
     this.dispatchTable.remove(train);
-
   }
 
   /**
