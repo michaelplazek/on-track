@@ -11,6 +11,7 @@ import utils.train.DoorStatus;
 import utils.train.Failure;
 import utils.train.OnOffStatus;
 import utils.train.TrainData;
+import utils.unitconversion.UnitConversions;
 
 public class PowerCalculator {
   private static ClockInterface clock = Clock.getInstance();
@@ -20,10 +21,36 @@ public class PowerCalculator {
    * @param tc pass train controller to update
    */
   static void run(TrainController tc) {
+    updateEstimates(tc);
     updateFailures(tc);
     executeAction(tc);
     updateTemperature(tc);
     updateModelValues(tc);
+  }
+
+  static void updateEstimates(TrainController tc) {
+    TrainModelInterface tm = tc.getTrainModel();
+    long delta = clock.getChangeInTime();
+    double currentSpeed = tm.getCurrentSpeed();
+    double distanceTraveled = currentSpeed * delta;
+    double distanceIntoCurrentBlock = tc.getDistanceIntoCurrentBlock() + distanceTraveled;
+    Block currentBlock = tc.getCurrentBlock();
+    if (distanceIntoCurrentBlock >= currentBlock.getSize()) {
+      Block lastBlock = tc.getLastBlock();
+      Track track = Track.getTrack(tc.getLine());
+      Block temp = track.getNextBlock(currentBlock.getNumber(), lastBlock.getNumber());
+      tc.setCurrentBlock(track.getBlock(temp.getNumber()));
+      tc.setLastBlock(track.getBlock(currentBlock.getNumber()));
+    }
+    Beacon current = tc.getBeacon();
+    if(current != null) {
+      current.setDistance((float)(current.getDistance() - distanceTraveled));
+    }
+    if (tc.getTrainModel().getServiceBrakeStatus() == OnOffStatus.ON) {
+      double lastSpeed = tc.getCurrentSpeed();
+      double acceleration = (currentSpeed - lastSpeed) / delta;
+      tc.setWeight(TrainController.FORCE_BRAKE_TRAIN_EMPTY / acceleration);
+    }
   }
 
   static void updateFailures(TrainController tc) {
@@ -60,7 +87,7 @@ public class PowerCalculator {
   }
 
   static double getSafeStopDistance(TrainController tc) {
-    double acceleration = TrainData.SERVICE_BRAKE_ACCELERATION;
+    double acceleration = TrainController.FORCE_BRAKE_TRAIN_EMPTY / tc.getWeight();
     double velocity = tc.getTrainModel().getCurrentSpeed();
     double time = velocity / acceleration;
     return velocity * time + .5 * acceleration * time * time;
@@ -81,6 +108,8 @@ public class PowerCalculator {
     TrainModelInterface tm = tc.getTrainModel();
     Beacon beacon = tc.getBeacon();
     activateServiceBrake(tc);
+    tc.setWeight(TrainData.EMPTY_WEIGHT * TrainData.NUMBER_OF_CARS
+        + TrainData.MAX_PASSENGERS * 2 * 150 * UnitConversions.LBS_TO_KGS);
     if (beacon.isRight() && tm.getRightDoorStatus() != DoorStatus.OPEN) {
       tm.setRightDoorStatus(DoorStatus.OPEN);
     } else if (!beacon.isRight() && tm.getLeftDoorStatus() != DoorStatus.OPEN) {
@@ -147,7 +176,7 @@ public class PowerCalculator {
     }
     double max;
     Track track = Track.getTrack(currentBlock.getLine());
-    remainingDistance -= currentBlock.getSize();
+    remainingDistance -= (double)currentBlock.getSize();
     if (remainingDistance <= 0) {
       max = currentBlock.getSpeedLimit();
     } else {

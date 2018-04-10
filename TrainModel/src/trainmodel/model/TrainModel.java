@@ -11,8 +11,6 @@ import mainmenu.controller.MainMenuController;
 import trackmodel.model.Block;
 import trackmodel.model.Switch;
 import trackmodel.model.Track;
-import traincontroller.model.PowerCalculator;
-import traincontroller.model.TrainController;
 import traincontroller.model.TrainControllerInterface;
 import utils.general.Constants;
 import utils.train.DoorStatus;
