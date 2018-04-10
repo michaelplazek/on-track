@@ -274,20 +274,20 @@ public class Route {
    * Use by the CTC to create a new route or reroute a train.
    * @param start starting block of the route
    * @param end final block of the route
-   * @return true if operation was a success and false otherwise
    */
-  private boolean createRoute(Block start, Block end) {
+  private void createRoute(Block start, Block end) {
 
     this.start = start;
     this.end = end;
 
     LinkedList<Block> path = new LinkedList<>();
 
-
     // check if we're starting from the first block
     if (start == line.getStartBlock()) {
 
+      path.add(line.getBlock(-1));
       path.add(start);
+      currentIndex = 1;
 
       Block current = line.getNextBlock(start.getNumber(), -1);
       traverse(current, line.getBlock(current.getPreviousBlock()), path);
@@ -296,9 +296,7 @@ public class Route {
     }
 
     nextStationIndex = 0; // reset index
+    path.add(end);
     this.route = path;
-
-
-    return true;
   }
 }

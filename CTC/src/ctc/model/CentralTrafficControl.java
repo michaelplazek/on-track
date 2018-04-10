@@ -13,6 +13,7 @@ import mainmenu.Clock;
 import mainmenu.ClockInterface;
 import trackmodel.model.Block;
 import trackmodel.model.Track;
+import traincontroller.model.TrainControllerFactory;
 
 public class CentralTrafficControl implements CentralTrafficControlInterface {
 
@@ -93,6 +94,21 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
         train.update();
       }
     }
+
+    cleanup();
+  }
+
+  /**
+   * Remove any finished trains.
+   */
+  private void cleanup() {
+    for (int i = 0; i < trainList.size(); i++) {
+      TrainTracker train = trainList.get(i);
+      if (train.isDone()) {
+        removeTrain(train);
+        TrainControllerFactory.delete(train.getId());
+      }
+    }
   }
 
   /**
@@ -102,26 +118,6 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
 
     displayTime.setValue(clock.getFormattedTime());
     time += clock.getChangeInTime();
-  }
-
-  public StringProperty getDisplayTime() {
-    return displayTime;
-  }
-
-  public ObservableList<String> getTrackList() {
-    return this.trackList;
-  }
-
-  public ObservableList<String> getBlockList() {
-    return this.blockList;
-  }
-
-  public StringProperty getThroughput() {
-    return displayThroughput;
-  }
-
-  public boolean isActive() {
-    return isActive;
   }
 
   /**
@@ -167,6 +163,16 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
     if (trackList.size() > 1) {
       line = trackList.get(1);
     }
+  }
+
+  public void addTrain(TrainTracker train) {
+    this.trainList.add(train);
+    trainQueueTable.add(train);
+  }
+
+  private void removeTrain(TrainTracker train) {
+    this.trainList.remove(train);
+    this.dispatchTable.remove(train);
   }
 
   /**
@@ -223,22 +229,32 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
     return stationList;
   }
 
-  public void addTrain(TrainTracker train) {
-    this.trainList.add(train);
-    trainQueueTable.add(train);
-  }
-
-  void removeTrain(TrainTracker train) {
-    this.trainList.remove(train);
-    this.dispatchTable.remove(train);
-  }
-
   public ObservableList<TrainTracker> getTrainQueueTable() {
     return trainQueueTable;
   }
 
   public ObservableList<TrainTracker> getDispatchTable() {
     return dispatchTable;
+  }
+
+  public StringProperty getDisplayTime() {
+    return displayTime;
+  }
+
+  public StringProperty getThroughput() {
+    return displayThroughput;
+  }
+
+  public ObservableList<String> getTrackList() {
+    return this.trackList;
+  }
+
+  public ObservableList<String> getBlockList() {
+    return this.blockList;
+  }
+
+  public boolean isActive() {
+    return isActive;
   }
 
   public String getLine() {
