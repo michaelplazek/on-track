@@ -130,11 +130,12 @@ public class CentralTrafficControlController {
    */
   public void run() {
     ctc.run();
+//    ctc.cleanup();
     dispatch();
     updateDisplays();
   }
 
-  void updateDisplays() {
+  private void updateDisplays() {
     dispatchTable.refresh();
   }
 
@@ -430,7 +431,7 @@ public class CentralTrafficControlController {
 
   /**
    * This function deals with all formatting and error handling in the TextFields that are
-   * responsible for inputting times given by the user.
+   * responsible for inputting times given by the user. It is very sloppy and embarrassing.
    */
   public void formatTimeInput() {
 

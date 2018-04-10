@@ -131,7 +131,7 @@ public class PowerCalculator {
 
       deactivateServiceBrake(tc);
       tc.setIntegral(integral);
-      tc.setPowerCommand(power);
+      tc.setPowerCommand(80);
     }
   }
 

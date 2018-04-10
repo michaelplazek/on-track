@@ -117,7 +117,7 @@ public class TrainModel implements TrainModelInterface {
    * @param id id for the train must be unique.
    * @param line the line this train will be on at time of construction.
    */
-  public TrainModel(TrainControllerInterface controller, String id, String line) {
+  TrainModel(TrainControllerInterface controller, String id, String line) {
     this.controller = controller;
     this.id = id;
     this.line = line;
@@ -205,7 +205,7 @@ public class TrainModel implements TrainModelInterface {
     double changeInDist = changeInDist();
 
     if (isCrossingBlock(changeInDist)) {
-      positionInBlock = (positionInBlock + changeInDist) - currentBlock.getSize();
+      positionInBlock = 0;
       updateCurrentBlock();
     } else {
       positionInBlock = positionInBlock + changeInDist;
@@ -238,21 +238,28 @@ public class TrainModel implements TrainModelInterface {
       previousBlock = temp;
     }
 
-    updateBeacon();
+    if (currentBlock == null) {
+      isDispatched = false;
+    } else {
+      updateBeacon();
+    }
   }
 
   /**
    * Updates occupancy of a block when train changes blocks.
    */
   private void updateOccupancy() {
-    currentBlock.setOccupied(true);
+    if (currentBlock != null) {
+      currentBlock.setOccupied(true);
+    }
+
   }
 
   /**
    * Updates velocity.
    */
   private void updateVelocity() {
-    if (acceleration == 0) {
+    if (acceleration == 0 && !isMoving) {
       velocity.set(0.001);
     } else {
       double v = velocity.get() + (acceleration * (clock.getChangeInTime() / 1000.0));
@@ -277,7 +284,7 @@ public class TrainModel implements TrainModelInterface {
    * Updates force.
    */
   private void updateForce() {
-    double tempForce = powerCommand.get() / velocity.get();
+    double tempForce = (powerCommand.get() * 1000) / velocity.get(); // power is sent in kW
     force = tempForce;
 
 //    if (tempForce - frictionForce < 0) {
@@ -299,7 +306,7 @@ public class TrainModel implements TrainModelInterface {
   /**
    * Runs simulation. This will be called from main.
    */
-  public void run() {
+  void run() {
 
     if (isDispatched) {
 
@@ -331,8 +338,10 @@ public class TrainModel implements TrainModelInterface {
   }
 
   private void updateSpeedAuth() {
-    this.controller.setTrackCircuitSignal(currentBlock.getSetPointSpeed(),
-        currentBlock.getAuthority());
+    if (currentBlock != null) {
+      this.controller.setTrackCircuitSignal(currentBlock.getSetPointSpeed(),
+          currentBlock.getAuthority());
+    }
   }
 
   private void updateBeacon() {
@@ -345,7 +354,7 @@ public class TrainModel implements TrainModelInterface {
    * Slows train down if brakes are engaged.
    */
   private void checkBrakes() {
-    double deceleration = 0;
+    double deceleration;
     if (emergencyBrakeStatus.toString().equals(OnOffStatus.ON.toString())) {
       deceleration = TrainData.EMERGENCY_BRAKE_ACCELERATION * clock.getChangeInTime();
       velocity.set(velocity.get() - deceleration);
@@ -370,7 +379,7 @@ public class TrainModel implements TrainModelInterface {
    * Adds Train Model to the list.
    * @param train the TrainModel to be added.
    */
-  protected static void add(TrainModel train) {
+  static void add(TrainModel train) {
     listOfTrainModels.put(train.getId(), train);
     MainMenuController.getInstance().updateTrainModelDropdown();
   }
@@ -492,7 +501,7 @@ public class TrainModel implements TrainModelInterface {
     this.acStatus.set(acStatus);
   }
 
-  //Will be called by TrainController to give TrainModel the power command.
+  // Will be called by TrainController to give TrainModel the power command.
   @Override
   public void setPowerCommand(double powerCommand) {
     this.powerCommand.set(powerCommand);
