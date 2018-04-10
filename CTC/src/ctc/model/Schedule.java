@@ -19,7 +19,7 @@ public class Schedule {
 
     this.line = line;
     this.departingTime = "12:00:00";
-    this.destination = "YARD";
+    this.destination = "Yard";
     this.stops = FXCollections.observableArrayList();
   }
 

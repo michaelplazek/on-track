@@ -283,11 +283,12 @@ public class Route {
 
     LinkedList<Block> path = new LinkedList<>();
 
-
     // check if we're starting from the first block
     if (start == line.getStartBlock()) {
 
+      path.add(line.getBlock(-1));
       path.add(start);
+      currentIndex = 1;
 
       Block current = line.getNextBlock(start.getNumber(), -1);
       traverse(current, line.getBlock(current.getPreviousBlock()), path);
@@ -296,6 +297,7 @@ public class Route {
     }
 
     nextStationIndex = 0; // reset index
+    path.add(end);
     this.route = path;
 
 

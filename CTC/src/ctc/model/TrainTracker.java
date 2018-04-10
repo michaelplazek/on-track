@@ -3,11 +3,13 @@ package ctc.model;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 
 import mainmenu.Clock;
 import trackctrl.model.TrackControllerLineManager;
 import trackmodel.model.Block;
+import trackmodel.model.Switch;
 import trackmodel.model.Track;
 import traincontroller.model.TrainControllerFactory;
 import utils.general.Authority;
@@ -23,6 +25,7 @@ public class TrainTracker {
   private String departure;
   private boolean isDispatched;
   private boolean isStopped;
+  private boolean isDone;
   private float speed;
   private int passengers;
   private double currentDwell;
@@ -56,8 +59,6 @@ public class TrainTracker {
     this.id = id;
     this.departure = departure;
     this.schedule = schedule;
-    this.isDispatched = false;
-    this.isStopped = false;
     this.passengers = 0;
     this.authority = Authority.SEND_POWER;
     this.currentDwell = 0;
@@ -79,9 +80,6 @@ public class TrainTracker {
    */
   void update() {
 
-    // see if the train has completed its run
-    updateLifecycle();
-
     // update the user interface
     updateDisplay();
 
@@ -90,13 +88,35 @@ public class TrainTracker {
       // update the position of the train
       updatePosition();
 
+      // simulate the track controller
+      simulateController();
+
       // update the speed and authority
       updateTrackSignals();
+
+      // see if the train has completed its run
+      updateLifecycle();
 
     } else {
       currentDwell = currentDwell - clock.getChangeInTime();
       if (currentDwell < 0) {
         isStopped = false;
+      }
+    }
+  }
+
+  // TODO: remove this once the Track Controller is connected
+  private void simulateController() {
+
+    if (location.isSwitch() && route.getPrevious().getNumber() == location.getPreviousBlock()) {
+
+      Switch sw = (Switch) location;
+      Block nextBlock = route.getNext();
+
+      if (nextBlock != null) {
+        sw.setStatus(nextBlock.getNumber());
+      } else {
+        sw.setStatus(-1);
       }
     }
   }
@@ -116,18 +136,35 @@ public class TrainTracker {
 
     Block next = route.getNext();
 
-    if (next != null && next.isOccupied()) {
+    if (next != null && next.isOccupied() && checkNeighboringTrains()) {
       this.location = next;
       this.route.incrementCurrentIndex();
     }
+  }
+
+  /**
+   * To checks blocks around a train before setting the position. Used to detect trains
+   * that are on neighboring blocks.
+   * @return true is block is OK to move to.
+   */
+  private boolean checkNeighboringTrains() {
+
+    List<TrainTracker> trains = ctc.getTrainList();
+    for (TrainTracker train : trains) {
+      if (train.getLocation() == route.getNext()) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   private void updateLifecycle() {
 
     // check if train has reached the yard
     if (route.getCurrent().getNumber() == -1) {
-      TrainControllerFactory.delete(id);
-      ctc.removeTrain(this);
+      isDispatched = false;
+      isDone = true;
     }
   }
 
@@ -297,6 +334,14 @@ public class TrainTracker {
 
   public void setLine(String line) {
     this.line = line;
+  }
+
+  public boolean isDone() {
+    return isDone;
+  }
+
+  public void setDone(boolean done) {
+    isDone = done;
   }
 
   public Route getRoute() {
