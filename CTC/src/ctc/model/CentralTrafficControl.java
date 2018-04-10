@@ -13,6 +13,7 @@ import mainmenu.Clock;
 import mainmenu.ClockInterface;
 import trackmodel.model.Block;
 import trackmodel.model.Track;
+import traincontroller.model.TrainControllerFactory;
 
 public class CentralTrafficControl implements CentralTrafficControlInterface {
 
@@ -52,7 +53,6 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
     this.blockList = FXCollections.observableArrayList();
     this.trackList = FXCollections.observableArrayList("Select track");
 
-
     this.time = 0;
     this.refresh = 0;
     this.hours = 0.0001;
@@ -82,32 +82,42 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
   }
 
   /**
+   * Main run function. Update all the trains being tracked and send track circuit signals.
+   */
+  public void run() {
+
+    updateDisplayTime();
+    calculateThroughput();
+
+    for (TrainTracker train : trainList) {
+      if (train.isDispatched()) {
+        train.update();
+      }
+    }
+
+    cleanup();
+  }
+
+  /**
+   * Remove any finished trains.
+   */
+  private void cleanup() {
+    for (int i = 0; i < trainList.size(); i++) {
+      TrainTracker train = trainList.get(i);
+      if (train.isDone()) {
+        removeTrain(train);
+        TrainControllerFactory.delete(train.getId());
+      }
+    }
+  }
+
+  /**
    * Display time of clock is updated.
    */
-  public void updateDisplayTime() {
+  private void updateDisplayTime() {
 
     displayTime.setValue(clock.getFormattedTime());
     time += clock.getChangeInTime();
-  }
-
-  public StringProperty getDisplayTime() {
-    return displayTime;
-  }
-
-  public ObservableList<String> getTrackList() {
-    return this.trackList;
-  }
-
-  public ObservableList<String> getBlockList() {
-    return this.blockList;
-  }
-
-  public StringProperty getThroughput() {
-    return displayThroughput;
-  }
-
-  public boolean isActive() {
-    return isActive;
   }
 
   /**
@@ -155,6 +165,16 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
     }
   }
 
+  public void addTrain(TrainTracker train) {
+    this.trainList.add(train);
+    trainQueueTable.add(train);
+  }
+
+  private void removeTrain(TrainTracker train) {
+    this.trainList.remove(train);
+    this.dispatchTable.remove(train);
+  }
+
   /**
    * Track should call this method at a station to add passengers.
    * This will allow calculation of throughput.
@@ -165,9 +185,9 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
 
     totalPassengers += passengers;
 
-    for (int i = 0; i < trainList.size(); i++) {
-      if (trainList.get(i).getLocation() == block) {
-        trainList.get(i).updatePassengers(passengers);
+    for (TrainTracker train : trainList) {
+      if (train.getLocation() == block) {
+        train.updatePassengers(passengers);
       }
     }
   }
@@ -175,7 +195,7 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
   /**
    * Called by controller to calculate the throughput each tick.
    */
-  public void calculateThroughput() {
+  private void calculateThroughput() {
 
     hours += ((float) clock.getChangeInTime() / (3600 * 1000));
     throughput = (double) totalPassengers / hours;
@@ -209,17 +229,32 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
     return stationList;
   }
 
-  public void addTrain(TrainTracker train) {
-    this.trainList.add(train);
-    trainQueueTable.add(train);
-  }
-
   public ObservableList<TrainTracker> getTrainQueueTable() {
     return trainQueueTable;
   }
 
   public ObservableList<TrainTracker> getDispatchTable() {
     return dispatchTable;
+  }
+
+  public StringProperty getDisplayTime() {
+    return displayTime;
+  }
+
+  public StringProperty getThroughput() {
+    return displayThroughput;
+  }
+
+  public ObservableList<String> getTrackList() {
+    return this.trackList;
+  }
+
+  public ObservableList<String> getBlockList() {
+    return this.blockList;
+  }
+
+  public boolean isActive() {
+    return isActive;
   }
 
   public String getLine() {
@@ -229,5 +264,4 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
   public void setLine(String track) {
     this.line = track;
   }
-
 }
