@@ -25,7 +25,7 @@ public interface TrackControllerInterface {
 
   boolean getOccupancy(int id);
 
-  ArrayList<Integer> getZone();
+  ArrayList<String> getZone();
 
   boolean addBlock(Block newBlock);
 
