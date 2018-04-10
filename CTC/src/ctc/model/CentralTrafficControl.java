@@ -94,8 +94,11 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
         train.update();
       } else if (train.isDone()) {
         this.dispatchTable.remove(train);
+        this.trainList.remove(train);
+        TrainControllerFactory.delete(train.getId());
       }
     }
+
   }
 
   /**
