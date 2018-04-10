@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import trackmodel.model.Block;
+import trackmodel.model.Switch;
 import trackmodel.model.Track;
+
 import utils.general.Authority;
 
 public class TrackControllerLineManager implements TrackControllerLineManagerInterface {
@@ -134,6 +136,13 @@ public class TrackControllerLineManager implements TrackControllerLineManagerInt
    * @return boolean indicating success of operation
    */
   public boolean closeBlock(int id) {
+    if (lineControllers != null) {
+      for (TrackController tc : lineControllers) {
+        if (tc.hasBlock(id)) {
+          tc.closeBlock(id);
+        }
+      }
+    }
     return false;
   }
 
@@ -144,15 +153,31 @@ public class TrackControllerLineManager implements TrackControllerLineManagerInt
    * @return boolean indicating success of operation
    */
   public boolean repairBlock(int id) {
+    if (lineControllers != null) {
+      for (TrackController tc : lineControllers) {
+        if (tc.hasBlock(id)) {
+          tc.repairBlock(id);
+          }
+        }
+      }
     return false;
   }
 
   /**
    * Toggles the state of a switch on a block indicated by id if one exists.
    * @param id block identifier for requested block
-   * @return boolean indicating success of operation
+   * @return boolean indicating new switch state
    */
   public boolean toggleSwitch(int id) {
+    if (lineControllers != null) {
+      for (TrackController tc : lineControllers) {
+        if (tc.hasBlock(id)) {
+          if (tc.getBlock(id).isSwitch()) {
+            return tc.toggleSwitch(id);
+          }
+        }
+      }
+    }
     return false;
   }
 

@@ -177,10 +177,8 @@ public class TrackController implements TrackControllerInterface {
     Block toggle = myLine.getBlock(id);
     if (toggle.isSwitch()) {
       Switch toggleSwitch = (Switch) toggle;
-      boolean before = toggleSwitch.getSwitchState();
       toggleSwitch.toggle();
-      boolean after = toggleSwitch.getSwitchState();
-      return before ^ after;
+      return toggleSwitch.getSwitchState();
     }
     return false;
   }
