@@ -121,7 +121,7 @@ public class TrackControllerLineManager implements TrackControllerLineManagerInt
       if (lm.line.equals(line)) {
         //line found, get ctrlr
         ArrayList ctrlrs = lm.getControllersList();
-        return (TrackController) ctrlrs.get(Integer.parseInt(id));
+        return (TrackController) ctrlrs.get(Integer.parseInt(id)-1);
       }
     }
     return null;

@@ -80,9 +80,9 @@ public class TrackControllerInitializer {
     }
 
     if (trackFile.exists()) {
-      System.out.println("File Found");
+      System.out.println("Controller Config File Found");
     } else {
-      System.out.println("File Not Found");
+      System.out.println("Controller Config File Not Found");
     }
   }
 }

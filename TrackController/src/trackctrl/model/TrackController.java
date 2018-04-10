@@ -146,13 +146,13 @@ public class TrackController implements TrackControllerInterface {
 
   @Override
   public boolean closeBlock(int id) {
-    myLine.getBlock(id).setBrokenRailStatus(true);
+    myLine.getBlock(id).setClosedForMaintenance(true);
     return myLine.getBlock(id).getBrokenRailStatus() == true;
   }
 
   @Override
   public boolean repairBlock(int id) {
-    myLine.getBlock(id).setBrokenRailStatus(false);
+    myLine.getBlock(id).setClosedForMaintenance(false);
     return myLine.getBlock(id).getBrokenRailStatus() == false;
   }
 
@@ -164,7 +164,7 @@ public class TrackController implements TrackControllerInterface {
       boolean before = toggleSwitch.getSwitchState();
       toggleSwitch.toggle();
       boolean after = toggleSwitch.getSwitchState();
-      return before & after;
+      return before ^ after;
     }
     return false;
   }
@@ -176,7 +176,7 @@ public class TrackController implements TrackControllerInterface {
       boolean before = toggle.getCrossingStatus();
       toggle.setCrossing(!before);
       boolean after = toggle.getCrossingStatus();
-      return before & after;
+      return before ^ after;
     }
     return false;
   }
