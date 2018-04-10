@@ -92,13 +92,17 @@ public class Track {
             }
             Block b;
 
+            ArrayList<String> storedStation = new ArrayList<>(stations.values());
+
             if (splitLine[6].contains("STATION")) {
               String[] splitLine2 = (splitLine[6]).split(";");
               for (int j = 0; j < splitLine2.length; j++) {
                 if (splitLine2[j].equals("STATION")) {
-                  stations.put(stationId, splitLine2[j + 1]);
+                  if(!storedStation.contains(splitLine2[j + 1])) {
+                    stations.put(stationId, splitLine2[j + 1]);
+                    stationId++;
+                  }
                 }
-                stationId++;
               }
             }
 
