@@ -150,8 +150,8 @@ public class TrackControllerController implements Initializable {
    */
   private void populateDropDowns() {
     ObservableList<String> blockList = FXCollections.observableArrayList(myController.getZone());
-    blockChoice.setValue("Select Block");
     blockChoice.setItems(blockList);
+    blockChoice.setValue(blockList.get(0));
 
     //Action Event for block selection
     blockChoice.getSelectionModel().selectedItemProperty()
@@ -265,7 +265,7 @@ public class TrackControllerController implements Initializable {
 
   //******************************************************************************************
 
-  private void groupRadioButtons() {
+  private void groupComponenents() {
 
     /**
      * RadioButton selectedRadioButton = (RadioButton) toggleGroup.getSelectedToggle();
@@ -317,7 +317,7 @@ public class TrackControllerController implements Initializable {
 
   }
 
-  //------------------HELPER FUNCTIONS ----------------------------------------
+  //******************************************************************************************
 
 
   private void resetLightSwitch() {
@@ -462,11 +462,12 @@ public class TrackControllerController implements Initializable {
     Block n1 = myLine.getBlock(s.getNextBlock1());
     Block n2 = myLine.getBlock(s.getNextBlock2());
 
-//    if(!n1.isBiDirectional()) {
-//
-//    } else if () {
-//
-//    }
+    //TODO set lights based on actual direction data
+    //if(!n1.isBiDirectional()) {
+
+    //} else if () {
+
+    //}
   }
 
   private void checkRadios() {
@@ -495,15 +496,9 @@ public class TrackControllerController implements Initializable {
     }
 
 
-    //This portion of checkRadios will
+    //TODO This portion of checkRadios will set the initially selected radio
 
   }
-
-  //--------------------------------------------------------------------------------
-
-  /**
-   * UPDATE UI FUNCTIONS
-   */
 
   private void updateControllerUI(int id) {
 
@@ -581,7 +576,7 @@ public class TrackControllerController implements Initializable {
 
     //Init UI
     populateDropDowns();
-    groupRadioButtons();
+    groupComponenents();
     setOpen();
     setSwitchInactive();
     resetLightSwitch();
