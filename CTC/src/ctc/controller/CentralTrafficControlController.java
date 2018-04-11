@@ -868,7 +868,6 @@ public class CentralTrafficControlController {
               distance = 0;
             }
           }
-
         }
 
         // create item in queue
@@ -1010,8 +1009,13 @@ public class CentralTrafficControlController {
       float speed = Float.parseFloat(suggestedSpeedField.getText());
       Authority authority = train.getAuthority();
 
-      // set the new speed on the train
-      train.setSpeed(speed);
+      // check the new speed
+      int speedLimit = train.getLocation().getSpeedLimit();
+      if (speed > speedLimit) {
+        train.setSpeed(speedLimit);
+      } else {
+        train.setSpeed(speed);
+      }
 
       // send signals
       // TODO: set this once the Track Controller is ready
