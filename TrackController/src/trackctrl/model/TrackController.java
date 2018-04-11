@@ -195,8 +195,7 @@ public class TrackController implements TrackControllerInterface {
     if (toggle.isCrossing()) {
       boolean before = toggle.getCrossingStatus();
       toggle.setCrossing(!before);
-      boolean after = toggle.getCrossingStatus();
-      return before ^ after;
+      return toggle.getCrossingStatus();
     }
     return false;
   }
@@ -216,32 +215,6 @@ public class TrackController implements TrackControllerInterface {
   //TODO
   @Override
   public boolean importLogic(File myplc) {
-
-    try {
-      BufferedReader br = new BufferedReader(new FileReader(myplc));
-
-      String line = br.readLine();
-      int i = 0;
-
-      String filename = myplc.getName();
-      int period = filename.indexOf('.');
-      String lineName = filename.substring(0, period);
-      lineName = lineName.toUpperCase();
-
-      System.out.println("Hii");
-
-    } catch (FileNotFoundException ex) {
-      System.out.println("Unable to find the file.");
-    } catch (IOException ex) {
-      System.out.println("Error reading file");
-    }
-
-
-    if (myplc.exists()) {
-      System.out.println("File Found");
-    } else {
-      System.out.println("File Not Found");
-    }
 
     //Set Instance PLC fields
     //-convert to string

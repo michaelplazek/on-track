@@ -13,8 +13,6 @@ import utils.general.Authority;
 public class TrackControllerLineManager implements TrackControllerLineManagerInterface {
 
   public String line;
-  private int[][] occupancy;
-  private int[][] states;
 
   private static ArrayList<TrackControllerLineManager> lines;
   private ArrayList<TrackController> lineControllers;
@@ -73,12 +71,6 @@ public class TrackControllerLineManager implements TrackControllerLineManagerInt
 
   @Override
   public boolean addController(TrackController newCtrl) {
-    //OLD CODE: not sure wtf I was thinking or what this does
-    //if (lineControllers != null) {
-    //  lineControllerIds.add(line + " " + newCtrl.getId());
-    //  return lineControllers.add(newCtrl);
-    // }
-    //  return lineControllers.add(newCtrl);
     lineControllerIds.add(line + " " + newCtrl.getId());
     return lineControllers.add(newCtrl);
   }
