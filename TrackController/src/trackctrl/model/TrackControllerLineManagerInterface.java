@@ -10,8 +10,6 @@ public interface TrackControllerLineManagerInterface {
 
   public boolean sendTrackSignals(int blockId, Authority speed, float authority);
 
-  public boolean setSwitchOverride(int block, boolean state);
-
   public boolean closeBlock(int id);
 
   public boolean repairBlock(int id);
@@ -19,8 +17,6 @@ public interface TrackControllerLineManagerInterface {
   public boolean toggleSwitch(int id);
 
   public boolean getOccupancy(int id);
-
-  public boolean getInfrastructure(int id);
 
   public String getLine();
 

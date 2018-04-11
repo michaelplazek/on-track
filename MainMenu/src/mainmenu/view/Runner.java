@@ -19,6 +19,7 @@ import javafx.util.Duration;
 import mainmenu.Clock;
 import mainmenu.controller.MainMenuController;
 import trackctrl.model.TrackControllerInitializer;
+import trackctrl.model.TrackControllerLineManager;
 import trackmodel.model.Block;
 import trackmodel.model.Switch;
 import trackmodel.model.Track;
@@ -32,6 +33,7 @@ public class Runner extends Application {
       CentralTrafficControlUserInterface.getInstance().getController();
   private CentralTrafficControlInterface ctc = CentralTrafficControl.getInstance();
   private MainMenuController mmc = MainMenuController.getInstance();
+  private TrackControllerInitializer init = new TrackControllerInitializer();
   private Clock clk = Clock.getInstance();
 
   @Override
@@ -49,6 +51,7 @@ public class Runner extends Application {
                 if (ctc.isActive()) {
                   clk.tick();
                   ctcc.run();
+                  TrackControllerLineManager.runTrackControllers();
                   TrainControllerManager.runTrainControllers();
                   TrainModel.runAllInstances();
                 }
@@ -78,6 +81,6 @@ public class Runner extends Application {
     clk.setInitialTime();
     clk.tick();
     ctc.initialize();
-    TrackControllerInitializer.parseTrack();
+    init.parseConfig();
   }
 }

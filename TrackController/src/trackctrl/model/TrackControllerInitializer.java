@@ -1,50 +1,88 @@
 package trackctrl.model;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import trackctrl.model.TrackController;
 import trackctrl.model.TrackControllerLineManager;
 import trackctrl.view.TrackControllerUserInterface;
+import trackmodel.model.Block;
+import trackmodel.model.Switch;
 import trackmodel.model.Track;
 
 public class TrackControllerInitializer {
 
+  private int lineNum = 0;
+  private TrackControllerLineManager[] lms;
+  private String path = "Utils/src/utils/general/";
+  private final String track = "trackCtrlrList.csv";
+
+
   /**
-   * Searches the Track Model instances and populates TrackControllerLineManagers
-   * and TrackControllers.
+   * Initialized track controllers based on config file in Utils
    */
-  public static void parseTrack() {
+  public void parseConfig() {
 
-    HashMap<String,Track> track = Track.getListOfTracks();
-    TrackControllerLineManager[] lms = new TrackControllerLineManager[2];
+    File trackFile = new File(path + track);
 
-    //TrackControllerLineManager[] lms = new TrackControllerLineManager[track.size()];
+    try {
+      BufferedReader br = new BufferedReader(new FileReader(trackFile));
 
-    //Create TrackControllerLineManagers
-    //    int i = 0;
-    //    for (Map.Entry<String, Track> entry : track.entrySet()) {
-    //      i++;
-    //      lms[i] = new TrackControllerLineManager(entry.getKey());
-    //      for (String block : entry.getValue().getBlockList()) {
-    //        //add each block to a track controller
-    //
-    //
-    //      }
-    //    }
+      //Read twice to ignore comments
+      String line = br.readLine();
+      line = br.readLine();;
+      int i = 0;
 
-    lms[0] = new TrackControllerLineManager("Green");
-    lms[1] = new TrackControllerLineManager("Red");
+      while ((line = br.readLine()) != null) {
+        String[] splitLine = line.split(",");
 
-    //DUMMY DATA
-    TrackController[] gtc = new TrackController[10];
-    TrackController[] rtc = new TrackController[10];
+        //Fetch Track Instance
+        Track track = Track.getTrack(splitLine[0]);
+        String hexColor = splitLine[1];
+        Integer controllers = Integer.parseInt(splitLine[2]);
 
-    for (int i = 0; i < 10; i++) {
-      gtc[i] = new TrackController(i + 1, 0);
-      lms[0].addController(gtc[i]);
-      rtc[i] = new TrackController(i + 1, 0);
-      lms[1].addController(rtc[i]);
+        //Create new Line manager based on first line info
+        TrackControllerLineManager addManager = new TrackControllerLineManager(track.getLine());
+
+        for (i = 0; i < controllers; i++) {
+          line = br.readLine();
+          splitLine = line.split(",");
+
+          int id = Integer.parseInt(splitLine[0]);
+          int offset = Integer.parseInt(splitLine[1]);
+          TrackController tc = new TrackController(id, offset, track.getLine());
+          int endBlock = Integer.parseInt(splitLine[2]);
+
+          for (int j = offset; j <= endBlock; j++) {
+            tc.addBlock(track.getBlock(j));
+          }
+
+          if (splitLine.length > 3) {
+            offset = Integer.parseInt(splitLine[3]);
+            endBlock = Integer.parseInt(splitLine[4]);
+            for (int j = offset; j <= endBlock; j++) {
+              tc.addBlock(track.getBlock(j));
+            }
+          }
+
+          addManager.addController(tc);
+        }
+      }
+
+    } catch (FileNotFoundException ex) {
+      System.out.println("Unable to find the file.");
+    } catch (IOException ex) {
+      System.out.println("Error reading file");
     }
 
+    if (trackFile.exists()) {
+      System.out.println("Controller Config File Found");
+    } else {
+      System.out.println("Controller Config File Not Found");
+    }
   }
 }

@@ -11,13 +11,6 @@ public interface TrackControllerInterface {
   //To be set by the CTC
   boolean sendTrackSignals(int blockId, Authority speed, float authority);
 
-  boolean setSwitchOverride(int block, boolean state);
-
-  //To be relayed to the Track model
-  boolean relayAuthority(int block, float authority);
-
-  boolean relaySetSpeed(int block, float setSpeed);
-
   //To be called by TrackController and/or CTC
   boolean setInfrastructureState(int block, boolean state);
 
@@ -25,6 +18,12 @@ public interface TrackControllerInterface {
   boolean setId(int id);
 
   void setZone(HashMap<Integer, Block> blocks);
+
+  boolean setLine(String lineName);
+
+  int getBlockCount();
+
+  boolean getOccupancy(int id);
 
   ArrayList<String> getZone();
 
