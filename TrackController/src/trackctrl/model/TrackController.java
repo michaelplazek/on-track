@@ -26,28 +26,26 @@ public class TrackController implements TrackControllerInterface {
   private TrackController neighborCtrlr2;
   private Track myLine;
 
-  private ArrayList<String> plcBlockPrevious = new ArrayList<String>();
+  //Dimension = number of block statements
   private ArrayList<String> plcBlockCurrent = new ArrayList<String>();
 
-  private ArrayList<String> plcSwtichPrevious = new ArrayList<String>();
+  //Dimension = number of swtich statements
   private ArrayList<String> plcSwitchCurrent = new ArrayList<String>();
 
-  private ArrayList<Boolean> occPrevious;
-  private ArrayList<Boolean> occCurrent;
+  //Dimension = #of blocks in controller
+  private HashMap<Integer, Boolean> occPrevious = new HashMap<Integer, Boolean>();
+  private HashMap<Integer, Boolean> occCurrent = new HashMap<Integer, Boolean>();
 
-  private int ctcBlockPrevious;
-  private int ctcBlockCurrent;
-  private int ctcBlockTemp;
+  private HashMap<Integer, Authority> ctcAuthPrevious = new HashMap<Integer, Authority>();
+  private HashMap<Integer, Authority> ctcAuthCurrent = new HashMap<Integer, Authority>();
+  private HashMap<Integer, Authority> ctcAuthTemp = new HashMap<Integer, Authority>();
 
-  private Authority ctcAuthPrevious;
-  private Authority ctcAuthCurrent;
-  private Authority ctcAuthTemp;
-
-  private float ctcSpeedPrevious;
-  private float ctcSpeedCurrent;
-  private float ctcSpeedTemp;
+  private HashMap<Integer, Float> ctcSpeedPrevious = new HashMap<Integer, Float>();
+  private HashMap<Integer, Float> ctcSpeedCurrent = new HashMap<Integer, Float>();
+  private HashMap<Integer, Float> ctcSpeedTemp = new HashMap<Integer, Float>();
 
   private boolean loaded = false;
+  private int switches = 0;
 
   //States populate from Boolean Logic
   //private boolean[]
@@ -89,20 +87,24 @@ public class TrackController implements TrackControllerInterface {
     this.neighborCtrlr2 = tc.neighborCtrlr2;
   }
 
-  //TODO
+  public void run() {
+    readOccupancy();
+    readSuggestion();
+    assertLogic();
+  }
+
   @Override
   public boolean sendTrackSignals(int block, Authority authority, float speed) {
     if (myLine != null) {
-      //myLine.getBlock(block).setAuthority(authority);
-      //myLine.getBlock(block).setSetPointSpeed(Math.abs(speed));
 
       //Take snapshot of CTC suggestions
-      ctcBlockTemp = block;
-      ctcAuthTemp = authority;
-      ctcSpeedTemp = speed;
-
-      //Save current to t-1, t-2, etc
-
+      if((block - trackOffset >= 0) && (block - trackOffset < getZone().size())) {
+        ctcAuthTemp.replace(block, authority);
+        ctcSpeedTemp.replace(block,speed);
+        return true;
+      } else {
+        return false;
+      }
     }
     return false;
   }
@@ -129,28 +131,9 @@ public class TrackController implements TrackControllerInterface {
   }
 
   @Override
-  public void setZone(HashMap<Integer, Block> blocks) {
-    if (myZone == null) {
-      myZone = new HashMap<Integer, Block>(blocks);
-    } else {
-      //Adds key-value pairs.
-      //Will duplicate...
-      myZone.putAll(blocks);
-
-      //Create string list upon initialization
-      for (Integer i : blocks.keySet()) {
-        if(myLine.getBlock(i).isSwitch()) {
-          blockList.add("Switch " + i.toString());
-        } else {
-          blockList.add("Block " + i.toString());
-        }
-      }
-    }
-  }
-
-  @Override
   public ArrayList<String> getZone() {
 
+    blockList.clear();
     for (Map.Entry<Integer, Block> b : myZone.entrySet()) {
       if(b.getValue().isSwitch()) {
         blockList.add("Switch" + " " + b.getKey().toString());
@@ -158,6 +141,7 @@ public class TrackController implements TrackControllerInterface {
         blockList.add("Block" + " " + b.getKey().toString());
       }
     }
+    //TODO sort block output here for UI
     return blockList;
   }
 
@@ -183,6 +167,7 @@ public class TrackController implements TrackControllerInterface {
   public boolean addBlock(Block newBlock) {
 
     myZone.put(newBlock.getNumber(), newBlock);
+    if (newBlock.isSwitch()) { switches++; }
     return myZone.containsValue(newBlock);
   }
 
@@ -250,17 +235,17 @@ public class TrackController implements TrackControllerInterface {
 
       line = br.readLine();
 
-      if (line == "BLOCK") {
+      if (line.equals("BLOCK LOGIC")) {
         inSwitch= false;
       }
 
       while ((line = br.readLine()) != null) {
-        if(!inSwitch) {
-          plcBlockCurrent.add(lineNum, line);
-        } else if (line == "SWITCH") {
+        if(line.equals("SWITCH LOGIC")) {
           inSwitch = true;
+        } else if (!inSwitch) {
+          plcBlockCurrent.add(lineNum, line);
         } else {
-          plcSwitchCurrent.add(lineNum, line);
+          plcSwitchCurrent.add(line);
         }
         lineNum++;
       }
@@ -297,47 +282,129 @@ public class TrackController implements TrackControllerInterface {
     return false;
   }
 
-  public void run() {
-    readOccupancy();
-    readSuggestion();
-  }
-
   private void readOccupancy() {
-    int i = 0;
-
-    ArrayList<Boolean> occ = new ArrayList<>();
-
-    occ.clear();
 
     for (Block b : myZone.values()) {
-      occ.add(i, b.isOccupied());
-      i++;
+      occPrevious.replace(b.getNumber(),occCurrent.get(b.getNumber()));
+      occCurrent.replace(b.getNumber(), b.isOccupied());
     }
-    occPrevious.clear();
-    occPrevious.addAll(occCurrent);
-    occCurrent.clear();
-    occCurrent.addAll(occ);
   }
 
   private void readSuggestion() {
-    ctcAuthPrevious = ctcAuthCurrent;
-    ctcBlockPrevious = ctcBlockCurrent;
-    ctcSpeedPrevious = ctcSpeedCurrent;
 
-    ctcAuthCurrent = ctcAuthTemp;
-    ctcBlockCurrent = ctcBlockTemp;
-    ctcSpeedCurrent = ctcSpeedTemp;
+    //Reads in current suggestion array into previous
+    //Sets current to the temp (set by calls from ctc)
+
+    for (Block b : myZone.values()) {
+      int index = b.getNumber();
+      ctcAuthPrevious.replace(index,ctcAuthCurrent.get(index));
+      ctcAuthCurrent.replace(index, ctcAuthTemp.get(index));
+
+      ctcSpeedPrevious.replace(index,ctcSpeedCurrent.get(index));
+      ctcSpeedCurrent.replace(index,ctcSpeedTemp.get(index));
+    }
   }
 
-  public void loadOccupancy() {
+  public void setBlockNumber() {
     //Create boolean arrays based on number of blocks
 
     if(!loaded) {
-      occCurrent = new ArrayList<>(getZone().size());
-      occPrevious = new ArrayList<>(getZone().size());
+//      occCurrent = new ArrayList<>(getZone().size());
+//      occPrevious = new ArrayList<>(getZone().size());
+//      ctcAuthPrevious = new ArrayList<>(getZone().size());
+//      ctcAuthCurrent = new ArrayList<>(getZone().size());
+//      ctcAuthTemp = new ArrayList<>(getZone().size());
+//      ctcSpeedPrevious = new ArrayList<>(getZone().size());
+//      ctcSpeedCurrent = new ArrayList<>(getZone().size());
+//      ctcSpeedTemp = new HashMap<Integer, Float>;
+
+      //initialize array values
+      for (Integer i : myZone.keySet()) {
+        occCurrent.put(i, false);
+        occPrevious.put(i, false);
+
+        ctcAuthCurrent.put(i, Authority.SEND_POWER);
+        ctcAuthPrevious.put(i, Authority.SEND_POWER);
+        ctcAuthTemp.put(i, Authority.SEND_POWER);
+
+        ctcSpeedCurrent.put(i, 15.0f);
+        ctcSpeedPrevious.put(i, 15.0f);
+        ctcSpeedTemp.put(i, 15.0f);
+      }
+
       loaded = true;
     }
   }
+
+  //----------------------PLC helper functions-------------------------------------------
+
+  /** This function checks the relative number of blocks, blocks, and returns true
+   * if there is occupancy in that direction (or up until jurisdiction ends,
+   * whichever is first).
+   *
+   * @param sign direction to travel relative to a block
+   * @param blocks number of blocks we are applying boolean logic to
+   * @return true if occupied block found, false otherwise
+   */
+    private boolean isOccupied(char sign, int blocks) {
+
+      return false;
+    }
+
+  /** This function checks the relative number of blocks, blocks, and searches for
+   * occupancy in that direction (or up until jurisdiction ends, whichever is first).
+   *
+   * @param sign direction to travel relative to a block
+   * @param blocks number of blocks we are applying boolean logic to
+   * @return true if no occupied block found, false otherwise
+   */
+    private boolean notOccupied(char sign, int blocks) {
+      return true;
+    }
+
+  /** This function searches the current controller jurisdiction for a station, and
+   * if found, it will then check if the temperature reading at that station is
+   * indicating freezing levels.
+   *
+   * @return true if temperature is freezing
+   */
+  private boolean isFreezing() {
+      return false;
+    }
+
+  /** This function searches the current controller jurisdiction for a station, and
+   * if found, it will then check if the temperature reading at that station is
+   * indicating freezing levels.
+   *
+   * @return true if temperature is not freezing
+   */
+  private boolean notFreezing() {
+    return true;
+  }
+
+  /** This will use the previous and current readings to detect if a train is
+   * moving towards a certain block.
+   *
+   * @param sign direction to check readings
+   * @param blocks number of blocks in that direction to check
+   * @return true if train found moving in that direction.
+   */
+  private boolean movingTo(char sign, int blocks) {
+    return false;
+  }
+
+  /** This will use the previous and current readings to detect if a train is
+   * moving away from a certain block.
+   *
+   * @param sign direction to check readings
+   * @param blocks number of blocks in that direction to check
+   * @return true if train found moving in that direction.
+   */
+  private boolean movingFrom(char sign, int blocks) {
+    return false;
+  }
+
+  //-------------------------------------------------------------------------------------
 
   /** Uses block occupancies read on this tick to safely change switches/crossings/lights.
    *
@@ -345,5 +412,11 @@ public class TrackController implements TrackControllerInterface {
   public void assertLogic() {
     //this function picks correct state from PLC based on Occupancy and existing states
     //it also sets infrastructure if allowed by Track Model
+
+    //TODO these will be voted upon or updated prior to asserting on the track based on above logic
+    for(Integer index : myZone.keySet()) {
+      myLine.getBlock(index).setAuthority(ctcAuthCurrent.get(index));
+      myLine.getBlock(index).setSetPointSpeed(Math.abs(index));
+    }
   }
 }

@@ -261,6 +261,7 @@ public class TrackControllerController implements Initializable {
     //if (!(myController.checkLogic())) {
       //Display error
     //}
+    myController.checkLogic();
   }
 
   //******************************************************************************************

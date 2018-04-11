@@ -18,7 +18,7 @@ public class TrackControllerInitializer {
 
   private int lineNum = 0;
   private TrackControllerLineManager[] lms;
-  private String path = "Utils/src/utils/general/";
+  private String path = "Utils/src/utils/plc/";
   private final String track = "trackCtrlrList.csv";
 
 
@@ -38,7 +38,6 @@ public class TrackControllerInitializer {
       line = br.readLine();
       line = br.readLine();
       Integer tracksRemaining = Integer.parseInt(line.split(",")[0]);
-      int i;
       lms = new TrackControllerLineManager[tracksRemaining+1];
 
       while ((line = br.readLine()) != null) {
@@ -53,7 +52,7 @@ public class TrackControllerInitializer {
         TrackControllerLineManager addManager = new TrackControllerLineManager(track.getLine());
         lms[tracksRemaining] = addManager;
 
-        for (i = 0; i < controllers; i++) {
+        for (int i = 0; i < controllers; i++) {
           line = br.readLine();
           splitLine = line.split(",");
 
@@ -69,17 +68,20 @@ public class TrackControllerInitializer {
           if (splitLine.length > 3) {
             offset = Integer.parseInt(splitLine[3]);
             endBlock = Integer.parseInt(splitLine[4]);
-            for (int j = offset; j <= endBlock; j++) {
-              tc.addBlock(track.getBlock(j));
+            if (offset == endBlock) {
+              tc.addBlock(track.getBlock(offset));
+            } else {
+              for (int j = offset; j <= endBlock; j++) {
+                tc.addBlock(track.getBlock(j));
+              }
             }
           }
 
-          tc.loadOccupancy();
+          tc.setBlockNumber();
 
           addManager.addController(tc);
         }
         tracksRemaining--;
-        i++;
       }
 
     } catch (FileNotFoundException ex) {
