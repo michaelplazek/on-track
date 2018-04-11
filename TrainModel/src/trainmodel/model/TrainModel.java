@@ -120,6 +120,7 @@ public class TrainModel implements TrainModelInterface {
     this.id = id;
     this.line = line;
     this.activeTrack = Track.getTrack(line);
+    this.activeTrackName.set(line);
     this.currentBlock = activeTrack.getStartBlock();
     this.previousBlock = activeTrack.getBlock(-1);
   }
@@ -208,6 +209,8 @@ public class TrainModel implements TrainModelInterface {
     } else {
       positionInBlock = positionInBlock + changeInDist;
     }
+
+    currentBlockName.set(currentBlock.getSection() + currentBlock.getNumber());
 
 //    System.out.println("Change in position: " + changeInDist);
 //    System.out.println("Location in block: " + positionInBlock);
@@ -689,7 +692,6 @@ public class TrainModel implements TrainModelInterface {
   public ObjectProperty<Failure> engineFailureStatusProperty() {
     return engineFailureStatus;
   }
-
 
   public ObjectProperty<Failure> brakeFailureStatusProperty() {
     return brakeFailureStatus;
