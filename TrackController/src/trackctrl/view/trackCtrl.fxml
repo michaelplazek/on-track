@@ -18,7 +18,7 @@
 
 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="415.0" prefWidth="375.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Label fx:id="instanceTitle" layoutX="117.0" layoutY="4.0" text="G-One">
+      <Label fx:id="instanceTitle" layoutX="64.0" layoutY="3.0" text="On-Track Track Controller">
          <font>
             <Font name="Arial Bold" size="20.0" />
          </font>
@@ -253,10 +253,5 @@
             </TitledPane>
          </children>
       </VBox>
-      <Label fx:id="instanceTitle1" layoutX="188.0" layoutY="4.0" text="Controller">
-         <font>
-            <Font name="Arial Bold" size="20.0" />
-         </font>
-      </Label>
    </children>
 </AnchorPane>

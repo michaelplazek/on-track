@@ -28,6 +28,8 @@ import trackmodel.model.Switch;
 import trackmodel.model.Track;
 import utils.general.Constants;
 
+import javax.swing.*;
+
 public class TrackControllerController implements Initializable {
 
   //Toggles
@@ -124,7 +126,7 @@ public class TrackControllerController implements Initializable {
   @FXML
   private Label switchFork;
 
-  //Temporary Globals TODO check with team on best practice for globals in controllers
+  //Temporary Globals
   ToggleGroup opGroup = new ToggleGroup();
   ToggleGroup lightGroup = new ToggleGroup();
   ToggleGroup crossingGroup = new ToggleGroup();
@@ -135,6 +137,8 @@ public class TrackControllerController implements Initializable {
   private TrackController myController;
   private Track myLine;
   private ClockInterface theClock;
+  private boolean isManual = false;
+  private Block selBlock;
 
   public TrackControllerController(String ctrlrId) {
     myController = TrackControllerLineManager.getController(ctrlrId);
@@ -154,16 +158,21 @@ public class TrackControllerController implements Initializable {
         .addListener((observableValue, oldValue, newValue) -> {
           if (!(blockChoice.getSelectionModel()
               .getSelectedItem().equals("Select Block"))) {
-            //Block selected, update UI
-            //TODO
+
             String sel = newValue.toString();
 
             sel = sel.split(" ")[1];
 
-            updateControllerUI(Integer.parseInt(sel));
+            selBlock = myController.getBlock(Integer.parseInt(sel));
+
+            //updateControllerUI(Integer.parseInt(sel));
+            //TODO this should get connected to the clock
+            run();
           }
         });
   }
+
+  //******************************************************************************************
 
   private void handleOpGroup(ActionEvent event) {
 
@@ -171,17 +180,20 @@ public class TrackControllerController implements Initializable {
       //Check if we are in automatic mode
 
       //Assert that all radios are disabled when in automatic mode
+      isManual = false;
       disableRadios();
     } else {
       //Manual mode: all other radios should be enabled
+      isManual = true;
       enableRadios();
+      checkRadios();
     }
   }
 
-  //TODO: add support for bidirectional/unidirectional track for lights
-  private void handleLightGroup(ActionEvent event) {
+   private void handleLightGroup(ActionEvent event) {
 
     if (lightGroup.getSelectedToggle().equals(lightMainLtoR)) {
+      //TODO actually call track controller functions for this
       setMainLightsLtoR();
     } else if (lightGroup.getSelectedToggle().equals(lightForkLtoR)) {
       setForkLightsLtoR();
@@ -207,13 +219,14 @@ public class TrackControllerController implements Initializable {
   }
 
   private void handleSwitchGroup(ActionEvent event) {
+    String blockString = (String) blockChoice.getSelectionModel().getSelectedItem();
+    blockString = blockString.split(" ")[1];
+    Block update = myLine.getBlock(Integer.parseInt(blockString));
 
-    // TODO: store or fetch old value of radio buttons
-    if (switchGroup.getSelectedToggle().equals(stayRad)) {
-      //Check that switch is functional
-
-      //if functional, show image for unaltered path and set labels
-      setSwitchStay();
+    if (switchGroup.getSelectedToggle().equals(stayRad) && update.isSwitch()) {
+      Switch s = (Switch) update;
+      s.toggle();
+      updateSwitchState(update);
     } else {
       setSwitchAlter();
     }
@@ -221,7 +234,14 @@ public class TrackControllerController implements Initializable {
 
   //TODO
   private void handleRepairGroup(ActionEvent event) {
+    if (repairGroup.getSelectedToggle().equals(blockBrokenRad)) {
+      //attempt to close a block for maintainence
+      selBlock.setClosedForMaintenance(true);
+    } else {
+      selBlock.setClosedForMaintenance(false);
+    }
 
+    updateBlockStatus(selBlock);
   }
 
   //TODO
@@ -243,6 +263,8 @@ public class TrackControllerController implements Initializable {
     }
   }
 
+  //******************************************************************************************
+
   private void groupRadioButtons() {
 
     /**
@@ -260,7 +282,6 @@ public class TrackControllerController implements Initializable {
 
     //Set other radios to disabled mode
     disableRadios();
-
 
     //Lights
     lightMainLtoR.setToggleGroup(lightGroup);
@@ -295,6 +316,9 @@ public class TrackControllerController implements Initializable {
     blockRepairedRad.setOnAction(this::handleRepairGroup);
 
   }
+
+  //------------------HELPER FUNCTIONS ----------------------------------------
+
 
   private void resetLightSwitch() {
     switchMainRtoL.setOpacity(0);
@@ -339,35 +363,56 @@ public class TrackControllerController implements Initializable {
     resetLightSwitch();
     lightSwitch.setOpacity(0);
     switchMainLtoR.setOpacity(100);
+    forkSwitch.setOpacity(0);
+    inactiveSwitch.setOpacity(0);
+    mainSwitch.setOpacity(100);
   }
 
   private void setMainLightsRtoL() {
 
-    // Find correct light status based on boolean logic
+    mainLight0.setFill(Paint.valueOf(Constants.RED));
+    mainLight1.setFill(Paint.valueOf(Constants.GREEN));
+    fromLight0.setFill(Paint.valueOf(Constants.GREEN));
+    fromLight1.setFill(Paint.valueOf(Constants.RED));
 
     //set images
     resetLightSwitch();
     lightSwitch.setOpacity(0);
     switchMainRtoL.setOpacity(100);
+    forkSwitch.setOpacity(0);
+    inactiveSwitch.setOpacity(0);
+    mainSwitch.setOpacity(100);
   }
 
   private void setForkLightsLtoR() {
 
     // Find correct light status based on boolean logic
-
+    fromLight0.setFill(Paint.valueOf(Constants.GREEN));
+    fromLight1.setFill(Paint.valueOf(Constants.RED));
+    forkLight0.setFill(Paint.valueOf(Constants.GREEN));
+    forkLight1.setFill(Paint.valueOf(Constants.RED));
 
     resetLightSwitch();
     lightSwitch.setOpacity(0);
     switchForkLtoR.setOpacity(100);
+    forkSwitch.setOpacity(100);
+    inactiveSwitch.setOpacity(0);
+    mainSwitch.setOpacity(0);
   }
 
   private void setForkLightsRtoL() {
 
-    // Find correct light status based on boolean logic
+    fromLight0.setFill(Paint.valueOf(Constants.RED));
+    fromLight1.setFill(Paint.valueOf(Constants.GREEN));
+    forkLight0.setFill(Paint.valueOf(Constants.RED));
+    forkLight1.setFill(Paint.valueOf(Constants.GREEN));
 
     resetLightSwitch();
     lightSwitch.setOpacity(0);
     switchForkRtoL.setOpacity(100);
+    forkSwitch.setOpacity(100);
+    inactiveSwitch.setOpacity(0);
+    mainSwitch.setOpacity(0);
   }
 
   private void setClosed() {
@@ -408,6 +453,54 @@ public class TrackControllerController implements Initializable {
     mainSwitch.setOpacity(0);
   }
 
+  private void checkDirection() {
+    String block = (String) blockChoice.getSelectionModel().getSelectedItem();
+    block = block.split(" ")[1];
+    int id = Integer.parseInt(block);
+    Switch s = (Switch) myLine.getBlock(id);
+
+    Block n1 = myLine.getBlock(s.getNextBlock1());
+    Block n2 = myLine.getBlock(s.getNextBlock2());
+
+//    if(!n1.isBiDirectional()) {
+//
+//    } else if () {
+//
+//    }
+  }
+
+  private void checkRadios() {
+    //This check of the radio buttons responsible for disabling radio
+    //buttons in manual mode when a block that is not a switch is selected
+
+    if(isManual) {
+      disableRadios();
+      blockRepairedRad.setDisable(false);
+      blockBrokenRad.setDisable(false);
+      if(!selBlock.isSwitch()) {
+        lightMainLtoR.setDisable(true);
+        lightForkLtoR.setDisable(true);
+        lightMainRtoL.setDisable(true);
+        lightForkRtoL.setDisable(true);
+        stayRad.setDisable(true);
+        alterRad.setDisable(true);
+      } else if (!selBlock.isCrossing() && !selBlock.isSwitch()) {
+        closedRad.setDisable(true);
+        openRad.setDisable(true);
+      } else {
+        enableRadios();
+      }
+    } else {
+      disableRadios();
+    }
+
+
+    //This portion of checkRadios will
+
+  }
+
+  //--------------------------------------------------------------------------------
+
   /**
    * UPDATE UI FUNCTIONS
    */
@@ -418,7 +511,7 @@ public class TrackControllerController implements Initializable {
 
     updateBlockStatus(update);
     updateSwitchState(update);
-
+    checkRadios();
   }
 
   private void updateBlockStatus(Block update) {
@@ -429,9 +522,9 @@ public class TrackControllerController implements Initializable {
     }
 
     if(update.isClosedForMaintenance()) {
-      blockOccupancy.setFill(Paint.valueOf(Constants.RED));
+      blockStatus.setFill(Paint.valueOf(Constants.RED));
     } else {
-      blockOccupancy.setFill(Paint.valueOf(Constants.GREEN));
+      blockStatus.setFill(Paint.valueOf(Constants.GREEN));
     }
   }
 
@@ -453,24 +546,29 @@ public class TrackControllerController implements Initializable {
 
       if(updateSwitch.getStatus() == n1) {
         setSwitchStay();
+        //if() TODO check lights based on switch and set them properly
       } else {
         setSwitchAlter();
       }
     } else {
+      //DISABLE switch things
       setSwitchInactive();
+      checkRadios();
     }
 
   }
 
   /**
    * This function is run on each tick of the clock and will update data
-   * on the blocks under the control of the accessed Controller.
+   * concerning the UI.
    */
   public void run() {
-    //Force values on track based on occupancy and switch state
-    myController.assertLogic();
-
     //Update UI based on changes in Selected block
+    //Take snapshot of current block and pass int in
+    String curr = (String) blockChoice.getSelectionModel().getSelectedItem();
+    curr = curr.split(" ")[1];
+
+    updateControllerUI(Integer.parseInt(curr));
   }
 
   /**

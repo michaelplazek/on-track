@@ -66,12 +66,17 @@ public class TrackController implements TrackControllerInterface {
     this.neighborCtrlr2 = tc.neighborCtrlr2;
   }
 
-  //TODO
   @Override
   public boolean sendTrackSignals(int block, Authority authority, float speed) {
     if (myLine != null) {
       myLine.getBlock(block).setAuthority(authority);
-      myLine.getBlock(block).setSetPointSpeed(speed);
+      myLine.getBlock(block).setSetPointSpeed(Math.abs(speed));
+
+      //Take snapshot of CTC suggestions
+
+
+      //Save current to t-1, t-2, etc
+
     }
     return false;
   }
