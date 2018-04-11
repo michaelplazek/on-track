@@ -196,7 +196,7 @@ public class TrackControllerLineManager implements TrackControllerLineManagerInt
   /** This iterates through all controllers of the current line and runs the
    * respective run function within the controller.
    */
-  public void runMyControllers() {
+  public void runControllers() {
     if (lineControllers != null) {
       for (TrackController tc : lineControllers) {
         tc.run();
@@ -209,7 +209,7 @@ public class TrackControllerLineManager implements TrackControllerLineManagerInt
    */
   public static void runTrackControllers() {
     for (TrackControllerLineManager tclm : lines) {
-      tclm.runMyControllers();
+      tclm.runControllers();
     }
   }
 
