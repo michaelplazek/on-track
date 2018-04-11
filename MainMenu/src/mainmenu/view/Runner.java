@@ -52,8 +52,8 @@ public class Runner extends Application {
                   clk.tick();
                   ctcc.run();
                   TrackControllerLineManager.runTrackControllers();
-                  TrainControllerManager.runTrainControllers();
                   TrainModel.runAllInstances();
+                  TrainControllerManager.runTrainControllers();
                 }
               }
             }
