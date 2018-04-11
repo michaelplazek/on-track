@@ -6,6 +6,10 @@ public class Switch extends Block {
   private int status;
   private boolean switchState;
 
+  private boolean[] previousLightStatus = {false, false};
+  private boolean[] nextLightStatus1 = {false, false};
+  private boolean[] nextLightStatus2 = {false, false};
+
   /**
    * Default constructor.
    */
@@ -86,7 +90,18 @@ public class Switch extends Block {
   /**
    * Toggle the boolean value of switchState.
    */
-  public void toggle() {}
+  public boolean toggle() {
+
+    switchState = !switchState;
+
+    if(switchState) {
+      status = this.getNextBlock1();
+    } else {
+      status = this.getNextBlock2();
+    }
+
+    return switchState;
+  }
 
   // TODO: fill out this function to return the switch state
 
@@ -95,6 +110,90 @@ public class Switch extends Block {
    * @return true is the switch is straight, and false if it is the fork.
    */
   public boolean getSwitchState() {
-    return false;
+    return switchState;
+  }
+
+  /**
+   * This method will allow the user to set the status of previous lights.
+   * @param status status of the Light
+   * @param frontOrBack Boolean value for the side of the light (true = front)
+   */
+  public void setPreviousLightStatus(boolean status, boolean frontOrBack) {
+    int index;
+    if (frontOrBack) {
+      index = 0;
+    } else {
+      index = 1;
+    }
+    previousLightStatus[index] = status;
+  }
+
+  /**
+   * This method will allow the user to set the status of next 1 lights.
+   * @param status status of the Light
+   * @param frontOrBack Boolean value for the side of the light (true = front)
+   */
+  public void setNext1LightStatus(boolean status, boolean frontOrBack) {
+    int index;
+    if (frontOrBack) {
+      index = 0;
+    } else {
+      index = 1;
+    }
+    nextLightStatus1[index] = status;
+  }
+
+  /**
+   * This method will allow the user to set the status of next 2 lights.
+   * @param status status of the Light
+   * @param frontOrBack Boolean value for the side of the light (true = front)
+   */
+  public void setNext2LightStatus(boolean status, boolean frontOrBack) {
+    int index;
+    if (frontOrBack) {
+      index = 0;
+    } else {
+      index = 1;
+    }
+    nextLightStatus2[index] = status;
+  }
+
+  /**
+   * This method will get the status of the front or back of previous light.
+   * @param frontOrBack Value for the from or back of the light(true = front)
+   * @return boolean value for if the light is on
+   */
+  public boolean getPreviousLightStatus(boolean frontOrBack) {
+    if (frontOrBack) {
+      return previousLightStatus[0];
+    } else {
+      return previousLightStatus[1];
+    }
+  }
+
+  /**
+   * This method will get the status of the front or back of next 1 light.
+   * @param frontOrBack Value for the from or back of the light(true = front)
+   * @return boolean value for if the light is on
+   */
+  public boolean getNext1LightStatus(boolean frontOrBack) {
+    if (frontOrBack) {
+      return nextLightStatus1[0];
+    } else {
+      return nextLightStatus1[1];
+    }
+  }
+
+  /**
+   * This method will get the status of the front or back of next 2 light.
+   * @param frontOrBack Value for the from or back of the light(true = front)
+   * @return boolean value for if the light is on
+   */
+  public boolean getNext2LightStatus(boolean frontOrBack) {
+    if (frontOrBack) {
+      return nextLightStatus2[0];
+    } else {
+      return nextLightStatus2[1];
+    }
   }
 }
