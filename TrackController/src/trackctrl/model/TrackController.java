@@ -66,6 +66,7 @@ public class TrackController implements TrackControllerInterface {
     this.neighborCtrlr2 = tc.neighborCtrlr2;
   }
 
+  //TODO
   @Override
   public boolean sendTrackSignals(int block, Authority authority, float speed) {
     if (myLine != null) {
@@ -167,13 +168,13 @@ public class TrackController implements TrackControllerInterface {
 
   @Override
   public boolean closeBlock(int id) {
-    myLine.getBlock(id).setBrokenRailStatus(true);
+    myLine.getBlock(id).setClosedForMaintenance(true);
     return myLine.getBlock(id).getBrokenRailStatus() == true;
   }
 
   @Override
   public boolean repairBlock(int id) {
-    myLine.getBlock(id).setBrokenRailStatus(false);
+    myLine.getBlock(id).setClosedForMaintenance(false);
     return myLine.getBlock(id).getBrokenRailStatus() == false;
   }
 
@@ -182,10 +183,8 @@ public class TrackController implements TrackControllerInterface {
     Block toggle = myLine.getBlock(id);
     if (toggle.isSwitch()) {
       Switch toggleSwitch = (Switch) toggle;
-      boolean before = toggleSwitch.getSwitchState();
       toggleSwitch.toggle();
-      boolean after = toggleSwitch.getSwitchState();
-      return before ^ after;
+      return toggleSwitch.getSwitchState();
     }
     return false;
   }

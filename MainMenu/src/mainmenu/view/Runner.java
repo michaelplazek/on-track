@@ -33,6 +33,7 @@ public class Runner extends Application {
       CentralTrafficControlUserInterface.getInstance().getController();
   private CentralTrafficControlInterface ctc = CentralTrafficControl.getInstance();
   private MainMenuController mmc = MainMenuController.getInstance();
+  private TrackControllerInitializer init = new TrackControllerInitializer();
   private Clock clk = Clock.getInstance();
 
   @Override
@@ -80,7 +81,6 @@ public class Runner extends Application {
     clk.setInitialTime();
     clk.tick();
     ctc.initialize();
-    TrackControllerInitializer init = new TrackControllerInitializer();
     init.parseConfig();
   }
 }

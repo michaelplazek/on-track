@@ -122,18 +122,6 @@ public class MainMenuController implements Initializable {
   }
 
   /**
-   * Handler to open to MBO.
-   * @param event event from the button.
-   */
-  @FXML
-  private void openMovingBlockOverlay(ActionEvent event) {
-    try {
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
-
-  /**
    * Handler to open Track Model.
    * @param event event from button.
    */
