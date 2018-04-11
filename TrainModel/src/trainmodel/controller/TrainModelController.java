@@ -173,8 +173,6 @@ public class TrainModelController implements Initializable {
         }
       }
     }
-
-
   }
 
   @FXML
@@ -221,7 +219,8 @@ public class TrainModelController implements Initializable {
         trainModel.heightProperty(), formatter);
     Bindings.bindBidirectional(numberOfCars.textProperty(),
         trainModel.numberOfCarsProperty(), numberStringConverter);
-
+    Bindings.bindBidirectional(height.textProperty(),
+        trainModel.heightProperty(), formatter);
 
     capacity.setText(String.valueOf(trainModel.getCapacityOfTrain()));
 
@@ -234,6 +233,8 @@ public class TrainModelController implements Initializable {
     serviceBrakeStatus.textProperty().bind(trainModel.serviceBrakeStatusProperty().asString());
     acStatus.textProperty().bind(trainModel.acStatusProperty().asString());
     heaterStatus.textProperty().bind(trainModel.heaterStatusProperty().asString());
+    currentBlockStatus.textProperty().bind(trainModel.currentBlockProperty());
+    currentTrack.textProperty().bind(trainModel.activeTrackProperty());
   }
 
 
@@ -300,8 +301,6 @@ public class TrainModelController implements Initializable {
     emergencyBrakeButton.setOnAction(this::emergency_Brake_Engaged);
   }
 
-
-
   private void startEngineFailure() {
     engineFailureStatusIcon.setFill(Paint.valueOf(Constants.RED));
     trainModel.engineFailureStatusProperty().set(Failure.FAILED);
@@ -316,7 +315,6 @@ public class TrainModelController implements Initializable {
   private void startSignalFailure() {
     signalFailureStatusIcon.setFill(Paint.valueOf(Constants.RED));
     trainModel.trackLineFailureStatusProperty().set(Failure.FAILED);
-
   }
 
   private void endEngineFailure() {
@@ -334,5 +332,4 @@ public class TrainModelController implements Initializable {
     signalFailureStatusIcon.setFill(Paint.valueOf(Constants.GREEN));
     trainModel.trackLineFailureStatusProperty().set(Failure.WORKING);
   }
-
 }
