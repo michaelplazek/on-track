@@ -243,12 +243,32 @@ public class TrainTracker {
     }
   }
 
+  /**
+   * Give the train a new route.
+   * @param route new Route
+   */
+  public void setRoute(Route route) {
+    this.route = route;
+
+    updateDisplay();
+  }
+
   public Schedule getSchedule() {
     return schedule;
   }
 
   public void setSchedule(Schedule schedule) {
     this.schedule = schedule;
+  }
+
+  /**
+   * Sets the location of the train.
+   * @param location Block object
+   */
+  public void setLocation(Block location) {
+
+    this.location = location;
+    this.locationId = location.getSection() + location.getNumber();
   }
 
   public String getId() {
@@ -295,16 +315,6 @@ public class TrainTracker {
     return location;
   }
 
-  /**
-   * Sets the location of the train.
-   * @param location Block object
-   */
-  public void setLocation(Block location) {
-
-    this.location = location;
-    this.locationId = location.getSection() + location.getNumber();
-  }
-
   public Track getTrack() {
     return track;
   }
@@ -337,25 +347,11 @@ public class TrainTracker {
     this.line = line;
   }
 
-  public boolean isDone() {
+  boolean isDone() {
     return isDone;
-  }
-
-  public void setDone(boolean done) {
-    isDone = done;
   }
 
   public Route getRoute() {
     return route;
-  }
-
-  /**
-   * Give the train a new route.
-   * @param route new Route
-   */
-  public void setRoute(Route route) {
-    this.route = route;
-
-    updateDisplay();
   }
 }

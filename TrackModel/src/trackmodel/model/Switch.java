@@ -94,7 +94,7 @@ public class Switch extends Block {
 
     switchState = !switchState;
 
-    if(switchState) {
+    if (switchState) {
       status = this.getNextBlock1();
     } else {
       status = this.getNextBlock2();
