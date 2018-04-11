@@ -258,14 +258,14 @@ public class TrackControllerController implements Initializable {
 
   //TODO
   private void handleCheckLogic(ActionEvent event) {
-    if (!(myController.checkLogic())) {
+    //if (!(myController.checkLogic())) {
       //Display error
-    }
+    //}
   }
 
   //******************************************************************************************
 
-  private void groupComponenents() {
+  private void groupComponents() {
 
     /**
      * RadioButton selectedRadioButton = (RadioButton) toggleGroup.getSelectedToggle();
@@ -576,7 +576,7 @@ public class TrackControllerController implements Initializable {
 
     //Init UI
     populateDropDowns();
-    groupComponenents();
+    groupComponents();
     setOpen();
     setSwitchInactive();
     resetLightSwitch();

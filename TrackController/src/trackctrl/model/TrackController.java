@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,13 +19,35 @@ public class TrackController implements TrackControllerInterface {
 
   private int id;
   private int trackOffset;
-  private final int capacity = 16;
+  private final int capacity = 32;
   private HashMap<Integer, Block> myZone = new HashMap<Integer, Block>(capacity);
   private ArrayList<String> blockList = new ArrayList<>();
   private TrackController neighborCtrlr1;
   private TrackController neighborCtrlr2;
   private Track myLine;
 
+  private ArrayList<String> plcBlockPrevious = new ArrayList<String>();
+  private ArrayList<String> plcBlockCurrent = new ArrayList<String>();
+
+  private ArrayList<String> plcSwtichPrevious = new ArrayList<String>();
+  private ArrayList<String> plcSwitchCurrent = new ArrayList<String>();
+
+  private ArrayList<Boolean> occPrevious;
+  private ArrayList<Boolean> occCurrent;
+
+  private int ctcBlockPrevious;
+  private int ctcBlockCurrent;
+  private int ctcBlockTemp;
+
+  private Authority ctcAuthPrevious;
+  private Authority ctcAuthCurrent;
+  private Authority ctcAuthTemp;
+
+  private float ctcSpeedPrevious;
+  private float ctcSpeedCurrent;
+  private float ctcSpeedTemp;
+
+  private boolean loaded = false;
 
   //States populate from Boolean Logic
   //private boolean[]
@@ -70,11 +93,13 @@ public class TrackController implements TrackControllerInterface {
   @Override
   public boolean sendTrackSignals(int block, Authority authority, float speed) {
     if (myLine != null) {
-      myLine.getBlock(block).setAuthority(authority);
-      myLine.getBlock(block).setSetPointSpeed(Math.abs(speed));
+      //myLine.getBlock(block).setAuthority(authority);
+      //myLine.getBlock(block).setSetPointSpeed(Math.abs(speed));
 
       //Take snapshot of CTC suggestions
-
+      ctcBlockTemp = block;
+      ctcAuthTemp = authority;
+      ctcSpeedTemp = speed;
 
       //Save current to t-1, t-2, etc
 
@@ -216,7 +241,44 @@ public class TrackController implements TrackControllerInterface {
   @Override
   public boolean importLogic(File myplc) {
 
+    try {
+      BufferedReader br = new BufferedReader(new FileReader(myplc));
+
+      String line;
+      int lineNum = 0;
+      boolean inSwitch = false;
+
+      line = br.readLine();
+
+      if (line == "BLOCK") {
+        inSwitch= false;
+      }
+
+      while ((line = br.readLine()) != null) {
+        if(!inSwitch) {
+          plcBlockCurrent.add(lineNum, line);
+        } else if (line == "SWITCH") {
+          inSwitch = true;
+        } else {
+          plcSwitchCurrent.add(lineNum, line);
+        }
+        lineNum++;
+      }
+
+    } catch (FileNotFoundException ex) {
+      System.out.println("Unable to find the file at: " + myplc);
+    } catch (IOException ex) {
+      System.out.println("Error reading file at:" + myplc);
+    }
+
+
+    if (myplc.exists()) {
+      System.out.println("PLC Found at: " + myplc);
+    }
+
     //Set Instance PLC fields
+
+
     //-convert to string
     //send to parseLogic
 
@@ -237,12 +299,43 @@ public class TrackController implements TrackControllerInterface {
 
   public void run() {
     readOccupancy();
-
+    readSuggestion();
   }
 
   private void readOccupancy() {
-    for (Map.Entry<Integer, Block> b : myZone.entrySet()) {
-      b.getValue();
+    int i = 0;
+
+    ArrayList<Boolean> occ = new ArrayList<>();
+
+    occ.clear();
+
+    for (Block b : myZone.values()) {
+      occ.add(i, b.isOccupied());
+      i++;
+    }
+    occPrevious.clear();
+    occPrevious.addAll(occCurrent);
+    occCurrent.clear();
+    occCurrent.addAll(occ);
+  }
+
+  private void readSuggestion() {
+    ctcAuthPrevious = ctcAuthCurrent;
+    ctcBlockPrevious = ctcBlockCurrent;
+    ctcSpeedPrevious = ctcSpeedCurrent;
+
+    ctcAuthCurrent = ctcAuthTemp;
+    ctcBlockCurrent = ctcBlockTemp;
+    ctcSpeedCurrent = ctcSpeedTemp;
+  }
+
+  public void loadOccupancy() {
+    //Create boolean arrays based on number of blocks
+
+    if(!loaded) {
+      occCurrent = new ArrayList<>(getZone().size());
+      occPrevious = new ArrayList<>(getZone().size());
+      loaded = true;
     }
   }
 
@@ -253,5 +346,4 @@ public class TrackController implements TrackControllerInterface {
     //this function picks correct state from PLC based on Occupancy and existing states
     //it also sets infrastructure if allowed by Track Model
   }
-
 }

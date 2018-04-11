@@ -82,5 +82,6 @@ public class Runner extends Application {
     clk.tick();
     ctc.initialize();
     init.parseConfig();
+    init.initializeLogic();
   }
 }

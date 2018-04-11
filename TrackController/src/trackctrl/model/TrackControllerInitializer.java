@@ -34,8 +34,12 @@ public class TrackControllerInitializer {
 
       //Read twice to ignore comments
       String line = br.readLine();
-      line = br.readLine();;
-      int i = 0;
+      line = br.readLine();
+      line = br.readLine();
+      line = br.readLine();
+      Integer tracksRemaining = Integer.parseInt(line.split(",")[0]);
+      int i;
+      lms = new TrackControllerLineManager[tracksRemaining+1];
 
       while ((line = br.readLine()) != null) {
         String[] splitLine = line.split(",");
@@ -47,6 +51,7 @@ public class TrackControllerInitializer {
 
         //Create new Line manager based on first line info
         TrackControllerLineManager addManager = new TrackControllerLineManager(track.getLine());
+        lms[tracksRemaining] = addManager;
 
         for (i = 0; i < controllers; i++) {
           line = br.readLine();
@@ -69,8 +74,12 @@ public class TrackControllerInitializer {
             }
           }
 
+          tc.loadOccupancy();
+
           addManager.addController(tc);
         }
+        tracksRemaining--;
+        i++;
       }
 
     } catch (FileNotFoundException ex) {
@@ -83,6 +92,17 @@ public class TrackControllerInitializer {
       System.out.println("Controller Config File Found");
     } else {
       System.out.println("Controller Config File Not Found");
+    }
+  }
+
+  public void initializeLogic() {
+    for (TrackControllerLineManager lm : lms) {
+      String line = lm.getLine();
+      line = line.toLowerCase();
+      for (TrackController tc : lm.getControllersList()) {
+          File plc = new File(path + line + tc.getId() + ".plc");
+          tc.importLogic(plc);
+      }
     }
   }
 }
