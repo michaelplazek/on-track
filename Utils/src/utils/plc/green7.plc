@@ -1,0 +1,6 @@
+BLOCK LOGIC
+IF (block |+6| notOccupied) THEN (blocks |+6| auto)
+IF (crossing |+6| isOccupied) THEN (crossing /19/ closed)
+IF (crossing |-6| isOccupied) THEN (crossing /19/ closed)
+IF (crossing |+6| notOccupied) THEN (crossing /19/ open)
+IF (crossing |-6| notOccupied) THEN (crossing /19/ open)
