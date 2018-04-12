@@ -239,13 +239,17 @@ public class TrackControllerController implements Initializable {
 
   private void handleSwitchGroup(ActionEvent event) {
 
-    if (switchGroup.getSelectedToggle().equals(stayRad) && selBlock.isSwitch()) {
+    if ( selBlock.isSwitch()) {
       Switch s = (Switch) selBlock;
-      s.toggle();
-      updateSwitchState(selBlock);
-    } else {
-      setSwitchAlter();
-      alterRad.setSelected(true);
+      if (switchGroup.getSelectedToggle().equals(stayRad)) {
+        s.toggle();
+        updateSwitchState(selBlock);
+      } else {
+        //setSwitchAlter();
+        s.toggle();
+        alterRad.setSelected(true);
+        updateSwitchState(selBlock);
+      }
     }
   }
 
@@ -495,11 +499,11 @@ public class TrackControllerController implements Initializable {
       Block n2 = myLine.getBlock(s.getNextBlock2());
 
       //TODO set lights based on actual direction data
-      if(!n1.isBiDirectional()) {
+      //if(!n1.isBiDirectional()) {
 
-      } else if (!n2.isBiDirectional()) {
+      //} else if (!n2.isBiDirectional()) {
 
-      }
+      //}
 
     }
   }
@@ -612,9 +616,23 @@ public class TrackControllerController implements Initializable {
       Block next1 = myLine.getBlock(n1);
       Block next2 = myLine.getBlock(n2);
 
-      switchFrom.setText(previous.getSection() + p);
-      switchMain.setText(next1.getSection() + n1);
-      switchFork.setText(next2.getSection() + n2);
+      if( p == -1) {
+        switchFrom.setText("Yard");
+      } else {
+        switchFrom.setText(previous.getSection() + p);
+      }
+
+      if( n1 == -1) {
+        switchMain.setText("Yard");
+      } else {
+        switchMain.setText(next1.getSection() + n1);
+      }
+
+      if( n2 == -1) {
+        switchFork.setText("Yard");
+      } else {
+        switchFork.setText(next2.getSection() + n2);
+      }
 
       if(updateSwitch.getStatus() == n1) {
         setSwitchStay();
