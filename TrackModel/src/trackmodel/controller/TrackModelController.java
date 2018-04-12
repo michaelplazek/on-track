@@ -84,10 +84,17 @@ public class TrackModelController {
 
             blockSelection.setItems(blockList);
 
+            System.out.println(blockList);
+
             if (currentTrack == null) {
               blockSelection.setDisable(true);
             } else {
               blockSelection.setDisable(false);
+
+              if (blockList.size() > 0) {
+                blockSelection.setValue(blockList.get(0));
+              }
+
             }
 
             updateOccupiedBlock();
