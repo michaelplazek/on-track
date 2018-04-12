@@ -39,11 +39,13 @@ public class PowerCalculator {
     double distanceIntoCurrentBlock = tc.getDistanceIntoCurrentBlock() + distanceTraveled;
     Block currentBlock = tc.getCurrentBlock();
     if (distanceIntoCurrentBlock >= currentBlock.getSize()) {
+      distanceIntoCurrentBlock -= currentBlock.getSize();
       Track track = Track.getTrack(tc.getLine());
       Block temp = tc.getCurrentBlock();
       tc.setCurrentBlock(nextBlock(temp, tc.getLastBlock(), track));
       tc.setLastBlock(temp);
     }
+    tc.setDistanceIntoCurrentBlock(distanceIntoCurrentBlock);
     Beacon current = tc.getBeacon();
     if (current != null) {
       tc.setDistanceToStation(tc.getDistanceToStation() - distanceTraveled);
@@ -177,7 +179,7 @@ public class PowerCalculator {
     double kp = tc.getKp();
     double ki = tc.getKi();
     double integral;
-    double speedLimit = getSpeedLimit(tc, getSafeStopDistance(tc));
+    double speedLimit = getSpeedLimit(tc, getSafeStopDistance(tc)) * 1000.0 / 3600.0;
 
     if (currentSpeed > setSpeed || currentSpeed > speedLimit) {
       activateServiceBrake(tc);

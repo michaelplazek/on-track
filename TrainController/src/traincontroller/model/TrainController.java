@@ -81,7 +81,7 @@ public class TrainController implements TrainControllerInterface {
     this.driverSetSpeedMph = new SimpleDoubleProperty(0);
     this.driverSetSpeed = 0;
     this.setTemperature = new SimpleDoubleProperty(68);
-    this.currentTemperature = new SimpleDoubleProperty(68);
+    this.currentTemperature = new SimpleDoubleProperty(trainModel.getCurrentTemp());
     this.kp = new SimpleDoubleProperty(50);
     this.ki = new SimpleDoubleProperty(50);
     this.currentStation = new SimpleStringProperty("N/A");
