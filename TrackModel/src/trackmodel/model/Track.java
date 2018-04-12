@@ -14,6 +14,7 @@ import trackmodel.view.TrackModelUserInterface;
 
 public class Track {
 
+  private static Track instance = null;
   private String line;
   private HashMap<Integer, Block> track;
   private int startBlock;
@@ -43,6 +44,8 @@ public class Track {
     listOfTracks.put(n.toUpperCase(), t);
     TrackModelUserInterface.getInstance().getController().updateTracks();
   }
+
+
 
   /**
    * This method will allow for the user to initialize basic tracks.
@@ -423,20 +426,45 @@ public class Track {
 
   }
 
-  public boolean toggleOccupancy(int num) {
-    return true;
-  }
-
-  public void toggleFailure(int blockId, String failureType) {
-
+  public void toggleFailure(Block block, String failureType) {
+    if (failureType.equals("POWER")) {
+      block.setPowerStatus(!block.getPowerStatus());
+    } else if (failureType.equals("RAIL")) {
+      block.setBrokenRailStatus(!block.getBrokenRailStatus());
+    } else if (failureType.equals("CIRCUIT")) {
+      block.setTrackCircuitStatus(!block.getTrackCircuitStatus());
+    }
   }
 
   public String getOccupiedBlocks() {
-    return null;
+    String blocksOccupied = "";
+
+    for (Block b: track.values()) {
+      if (b.isOccupied()) {
+        if (blocksOccupied.equals("")) {
+          blocksOccupied = blocksOccupied + b.getSection() + b.getNumber();
+        } else {
+          blocksOccupied = blocksOccupied + ", " + b.getSection() + b.getNumber();
+        }
+      }
+    }
+    return blocksOccupied;
   }
 
   public String getClosedBlocks() {
-    return null;
+    String blocksClosed = "";
+
+    for (Block b: track.values()) {
+      if (b.isClosedForMaintenance() || b.getPowerStatus() ||
+          b.getTrackCircuitStatus() || b.getBrokenRailStatus()) {
+        if (blocksClosed.equals("")) {
+          blocksClosed = blocksClosed + b.getSection() + b.getNumber();
+        } else {
+          blocksClosed = blocksClosed + ", " + b.getSection() + b.getNumber();
+        }
+      }
+    }
+    return blocksClosed;
   }
 
   /**

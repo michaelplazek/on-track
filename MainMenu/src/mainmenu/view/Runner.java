@@ -19,9 +19,8 @@ import javafx.util.Duration;
 import mainmenu.Clock;
 import mainmenu.controller.MainMenuController;
 import trackctrl.model.TrackControllerInitializer;
+import trackmodel.view.TrackModelUserInterface;
 import trackctrl.model.TrackControllerLineManager;
-import trackmodel.model.Block;
-import trackmodel.model.Switch;
 import trackmodel.model.Track;
 import traincontroller.model.TrainControllerManager;
 import trainmodel.model.TrainModel;
@@ -35,6 +34,7 @@ public class Runner extends Application {
   private MainMenuController mmc = MainMenuController.getInstance();
   private TrackControllerInitializer init = new TrackControllerInitializer();
   private Clock clk = Clock.getInstance();
+  private TrackModelUserInterface tmc = TrackModelUserInterface.getInstance();
 
   @Override
   public void start(Stage primaryStage) throws Exception {
@@ -50,7 +50,7 @@ public class Runner extends Application {
 
                 if (ctc.isActive()) {
                   clk.tick();
-                  TrackControllerLineManager.runTrackControllers();
+                  tmc.getController().run();
                   TrainModel.runAllInstances();
                   TrainControllerManager.runTrainControllers();
                   ctcc.run();
