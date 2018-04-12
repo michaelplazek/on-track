@@ -236,6 +236,11 @@ public class TrainControllerController implements Initializable {
    * This function initalizes Status Labels on UI.
    */
   private void initializeStatusLabels() {
+    if (trainController.isAutomatic()) {
+      automatic.setSelected(true);
+    } else {
+      manual.setSelected(true);
+    }
     authority.textProperty().bind(trainController.getAuthorityProperty().asString());
     powerCommand.textProperty().bindBidirectional(trainController.getPowerCommandProperty(),
         new DecimalFormat("#0.00"));

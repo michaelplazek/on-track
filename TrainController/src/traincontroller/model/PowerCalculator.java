@@ -39,6 +39,7 @@ public class PowerCalculator {
     double distanceIntoCurrentBlock = tc.getDistanceIntoCurrentBlock() + distanceTraveled;
     Block currentBlock = tc.getCurrentBlock();
     if (distanceIntoCurrentBlock >= currentBlock.getSize()) {
+      System.out.println(currentBlock.getNumber());
       distanceIntoCurrentBlock -= currentBlock.getSize();
       Track track = Track.getTrack(tc.getLine());
       Block temp = tc.getCurrentBlock();
@@ -93,7 +94,10 @@ public class PowerCalculator {
     if (mode == Mode.FAILURE || mode == Mode.CTC_EMERGENCY_BRAKE)  {
       activateEmergencyBrake(tc);
     } else if (mode == Mode.CTC_BRAKE || mode == Mode.DRIVER_BRAKE) {
-      if(tc.isAutomatic() && tc.getCurrentBlock().getStationName() != null && tc.getCurrentSpeed() == 0) {
+      if(tc.isAutomatic() && (tc.getCurrentBlock().getStationName() != null ||
+          nextBlock(tc.getCurrentBlock(), tc.getLastBlock(),
+              Track.getTrack(tc.getLine())).getStationName() != null)
+          && tc.getCurrentSpeed() == 0) {
         tc.setWeight(TrainData.EMPTY_WEIGHT * TrainData.NUMBER_OF_CARS
             + TrainData.MAX_PASSENGERS * 2 * 150 * UnitConversions.LBS_TO_KGS);
         TrainModelInterface tm = tc.getTrainModel();
