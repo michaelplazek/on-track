@@ -16,25 +16,25 @@
    <children>
       <TitledPane fx:id="failuresPane" animated="false" collapsible="false" text="Failures" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <content>
-            <VBox alignment="CENTER" spacing="15.0">
+            <VBox alignment="CENTER" spacing="5.0">
                <children>
                   <HBox alignment="CENTER" spacing="30.0">
                      <children>
                         <HBox alignment="CENTER_LEFT" spacing="5.0">
                            <children>
-                              <Circle fx:id="engineFailureStatusIcon" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
+                              <Circle fx:id="engineFailureStatusIcon" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
                               <Label fx:id="engineFailureStatus" mnemonicParsing="false" text="Engine Failure" />
                            </children>
                         </HBox>
                         <HBox alignment="CENTER_LEFT" spacing="5.0">
                            <children>
-                              <Circle fx:id="brakeFailureStatusIcon" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
+                              <Circle fx:id="brakeFailureStatusIcon" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
                               <Label fx:id="brakeFailureStatus" mnemonicParsing="false" text="Brake Failure" />
                            </children>
                         </HBox>
                         <HBox alignment="CENTER_LEFT" spacing="5.0">
                            <children>
-                              <Circle fx:id="signalFailureStatusIcon" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
+                              <Circle fx:id="signalFailureStatusIcon" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
                               <Label fx:id="signalFailureStatus" mnemonicParsing="false" text="Signal Failure" />
                            </children>
                         </HBox>
@@ -53,7 +53,10 @@
                         <Button fx:id="endButton" mnemonicParsing="false" text="END" />
                      </children>
                   </HBox>
-                  <Button fx:id="emergencyBrakeButton" mnemonicParsing="false" text="EMERGENCY BRAKE" />
+                  <Button fx:id="emergencyBrakeButton" mnemonicParsing="false" styleClass="emergency-brake" stylesheets="@TrainModelStyle.css" text="EMERGENCY BRAKE">
+                     <padding>
+                        <Insets bottom="7.0" left="47.0" right="47.0" top="7.0" />
+                     </padding></Button>
                </children>
             </VBox>
          </content>
@@ -108,7 +111,7 @@
                               </HBox>
                               <HBox alignment="CENTER_LEFT">
                                  <children>
-                                    <Label text="# of Cars:" >
+                                    <Label text="# of Cars:">
                                     <font>
                                        <Font name="Arial Bold" size="13.0" />
                                     </font></Label>
@@ -236,7 +239,7 @@
                            <children>
                               <HBox alignment="CENTER_LEFT">
                                  <children>
-                                    <Label text="Passengers:" >
+                                    <Label text="Passengers:">
                                        <font>
                                           <Font name="Arial Bold" size="13.0" />
                                        </font></Label>
@@ -244,7 +247,7 @@
                               </HBox>
                               <HBox alignment="CENTER_LEFT">
                                  <children>
-                                    <Label text="Time:" >
+                                    <Label text="Time:">
                                        <font>
                                           <Font name="Arial Bold" size="13.0" />
                                        </font></Label>
@@ -252,7 +255,7 @@
                               </HBox>
                               <HBox alignment="CENTER_LEFT">
                                  <children>
-                                    <Label text="Current Block:" >
+                                    <Label text="Current Block:">
                                     <font>
                                        <Font name="Arial Bold" size="13.0" />
                                     </font></Label>
@@ -260,7 +263,7 @@
                               </HBox>
                               <HBox alignment="CENTER_LEFT">
                                  <children>
-                                    <Label text="Track:" >
+                                    <Label text="Track:">
                                        <font>
                                           <Font name="Arial Bold" size="13.0" />
                                        </font></Label>
@@ -304,7 +307,7 @@
                            <children>
                               <HBox alignment="CENTER_LEFT">
                                  <children>
-                                    <Label text="Left Door:" >
+                                    <Label text="Left Door:">
                                        <font>
                                           <Font name="Arial Bold" size="13.0" />
                                        </font></Label>
@@ -312,7 +315,7 @@
                               </HBox>
                               <HBox alignment="CENTER_LEFT">
                                  <children>
-                                    <Label text="Right Door:" >
+                                    <Label text="Right Door:">
                                        <font>
                                           <Font name="Arial Bold" size="13.0" />
                                        </font></Label>
@@ -320,7 +323,7 @@
                               </HBox>
                               <HBox alignment="CENTER_LEFT">
                                  <children>
-                                    <Label text="Light:" >
+                                    <Label text="Light:">
                                        <font>
                                           <Font name="Arial Bold" size="13.0" />
                                        </font></Label>
@@ -328,7 +331,7 @@
                               </HBox>
                               <HBox alignment="CENTER_LEFT">
                                  <children>
-                                    <Label text="Beacon:" >
+                                    <Label text="Beacon:">
                                        <font>
                                           <Font name="Arial Bold" size="13.0" />
                                        </font></Label>
@@ -336,7 +339,7 @@
                               </HBox>
                               <HBox alignment="CENTER_LEFT">
                                  <children>
-                                    <Label text="Temp:" >
+                                    <Label text="Temp:">
                                        <font>
                                           <Font name="Arial Bold" size="13.0" />
                                        </font></Label>
@@ -344,7 +347,7 @@
                               </HBox>
                               <HBox alignment="CENTER_LEFT">
                                  <children>
-                                    <Label text="Heater:" >
+                                    <Label text="Heater:">
                                        <font>
                                           <Font name="Arial Bold" size="13.0" />
                                        </font></Label>
@@ -352,7 +355,7 @@
                               </HBox>
                               <HBox alignment="CENTER_LEFT">
                                  <children>
-                                    <Label text="A/C:" >
+                                    <Label text="A/C:">
                                        <font>
                                           <Font name="Arial Bold" size="13.0" />
                                        </font></Label>

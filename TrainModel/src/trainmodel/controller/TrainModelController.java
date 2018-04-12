@@ -15,6 +15,7 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
@@ -329,6 +330,11 @@ public class TrainModelController implements Initializable {
     addPassenger.setOnAction(this::addPassenger);
     removePassenger.setOnAction(this::removePassenger);
     emergencyBrakeButton.setOnAction(this::emergency_Brake_Engaged);
+  }
+
+  private void initializeButtonStyle() {
+    emergencyBrakeButton.setTextFill(Color.WHITE);
+    emergencyBrakeButton.
   }
 
   private void startEngineFailure() {
