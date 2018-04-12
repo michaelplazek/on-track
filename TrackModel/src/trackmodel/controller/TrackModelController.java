@@ -1,6 +1,6 @@
 package trackmodel.controller;
 
-import java.util.ArrayList;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 
 import javafx.beans.value.ChangeListener;
@@ -117,11 +117,14 @@ public class TrackModelController {
   }
 
   public void updateUI(Block block) {
-    blockSize.setText(String.valueOf(block.getSize()));
+
+    DecimalFormat df = new DecimalFormat("#.###");
+
+    blockSize.setText(String.valueOf(df.format(block.getSize() * 1.0936)));
     blockGrade.setText(String.valueOf(block.getGrade()));
-    blockElevation.setText(String.valueOf(block.getElevation()));
-    blockCumElevation.setText(String.valueOf(block.getCumElevation()));
-    blockSpeedLimit.setText(String.valueOf(block.getSpeedLimit()));
+    blockElevation.setText(String.valueOf(df.format(block.getElevation() * 1.0936)));
+    blockCumElevation.setText(String.valueOf(df.format(block.getCumElevation() * 1.0936)));
+    blockSpeedLimit.setText(String.valueOf(df.format(block.getSpeedLimit() * 0.621371)));
     if (block.isSwitch()) {
       Switch s = (Switch)block;
       blockSwitch.setText(String.valueOf(s.getStatus()));
