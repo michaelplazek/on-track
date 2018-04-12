@@ -3,7 +3,11 @@ package traincontroller.model;
 
 import java.util.HashMap;
 
-import javafx.beans.property.*;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import trackmodel.model.Beacon;
 import trackmodel.model.Block;
 import trackmodel.model.Track;
@@ -317,6 +321,10 @@ public class TrainController implements TrainControllerInterface {
     return automatic.getValue();
   }
 
+  /**
+   * Set train operation mode.
+   * @param automatic Boolean to set mode of train operation
+   */
   public void setAutomatic(boolean automatic) {
     this.automatic.setValue(automatic);
     if (automatic) {
@@ -467,12 +475,20 @@ public class TrainController implements TrainControllerInterface {
     return emergencyBrakeStatus;
   }
 
+  /**
+   * Set service brake status.
+   * @param brakeStatus brake status
+   */
   public void setServiceBrake(OnOffStatus brakeStatus) {
     this.integral = 0;
     trainModel.setServiceBrakeStatus(brakeStatus);
     this.serviceBrakeStatus.set(brakeStatus);
   }
 
+  /**
+   * Set emergency brake status.
+   * @param brakeStatus brake status
+   */
   public void setEmergencyBrake(OnOffStatus brakeStatus) {
     this.integral = 0;
     trainModel.setEmergencyBrakeStatus(brakeStatus);

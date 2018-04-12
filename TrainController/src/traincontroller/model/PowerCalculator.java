@@ -1,5 +1,9 @@
 package traincontroller.model;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import mainmenu.Clock;
 import mainmenu.ClockInterface;
 import trackmodel.model.Beacon;
@@ -13,10 +17,6 @@ import utils.train.Failure;
 import utils.train.OnOffStatus;
 import utils.train.TrainData;
 import utils.unitconversion.UnitConversions;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class PowerCalculator {
   private static ClockInterface clock = Clock.getInstance();
