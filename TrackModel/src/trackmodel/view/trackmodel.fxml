@@ -42,23 +42,28 @@
                         </AnchorPane>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                      <children>
-                        <SplitPane dividerPositions="0.22822822822822822" orientation="VERTICAL" prefHeight="335.0" prefWidth="450.0">
+                        <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="327.0" prefWidth="450.0">
                            <items>
-                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-                                 <children>
-                                    <Label layoutX="24.0" layoutY="12.0" prefHeight="25.0" prefWidth="69.0" text="OCCUPIED:">
-                                       <font>
-                                          <Font size="13.0" />
-                                       </font>
-                                    </Label>
-                                    <Label layoutX="24.0" layoutY="37.0" prefHeight="25.0" prefWidth="69.0" text="CLOSED:">
-                                       <font>
-                                          <Font size="13.0" />
-                                       </font>
-                                    </Label>
-                                    <Label fx:id="occupiedList" layoutX="93.0" layoutY="16.0" prefHeight="17.0" prefWidth="337.0" />
-                                    <Label fx:id="closedList" layoutX="93.0" layoutY="41.0" prefHeight="17.0" prefWidth="337.0" />
-                                 </children></AnchorPane>
+                              <TitledPane collapsible="false" prefHeight="100.0" prefWidth="448.0" text="TRACK STATUS">
+                                 <content>
+                                    <AnchorPane minHeight="-Infinity" minWidth="0.0" prefHeight="77.0" prefWidth="446.0">
+                                       <children>
+                                          <Label layoutX="24.0" layoutY="12.0" prefHeight="25.0" prefWidth="69.0" text="OCCUPIED:">
+                                             <font>
+                                                <Font size="13.0" />
+                                             </font>
+                                          </Label>
+                                          <Label layoutX="24.0" layoutY="37.0" prefHeight="25.0" prefWidth="69.0" text="CLOSED:">
+                                             <font>
+                                                <Font size="13.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="occupiedList" layoutX="93.0" layoutY="16.0" prefHeight="17.0" prefWidth="337.0" />
+                                          <Label fx:id="closedList" layoutX="93.0" layoutY="41.0" prefHeight="17.0" prefWidth="337.0" />
+                                       </children>
+                                    </AnchorPane>
+                                 </content>
+                              </TitledPane>
                               <TitledPane collapsible="false" prefHeight="254.0" prefWidth="325.0" text="BLOCK INFO">
                                  <content>
                                     <HBox prefHeight="100.0" prefWidth="200.0">
