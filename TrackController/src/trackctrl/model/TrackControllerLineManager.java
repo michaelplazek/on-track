@@ -115,7 +115,7 @@ public class TrackControllerLineManager implements TrackControllerLineManagerInt
       if (lm.line.equals(line)) {
         //line found, get ctrlr
         ArrayList ctrlrs = lm.getControllersList();
-        return (TrackController) ctrlrs.get(Integer.parseInt(id)-1);
+        return (TrackController) ctrlrs.get(Integer.parseInt(id) - 1);
       }
     }
     return null;
@@ -149,9 +149,9 @@ public class TrackControllerLineManager implements TrackControllerLineManagerInt
       for (TrackController tc : lineControllers) {
         if (tc.hasBlock(id)) {
           tc.repairBlock(id);
-          }
         }
       }
+    }
     return false;
   }
 

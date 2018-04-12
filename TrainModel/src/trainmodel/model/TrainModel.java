@@ -3,7 +3,14 @@ package trainmodel.model;
 import java.util.HashMap;
 import java.util.Random;
 
-import javafx.beans.property.*;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import mainmenu.Clock;
@@ -36,7 +43,7 @@ public class TrainModel implements TrainModelInterface {
             40.9t = 40900kg
   ============================================ */
 
-//  Train Dimensions
+  // Train Dimensions
   private DoubleProperty height
       = new SimpleDoubleProperty(TrainData.HEIGHT_OF_TRAIN * UnitConversions.METERS_TO_FT);
   private DoubleProperty width
@@ -212,9 +219,9 @@ public class TrainModel implements TrainModelInterface {
 
     currentBlockName.set(currentBlock.getSection() + currentBlock.getNumber());
 
-//    System.out.println("Change in position: " + changeInDist);
-//    System.out.println("Location in block: " + positionInBlock);
-//    System.out.println("Current block: " + currentBlock.getSize());
+    //    System.out.println("Change in position: " + changeInDist);
+    //    System.out.println("Location in block: " + positionInBlock);
+    //    System.out.println("Current block: " + currentBlock.getSize());
   }
 
   /**
@@ -298,11 +305,11 @@ public class TrainModel implements TrainModelInterface {
 
     force = tempForce;
 
-//    if (tempForce - frictionForce < 0) {
-//      force = 0;
-//    } else {
-//      force = tempForce - frictionForce;
-//    }
+    //    if (tempForce - frictionForce < 0) {
+    //      force = 0;
+    //    } else {
+    //      force = tempForce - frictionForce;
+    //    }
   }
 
   /**
@@ -331,11 +338,11 @@ public class TrainModel implements TrainModelInterface {
 //      checkBrakes();
       changeTemperature();
 
-//      System.out.println("Block: " + currentBlock.getSection() + currentBlock.getNumber());
-//      System.out.println("Acceleration: " + acceleration);
-//      System.out.println("Velocity: " + velocity.get());
-//      System.out.println("Force: " + force);
-//      System.out.println("Power: " + powerCommand.get());
+      //      System.out.println("Block: " + currentBlock.getSection() + currentBlock.getNumber());
+      //      System.out.println("Acceleration: " + acceleration);
+      //      System.out.println("Velocity: " + velocity.get());
+      //      System.out.println("Force: " + force);
+      //      System.out.println("Power: " + powerCommand.get());
     }
   }
 
