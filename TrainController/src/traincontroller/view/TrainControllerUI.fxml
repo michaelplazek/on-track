@@ -196,7 +196,7 @@
                                                 <ToggleButton fx:id="rightDoorButton" mnemonicParsing="false" onAction="#toggleRightDoors" prefHeight="25.0" prefWidth="132.0" text="CLOSED" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                 <ToggleButton fx:id="leftDoorButton" mnemonicParsing="false" onAction="#toggleLeftDoors" prefHeight="25.0" prefWidth="78.0" text="CLOSED" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                 <Label id="temperature" fx:id="temperature" text="68" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
-                                                <Label text="Set Temp (&#x00b0;F):" GridPane.rowIndex="4" />
+                                                <Label text="Set Temp (°F):" GridPane.rowIndex="4" />
                                                 <Label id="setTemperature" fx:id="setTemperature" text="68" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
                                                 <TextField fx:id="setTemperatureField" alignment="CENTER_RIGHT" GridPane.rowIndex="5" />
                                                 <Button fx:id="setTemperatureButton" mnemonicParsing="false" onAction="#setTemperatureAction" prefHeight="25.0" prefWidth="113.0" text="Set Temp" GridPane.columnIndex="1" GridPane.rowIndex="5" />
@@ -230,6 +230,7 @@
                                                       <Label id="currentStation" fx:id="currentStation" text="Mt. Lebanon" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
                                                       <Label id="nextStation" fx:id="nextStation" text="Greenview" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
                                                       <Label text="Next Station:" GridPane.rowIndex="1" />
+                                                      <Label layoutX="20.0" layoutY="22.0" text="Current Station:" />
                                                    </children>
                                                 </GridPane>
                                             </content>
@@ -293,40 +294,40 @@
                                                                         <ToggleButton fx:id="emergencyBrakeButton" mnemonicParsing="false" onAction="#toggleEmergencyBrakes" prefHeight="25.0" prefWidth="167.0" text="EMERGENCY BRAKE OFF" GridPane.rowIndex="3" />
                                                                         <GridPane>
                                                                           <columnConstraints>
-                                                                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="128.99999237060547" minWidth="9.0" prefWidth="20.0" />
+                                                                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="15.0" minWidth="6.0" prefWidth="12.0" />
                                                                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="153.0" minWidth="10.0" prefWidth="152.0" />
                                                                           </columnConstraints>
                                                                           <rowConstraints>
                                                                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                           </rowConstraints>
                                                                            <children>
-                                                                              <Circle fill="#199015" radius="9.0" stroke="BLACK" strokeType="INSIDE" />
-                                                                              <Label text="Brakes" GridPane.columnIndex="1" />
+                                                                              <Circle fill="#199015" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
+                                                                              <Label prefHeight="17.0" prefWidth="72.0" text="Brakes" GridPane.columnIndex="1" />
                                                                            </children>
                                                                         </GridPane>
                                                                         <GridPane GridPane.rowIndex="1">
                                                                           <columnConstraints>
-                                                                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="41.0" minWidth="9.0" prefWidth="21.999998092651367" />
+                                                                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="15.0" minWidth="6.0" prefWidth="15.0" />
                                                                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="153.00000190734863" minWidth="10.0" prefWidth="150.00000190734863" />
                                                                           </columnConstraints>
                                                                           <rowConstraints>
                                                                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                           </rowConstraints>
                                                                            <children>
-                                                                              <Circle fill="#199015" radius="9.0" stroke="BLACK" strokeType="INSIDE" />
+                                                                              <Circle fill="#199015" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
                                                                               <Label text="Track Circuit" GridPane.columnIndex="1" />
                                                                            </children>
                                                                         </GridPane>
                                                                         <GridPane GridPane.rowIndex="2">
                                                                           <columnConstraints>
-                                                                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="81.0" minWidth="10.0" prefWidth="20.0" />
+                                                                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="15.0" minWidth="6.0" prefWidth="12.0" />
                                                                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="152.0" minWidth="10.0" prefWidth="152.0" />
                                                                           </columnConstraints>
                                                                           <rowConstraints>
                                                                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                           </rowConstraints>
                                                                            <children>
-                                                                              <Circle fill="#199015" radius="9.0" stroke="BLACK" strokeType="INSIDE" />
+                                                                              <Circle fill="#199015" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
                                                                               <Label text="Engine" GridPane.columnIndex="1" />
                                                                            </children>
                                                                         </GridPane>
