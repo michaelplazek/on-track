@@ -328,7 +328,7 @@ public class Block {
   }
 
   public Beacon getBeacon() {
-    return null;
+    return blockBeacon;
   }
 
   public void setBeacon(boolean hasBeacon) {

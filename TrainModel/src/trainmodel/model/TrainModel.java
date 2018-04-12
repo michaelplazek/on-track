@@ -267,11 +267,13 @@ public class TrainModel implements TrainModelInterface {
    * Updates velocity.
    */
   private void updateVelocity() {
-    if (acceleration == 0 && !isMoving) {
-      velocity.set(0.001);
-    } else {
-      double v = velocity.get() + (acceleration * (clock.getChangeInTime() / 1000.0));
+
+    double v = velocity.get() + (acceleration * (clock.getChangeInTime() / 1000.0));
+
+    if (v > 0) {
       velocity.set(v);
+    } else {
+      velocity.set(0);
     }
 
     velocityMph.set(velocity.getValue() * UnitConversions.MPS_TO_MPH);
@@ -281,18 +283,26 @@ public class TrainModel implements TrainModelInterface {
    * Updates acceleration.
    */
   private void updateAcceleration() {
-    //    if (velocity.get() == 0) {
-    //      acceleration = 1;
-    //    } else {
-    acceleration = force / mass.get();
-    //    }
+    if (emergencyBrakeStatus.getValue() == OnOffStatus.ON) {
+      acceleration = TrainData.EMERGENCY_BRAKE_ACCELERATION;
+    } else if (serviceBrakeStatus.getValue() == OnOffStatus.ON) {
+      acceleration = TrainData.SERVICE_BRAKE_ACCELERATION;
+    } else {
+      acceleration = force / mass.get();
+    }
   }
 
   /**
    * Updates force.
    */
   private void updateForce() {
-    double tempForce = (powerCommand.get() * 1000) / velocity.get(); // power is sent in kW
+    double tempForce;
+    if (velocity.get() == 0) {
+      tempForce = powerCommand.get() * 1000 / 0.001;
+    } else {
+      tempForce = powerCommand.get() * 1000 / velocity.get();
+    }
+
     force = tempForce;
 
     //    if (tempForce - frictionForce < 0) {
@@ -325,7 +335,7 @@ public class TrainModel implements TrainModelInterface {
       updatePosition();
       updateOccupancy();
       updateSpeedAuth();
-      checkBrakes();
+//      checkBrakes();
       changeTemperature();
 
       //      System.out.println("Block: " + currentBlock.getSection() + currentBlock.getNumber());
@@ -363,13 +373,12 @@ public class TrainModel implements TrainModelInterface {
    */
   private void checkBrakes() {
     double deceleration;
-    if (emergencyBrakeStatus.toString().equals(OnOffStatus.ON.toString())) {
-      deceleration = TrainData.EMERGENCY_BRAKE_ACCELERATION * clock.getChangeInTime();
-      velocity.set(velocity.get() - deceleration);
-    } else if (emergencyBrakeStatus.toString().equals(OnOffStatus.OFF.toString())
-        && serviceBrakeStatus.toString().equals(OnOffStatus.ON.toString())) {
-      deceleration = TrainData.SERVICE_BRAKE_ACCELERATION * clock.getChangeInTime();
-      velocity.set(velocity.get() - deceleration);
+    if (emergencyBrakeStatus.getValue() == OnOffStatus.ON) {
+      deceleration = TrainData.EMERGENCY_BRAKE_ACCELERATION * (clock.getChangeInTime() / 1000);
+      velocity.set(velocity.get() + deceleration);
+    } else if (serviceBrakeStatus.getValue() == OnOffStatus.ON) {
+      deceleration = TrainData.SERVICE_BRAKE_ACCELERATION * (clock.getChangeInTime() / 1000);
+      velocity.set(velocity.get() + deceleration);
     }
   }
 
