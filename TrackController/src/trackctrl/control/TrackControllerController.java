@@ -145,13 +145,18 @@ public class TrackControllerController implements Initializable {
     myLine = Track.getTrack(myController.getLine());
   }
 
-  /**
-   * FAKE DATA FOR THE UI DEMO.
-   */
   private void populateDropDowns() {
     ObservableList<String> blockList = FXCollections.observableArrayList(myController.getZone());
     blockChoice.setItems(blockList);
     blockChoice.setValue(blockList.get(0));
+
+    String init = blockList.get(0);
+    init = init.split(" ")[1];
+    selBlock = myController.getBlock(Integer.parseInt(init));
+
+    if (!selBlock.isSwitch()) {
+      disableLights();
+    }
 
     //Action Event for block selection
     blockChoice.getSelectionModel().selectedItemProperty()
@@ -160,13 +165,27 @@ public class TrackControllerController implements Initializable {
               .getSelectedItem().equals("Select Block"))) {
 
             String sel = newValue.toString();
-
             sel = sel.split(" ")[1];
-
             selBlock = myController.getBlock(Integer.parseInt(sel));
+
+            //TODO: this may be redundant, remove later
+            if ( !selBlock.isCrossing() ) {
+              closedRad.setDisable(true);
+              openRad.setDisable(true);
+            } else {
+              closedRad.setDisable(false);
+              openRad.setDisable(false);
+            }
+
+            if (!selBlock.isSwitch()) {
+              resetLightSwitch();
+              disableLights();
+            }
 
             //updateControllerUI(Integer.parseInt(sel));
             //TODO this should get connected to the clock
+            checkRadios();
+            disableLights();
             run();
           }
         });
@@ -219,20 +238,17 @@ public class TrackControllerController implements Initializable {
   }
 
   private void handleSwitchGroup(ActionEvent event) {
-    String blockString = (String) blockChoice.getSelectionModel().getSelectedItem();
-    blockString = blockString.split(" ")[1];
-    Block update = myLine.getBlock(Integer.parseInt(blockString));
 
-    if (switchGroup.getSelectedToggle().equals(stayRad) && update.isSwitch()) {
-      Switch s = (Switch) update;
+    if (switchGroup.getSelectedToggle().equals(stayRad) && selBlock.isSwitch()) {
+      Switch s = (Switch) selBlock;
       s.toggle();
-      updateSwitchState(update);
+      updateSwitchState(selBlock);
     } else {
       setSwitchAlter();
+      alterRad.setSelected(true);
     }
   }
 
-  //TODO
   private void handleRepairGroup(ActionEvent event) {
     if (repairGroup.getSelectedToggle().equals(blockBrokenRad)) {
       //attempt to close a block for maintainence
@@ -240,11 +256,9 @@ public class TrackControllerController implements Initializable {
     } else {
       selBlock.setClosedForMaintenance(false);
     }
-
     updateBlockStatus(selBlock);
   }
 
-  //TODO
   private void handleImportLogic(ActionEvent event) {
     FileChooser fileChooser = new FileChooser();
     fileChooser.setTitle("Choose a PLC  file");
@@ -259,7 +273,8 @@ public class TrackControllerController implements Initializable {
   //TODO
   private void handleCheckLogic(ActionEvent event) {
     if (!(myController.checkLogic())) {
-      //Display error
+      //DEMO this is an update button for the demo...
+      run();
     }
   }
 
@@ -315,6 +330,8 @@ public class TrackControllerController implements Initializable {
     blockBrokenRad.setOnAction(this::handleRepairGroup);
     blockRepairedRad.setOnAction(this::handleRepairGroup);
 
+    lightMainLtoR.setSelected(false);
+
   }
 
   //******************************************************************************************
@@ -325,6 +342,19 @@ public class TrackControllerController implements Initializable {
     switchMainLtoR.setOpacity(0);
     switchForkRtoL.setOpacity(0);
     switchForkLtoR.setOpacity(0);
+    lightSwitch.setOpacity(100);
+
+  }
+
+  private void disableLights() {
+    if(!selBlock.isSwitch()) {
+      fromLight0.setFill(Paint.valueOf("GRAY"));
+      fromLight1.setFill(Paint.valueOf("GRAY"));
+      mainLight0.setFill(Paint.valueOf("GRAY"));
+      mainLight1.setFill(Paint.valueOf("GRAY"));
+      forkLight0.setFill(Paint.valueOf("GRAY"));
+      forkLight1.setFill(Paint.valueOf("GRAY"));
+    }
   }
 
   private void disableRadios() {
@@ -457,40 +487,87 @@ public class TrackControllerController implements Initializable {
     String block = (String) blockChoice.getSelectionModel().getSelectedItem();
     block = block.split(" ")[1];
     int id = Integer.parseInt(block);
-    Switch s = (Switch) myLine.getBlock(id);
 
-    Block n1 = myLine.getBlock(s.getNextBlock1());
-    Block n2 = myLine.getBlock(s.getNextBlock2());
+    if( selBlock.isSwitch()) {
+      Switch s = (Switch) myLine.getBlock(id);
 
-    //TODO set lights based on actual direction data
-    //if(!n1.isBiDirectional()) {
+      Block n1 = myLine.getBlock(s.getNextBlock1());
+      Block n2 = myLine.getBlock(s.getNextBlock2());
 
-    //} else if () {
+      //TODO set lights based on actual direction data
+      if(!n1.isBiDirectional()) {
 
-    //}
+      } else if (!n2.isBiDirectional()) {
+
+      }
+
+    }
+  }
+
+  private void checkLights() {
+    String block = (String) blockChoice.getSelectionModel().getSelectedItem();
+    block = block.split(" ")[1];
+    int id = Integer.parseInt(block);
+    if (myLine.getBlock(id).isSwitch()) {
+      Switch s = (Switch) myLine.getBlock(id);
+
+
+    } else {
+      //disable lights
+
+
+    }
   }
 
   private void checkRadios() {
     //This check of the radio buttons responsible for disabling radio
     //buttons in manual mode when a block that is not a switch is selected
 
-    if(isManual) {
-      disableRadios();
+    if (isManual) {
+      enableRadios();
       blockRepairedRad.setDisable(false);
       blockBrokenRad.setDisable(false);
-      if(!selBlock.isSwitch()) {
-        lightMainLtoR.setDisable(true);
-        lightForkLtoR.setDisable(true);
-        lightMainRtoL.setDisable(true);
-        lightForkRtoL.setDisable(true);
-        stayRad.setDisable(true);
-        alterRad.setDisable(true);
-      } else if (!selBlock.isCrossing() && !selBlock.isSwitch()) {
-        closedRad.setDisable(true);
-        openRad.setDisable(true);
-      } else {
-        enableRadios();
+
+      if (selBlock != null) {
+
+        if (!selBlock.isSwitch()) {
+          lightMainLtoR.setDisable(true);
+          lightForkLtoR.setDisable(true);
+          lightMainRtoL.setDisable(true);
+          lightForkRtoL.setDisable(true);
+          stayRad.setDisable(true);
+          alterRad.setDisable(true);
+
+          if (selBlock.isCrossing()) {
+            closedRad.setDisable(false);
+            openRad.setDisable(false);
+          } else {
+            closedRad.setDisable(true);
+            openRad.setDisable(true);
+          }
+
+        } else {
+
+          enableRadios();
+
+          closedRad.setDisable(true);
+          openRad.setDisable(true);
+
+          if ( ((Switch) selBlock).getSwitchState() ) {
+            //true - nextblock1 (main)
+            stayRad.setSelected(true);
+          } else {
+            alterRad.setSelected(true);
+          }
+        }
+
+        if(selBlock.isClosedForMaintenance()) {
+          blockBrokenRad.setSelected(true);
+        } else {
+          blockRepairedRad.setSelected(true);
+        }
       }
+
     } else {
       disableRadios();
     }
@@ -580,6 +657,9 @@ public class TrackControllerController implements Initializable {
     setOpen();
     setSwitchInactive();
     resetLightSwitch();
+
+    updateBlockStatus(selBlock);
+
     importLogic.setOnAction(this::handleImportLogic);
     checkLogic.setOnAction(this::handleCheckLogic);
   }

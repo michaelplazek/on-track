@@ -598,19 +598,21 @@ public class CentralTrafficControlController {
     // TODO: hook up Track Controller once it's ready
     switch (action) {
       case "Close block":
-        track.setClosedForMaintenance(blockId,true);
+        manager.closeBlock(blockId);
+        //track.setClosedForMaintenance(blockId,true);
         updateMaintenance();
 //        manager.closeBlock(blockId);
         break;
       case "Repair block":
-        track.setClosedForMaintenance(blockId,false);
+        manager.repairBlock(blockId);
+        //track.setClosedForMaintenance(blockId,false);
         updateMaintenance();
 //        manager.repairBlock(blockId);
         break;
       case "Toggle switch":
-        Switch sw = (Switch) track.getBlock(blockId);
-        sw.toggle();
-//        manager.toggleSwitch(blockId);
+        //Switch sw = (Switch) track.getBlock(blockId);
+        //sw.toggle();
+        manager.toggleSwitch(blockId);
         break;
       default:
         break;
