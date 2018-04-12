@@ -5,6 +5,8 @@ import java.text.DecimalFormat;
 import java.util.ResourceBundle;
 
 import javafx.beans.binding.Bindings;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -81,7 +83,7 @@ public class TrainControllerController implements Initializable {
   private void setSpeedAction(ActionEvent event) {
     try {
       double newSetSpeed = Double.parseDouble(setSpeedField.getText());
-      if (newSetSpeed <= trainController.getSetSpeed()) {
+      if (newSetSpeed <= trainController.getSetSpeed() && newSetSpeed >= 0) {
         trainController.setDriverSetSpeed(newSetSpeed * UnitConversions.MPH_TO_KPH * 1000 / 3600);
       } else {
 
@@ -104,7 +106,7 @@ public class TrainControllerController implements Initializable {
   private void setTemperatureAction(ActionEvent event) {
     try {
       double newTemperature = Double.parseDouble(setTemperatureField.getText());
-      if(newTemperature >= 60 && newTemperature <= 8) {
+      if (newTemperature >= 60 && newTemperature <= 80) {
         trainController.setSetTemperature(newTemperature);
       } else {
 
@@ -140,14 +142,17 @@ public class TrainControllerController implements Initializable {
   private void toggleEmergencyBrakes(ActionEvent event) {
     if (!emergencyBrakeButton.isSelected()) {
       trainController.setEmergencyBrake(OnOffStatus.OFF);
+      trainController.setMode(Mode.NORMAL);
+      trainController.setTrackCircuitSignal(0, trainController.getAuthority());
     } else {
-      trainController.setEmergencyBrake(OnOffStatus.ON);
+      trainController.activateEmergencyBrake();
     }
   }
 
   @FXML
   private void toggleServiceBrakes(ActionEvent event) {
     if (!serviceBrakeButton.isSelected()) {
+      trainController.setMode(Mode.NORMAL);
       trainController.setServiceBrake(OnOffStatus.OFF);
       trainController.setTrackCircuitSignal(0, trainController.getAuthority());
     } else {
@@ -258,17 +263,31 @@ public class TrainControllerController implements Initializable {
         new DecimalFormat("#0.00"));
     ki.textProperty().bindBidirectional(trainController.getKiProperty(),
         new DecimalFormat("#0.00"));
+    lightsButton.textProperty().bind(trainController.lightStatusProperty().asString());
+    lightsButton.setSelected(trainController.getLightStatus() == OnOffStatus.ON);
+    trainController.lightStatusProperty().addListener(
+        (o, oldVal, newVal) -> lightsButton.setSelected(newVal == OnOffStatus.ON));
     currentStation.textProperty().bindBidirectional(trainController.getCurrentStationProperty());
     nextStation.textProperty().bindBidirectional(trainController.getNextStationProperty());
     serviceBrakeButton.textProperty().bind(trainController.serviceBrakeStatusProperty().asString());
     serviceBrakeButton.setSelected(trainController.getServiceBrakeStatus() == OnOffStatus.ON);
+    trainController.serviceBrakeStatusProperty().addListener(
+        (o, oldVal, newVal) -> serviceBrakeButton.setSelected(newVal == OnOffStatus.ON));
     emergencyBrakeButton.textProperty().bind(Bindings.concat("Emergency Brake ",
         trainController.emergencyBrakeStatusProperty()));
     emergencyBrakeButton.setSelected(trainController.getEmergencyBrakeStatus() == OnOffStatus.ON);
+    trainController.emergencyBrakeStatusProperty().addListener(
+        (o, oldVal, newVal) -> emergencyBrakeButton.setSelected(newVal == OnOffStatus.ON));
     rightDoorButton.textProperty().bind(trainController.rightDoorStatusProperty().asString());
     rightDoorButton.setSelected(trainController.getRightDoorStatus() == DoorStatus.OPEN);
+    trainController.rightDoorStatusProperty().addListener(
+        (o, oldVal, newVal) -> rightDoorButton.setSelected(newVal == DoorStatus.OPEN));
     leftDoorButton.textProperty().bind(trainController.leftDoorStatusProperty().asString());
     leftDoorButton.setSelected(trainController.getLeftDoorStatus() == DoorStatus.OPEN);
+    trainController.leftDoorStatusProperty().addListener(
+        (o, oldVal, newVal) -> leftDoorButton.setSelected(newVal == DoorStatus.OPEN));
+    automatic.selectedProperty().bindBidirectional(trainController.automaticProperty());
+    toggleMode(null);
   }
 
   private void checkRunning() {

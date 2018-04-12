@@ -262,12 +262,6 @@ public class Track {
     } catch (URISyntaxException ue) {
       System.out.println("URI Error");
     }
-
-    if (f.exists()) {
-      System.out.println("File Found");
-    } else {
-      System.out.println("File Not Found");
-    }
   }
 
   public static HashMap<String, Track> getListOfTracks() {

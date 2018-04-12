@@ -84,8 +84,6 @@ public class TrackModelController {
 
             blockSelection.setItems(blockList);
 
-            System.out.println(blockList);
-
             if (currentTrack == null) {
               blockSelection.setDisable(true);
             } else {
@@ -261,10 +259,12 @@ public class TrackModelController {
   }
 
   public  void run() {
-    int blockId = extractBlock(blockSelection);
-    Block block = currentTrack.getBlock(blockId);
-    if(block != null) {
-      updateUI(block);
+    if (currentTrack != null) {
+      int blockId = extractBlock(blockSelection);
+      Block block = currentTrack.getBlock(blockId);
+      if (block != null) {
+        updateUI(block);
+      }
     }
   }
 
