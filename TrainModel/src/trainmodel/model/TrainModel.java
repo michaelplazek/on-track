@@ -217,7 +217,9 @@ public class TrainModel implements TrainModelInterface {
       positionInBlock = positionInBlock + changeInDist;
     }
 
-    currentBlockName.set(currentBlock.getSection() + currentBlock.getNumber());
+    if (currentBlock != null) {
+      currentBlockName.set(currentBlock.getSection() + currentBlock.getNumber());
+    }
 
     //    System.out.println("Change in position: " + changeInDist);
     //    System.out.println("Location in block: " + positionInBlock);

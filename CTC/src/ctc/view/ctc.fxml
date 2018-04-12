@@ -50,9 +50,9 @@
                   <Font size="14.0" />
                </font>
             </Label>
-            <Label layoutX="1240.0" layoutY="22.0" text="Throughput:" AnchorPane.leftAnchor="1240.0">
+            <Label layoutX="1233.0" layoutY="23.0" text="Throughput:" AnchorPane.leftAnchor="1233.0">
                <font>
-                  <Font name="System Italic" size="12.0" />
+                  <Font name="System Italic" size="14.0" />
                </font>
             </Label>
             <Label fx:id="throughput" layoutX="1240.0" layoutY="41.0" AnchorPane.leftAnchor="1240.0">
@@ -144,11 +144,11 @@
                                                 <Label layoutX="318.0" layoutY="372.0" text="Train Status" />
                                                 <TableView fx:id="dispatchTable" layoutX="4.0" layoutY="7.0" prefHeight="338.0" prefWidth="396.0">
                                                   <columns>
-                                                    <TableColumn fx:id="dispatchTrainColumn" prefWidth="87.18096923828125" text="Train" />
-                                                    <TableColumn fx:id="dispatchLocationColumn" prefWidth="78.008544921875" text="Location" />
-                                                      <TableColumn fx:id="dispatchAuthorityColumn" minWidth="0.0" prefWidth="72.991455078125" text="Authority" />
-                                                      <TableColumn fx:id="dispatchSpeedColumn" minWidth="0.0" prefWidth="64.508544921875" text="Speed" />
-                                                      <TableColumn fx:id="dispatchPassengersColumn" prefWidth="89.5" text="Passengers" />
+                                                    <TableColumn fx:id="dispatchTrainColumn" prefWidth="79.5" text="Train" />
+                                                    <TableColumn fx:id="dispatchLocationColumn" prefWidth="62.5" text="Location" />
+                                                      <TableColumn fx:id="dispatchAuthorityColumn" minWidth="0.0" prefWidth="121.0" text="Authority" />
+                                                      <TableColumn fx:id="dispatchSpeedColumn" minWidth="0.0" prefWidth="47.0" text="Speed" />
+                                                      <TableColumn fx:id="dispatchPassengersColumn" prefWidth="83.5" text="Passengers" />
                                                   </columns>
                                                 </TableView>
                                                 <ChoiceBox fx:id="setAuthorityBlocks" disable="true" layoutX="8.0" layoutY="380.0" prefHeight="26.0" prefWidth="121.0" />
