@@ -191,12 +191,12 @@
                                                 <Label text="Lights:" />
                                                 <Label text="Right Doors:" GridPane.rowIndex="1" />
                                                 <Label text="Left Doors:" GridPane.rowIndex="2" />
-                                                <Label text="Temperature (° F):" GridPane.rowIndex="3" />
+                                                <Label text="Temperature (°F):" GridPane.rowIndex="3" />
                                                 <ToggleButton fx:id="lightsButton" mnemonicParsing="false" onAction="#toggleLights" prefHeight="25.0" prefWidth="78.0" text="OFF" GridPane.columnIndex="1" />
                                                 <ToggleButton fx:id="rightDoorButton" mnemonicParsing="false" onAction="#toggleRightDoors" prefHeight="25.0" prefWidth="132.0" text="CLOSED" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                 <ToggleButton fx:id="leftDoorButton" mnemonicParsing="false" onAction="#toggleLeftDoors" prefHeight="25.0" prefWidth="78.0" text="CLOSED" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                 <Label id="temperature" fx:id="temperature" text="68" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
-                                                <Label text="Set Temp (&#x00b0; F):" GridPane.rowIndex="4" />
+                                                <Label text="Set Temp (&#x00b0;F):" GridPane.rowIndex="4" />
                                                 <Label id="setTemperature" fx:id="setTemperature" text="68" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
                                                 <TextField fx:id="setTemperatureField" alignment="CENTER_RIGHT" GridPane.rowIndex="5" />
                                                 <Button fx:id="setTemperatureButton" mnemonicParsing="false" onAction="#setTemperatureAction" prefHeight="25.0" prefWidth="113.0" text="Set Temp" GridPane.columnIndex="1" GridPane.rowIndex="5" />
