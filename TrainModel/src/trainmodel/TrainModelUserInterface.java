@@ -22,7 +22,7 @@ public class TrainModelUserInterface {
       Parent root = loader.load();
       Stage stage = new Stage();
       stage.setTitle(trainId);
-      stage.setScene(new Scene(root, 850, 500));
+      stage.setScene(new Scene(root, 750, 350));
       stage.show();
     } catch (IOException e) {
       e.printStackTrace();

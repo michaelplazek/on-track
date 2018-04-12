@@ -114,7 +114,7 @@ public class TrackController implements TrackControllerInterface {
 
       //Create string list upon initialization
       for (Integer i : blocks.keySet()) {
-        if(myLine.getBlock(i).isSwitch()) {
+        if (myLine.getBlock(i).isSwitch()) {
           blockList.add("Switch " + i.toString());
         } else {
           blockList.add("Block " + i.toString());
@@ -127,7 +127,7 @@ public class TrackController implements TrackControllerInterface {
   public ArrayList<String> getZone() {
 
     for (Map.Entry<Integer, Block> b : myZone.entrySet()) {
-      if(b.getValue().isSwitch()) {
+      if (b.getValue().isSwitch()) {
         blockList.add("Switch" + " " + b.getKey().toString());
       } else {
         blockList.add("Block" + " " + b.getKey().toString());

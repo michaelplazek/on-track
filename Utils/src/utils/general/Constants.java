@@ -16,4 +16,6 @@ public class Constants {
   public static final String LABEL_STATUS_UNAVAILABLE = "N/A";
   public static final double STEEL_FRICTION = 0.78;
   public static final double GRAVITY = 9.8; //acceleration due to gravity m/s^2
+  public static final String DEGREES = "\u00b0";
+
 }
