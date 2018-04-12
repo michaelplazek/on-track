@@ -23,7 +23,7 @@ public class TrackControllerInitializer {
 
 
   /**
-   * Initialized track controllers based on config file in Utils
+   * Initialized track controllers based on config file in Utils.
    */
   public void parseConfig() {
 
@@ -38,7 +38,7 @@ public class TrackControllerInitializer {
       line = br.readLine();
       line = br.readLine();
       Integer tracksRemaining = Integer.parseInt(line.split(",")[0]);
-      lms = new TrackControllerLineManager[tracksRemaining+1];
+      lms = new TrackControllerLineManager[tracksRemaining + 1];
 
       while ((line = br.readLine()) != null) {
         String[] splitLine = line.split(",");
@@ -63,6 +63,7 @@ public class TrackControllerInitializer {
 
           for (int j = offset; j <= endBlock; j++) {
             tc.addBlock(track.getBlock(j));
+            tc.setEndBlock(endBlock);
           }
 
           if (splitLine.length > 3) {
@@ -75,6 +76,7 @@ public class TrackControllerInitializer {
                 tc.addBlock(track.getBlock(j));
               }
             }
+            //tc.setEndBlock(endBlock);
           }
 
           tc.setBlockNumber();
@@ -97,13 +99,16 @@ public class TrackControllerInitializer {
     }
   }
 
+  /** This function uses track controller naming conventions
+   * to search for a default file name for that controller.
+   */
   public void initializeLogic() {
     for (TrackControllerLineManager lm : lms) {
       String line = lm.getLine();
       line = line.toLowerCase();
       for (TrackController tc : lm.getControllersList()) {
-          File plc = new File(path + line + tc.getId() + ".plc");
-          tc.importLogic(plc);
+        File plc = new File(path + line + tc.getId() + ".plc");
+        tc.importLogic(plc);
       }
     }
   }

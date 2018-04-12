@@ -1,0 +1,7 @@
+BLOCK LOGIC
+IF (block |+4| notOccupied) THEN (blocks |+4| auto)
+IF (block |+8| isOccupied) THEN (blocks |+4| brake)
+IF (block |+8| isBroken) THEN (blocks |+4| brake)
+SWITCH LOGIC
+IF (pblock |+6| notOccupied) AND (n1block |+6| notOccupied) AND (n2block |0| ignore) THEN (switch /77/ switchN1)
+IF (pblock |+6| isOccupied) AND (n1block |+6| notOccupied) AND (n2block |0| ignore) THEN (switch /77/ switchN2)
