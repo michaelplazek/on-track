@@ -69,8 +69,8 @@ public class TrainController implements TrainControllerInterface {
     this.driverSetSpeed = new SimpleDoubleProperty(0);
     this.setTemperature = new SimpleDoubleProperty(68);
     this.currentTemperature = new SimpleDoubleProperty(68);
-    this.kp = new SimpleDoubleProperty(5);
-    this.ki = new SimpleDoubleProperty(5);
+    this.kp = new SimpleDoubleProperty(50);
+    this.ki = new SimpleDoubleProperty(50);
     this.currentStation = new SimpleStringProperty("N/A");
     this.nextStation = new SimpleStringProperty("N/A");
     this.integral = 0;
@@ -108,8 +108,7 @@ public class TrainController implements TrainControllerInterface {
    */
   public void setTrackCircuitSignal(float setSpeed, Authority authority) {
     double speed = setSpeed * UnitConversions.MPH_TO_KPH * 1000.0 / 3600.0;
-    if (speed != this.getSetSpeed()) {
-      this.integral = 0;
+    if (speed != this.getSetSpeed() && speed != 0) {
       this.setSpeed.set(speed);
     }
     if (authority != null && getAuthority() != authority) {

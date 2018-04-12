@@ -22,11 +22,13 @@ public class PowerCalculator {
    * @param tc pass train controller to update
    */
   static void run(TrainController tc) {
-    updateEstimates(tc);
-    updateFailures(tc);
-    executeAction(tc);
-    updateTemperature(tc);
-    updateModelValues(tc);
+    if (clock.getChangeInTime() != 0) {
+      updateEstimates(tc);
+      updateFailures(tc);
+      executeAction(tc);
+      updateTemperature(tc);
+      updateModelValues(tc);
+    }
   }
 
   static void updateEstimates(TrainController tc) {
@@ -177,14 +179,16 @@ public class PowerCalculator {
 
       double power = kp * (setSpeed - currentSpeed) + ki * integral;
 
-      if (power > TrainData.MAX_POWER) {
-        power = TrainData.MAX_POWER;
+      System.out.printf("power: %f\n", power);
+
+      if (power > TrainData.MAX_POWER * 100) {
+        power = TrainData.MAX_POWER * 100;
         integral = lastIntegral;
       }
 
       deactivateServiceBrake(tc);
       tc.setIntegral(integral);
-      tc.setPowerCommand(power);
+      tc.setPowerCommand(power / 100);
     }
   }
 
