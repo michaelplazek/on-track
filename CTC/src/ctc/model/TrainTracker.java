@@ -173,10 +173,12 @@ public class TrainTracker {
   private void updateTrackSignals() {
 
     ScheduleRow stop = route.getNextStop();
+    String nextStationOnSchedule = stop != null ? stop.getStop() : null;
 
     // check to see if we have reached a station
-    if ((location.isLeftStation() || location.isRightStation())
-        && location.getStationName().compareTo(stop.getStop()) == 0) {
+    if (nextStationOnSchedule != null
+        && (location.isLeftStation() || location.isRightStation())
+        && location.getStationName().compareTo(nextStationOnSchedule) == 0) {
       isStopped = true;
       currentDwell = convertTimeToMilliseconds(stop.getDwell());
       route.incrementNextStationIndex();
@@ -188,7 +190,7 @@ public class TrainTracker {
       speed = location.getSpeedLimit();
     }
 
-    String nextStationOnSchedule = stop != null ? stop.getStop() : null;
+
 
     // determine next authority
     String nextStationOnRoute = route.getNextStation();

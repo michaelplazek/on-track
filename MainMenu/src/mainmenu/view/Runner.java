@@ -20,8 +20,6 @@ import mainmenu.Clock;
 import mainmenu.controller.MainMenuController;
 import trackctrl.model.TrackControllerInitializer;
 import trackctrl.model.TrackControllerLineManager;
-import trackmodel.model.Block;
-import trackmodel.model.Switch;
 import trackmodel.model.Track;
 import traincontroller.model.TrainControllerManager;
 import trainmodel.model.TrainModel;
