@@ -22,11 +22,13 @@ public class PowerCalculator {
    * @param tc pass train controller to update
    */
   static void run(TrainController tc) {
-    updateEstimates(tc);
-    updateFailures(tc);
-    executeAction(tc);
-    updateTemperature(tc);
-    updateModelValues(tc);
+    if (clock.getChangeInTime() != 0) {
+      updateEstimates(tc);
+      updateFailures(tc);
+      executeAction(tc);
+      updateTemperature(tc);
+      updateModelValues(tc);
+    }
   }
 
   static void updateEstimates(TrainController tc) {
@@ -44,7 +46,7 @@ public class PowerCalculator {
     }
     Beacon current = tc.getBeacon();
     if (current != null) {
-      current.setDistance((float)(current.getDistance() - distanceTraveled));
+      tc.setDistanceToStation(tc.getDistanceToStation() - distanceTraveled);
     }
     if (tc.getTrainModel().getServiceBrakeStatus() == OnOffStatus.ON) {
       double lastSpeed = tc.getCurrentSpeed();
@@ -143,9 +145,8 @@ public class PowerCalculator {
   static void executeStopAtStation(TrainController tc) {
     double safeStoppingDistance = getSafeStopDistance(tc);
     if (tc.getBeacon() != null) {
-      if (tc.getDistanceToStation() - 1 <= safeStoppingDistance) {
+      if (tc.getDistanceToStation() > 0 && tc.getDistanceToStation() - 1 <= safeStoppingDistance) {
         activateServiceBrake(tc);
-        tc.setPowerCommand(0);
       } else if (Math.abs(tc.getDistanceToStation()) <= 1 && tc.getCurrentSpeed() == 0) {
         tc.setMode(Mode.AT_STATION);
       } else {
@@ -177,14 +178,14 @@ public class PowerCalculator {
 
       double power = kp * (setSpeed - currentSpeed) + ki * integral;
 
-      if (power > TrainData.MAX_POWER) {
-        power = TrainData.MAX_POWER;
+      if (power > TrainData.MAX_POWER * 100) {
+        power = TrainData.MAX_POWER * 100;
         integral = lastIntegral;
       }
 
       deactivateServiceBrake(tc);
       tc.setIntegral(integral);
-      tc.setPowerCommand(power);
+      tc.setPowerCommand(power / 100);
     }
   }
 
@@ -223,6 +224,7 @@ public class PowerCalculator {
     if (tm.getEmergencyBrakeStatus() != OnOffStatus.ON) {
       tc.activateEmergencyBrake();
     }
+    tc.setPowerCommand(0);
   }
 
   static void deactivateServiceBrake(TrainController tc) {
@@ -237,5 +239,6 @@ public class PowerCalculator {
     if (tm.getServiceBrakeStatus() != OnOffStatus.ON) {
       tc.setServiceBrake(OnOffStatus.ON);
     }
+    tc.setPowerCommand(0);
   }
 }

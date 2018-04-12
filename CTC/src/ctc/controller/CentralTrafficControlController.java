@@ -14,7 +14,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javafx.application.Platform;
@@ -868,7 +872,6 @@ public class CentralTrafficControlController {
               distance = 0;
             }
           }
-
         }
 
         // create item in queue
@@ -1010,8 +1013,13 @@ public class CentralTrafficControlController {
       float speed = Float.parseFloat(suggestedSpeedField.getText());
       Authority authority = train.getAuthority();
 
-      // set the new speed on the train
-      train.setSpeed(speed);
+      // check the new speed
+      int speedLimit = train.getLocation().getSpeedLimit();
+      if (speed > speedLimit) {
+        train.setSpeed(speedLimit);
+      } else {
+        train.setSpeed(speed);
+      }
 
       // send signals
       // TODO: set this once the Track Controller is ready

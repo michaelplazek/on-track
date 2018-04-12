@@ -20,6 +20,7 @@ import mainmenu.Clock;
 import mainmenu.controller.MainMenuController;
 import trackctrl.model.TrackControllerInitializer;
 import trackmodel.view.TrackModelUserInterface;
+import trackctrl.model.TrackControllerLineManager;
 import trackmodel.model.Track;
 import traincontroller.model.TrainControllerManager;
 import trainmodel.model.TrainModel;
@@ -31,6 +32,7 @@ public class Runner extends Application {
       CentralTrafficControlUserInterface.getInstance().getController();
   private CentralTrafficControlInterface ctc = CentralTrafficControl.getInstance();
   private MainMenuController mmc = MainMenuController.getInstance();
+  private TrackControllerInitializer init = new TrackControllerInitializer();
   private Clock clk = Clock.getInstance();
   private TrackModelUserInterface tmc = TrackModelUserInterface.getInstance();
 
@@ -48,10 +50,10 @@ public class Runner extends Application {
 
                 if (ctc.isActive()) {
                   clk.tick();
-                  ctcc.run();
                   tmc.getController().run();
-                  TrainControllerManager.runTrainControllers();
                   TrainModel.runAllInstances();
+                  TrainControllerManager.runTrainControllers();
+                  ctcc.run();
                 }
               }
             }
@@ -79,6 +81,6 @@ public class Runner extends Application {
     clk.setInitialTime();
     clk.tick();
     ctc.initialize();
-    TrackControllerInitializer.parseTrack();
+    init.parseConfig();
   }
 }

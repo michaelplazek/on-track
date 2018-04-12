@@ -1,0 +1,11 @@
+.emergency-brake {
+    -fx-background-color: linear-gradient(#ff5400, #be1d00);
+    -fx-background-radius: 3;
+    -fx-background-insets: 0;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+}
+
+.emergency-brake:pressed {
+    -fx-background-color: linear-gradient(#e15100, #9b1f00);
+}

@@ -4,13 +4,15 @@ import java.util.ArrayList;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import trackmodel.model.Block;
+import trackmodel.model.Switch;
+import trackmodel.model.Track;
+
 import utils.general.Authority;
 
 public class TrackControllerLineManager implements TrackControllerLineManagerInterface {
 
   public String line;
-  private int[][] occupancy;
-  private int[][] states;
 
   private static ArrayList<TrackControllerLineManager> lines;
   private ArrayList<TrackController> lineControllers;
@@ -55,35 +57,21 @@ public class TrackControllerLineManager implements TrackControllerLineManagerInt
   }
 
   @Override
-  public boolean setSwitchOverride(int block, boolean state) {
+  public boolean getOccupancy(int id) {
     if (lineControllers != null) {
       for (TrackController tc : lineControllers) {
-        if (tc.hasBlock(block)) {
-          return tc.setSwitchOverride(block, state);
+        if (tc.hasBlock(id)) {
+          return tc.getOccupancy(id);
         }
       }
     }
-    return false;
-  }
-
-  //TODO
-  @Override
-  public boolean getOccupancy(int id) {
-    return false;
-  }
-
-  //TODO
-  @Override
-  public boolean getInfrastructure(int id) {
+    //DEBUG: this could cause some problems if not checked properly above
     return false;
   }
 
   @Override
   public boolean addController(TrackController newCtrl) {
-    if (lineControllers != null) {
-      lineControllerIds.add(line + " " + newCtrl.getId());
-      return lineControllers.add(newCtrl);
-    }
+    lineControllerIds.add(line + " " + newCtrl.getId());
     return lineControllers.add(newCtrl);
   }
 
@@ -127,7 +115,7 @@ public class TrackControllerLineManager implements TrackControllerLineManagerInt
       if (lm.line.equals(line)) {
         //line found, get ctrlr
         ArrayList ctrlrs = lm.getControllersList();
-        return (TrackController) ctrlrs.get(Integer.parseInt(id));
+        return (TrackController) ctrlrs.get(Integer.parseInt(id) - 1);
       }
     }
     return null;
@@ -140,6 +128,13 @@ public class TrackControllerLineManager implements TrackControllerLineManagerInt
    * @return boolean indicating success of operation
    */
   public boolean closeBlock(int id) {
+    if (lineControllers != null) {
+      for (TrackController tc : lineControllers) {
+        if (tc.hasBlock(id)) {
+          tc.closeBlock(id);
+        }
+      }
+    }
     return false;
   }
 
@@ -150,15 +145,31 @@ public class TrackControllerLineManager implements TrackControllerLineManagerInt
    * @return boolean indicating success of operation
    */
   public boolean repairBlock(int id) {
+    if (lineControllers != null) {
+      for (TrackController tc : lineControllers) {
+        if (tc.hasBlock(id)) {
+          tc.repairBlock(id);
+        }
+      }
+    }
     return false;
   }
 
   /**
    * Toggles the state of a switch on a block indicated by id if one exists.
    * @param id block identifier for requested block
-   * @return boolean indicating success of operation
+   * @return boolean indicating new switch state
    */
   public boolean toggleSwitch(int id) {
+    if (lineControllers != null) {
+      for (TrackController tc : lineControllers) {
+        if (tc.hasBlock(id)) {
+          if (tc.getBlock(id).isSwitch()) {
+            return tc.toggleSwitch(id);
+          }
+        }
+      }
+    }
     return false;
   }
 
@@ -171,6 +182,26 @@ public class TrackControllerLineManager implements TrackControllerLineManagerInt
       return lines;
     } else {
       return lines = new ArrayList<TrackControllerLineManager>();
+    }
+  }
+
+  /** This iterates through all controllers of the current line and runs the
+   * respective run function within the controller.
+   */
+  public void runControllers() {
+    if (lineControllers != null) {
+      for (TrackController tc : lineControllers) {
+        tc.run();
+      }
+    }
+  }
+
+  /** Static method used to iterate through static list of lines.
+   *
+   */
+  public static void runTrackControllers() {
+    for (TrackControllerLineManager tclm : lines) {
+      tclm.runControllers();
     }
   }
 

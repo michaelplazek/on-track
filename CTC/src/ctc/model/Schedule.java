@@ -43,13 +43,6 @@ public class Schedule {
     stops.add(item);
   }
 
-  /**
-   * Use to clear the table of stops.
-   */
-  public void clearStops() {
-    stops.clear();
-  }
-
   public String getLine() {
     return line;
   }

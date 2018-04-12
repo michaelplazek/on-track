@@ -13,8 +13,13 @@ import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TitledPane;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.util.StringConverter;
 import javafx.util.converter.NumberStringConverter;
 import mainmenu.Clock;
@@ -129,6 +134,26 @@ public class TrainModelController implements Initializable {
   private Label heaterStatus;
   @FXML
   private Label acStatus;
+  @FXML
+  private Label degrees;
+
+  @FXML
+  private TitledPane trainSpec;
+  @FXML
+  private TitledPane velocityPane;
+  @FXML
+  private TitledPane stationPane;
+  @FXML
+  private TitledPane operationsPane;
+  @FXML
+  private AnchorPane mainAnchorPane;
+  @FXML
+  private TitledPane failuresPane;
+
+
+  //Demo
+  @FXML
+  private TitledPane demoPane;
 
   /**
    * Train model && controller associated with UI (use for testing as of 3/11/18).
@@ -173,8 +198,6 @@ public class TrainModelController implements Initializable {
         }
       }
     }
-
-
   }
 
   @FXML
@@ -192,6 +215,7 @@ public class TrainModelController implements Initializable {
     initializeStatusLabels();
     initializeStatusIcons();
     initializeButtonHandlers();
+    initializeWindowSize();
   }
 
   /**
@@ -222,8 +246,8 @@ public class TrainModelController implements Initializable {
     Bindings.bindBidirectional(numberOfCars.textProperty(),
         trainModel.numberOfCarsProperty(), numberStringConverter);
 
-
     capacity.setText(String.valueOf(trainModel.getCapacityOfTrain()));
+    degrees.setText(Constants.DEGREES);
 
     time.textProperty().setValue(Clock.getInstance().getFormattedTime());
     beaconStatus.textProperty().bind(trainModel.trackLineFailureStatusProperty().asString());
@@ -234,8 +258,18 @@ public class TrainModelController implements Initializable {
     serviceBrakeStatus.textProperty().bind(trainModel.serviceBrakeStatusProperty().asString());
     acStatus.textProperty().bind(trainModel.acStatusProperty().asString());
     heaterStatus.textProperty().bind(trainModel.heaterStatusProperty().asString());
+    currentBlockStatus.textProperty().bind(trainModel.currentBlockProperty());
+    currentTrack.textProperty().bind(trainModel.activeTrackProperty());
+
+    demoPane.setVisible(false);
   }
 
+  private void initializeWindowSize() {
+    double width = trainSpec.getWidth() + velocityPane.getWidth()
+        + operationsPane.getWidth() + stationPane.getWidth();
+    double height = failuresPane.getHeight() + trainSpec.getHeight();
+    mainAnchorPane.setPrefSize(width, height);
+  }
 
   @FXML
   private void toggleLights(ActionEvent event) {
@@ -245,8 +279,6 @@ public class TrainModelController implements Initializable {
       trainModel.lightStatusProperty().set(OnOffStatus.ON);
     }
   }
-
-
 
   @FXML
   private void toggleRightDoor(ActionEvent event) {
@@ -300,8 +332,6 @@ public class TrainModelController implements Initializable {
     emergencyBrakeButton.setOnAction(this::emergency_Brake_Engaged);
   }
 
-
-
   private void startEngineFailure() {
     engineFailureStatusIcon.setFill(Paint.valueOf(Constants.RED));
     trainModel.engineFailureStatusProperty().set(Failure.FAILED);
@@ -316,7 +346,6 @@ public class TrainModelController implements Initializable {
   private void startSignalFailure() {
     signalFailureStatusIcon.setFill(Paint.valueOf(Constants.RED));
     trainModel.trackLineFailureStatusProperty().set(Failure.FAILED);
-
   }
 
   private void endEngineFailure() {
@@ -334,5 +363,4 @@ public class TrainModelController implements Initializable {
     signalFailureStatusIcon.setFill(Paint.valueOf(Constants.GREEN));
     trainModel.trackLineFailureStatusProperty().set(Failure.WORKING);
   }
-
 }
