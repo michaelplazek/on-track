@@ -46,7 +46,7 @@ public class PowerCalculator {
     }
     Beacon current = tc.getBeacon();
     if (current != null) {
-      current.setDistance((float)(current.getDistance() - distanceTraveled));
+      tc.setDistanceToStation(tc.getDistanceToStation() - distanceTraveled);
     }
     if (tc.getTrainModel().getServiceBrakeStatus() == OnOffStatus.ON) {
       double lastSpeed = tc.getCurrentSpeed();
@@ -145,9 +145,8 @@ public class PowerCalculator {
   static void executeStopAtStation(TrainController tc) {
     double safeStoppingDistance = getSafeStopDistance(tc);
     if (tc.getBeacon() != null) {
-      if (tc.getDistanceToStation() - 1 <= safeStoppingDistance) {
+      if (tc.getDistanceToStation() > 0 && tc.getDistanceToStation() - 1 <= safeStoppingDistance) {
         activateServiceBrake(tc);
-        tc.setPowerCommand(0);
       } else if (Math.abs(tc.getDistanceToStation()) <= 1 && tc.getCurrentSpeed() == 0) {
         tc.setMode(Mode.AT_STATION);
       } else {
@@ -178,8 +177,6 @@ public class PowerCalculator {
           * ((setSpeed - currentSpeed) + (setSpeed - lastSpeed));
 
       double power = kp * (setSpeed - currentSpeed) + ki * integral;
-
-      System.out.printf("power: %f\n", power);
 
       if (power > TrainData.MAX_POWER * 100) {
         power = TrainData.MAX_POWER * 100;
@@ -227,6 +224,7 @@ public class PowerCalculator {
     if (tm.getEmergencyBrakeStatus() != OnOffStatus.ON) {
       tc.activateEmergencyBrake();
     }
+    tc.setPowerCommand(0);
   }
 
   static void deactivateServiceBrake(TrainController tc) {
@@ -241,5 +239,6 @@ public class PowerCalculator {
     if (tm.getServiceBrakeStatus() != OnOffStatus.ON) {
       tc.setServiceBrake(OnOffStatus.ON);
     }
+    tc.setPowerCommand(0);
   }
 }
