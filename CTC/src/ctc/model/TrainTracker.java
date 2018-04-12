@@ -298,6 +298,10 @@ public class TrainTracker {
     this.speed = speed;
   }
 
+  public boolean isStopped() {
+    return isStopped;
+  }
+
   public int getPassengers() {
     return passengers;
   }

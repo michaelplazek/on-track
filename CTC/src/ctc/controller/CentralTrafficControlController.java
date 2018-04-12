@@ -24,12 +24,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
@@ -202,6 +197,26 @@ public class CentralTrafficControlController {
         new PropertyValueFactory<TrainTracker, String>("speed"));
     dispatchPassengersColumn.setCellValueFactory(
         new PropertyValueFactory<TrainTracker, String>("passengers"));
+
+    dispatchTable.setRowFactory(row -> new TableRow<TrainTracker>() {
+      @Override
+      public void updateItem(TrainTracker train, boolean empty) {
+        super.updateItem(train, empty);
+        TrainTracker tracker;
+        for (int i = 0; i < row.getItems().size(); i++) {
+          tracker = row.getItems().get(i);
+          if (tracker == null) {
+            setStyle("");
+          } else {
+            if (tracker.isStopped()) {
+              row.setStyle("-fx-selection-bar-non-focused: salmon;");
+            } else {
+              row.setStyle("-fx-selection-bar-non-focused: #cdee83;");
+            }
+          }
+        }
+      }
+    });
 
     // set dropdown menu for stations
     stopColumn.setCellFactory(ComboBoxTableCell.forTableColumn(
