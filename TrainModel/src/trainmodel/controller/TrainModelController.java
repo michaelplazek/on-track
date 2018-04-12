@@ -332,11 +332,6 @@ public class TrainModelController implements Initializable {
     emergencyBrakeButton.setOnAction(this::emergency_Brake_Engaged);
   }
 
-  private void initializeButtonStyle() {
-    emergencyBrakeButton.setTextFill(Color.WHITE);
-    emergencyBrakeButton.
-  }
-
   private void startEngineFailure() {
     engineFailureStatusIcon.setFill(Paint.valueOf(Constants.RED));
     trainModel.engineFailureStatusProperty().set(Failure.FAILED);
