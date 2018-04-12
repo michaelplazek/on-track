@@ -17,6 +17,8 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.util.StringConverter;
 import javafx.util.converter.NumberStringConverter;
 import mainmenu.Clock;
