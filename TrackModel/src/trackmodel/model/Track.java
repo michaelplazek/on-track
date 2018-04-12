@@ -432,7 +432,7 @@ public class Track {
     } else if (failureType.equals("RAIL")) {
       block.setBrokenRailStatus(!block.getBrokenRailStatus());
     } else if (failureType.equals("CIRCUIT")) {
-      block.setTrackCircuitStatus(!block.getBrokenRailStatus());
+      block.setTrackCircuitStatus(!block.getTrackCircuitStatus());
     }
   }
 

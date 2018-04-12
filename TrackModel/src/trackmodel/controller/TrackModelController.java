@@ -1,6 +1,7 @@
 package trackmodel.controller;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javafx.beans.value.ChangeListener;
@@ -62,7 +63,7 @@ public class TrackModelController {
   @FXML private MenuButton failures;
 
   private ObservableList<String> blockList = FXCollections.observableArrayList();
-  private Track currentTrack;
+  private Track currentTrack = null;
   private boolean running;
   private static HashMap<String, Track> listOfTracks = new HashMap<>();
 
@@ -72,6 +73,8 @@ public class TrackModelController {
   public void initialize() {
     start.setOnAction(this::toggleSelectedFailures);
 
+    blockSelection.setDisable(true);
+
     trackSelection.getSelectionModel().selectedItemProperty()
         .addListener((observableValue, oldValue, newValue) -> {
           if(!newValue.equals("")) {
@@ -80,6 +83,12 @@ public class TrackModelController {
             this.makeBlockList(currentTrack);
 
             blockSelection.setItems(blockList);
+
+            if (currentTrack == null) {
+              blockSelection.setDisable(true);
+            } else {
+              blockSelection.setDisable(false);
+            }
 
             updateOccupiedBlock();
             updateClosedBlocks();
@@ -91,9 +100,13 @@ public class TrackModelController {
 
           int blockId = extractBlock(blockSelection);
 
-          Block block = currentTrack.getBlock(blockId);
+          if (currentTrack != null) {
+            Block block = currentTrack.getBlock(blockId);
+            updateUI(block);
+          } else {
+            blankBlock();
+          }
 
-          updateUI(block);
         });
   }
 
@@ -114,6 +127,29 @@ public class TrackModelController {
     }
 
     return 0;
+  }
+
+  public void blankBlock() {
+    DecimalFormat df = new DecimalFormat("#.###");
+
+    blockSize.setText(String.valueOf(""));
+    blockGrade.setText(String.valueOf(""));
+    blockElevation.setText(String.valueOf(""));
+    blockCumElevation.setText(String.valueOf(""));
+    blockSpeedLimit.setText(String.valueOf(""));
+    blockSwitch.setText("None");
+    railStatus.setFill(Color.WHITE);
+    powerStatus.setFill(Color.WHITE);
+    circuitStatus.setFill(Color.WHITE);
+    beaconStatus.setFill(Color.WHITE);
+    crossingStatus.setFill(Color.WHITE);
+    undergroundStatus.setFill(Color.WHITE);
+    occupiedStatus.setFill(Color.WHITE);
+    trackHeating.setFill(Color.WHITE);
+    stationStatus.setFill(Color.WHITE);
+
+    this.updateOccupiedBlock();
+    this.updateClosedBlocks();
   }
 
   public void updateUI(Block block) {
@@ -209,7 +245,12 @@ public class TrackModelController {
   }
 
   public void updateTracks() {
-    trackSelection.setItems(FXCollections.observableArrayList(Track.getListOfTracks().keySet()));
+    ArrayList<String> track = new ArrayList<>();
+    track.add("Select Track");
+    track.addAll(Track.getListOfTracks().keySet());
+    trackSelection.setItems(FXCollections.observableArrayList(track));
+
+    trackSelection.setValue("Select Track");
   }
 
   public  void run() {
@@ -239,12 +280,10 @@ public class TrackModelController {
         } else if (item.getId().equals(railFailureSelect.getId())) {
           if (btn.getId().equals(start.getId())) {
             currentTrack.toggleFailure(block, "RAIL");
-            railStatus.setFill(Color.GREEN);
           }
         } else if (item.getId().equals(trackFailureSelect.getId())) {
           if (btn.getId().equals(start.getId())) {
-            currentTrack.toggleFailure(block, "CIRCUIT");
-            circuitStatus.setFill(Color.GREEN);
+            currentTrack.toggleFailure(block,  "CIRCUIT");
           }
         }
       }
@@ -253,12 +292,20 @@ public class TrackModelController {
     updateUI(block);
   }
 
-  private void updateOccupiedBlock(){
-    occupiedList.setText(currentTrack.getOccupiedBlocks());
+  private void updateOccupiedBlock() {
+    if (currentTrack != null) {
+      occupiedList.setText(currentTrack.getOccupiedBlocks());
+    } else {
+      occupiedList.setText("");
+    }
   }
 
   private void updateClosedBlocks() {
-    closedList.setText(currentTrack.getClosedBlocks());
+    if (currentTrack != null) {
+      closedList.setText(currentTrack.getClosedBlocks());
+    } else {
+      closedList.setText("");
+    }
   }
 
   /**
