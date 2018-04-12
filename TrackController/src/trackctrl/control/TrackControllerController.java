@@ -28,8 +28,6 @@ import trackmodel.model.Switch;
 import trackmodel.model.Track;
 import utils.general.Constants;
 
-import javax.swing.*;
-
 public class TrackControllerController implements Initializable {
 
   //Toggles
@@ -190,7 +188,7 @@ public class TrackControllerController implements Initializable {
     }
   }
 
-   private void handleLightGroup(ActionEvent event) {
+  private void handleLightGroup(ActionEvent event) {
 
     if (lightGroup.getSelectedToggle().equals(lightMainLtoR)) {
       //TODO actually call track controller functions for this
@@ -474,11 +472,11 @@ public class TrackControllerController implements Initializable {
     //This check of the radio buttons responsible for disabling radio
     //buttons in manual mode when a block that is not a switch is selected
 
-    if(isManual) {
+    if (isManual) {
       disableRadios();
       blockRepairedRad.setDisable(false);
       blockBrokenRad.setDisable(false);
-      if(!selBlock.isSwitch()) {
+      if (!selBlock.isSwitch()) {
         lightMainLtoR.setDisable(true);
         lightForkLtoR.setDisable(true);
         lightMainRtoL.setDisable(true);
@@ -510,13 +508,13 @@ public class TrackControllerController implements Initializable {
   }
 
   private void updateBlockStatus(Block update) {
-    if(update.isOccupied()) {
+    if (update.isOccupied()) {
       blockOccupancy.setFill(Paint.valueOf(Constants.GREEN));
     } else {
       blockOccupancy.setFill(Paint.valueOf("Gray"));
     }
 
-    if(update.isClosedForMaintenance()) {
+    if (update.isClosedForMaintenance()) {
       blockStatus.setFill(Paint.valueOf(Constants.RED));
     } else {
       blockStatus.setFill(Paint.valueOf(Constants.GREEN));
@@ -525,7 +523,7 @@ public class TrackControllerController implements Initializable {
 
   private void updateSwitchState(Block update) {
 
-    if(update.isSwitch()) {
+    if (update.isSwitch()) {
       Switch updateSwitch = (Switch) update;
       int p = updateSwitch.getPreviousBlock();
       int n1 = updateSwitch.getNextBlock1();
@@ -539,7 +537,7 @@ public class TrackControllerController implements Initializable {
       switchMain.setText(next1.getSection() + n1);
       switchFork.setText(next2.getSection() + n2);
 
-      if(updateSwitch.getStatus() == n1) {
+      if (updateSwitch.getStatus() == n1) {
         setSwitchStay();
         //if() TODO check lights based on switch and set them properly
       } else {

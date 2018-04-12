@@ -23,7 +23,7 @@ public class TrackControllerInitializer {
 
 
   /**
-   * Initialized track controllers based on config file in Utils
+   * Initialized track controllers based on config file in Utils.
    */
   public void parseConfig() {
 
