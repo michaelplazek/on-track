@@ -15,6 +15,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import traincontroller.enums.Mode;
 import traincontroller.model.TrainController;
 import traincontroller.model.TrainControllerManager;
@@ -35,6 +36,8 @@ public class TrainControllerController implements Initializable {
   @FXML
   private TextField setTemperatureField;
 
+  @FXML
+  private ToggleGroup mode;
   @FXML
   private ToggleButton emergencyBrakeButton;
   @FXML
@@ -82,9 +85,10 @@ public class TrainControllerController implements Initializable {
   @FXML
   private void setSpeedAction(ActionEvent event) {
     try {
-      double newSetSpeed = Double.parseDouble(setSpeedField.getText());
+      double newSetSpeed = Double.parseDouble(setSpeedField.getText())
+          * UnitConversions.MPH_TO_KPH * 1000 / 3600;
       if (newSetSpeed <= trainController.getSetSpeed() && newSetSpeed >= 0) {
-        trainController.setDriverSetSpeed(newSetSpeed * UnitConversions.MPH_TO_KPH * 1000 / 3600);
+        trainController.setDriverSetSpeed(newSetSpeed);
       } else {
 
         AlertWindow alert = new AlertWindow();
@@ -286,7 +290,16 @@ public class TrainControllerController implements Initializable {
     leftDoorButton.setSelected(trainController.getLeftDoorStatus() == DoorStatus.OPEN);
     trainController.leftDoorStatusProperty().addListener(
         (o, oldVal, newVal) -> leftDoorButton.setSelected(newVal == DoorStatus.OPEN));
-    automatic.selectedProperty().bindBidirectional(trainController.automaticProperty());
+    trainController.automaticProperty().addListener((observable, oldValue, newValue) -> {
+      if(newValue) {
+        manual.selectedProperty().setValue(!newValue);
+        automatic.selectedProperty().setValue(newValue);
+      } else {
+        automatic.selectedProperty().setValue(newValue);
+        manual.selectedProperty().setValue(!newValue);
+      }
+      toggleMode(null);
+    });
     toggleMode(null);
   }
 
