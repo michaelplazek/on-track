@@ -1,5 +1,9 @@
 package traincontroller.model;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import mainmenu.Clock;
 import mainmenu.ClockInterface;
 import trackmodel.model.Beacon;
@@ -17,6 +21,8 @@ import utils.unitconversion.UnitConversions;
 public class PowerCalculator {
   private static ClockInterface clock = Clock.getInstance();
 
+  private static SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+
   /**
    * Updates and runs the train controller.
    * @param tc pass train controller to update
@@ -27,6 +33,7 @@ public class PowerCalculator {
       updateFailures(tc);
       executeAction(tc);
       updateTemperature(tc);
+      updateLights(tc);
       updateModelValues(tc);
     }
   }
@@ -39,7 +46,6 @@ public class PowerCalculator {
     double distanceIntoCurrentBlock = tc.getDistanceIntoCurrentBlock() + distanceTraveled;
     Block currentBlock = tc.getCurrentBlock();
     if (distanceIntoCurrentBlock >= currentBlock.getSize()) {
-      System.out.println(currentBlock.getNumber());
       distanceIntoCurrentBlock -= currentBlock.getSize();
       Track track = Track.getTrack(tc.getLine());
       Block temp = tc.getCurrentBlock();
@@ -57,6 +63,22 @@ public class PowerCalculator {
       if (acceleration != 0 && delta != 0) {
         tc.setWeight(TrainController.FORCE_BRAKE_TRAIN_EMPTY / acceleration);
       }
+    }
+  }
+
+  static void updateLights(TrainController tc) {
+    try {
+      Date date = sdf.parse(clock.getFormattedTime());
+      Date dawn = sdf.parse("06:00:00");
+      Date dusk = sdf.parse("18:59:59");
+      if (tc.isUnderground() || date.compareTo(dawn) <= 0 || date.compareTo(dusk) >= 0) {
+        tc.setLightStatus(OnOffStatus.ON);
+      } else if (tc.isAutomatic()) {
+        tc.setLightStatus(OnOffStatus.OFF);
+      }
+    } catch (ParseException e) {
+      System.out.println(e);
+      tc.setLightStatus(OnOffStatus.ON);
     }
   }
 
@@ -94,8 +116,8 @@ public class PowerCalculator {
     if (mode == Mode.FAILURE || mode == Mode.CTC_EMERGENCY_BRAKE)  {
       activateEmergencyBrake(tc);
     } else if (mode == Mode.CTC_BRAKE || mode == Mode.DRIVER_BRAKE) {
-      if(tc.isAutomatic() && (tc.getCurrentBlock().getStationName() != null ||
-          nextBlock(tc.getCurrentBlock(), tc.getLastBlock(),
+      if (tc.isAutomatic() && (tc.getCurrentBlock().getStationName() != null
+          || nextBlock(tc.getCurrentBlock(), tc.getLastBlock(),
               Track.getTrack(tc.getLine())).getStationName() != null)
           && tc.getCurrentSpeed() == 0) {
         tc.setWeight(TrainData.EMPTY_WEIGHT * TrainData.NUMBER_OF_CARS
@@ -263,10 +285,10 @@ public class PowerCalculator {
   }
 
   static void closeDoors(TrainController tc) {
-    if(tc.getLeftDoorStatus() == DoorStatus.OPEN) {
+    if (tc.getLeftDoorStatus() == DoorStatus.OPEN) {
       tc.setLeftDoorStatus(DoorStatus.CLOSED);
     }
-    if(tc.getRightDoorStatus() == DoorStatus.OPEN) {
+    if (tc.getRightDoorStatus() == DoorStatus.OPEN) {
       tc.setRightDoorStatus(DoorStatus.CLOSED);
     }
   }

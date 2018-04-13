@@ -2,7 +2,9 @@
 package traincontroller.model;
 
 import java.util.HashMap;
+
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -24,7 +26,7 @@ public class TrainController implements TrainControllerInterface {
 
   public static final double FORCE_BRAKE_TRAIN_EMPTY = 123436.2;
 
-  private boolean automatic;
+  private SimpleBooleanProperty automatic;
   private Mode mode;
   private boolean underground;
   private Block currentBlock;
@@ -47,6 +49,7 @@ public class TrainController implements TrainControllerInterface {
   private ObjectProperty<Authority> authority;
   private ObjectProperty<OnOffStatus> serviceBrakeStatus;
   private ObjectProperty<OnOffStatus> emergencyBrakeStatus;
+  private ObjectProperty<OnOffStatus> lightStatus;
   private SimpleDoubleProperty powerCommand;
   private SimpleDoubleProperty driverSetSpeedMph;
   private double driverSetSpeed;
@@ -66,7 +69,8 @@ public class TrainController implements TrainControllerInterface {
    */
   TrainController(String id, String line) {
     this.trainModel = TrainModelFactory.createTrainModel(this, id, line);
-    this.automatic = true;
+    this.automatic = new SimpleBooleanProperty(true);
+    this.underground = false;
 
     this.id = new SimpleStringProperty(id);
     this.line = new SimpleStringProperty(line);
@@ -95,6 +99,7 @@ public class TrainController implements TrainControllerInterface {
         + TrainData.MAX_PASSENGERS * 2 * 150 * UnitConversions.LBS_TO_KGS;
     this.rightDoorStatus = new SimpleObjectProperty<>(trainModel.getRightDoorStatus());
     this.leftDoorStatus = new SimpleObjectProperty<>(trainModel.getLeftDoorStatus());
+    this.lightStatus = new SimpleObjectProperty<>(trainModel.getLightStatus());
   }
 
   /**
@@ -102,6 +107,9 @@ public class TrainController implements TrainControllerInterface {
    * @param signal Beacon signal from track.
    */
   public void setBeaconSignal(Beacon signal) {
+    if (signal.isUnderground()) {
+      this.underground = !this.underground;
+    }
     if (beacons.get(signal.getBlockId()) == null) {
       beacon = new Beacon(signal);
       beacons.put(signal.getBlockId(), beacon);
@@ -125,7 +133,7 @@ public class TrainController implements TrainControllerInterface {
     double speed = setSpeed * UnitConversions.MPH_TO_KPH * 1000.0 / 3600.0;
     if (speed != this.getSetSpeed() && speed != 0) {
       setSetSpeed(speed);
-      if(speed < driverSetSpeed) {
+      if (speed < driverSetSpeed) {
         setDriverSetSpeed(speed);
       }
     }
@@ -310,11 +318,15 @@ public class TrainController implements TrainControllerInterface {
   }
 
   public boolean isAutomatic() {
-    return automatic;
+    return automatic.getValue();
   }
 
+  /**
+   * Set train operation mode.
+   * @param automatic Boolean to set mode of train operation
+   */
   public void setAutomatic(boolean automatic) {
-    this.automatic = automatic;
+    this.automatic.setValue(automatic);
     if (automatic) {
       if (mode == Mode.DRIVER_BRAKE) {
         setTrackCircuitSignal(0, authority.getValue());
@@ -322,6 +334,10 @@ public class TrainController implements TrainControllerInterface {
     } else {
       setDriverSetSpeed(getSetSpeed());
     }
+  }
+
+  public SimpleBooleanProperty automaticProperty() {
+    return automatic;
   }
 
   public Block getCurrentBlock() {
@@ -344,12 +360,13 @@ public class TrainController implements TrainControllerInterface {
   public void activateEmergencyBrake() {
     setPowerCommand(0);
     setAutomatic(false);
+    this.mode = Mode.CTC_EMERGENCY_BRAKE;
     this.setEmergencyBrake(OnOffStatus.ON);
   }
 
   public void setRightDoorStatus(DoorStatus doorStatus) {
     trainModel.setRightDoorStatus(doorStatus);
-    rightDoorStatus.set(doorStatus);
+    rightDoorStatus.setValue(doorStatus);
   }
 
   public DoorStatus getRightDoorStatus() {
@@ -358,7 +375,7 @@ public class TrainController implements TrainControllerInterface {
 
   public void setLeftDoorStatus(DoorStatus doorStatus) {
     trainModel.setLeftDoorStatus(doorStatus);
-    leftDoorStatus.set(doorStatus);
+    leftDoorStatus.setValue(doorStatus);
   }
 
   public DoorStatus getLeftDoorStatus() {
@@ -375,6 +392,11 @@ public class TrainController implements TrainControllerInterface {
 
   public void setLightStatus(OnOffStatus lightStatus) {
     trainModel.setLightStatus(lightStatus);
+    this.lightStatus.setValue(lightStatus);
+  }
+
+  public ObjectProperty<OnOffStatus> lightStatusProperty() {
+    return lightStatus;
   }
 
   public OnOffStatus getLightStatus() {
@@ -453,12 +475,20 @@ public class TrainController implements TrainControllerInterface {
     return emergencyBrakeStatus;
   }
 
+  /**
+   * Set service brake status.
+   * @param brakeStatus brake status
+   */
   public void setServiceBrake(OnOffStatus brakeStatus) {
     this.integral = 0;
     trainModel.setServiceBrakeStatus(brakeStatus);
     this.serviceBrakeStatus.set(brakeStatus);
   }
 
+  /**
+   * Set emergency brake status.
+   * @param brakeStatus brake status
+   */
   public void setEmergencyBrake(OnOffStatus brakeStatus) {
     this.integral = 0;
     trainModel.setEmergencyBrakeStatus(brakeStatus);
