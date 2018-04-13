@@ -160,10 +160,15 @@ public class PowerCalculator {
     TrainModelInterface tm = tc.getTrainModel();
     double currentTemp = tm.getCurrentTemp();
     double setTemperature = tc.getSetTemperature();
-    if (currentTemp <= setTemperature - 0.1) {
+    if (currentTemp <= setTemperature) {
       tm.setHeaterStatus(OnOffStatus.ON);
-    } else if (currentTemp >= setTemperature + 0.1) {
       tm.setAcStatus(OnOffStatus.OFF);
+    } else if (currentTemp >= setTemperature) {
+      tm.setAcStatus(OnOffStatus.ON);
+      tm.setHeaterStatus(OnOffStatus.OFF);
+    } else {
+      tm.setAcStatus(OnOffStatus.OFF);
+      tm.setHeaterStatus(OnOffStatus.OFF);
     }
   }
 
