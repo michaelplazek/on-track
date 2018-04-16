@@ -3,7 +3,6 @@ package trainmodel.model;
 import java.util.HashMap;
 import java.util.Random;
 
-import ctc.model.TrainTracker;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
@@ -213,7 +212,7 @@ public class TrainModel implements TrainModelInterface {
 
     double changeInDist = changeInDist();
 
-    if (isEnteringBlock(changeInDist)) {
+    if (isEnteringBlock()) {
       positionOfHead -= currentBlock.getSize();
       updateCurrentBlock();
     } else {
@@ -224,14 +223,11 @@ public class TrainModel implements TrainModelInterface {
 
       trailingBlock.setOccupied(false);
 
-//      trailingBlock = previousBlock.getSize() > TrainData.LENGTH_OF_TRAIN
-//          ? currentBlock : previousBlock;
-
-      if (previousBlock == trailingBlock) {
+      if (trailingBlock == previousBlock) {
         positionOfTail += currentBlock.getSize();
         trailingBlock = currentBlock;
-      } else {
-        positionOfTail += TrainData.LENGTH_OF_TRAIN - previousBlock.getSize();
+      } else if (trailingBlock != currentBlock) {
+        positionOfTail += previousBlock.getSize();
         trailingBlock = previousBlock;
       }
     } else {
@@ -241,12 +237,6 @@ public class TrainModel implements TrainModelInterface {
     if (currentBlock != null) {
       currentBlockName.set(currentBlock.getSection() + currentBlock.getNumber());
     }
-
-//    System.out.println("Location of head: " + positionOfHead);
-//    System.out.println("Location of tail: " + positionOfTail);
-//    System.out.println("Current block: " + currentBlock.getSection() + currentBlock.getNumber() + " : " + currentBlock.getSize());
-//    System.out.println("Previous block: " + previousBlock.getSection() + previousBlock.getNumber() + " : " + previousBlock.getSize());
-//    System.out.println("Trailing block: " + trailingBlock.getSection() + trailingBlock.getNumber() + " : " + trailingBlock.getSize());
   }
 
   private boolean isLeavingBlock() {
@@ -405,10 +395,9 @@ public class TrainModel implements TrainModelInterface {
 
   /**
    * Helper method to return true if a change in distance crosses block boarders.
-   * @param delta The distance the train moved.
    * @return true if train crosses block boarder, false otherwise.
    */
-  private boolean isEnteringBlock(double delta) {
+  private boolean isEnteringBlock() {
     return (positionOfHead > currentBlock.getSize());
   }
 
