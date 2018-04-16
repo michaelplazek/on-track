@@ -13,6 +13,7 @@ import trackmodel.model.Switch;
 import trackmodel.model.Track;
 import traincontroller.model.TrainControllerFactory;
 import utils.general.Authority;
+import utils.unitconversion.UnitConversions;
 
 /**
  * This class is used to map the train instances to their routes.
@@ -190,8 +191,6 @@ public class TrainTracker {
       speed = location.getSpeedLimit();
     }
 
-
-
     // determine next authority
     String nextStationOnRoute = route.getNextStation();
     if (!isStopped) {
@@ -298,6 +297,10 @@ public class TrainTracker {
 
   public void setSpeed(float speed) {
     this.speed = speed;
+  }
+
+  public String getDisplaySpeed() {
+    return String.format("%.1f", (speed * (float) UnitConversions.KPH_TO_MPH));
   }
 
   public boolean isStopped() {

@@ -198,7 +198,7 @@ public class CentralTrafficControlController {
     dispatchAuthorityColumn.setCellValueFactory(
         new PropertyValueFactory<TrainTracker, String>("displayAuthority"));
     dispatchSpeedColumn.setCellValueFactory(
-        new PropertyValueFactory<TrainTracker, String>("speed"));
+        new PropertyValueFactory<TrainTracker, String>("displaySpeed"));
     dispatchPassengersColumn.setCellValueFactory(
         new PropertyValueFactory<TrainTracker, String>("passengers"));
 
@@ -1026,6 +1026,7 @@ public class CentralTrafficControlController {
 
       // get the signals
       float speed = Float.parseFloat(suggestedSpeedField.getText());
+      speed  = speed * (float)UnitConversions.MPH_TO_KPH;
       Authority authority = train.getAuthority();
 
       // check the new speed
