@@ -212,11 +212,12 @@ public class TrainModel implements TrainModelInterface {
 
     double changeInDist = changeInDist();
 
+    positionOfTail -= changeInDist;
+    positionOfHead += changeInDist;
+
     if (isEnteringBlock()) {
       positionOfHead -= currentBlock.getSize();
       updateCurrentBlock();
-    } else {
-      positionOfHead += changeInDist;
     }
 
     if (isLeavingBlock()) {
@@ -230,8 +231,6 @@ public class TrainModel implements TrainModelInterface {
         positionOfTail += previousBlock.getSize();
         trailingBlock = previousBlock;
       }
-    } else {
-      positionOfTail -= changeInDist;
     }
 
     if (currentBlock != null) {
