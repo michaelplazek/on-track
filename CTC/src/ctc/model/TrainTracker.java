@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.TimeZone;
 
 import mainmenu.Clock;
-import sun.tools.jconsole.Plotter;
 import trackctrl.model.TrackControllerLineManager;
 import trackmodel.model.Block;
 import trackmodel.model.Switch;
