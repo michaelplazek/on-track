@@ -3,6 +3,7 @@ package trainmodel.model;
 import java.util.HashMap;
 import java.util.Random;
 
+import ctc.model.TrainTracker;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
@@ -98,15 +99,15 @@ public class TrainModel implements TrainModelInterface {
   private boolean isMoving = false;
   private boolean isDispatched = false;
   private final int capacityOfTrain = TrainData.MAX_PASSENGERS * TrainData.NUMBER_OF_CARS;
-  private double positionInBlock = 0; //The number of meters from the border of the current block.
-  // Measured from the previous boarder to front of train.
+  private double positionOfHead = 0; //The number of meters from the border of the current block.
+  private double positionOfTail = 0;
 
   private Track activeTrack;
   private Block currentBlock; //where the head of the train is.
   private StringProperty currentBlockName = new SimpleStringProperty("Yard");
   private StringProperty activeTrackName = new SimpleStringProperty("");
   private Block previousBlock;
-  
+
   private Block trailingBlock; // used when train spans over 2 blocks. Maybe?
 
   private static HashMap<String, TrainModel> listOfTrainModels = new HashMap<>();
@@ -130,6 +131,8 @@ public class TrainModel implements TrainModelInterface {
     this.activeTrackName.set(line);
     this.currentBlock = activeTrack.getStartBlock();
     this.previousBlock = activeTrack.getBlock(-1);
+    this.trailingBlock = this.previousBlock;
+    this.positionOfTail = TrainData.LENGTH_OF_TRAIN;
   }
 
   /**
@@ -210,20 +213,44 @@ public class TrainModel implements TrainModelInterface {
 
     double changeInDist = changeInDist();
 
-    if (isCrossingBlock(changeInDist)) {
-      positionInBlock = 0;
+    if (isEnteringBlock(changeInDist)) {
+      positionOfHead -= currentBlock.getSize();
       updateCurrentBlock();
     } else {
-      positionInBlock = positionInBlock + changeInDist;
+      positionOfHead += changeInDist;
+    }
+
+    if (isLeavingBlock()) {
+
+      trailingBlock.setOccupied(false);
+
+//      trailingBlock = previousBlock.getSize() > TrainData.LENGTH_OF_TRAIN
+//          ? currentBlock : previousBlock;
+
+      if (previousBlock == trailingBlock) {
+        positionOfTail += currentBlock.getSize();
+        trailingBlock = currentBlock;
+      } else {
+        positionOfTail += TrainData.LENGTH_OF_TRAIN - previousBlock.getSize();
+        trailingBlock = previousBlock;
+      }
+    } else {
+      positionOfTail -= changeInDist;
     }
 
     if (currentBlock != null) {
       currentBlockName.set(currentBlock.getSection() + currentBlock.getNumber());
     }
 
-    //    System.out.println("Change in position: " + changeInDist);
-    //    System.out.println("Location in block: " + positionInBlock);
-    //    System.out.println("Current block: " + currentBlock.getSize());
+//    System.out.println("Location of head: " + positionOfHead);
+//    System.out.println("Location of tail: " + positionOfTail);
+//    System.out.println("Current block: " + currentBlock.getSection() + currentBlock.getNumber() + " : " + currentBlock.getSize());
+//    System.out.println("Previous block: " + previousBlock.getSection() + previousBlock.getNumber() + " : " + previousBlock.getSize());
+//    System.out.println("Trailing block: " + trailingBlock.getSection() + trailingBlock.getNumber() + " : " + trailingBlock.getSize());
+  }
+
+  private boolean isLeavingBlock() {
+    return positionOfTail <= 0;
   }
 
   /**
@@ -262,7 +289,6 @@ public class TrainModel implements TrainModelInterface {
     if (currentBlock != null) {
       currentBlock.setOccupied(true);
     }
-
   }
 
   /**
@@ -337,14 +363,7 @@ public class TrainModel implements TrainModelInterface {
       updatePosition();
       updateOccupancy();
       updateSpeedAuth();
-//      checkBrakes();
       changeTemperature();
-
-      //      System.out.println("Block: " + currentBlock.getSection() + currentBlock.getNumber());
-      //      System.out.println("Acceleration: " + acceleration);
-      //      System.out.println("Velocity: " + velocity.get());
-      //      System.out.println("Force: " + force);
-      //      System.out.println("Power: " + powerCommand.get());
     }
   }
 
@@ -386,12 +405,11 @@ public class TrainModel implements TrainModelInterface {
 
   /**
    * Helper method to return true if a change in distance crosses block boarders.
-   * @param distChange The distance the train moved.
+   * @param delta The distance the train moved.
    * @return true if train crosses block boarder, false otherwise.
    */
-  private boolean isCrossingBlock(double distChange) {
-    previousBlock.setOccupied(false);
-    return ((positionInBlock + distChange) > currentBlock.getSize());
+  private boolean isEnteringBlock(double delta) {
+    return (positionOfHead > currentBlock.getSize());
   }
 
   /**
