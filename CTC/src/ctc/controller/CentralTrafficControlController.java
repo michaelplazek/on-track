@@ -135,6 +135,8 @@ public class CentralTrafficControlController {
   }
 
   private void updateDisplays() {
+
+    // update train status light
     TrainTracker train = dispatchTable.getSelectionModel().getSelectedItem();
     if (train != null) {
       if (train.isStopped()) {
@@ -224,9 +226,11 @@ public class CentralTrafficControlController {
             setStyle("");
           } else {
             if (tracker.isStopped()) {
-              row.setStyle("-fx-selection-bar-non-focused: salmon;");
+              row.setStyle("-fx-selection-bar-non-focused: salmon;"
+                  + "-fx-selection-bar: salmon;");
             } else {
-              row.setStyle("-fx-selection-bar-non-focused: #cdee83;");
+              row.setStyle("-fx-selection-bar-non-focused: #cdee83;"
+                  + "-fx-selection-bar: #cdee83;");
             }
           }
         }
@@ -907,6 +911,12 @@ public class CentralTrafficControlController {
 
         // create train
         ctc.addTrain(train);
+
+        // automatically select the first item if one hasn't been selected
+        TrainTracker queued = trainQueueTable.getSelectionModel().getSelectedItem();
+        if (queued == null) {
+          trainQueueTable.getSelectionModel().selectFirst();
+        }
       } else {
 
         AlertWindow alert = new AlertWindow();
@@ -977,6 +987,8 @@ public class CentralTrafficControlController {
         if (ctc.getTrainQueueTable().size() == 0) {
           selectedScheduleTable.setItems(FXCollections.observableArrayList());
         }
+
+        dispatchTable.getSelectionModel().select(selected);
       }
     } else if (ctc.isActive()) {
 
@@ -1091,5 +1103,7 @@ public class CentralTrafficControlController {
     if (ctc.getTrainQueueTable().size() == 0) {
       selectedScheduleTable.setItems(FXCollections.observableArrayList());
     }
+
+    dispatchTable.getSelectionModel().select(train);
   }
 }
