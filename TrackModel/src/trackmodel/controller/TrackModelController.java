@@ -77,7 +77,7 @@ public class TrackModelController {
 
     trackSelection.getSelectionModel().selectedItemProperty()
         .addListener((observableValue, oldValue, newValue) -> {
-          if(!newValue.equals("")) {
+          if (!newValue.equals("")) {
             currentTrack = Track.getListOfTracks().get(newValue);
 
             this.makeBlockList(currentTrack);
@@ -93,6 +93,8 @@ public class TrackModelController {
                 blockSelection.setValue(blockList.get(0));
               }
 
+              System.out.println(currentTrack.getStationList());
+
             }
 
             updateOccupiedBlock();
@@ -107,7 +109,7 @@ public class TrackModelController {
 
           if (currentTrack != null) {
             Block block = currentTrack.getBlock(blockId);
-            updateUI(block);
+            updateUi(block);
           } else {
             blankBlock();
           }
@@ -134,6 +136,9 @@ public class TrackModelController {
     return 0;
   }
 
+  /**
+   * This method will initialize the UI with blank data.
+   */
   public void blankBlock() {
     DecimalFormat df = new DecimalFormat("#.###");
 
@@ -157,7 +162,11 @@ public class TrackModelController {
     this.updateClosedBlocks();
   }
 
-  public void updateUI(Block block) {
+  /**
+   * This method updates the User Interface to hold data about a selected block.
+   * @param block The block that has been selected by the user
+   */
+  public void updateUi(Block block) {
 
     DecimalFormat df = new DecimalFormat("#.###");
 
@@ -173,7 +182,7 @@ public class TrackModelController {
       blockSwitch.setText("None");
     }
 
-    if (block.getBrokenRailStatus()){
+    if (block.getBrokenRailStatus()) {
       railStatus.setFill(Color.GREEN);
     } else {
       railStatus.setFill(Color.WHITE);
@@ -231,10 +240,15 @@ public class TrackModelController {
     this.updateClosedBlocks();
   }
 
-  public void makeBlockList(Track track){
+  /**
+   * This method will make the block list for a track.
+   * Used for the block list selection box
+   * @param track The track selected by the user
+   */
+  public void makeBlockList(Track track) {
     blockList.clear();
 
-    if(track != null) {
+    if (track != null) {
       blockList.addAll(track.getBlockList());
       blockList.remove("-1");
     }
@@ -249,6 +263,9 @@ public class TrackModelController {
     }
   }
 
+  /**
+   * This method will update the track selection choice box upon initialization.
+   */
   public void updateTracks() {
     ArrayList<String> track = new ArrayList<>();
     track.add("Select Track");
@@ -258,12 +275,15 @@ public class TrackModelController {
     trackSelection.setValue("Select Track");
   }
 
+  /**
+   * This method will be run on each clock tick to update information about the track.
+   */
   public  void run() {
     if (currentTrack != null) {
       int blockId = extractBlock(blockSelection);
       Block block = currentTrack.getBlock(blockId);
       if (block != null) {
-        updateUI(block);
+        updateUi(block);
       }
     }
   }
@@ -296,7 +316,7 @@ public class TrackModelController {
       }
     }
 
-    updateUI(block);
+    updateUi(block);
   }
 
   private void updateOccupiedBlock() {
