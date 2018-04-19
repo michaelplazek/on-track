@@ -135,6 +135,17 @@ public class CentralTrafficControlController {
   }
 
   private void updateDisplays() {
+    TrainTracker train = dispatchTable.getSelectionModel().getSelectedItem();
+    if (train != null) {
+      if (train.isStopped()) {
+        trainStatus.setFill(Paint.valueOf("Red"));
+      } else {
+        trainStatus.setFill(Paint.valueOf("#24c51b"));
+      }
+    } else {
+      trainStatus.setFill(Paint.valueOf("Grey"));
+    }
+
     dispatchTable.refresh();
   }
 
