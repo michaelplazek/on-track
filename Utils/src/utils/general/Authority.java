@@ -5,5 +5,6 @@ public enum Authority {
   STOP_AT_NEXT_STATION,
   SEND_POWER,
   EMERGENCY_BRAKE_STOP,
-  STOP_AT_LAST_STATION
+  STOP_AT_LAST_STATION,
+  STOP_IN_THREE_BLOCKS // for non-station authority
 }
