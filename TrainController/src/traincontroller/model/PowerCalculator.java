@@ -45,23 +45,25 @@ public class PowerCalculator {
     double distanceTraveled = currentSpeed * delta;
     double distanceIntoCurrentBlock = tc.getDistanceIntoCurrentBlock() + distanceTraveled;
     Block currentBlock = tc.getCurrentBlock();
-    if (distanceIntoCurrentBlock >= currentBlock.getSize()) {
-      distanceIntoCurrentBlock -= currentBlock.getSize();
-      Track track = Track.getTrack(tc.getLine());
-      Block temp = tc.getCurrentBlock();
-      tc.setCurrentBlock(nextBlock(temp, tc.getLastBlock(), track));
-      tc.setLastBlock(temp);
-    }
-    tc.setDistanceIntoCurrentBlock(distanceIntoCurrentBlock);
-    Beacon current = tc.getBeacon();
-    if (current != null) {
-      tc.setDistanceToStation(tc.getDistanceToStation() - distanceTraveled);
-    }
-    if (tc.getTrainModel().getServiceBrakeStatus() == OnOffStatus.ON) {
-      double lastSpeed = tc.getCurrentSpeed();
-      double acceleration = Math.abs(currentSpeed - lastSpeed) / delta;
-      if (acceleration != 0 && delta != 0) {
-        tc.setWeight(TrainController.FORCE_BRAKE_TRAIN_EMPTY / acceleration);
+    if (currentBlock != null) {
+      if (distanceIntoCurrentBlock >= currentBlock.getSize()) {
+        distanceIntoCurrentBlock -= currentBlock.getSize();
+        Track track = Track.getTrack(tc.getLine());
+        Block temp = tc.getCurrentBlock();
+        tc.setCurrentBlock(nextBlock(temp, tc.getLastBlock(), track));
+        tc.setLastBlock(temp);
+      }
+      tc.setDistanceIntoCurrentBlock(distanceIntoCurrentBlock);
+      Beacon current = tc.getBeacon();
+      if (current != null) {
+        tc.setDistanceToStation(tc.getDistanceToStation() - distanceTraveled);
+      }
+      if (tc.getTrainModel().getServiceBrakeStatus() == OnOffStatus.ON) {
+        double lastSpeed = tc.getCurrentSpeed();
+        double acceleration = Math.abs(currentSpeed - lastSpeed) / delta;
+        if (acceleration != 0 && delta != 0) {
+          tc.setWeight(TrainController.FORCE_BRAKE_TRAIN_EMPTY / acceleration);
+        }
       }
     }
   }

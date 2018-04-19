@@ -165,17 +165,10 @@ public class TrainTracker {
   private void updateLifecycle() {
 
     // check if train has reached the yard
-    if (route.getCurrent().getNumber() == -1) {
+    if (route.getNext().getNumber() == -1) {
       isDispatched = false;
       isDone = true;
-
-      // set the occupied blocks false when train leaves the track
-      route.getCurrent().setOccupied(false);
-      route.getBlockOnRoute(route.getCurrentIndex() - 1).setOccupied(false);
-      route.getBlockOnRoute(route.getCurrentIndex() - 2).setOccupied(false);
-    }
-
-    if (route.getCurrent() == route.getLast()) {
+    } else if (route.getCurrent() == route.getLast()) {
       isWaitingForAuthority = true;
     }
   }
