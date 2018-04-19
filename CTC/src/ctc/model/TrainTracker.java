@@ -165,11 +165,13 @@ public class TrainTracker {
   private void updateLifecycle() {
 
     // check if train has reached the yard
-    if (route.getNext().getNumber() == -1) {
+    if (route.getNext()  == route.getLast()) {
       isDispatched = false;
       isDone = true;
-    } else if (route.getCurrent() == route.getLast()) {
-      isWaitingForAuthority = true;
+
+      if (route.getLast().getNumber() != -1) {
+        isWaitingForAuthority = true;
+      }
     }
   }
 
@@ -185,6 +187,8 @@ public class TrainTracker {
       isStopped = true;
       currentDwell = convertTimeToMilliseconds(stop.getDwell());
       route.incrementNextStationIndex();
+    } else if (location == route.getLast()) {
+      isWaitingForAuthority = true;
     }
 
     // when we reach a switch, we check the next fork
@@ -204,6 +208,9 @@ public class TrainTracker {
         } else {
           authority = Authority.SEND_POWER;
         }
+      } else if (((route.getSize() - 1) - route.getCurrentIndex() < 3)
+          && route.getLast().getNumber() != -1) {
+        authority = Authority.STOP_IN_THREE_BLOCKS;
       } else {
         authority = Authority.SEND_POWER;
       }

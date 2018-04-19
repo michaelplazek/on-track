@@ -87,6 +87,10 @@ public class Route {
     return this.end;
   }
 
+  int getSize() {
+    return route.size();
+  }
+
   void incrementCurrentIndex() {
     this.currentIndex++;
   }
