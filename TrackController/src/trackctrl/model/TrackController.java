@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.*;
 
 import trackmodel.model.Block;
 import trackmodel.model.Switch;
@@ -26,12 +27,15 @@ public class TrackController implements TrackControllerInterface {
   private int endBlock;
   private Track myLine;
 
-  //Dimension = number of block statements
-  private ArrayList<String> plcBlockSection = new ArrayList<String>();
-  private ArrayList<Boolean> blockInputEval = new ArrayList<Boolean>();
+  //Parsing logic
+  private ArrayList<String[]> blockInputTerms = new ArrayList<String[]>();
+  private ArrayList<String[]> blockOutputTerms = new ArrayList<String[]>();
+  private ArrayList<String[]> switchInputTerms = new ArrayList<String[]>();
+  private ArrayList<String[]> switchOutputTerms = new ArrayList<String[]>();
 
-  //Dimension = number of swtich statements
-  private ArrayList<String> plcSwitchSection = new ArrayList<String>();
+
+  //Evaluations of Inputs
+  private ArrayList<Boolean> blockInputEval = new ArrayList<Boolean>();
   private ArrayList<Boolean> switchInputEval = new ArrayList<Boolean>();
 
   //Dimension = #of blocks in controller
@@ -95,7 +99,7 @@ public class TrackController implements TrackControllerInterface {
   public void run() {
     readOccupancy();
     readSuggestion();
-    assertLogic();
+    //assertLogic();
   }
 
   @Override
@@ -253,15 +257,60 @@ public class TrackController implements TrackControllerInterface {
       while ((line = br.readLine()) != null) {
         if (line.equals("SWITCH LOGIC")) {
           inSwitch = true;
+          lineNum = 0;
         } else if (!inSwitch) {
-          plcBlockSection.add(lineNum, line);
+
+          String funct = line.split(" THEN ")[0];
+
+          //remove parenthesis
+          int paren;
+          paren = funct.indexOf('(');
+          funct = funct.substring(paren + 1, funct.length() - 1);
+
+          String output = line.split(" THEN ")[1];
+
+          paren = 0;
+          paren = output.indexOf('(');
+          output = output.substring(paren + 1, output.length() - 1);
+
+          //1 - block/crossing/station keyword
+          //2 - relative checking distance and direction
+          //3 - function name
+          blockInputTerms.add(lineNum, funct.split(" "));
+
+          //1 - blocks/crossing/station
+          //2 - relative checking distance and direction
+          //3 - state out
+          blockOutputTerms.add(lineNum, output.split(" "));
+          //System.out.println("DEBUG block: " + lineNum);
+          lineNum++;
         } else {
-          plcSwitchSection.add(line);
+
+          String funct = line.split(" THEN ")[0];
+          String output = line.split(" THEN ")[1];
+          String allFunct = "";
+
+          //Remove Parenthesis
+          Matcher m = Pattern.compile("\\(([^)]+)\\)").matcher(funct);
+          while (m.find()) {
+            allFunct = allFunct + " " + m.group(1);
+          }
+
+          int paren = 0;
+          paren = output.indexOf('(');
+          output = output.substring(paren + 1, output.length() - 1);
+
+          switchInputTerms.add(lineNum, allFunct.split(" "));
+          switchOutputTerms.add(lineNum, output.split(" "));
+          //System.out.println("DEBUG switch: " + lineNum);
+          lineNum++;
         }
-        lineNum++;
       }
 
-      //Initialize arrays to lineNum value
+
+      // Overwrite
+
+      // Initialize arrays to lineNum value
       blockInputEval = new ArrayList<>(lineNum);
       switchInputEval = new ArrayList<>(lineNum);
 
@@ -270,7 +319,6 @@ public class TrackController implements TrackControllerInterface {
     } catch (IOException ex) {
       System.out.println("Error reading file at:" + myplc);
     }
-
 
     if (myplc.exists()) {
       System.out.println("PLC Found at: " + myplc);
@@ -339,7 +387,7 @@ public class TrackController implements TrackControllerInterface {
     }
   }
 
-  //----------------------PLC helper functions-------------------------------------------
+  //----------------------PLC helper functions-----------------------------------------------------
 
   /** This function checks the relative number of blocks, blocks, and returns true
   * if there is occupancy in that direction (or up until jurisdiction ends,
@@ -351,23 +399,101 @@ public class TrackController implements TrackControllerInterface {
   */
   private boolean isOccupied(char sign, int blocks, String item, Block start) {
 
-    int prev = start.getPreviousBlock();
-    int next = start.getNextBlock1();
+    if (start.getNumber() == -1) {
+      System.out.println("Yard passed into isOccupied");
+      return false;
+    }
+    Boolean goNext = false;
+    Block currBlock = start;
 
-    if (prev < start.getNumber() && prev != -1) {
+
+    //set goNext and currBlock based on if it's a block or switch
+
+    if (item.equals("block")) {
+
+      int prev = start.getPreviousBlock();
+      int next = start.getNextBlock1();
+
+      if (sign == '-') {
+        if (prev < start.getNumber()) goNext = false;
+        else goNext = true;
+      } else if (sign == '+') {
+        if (next > start.getNumber()) goNext = true;
+        else goNext = false;
+      } else {
+        System.out.println("Error: invalid sign detected in PLC");
+      }
+
+      //Sets the currBlock to the next block in checking direction
+      if(goNext) {
+        currBlock = myZone.get(next);
+      } else {
+        currBlock = myZone.get(prev);
+      }
+
+    } else if (item.equals("pblock") || item.equals("n1block") || item.equals("n2block")) {
+
+      //Set goNext to direction that isn't a switch
+      Block check = myZone.get(currBlock.getNextBlock1());
+      if (check.isSwitch()) {
+        goNext = false;
+      } else {
+        goNext = true;
+      }
+
+    } else {
+      System.out.println("Error: invalid start to expression detected in PLC");
+    }
+
+    Boolean occupied = currBlock.isOccupied(); //FIX Null pointer exception
+
+    if (goNext) {
+      //Search occupancy in blocks of greater block number
+      //OLD Search occupancy in next blocks
+      for (int i = 1; i < blocks; i++) {
+
+        //TODO: -----------------------------------------------------------------------------------
+//        occupied = occupied | currBlock.isOccupied();
+//        if (currBlock.getNextBlock1() > )
+
+
+        if (currBlock.getNextBlock1() != -1 && myZone.get(currBlock.getNextBlock1()) != null) {
+
+          occupied = occupied | currBlock.isOccupied();
+          currBlock = myZone.get(currBlock.getNextBlock1());
+        } else {
+          return occupied;
+        }
+      }
+      return occupied;
+    } else {
+      //Search occupancy in previous blocks
+      for (int i = 1; i < blocks; i++) {
+        if (currBlock.getPreviousBlock() != -1 && myZone.get(currBlock.getPreviousBlock()) != null) {
+          occupied = occupied | currBlock.isOccupied();
+          currBlock = myZone.get(currBlock.getPreviousBlock());
+        } else {
+          return occupied;
+        }
+      }
+      return occupied;
+    }
+
+
+    /*if (prev < start.getNumber() && prev != -1) {
+      //Blocks increase from previous to next
       if (sign == '-') {
         //Check blocks previous
 
-        Block currBlock = myZone.get(start.getPreviousBlock());
-        Boolean occupied = false;
-        for (int i = 0; i < blocks; i++) {
-          if (currBlock.getNextBlock1() != -1 && myZone.get(currBlock.getPreviousBlock()) != null) {
-            currBlock = myZone.get(currBlock.getPreviousBlock());
-            occupied = occupied | currBlock.isOccupied();
-          } else {
-            break;
-          }
-        }
+//        Block currBlock = myZone.get(start.getPreviousBlock());
+//        for (int i = 0; i < blocks; i++) {
+//          if (currBlock.getNextBlock1() != -1 && myZone.get(currBlock.getPreviousBlock()) != null) {
+//            currBlock = myZone.get(currBlock.getPreviousBlock());
+//            occupied = occupied | currBlock.isOccupied();
+//          } else {
+//            break;
+//          }
+//        }
 
         return occupied;
 
@@ -375,7 +501,6 @@ public class TrackController implements TrackControllerInterface {
         //check blocks next
 
         Block currBlock = myZone.get(start.getNextBlock1());
-        Boolean occupied = false;
         for (int i = 0; i < blocks; i++) {
           if (currBlock.getNextBlock1() != -1 && myZone.get(currBlock.getNextBlock1()) != null) {
             currBlock = myZone.get(currBlock.getNextBlock1());
@@ -393,7 +518,6 @@ public class TrackController implements TrackControllerInterface {
         //Check blocks next
 
         Block currBlock = myZone.get(start.getNextBlock1());
-        Boolean occupied = false;
         for (int i = 0; i < blocks; i++) {
           occupied = occupied | currBlock.isOccupied();
           if (currBlock.getNextBlock1() != -1 && myZone.get(currBlock.getNextBlock1()) != null) {
@@ -422,7 +546,9 @@ public class TrackController implements TrackControllerInterface {
 
         return occupied;
       }
-    }
+    }*/
+    // DEBUGGING: REMOVE BELOW
+    //return false;
   }
 
   /** This function searches the current controller jurisdiction for a station, and
@@ -457,99 +583,67 @@ public class TrackController implements TrackControllerInterface {
     return false;
   }
 
-  //-------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
 
   /** Uses block occupancies read on this tick to safely change switches/crossings/lights.
    *
    */
   public void assertLogic() {
 
-    //Terms are grouped in threes
-    String blockInputTerms[] = new String[3];
-    String blockOutputTerms[] = new String[3];
-
-    ArrayList<String[]> switchInputTerms = new ArrayList<String[]>();
-    String switchOutputTerms[] = new String[3];
-
-
-    //IN currBlock iteration, assert PLC evaluated for block above based on outputs
-    // 1 iterate through block statements first for every block
-
     //-----------------------ONE iteration of Block ASSERTION---------------------------------
     Block currBlock = myZone.get(trackOffset);
     Block prevBlock = null;
+
+    while (currBlock)
+
 
     while (currBlock.getNumber() != endBlock) {
 
       //Iterate & brake up BLOCK statements
       //-------------------------------------------------------------------------------------
-      for (int j = 0 ; j < plcBlockSection.size() ; j++) {
-
-        //READ line at j and evaluate
-        String code = plcBlockSection.get(j);
-
-        String funct = code.split(" THEN ")[0];
-        String output = code.split(" THEN ")[1];
-
-        //remove parenthesis
-        int paren;
-        paren = funct.indexOf('(');
-        funct = funct.substring(paren + 1, funct.length() - 1);
-
-        paren = 0;
-        paren = output.indexOf('(');
-        output = output.substring(paren + 1, output.length() - 1);
-
-        //1 - block/crossing/station keyword
-        //2 - relative checking distance and direction
-        //3 - function name
-        blockInputTerms = funct.split(" ");
-
-        //1 - blocks/crossing/station
-        //2 - relative checking distance and direction
-        //3 - state out
-        blockOutputTerms = output.split(" ");
+      for (int j = 0; j < blockInputTerms.size(); j++) {
 
         boolean eval = false;
+        String[] currTerm = blockInputTerms.get(j);
 
-        if (blockInputTerms[2].contains("Occupied")) {
-          String s = blockInputTerms[1].substring(1,2);
-          String bstring = blockInputTerms[1].substring(2,blockInputTerms[1].length() - 1);
+        if (currTerm[2].contains("Occupied")) {
+          String s = currTerm[1].substring(1,2);
+          String bstring = currTerm[1].substring(2,currTerm[1].length() - 1);
 
           int checkBlocks = Integer.parseInt(bstring);
           char sign = s.toCharArray()[0];
 
-          if (blockInputTerms[2].equals("isOccupied")) {
-            eval = isOccupied(sign,checkBlocks,blockInputTerms[0], currBlock);
+          if (currTerm[2].equals("isOccupied")) {
+            eval = isOccupied(sign,checkBlocks,currTerm[0], currBlock);
             blockInputEval.add(j,eval);
 
-          } else if (blockInputTerms[2].equals("notOccupied")) {
-            eval = !isOccupied(sign,checkBlocks,blockInputTerms[0], currBlock);
+          } else if (currTerm[2].equals("notOccupied")) {
+            eval = !isOccupied(sign,checkBlocks,currTerm[0], currBlock);
             blockInputEval.add(j,eval);
 
           } else {
             //Invalid function name
           }
-        } else if (blockInputTerms[2].contains("Broken")) {
-          if (blockInputTerms[2].equals("isBroken")) {
+        } else if (currTerm[2].contains("Broken")) {
+          if (currTerm[2].equals("isBroken")) {
             //TODO
-          } else if (blockInputTerms[2].equals("notBroken")) {
+          } else if (currTerm[2].equals("notBroken")) {
 
           } else {
             //Invalid function name
           }
-        } else if (blockInputTerms[2].contains("Freezing")) {
-          if (blockInputTerms[2].equals("isFreezing")) {
+        } else if (currTerm[2].contains("Freezing")) {
+          if (currTerm[2].equals("isFreezing")) {
 
-          } else if (blockInputTerms[2].equals("notFreezing")) {
+          } else if (currTerm[2].equals("notFreezing")) {
 
           } else {
             //Invalid function name
           }
-        } else if (blockInputTerms[2].contains("moving")) {
-          if (blockInputTerms[2].equals("movingTo")) {
+        } else if (currTerm[2].contains("moving")) {
+          if (currTerm[2].equals("movingTo")) {
 
-          } else if (blockInputTerms[2].equals("movingFrom")) {
+          } else if (currTerm[2].equals("movingFrom")) {
 
           } else {
             //Invalid function name
@@ -575,141 +669,211 @@ public class TrackController implements TrackControllerInterface {
         boolean preferred = true; //(false = nb2 true = nb1)
 
         //Evaluate each PLC switch statement
-        for (int j = 0; j < plcSwitchSection.size(); j++) {
+        for (int j = 0; j < switchInputTerms.size(); j++) {
 
-          //READ line at j and evaluate
-          String code = plcSwitchSection.get(j);
+          String[] currInputTerm = switchInputTerms.get(j);
 
-          String funct = code.split(" THEN ")[0];
-          String output = code.split(" THEN ")[1];
-          String clauses[] = funct.split(" AND ");
+          //READ line at j from Switch section and evaluate
 
-          //Fetch individual function terms
-          switchInputTerms.clear();
-          for(int c = 0; c < clauses.length; c++) {
-            int paren;
-            paren = clauses[c].indexOf('(');
-            clauses[c] = clauses[c].substring(paren + 1, clauses[c].length() - 1);
+          //---------------------------------------------------------
 
-            switchInputTerms.add(c, clauses[c].split(" "));
-          }
+          // previousBlock term [0-2]
+          if (!currInputTerm[0].equals("pblock")) System.out.println("Invalid PLC detected");
 
-          int paren = 0;
-          paren = output.indexOf('(');
-          output= output.substring(paren + 1, output.length() - 1);
-
-          switchOutputTerms = output.split(" ");
-
-          boolean termEvals[] = new boolean[switchInputTerms.size()];
-
-          //Evaluate LHS Terms of Switch statement
-          int t = 0;
-          for (String[] switchInputTerm : switchInputTerms) {
-
-            boolean eval = false;
-
-            if (switchInputTerm[2].contains("Occupied")) {
+            if (currInputTerm[2].contains("Occupied")) {
               //OCCUPIED
-              String s = switchInputTerm[1].substring(1, 2);
-              String bstring = switchInputTerm[1].substring(2, switchInputTerm[1].length() - 1);
+              String s = currInputTerm[1].substring(1, 2);
+              String bstring = currInputTerm[1].substring(2, currInputTerm[1].length() - 1);
 
               int checkBlocks = Integer.parseInt(bstring);
               char sign = s.toCharArray()[0];
 
-              if (switchInputTerm[2].equals("isOccupied")) {
-
-                if (switchInputTerm[0].equals("pblock")) {
-                  termEvals[t] = isOccupied(sign, checkBlocks, switchInputTerm[0], myLine.getBlock(currSwitch.getPreviousBlock()));
-                } else if (switchInputTerm[0].equals("n1block")) {
-                  termEvals[t] = isOccupied(sign, checkBlocks, switchInputTerm[0], myLine.getBlock(currSwitch.getNextBlock1()));
-                } else if (switchInputTerm[0].equals("n2block")) {
-                  termEvals[t] = isOccupied(sign, checkBlocks, switchInputTerm[0], myLine.getBlock(currSwitch.getNextBlock2()));
-                } else {
-                  //invalid term
-                }
-
-              } else if (switchInputTerm[2].equals("notOccupied")) {
-
-                if (switchInputTerm[0].equals("pblock")) {
-                  termEvals[t] = !isOccupied(sign, checkBlocks, switchInputTerm[0], myLine.getBlock(currSwitch.getPreviousBlock()));
-                } else if (switchInputTerm[0].equals("n1block")) {
-                  termEvals[t] = !isOccupied(sign, checkBlocks, switchInputTerm[0], myLine.getBlock(currSwitch.getNextBlock1()));
-                } else if (switchInputTerm[0].equals("n2block")) {
-                  termEvals[t] = !isOccupied(sign, checkBlocks, switchInputTerm[0], myLine.getBlock(currSwitch.getNextBlock2()));
-                } else if (switchInputTerm[0].equals("preferred")){
-                  if (switchInputTerm[0].equals("switchN1")) {
-                    preferred = true;
-                  } else if (switchInputTerm[0].equals("switchN2")) {
-                    preferred = false;
-                  } else if (switchInputTerm[0].equals("ignore")) {
-                    termEvals[t] = true;
-                  }
-                  else {
-                    //invalid term
-                  }
-                } else {
-                  //invalid term
-                }
-
+              if (currInputTerm[2].equals("isOccupied")) {
+                  // ADD first term eval based on line number
+                  switchInputEval.add(j, isOccupied(sign, checkBlocks, currInputTerm[0], myLine.getBlock(currSwitch.getPreviousBlock())));
+              } else if (currInputTerm[2].equals("notOccupied")) {
+                  switchInputEval.add(j, !isOccupied(sign, checkBlocks, currInputTerm[0], myLine.getBlock(currSwitch.getPreviousBlock())));
               } else {
                 //Invalid function name
               }
-            } else if (blockInputTerms[2].contains("Broken")) {
+            } else if (currInputTerm[2].contains("Broken")) {
 
               //BROKEN
-              if (blockInputTerms[2].equals("isBroken")) {
+              if (currInputTerm[2].equals("isBroken")) {
 
-              } else if (blockInputTerms[2].equals("notBroken")) {
+              } else if (currInputTerm[2].equals("notBroken")) {
 
               } else {
                 //Invalid function name
               }
-            } else if (blockInputTerms[2].contains("Freezing")) {
+            } else if (currInputTerm[2].contains("Freezing")) {
 
               //FREEZING
-              if (blockInputTerms[2].equals("isFreezing")) {
+              if (currInputTerm[2].equals("isFreezing")) {
 
-              } else if (blockInputTerms[2].equals("notFreezing")) {
+              } else if (currInputTerm[2].equals("notFreezing")) {
 
               } else {
                 //Invalid function name
               }
-            } else if (blockInputTerms[2].contains("moving")) {
+            } else if (currInputTerm[2].contains("moving")) {
 
               //MOVING
-              if (blockInputTerms[2].equals("movingTo")) {
+              if (currInputTerm[2].equals("movingTo")) {
 
-              } else if (blockInputTerms[2].equals("movingFrom")) {
+              } else if (currInputTerm[2].equals("movingFrom")) {
 
               } else {
                 //Invalid function name
               }
-            } else if (blockInputTerms[2].equals("ignore")) {
-              termEvals[t] = true;
+            } else if (currInputTerm[2].equals("ignore")) {
+                switchInputEval.add(j, true);
             } else {
               //Unknown input
+              System.out.println("Error: unknown input function detected in PLC");
+              switchInputEval.add(j, false);
             }
-            t++;
-          }
 
-          //Finished evaluated all terms on LHS
-          //find result of all terms
-          boolean result = true;
-          for (t = 0; t < termEvals.length; t++) {
-            result = result & termEvals[t];
-          }
-          switchInputEval.add(j,result);
-        }
-      }
-      //-------------------------------------------------------------------------------------
+          //---------------------------------------------------------
 
-      //iterate through eval statements
 
+          // NextBlock1 term [3-5]
+          if (!currInputTerm[3].equals("n1block")) System.out.println("Invalid PLC detected");
+
+            Boolean t1 = switchInputEval.get(j);
+
+            if (currInputTerm[5].contains("Occupied")) {
+              //OCCUPIED
+              String s = currInputTerm[4].substring(1, 2);
+              String bstring = currInputTerm[4].substring(2, currInputTerm[4].length() - 1);
+
+              int checkBlocks = Integer.parseInt(bstring);
+              char sign = s.toCharArray()[3];
+
+              if (currInputTerm[5].equals("isOccupied")) {
+                // AND second term eval based on line number w first term eval
+                switchInputEval.set(j,t1 & isOccupied(sign, checkBlocks, currInputTerm[3], myLine.getBlock(currSwitch.getNextBlock1())));
+              } else if (currInputTerm[5].equals("notOccupied")) {
+                switchInputEval.set(j,t1 & !isOccupied(sign, checkBlocks, currInputTerm[3], myLine.getBlock(currSwitch.getNextBlock1())));
+              } else {
+                //Invalid function name
+              }
+            } else if (currInputTerm[5].contains("Broken")) {
+
+              //BROKEN
+              if (currInputTerm[5].equals("isBroken")) {
+
+              } else if (currInputTerm[5].equals("notBroken")) {
+
+              } else {
+                //Invalid function name
+              }
+            } else if (currInputTerm[5].contains("Freezing")) {
+
+              //FREEZING
+              if (currInputTerm[5].equals("isFreezing")) {
+
+              } else if (currInputTerm[5].equals("notFreezing")) {
+
+              } else {
+                //Invalid function name
+              }
+            } else if (currInputTerm[5].contains("moving")) {
+
+              //MOVING
+              if (currInputTerm[5].equals("movingTo")) {
+
+              } else if (currInputTerm[5].equals("movingFrom")) {
+
+              } else {
+                //Invalid function name
+              }
+            } else if (currInputTerm[5].equals("ignore")) {
+              switchInputEval.set(j,t1 & true);
+            } else {
+              //Unknown input
+              System.out.println("Error: unknown input function detected in PLC");
+              switchInputEval.add(j,t1 & false);
+            }
+
+          //---------------------------------------------------------
+
+
+
+          // NextBlock2 term [6-8]
+          if (!currInputTerm[6].equals("n2block")) System.out.println("Invalid PLC detected");
+
+            Boolean t2 = switchInputEval.get(j);
+
+            if (currInputTerm[8].contains("Occupied")) {
+              //OCCUPIED
+              String s = currInputTerm[7].substring(1, 2);
+              String bstring = currInputTerm[7].substring(2, currInputTerm[4].length() - 1);
+
+              int checkBlocks = Integer.parseInt(bstring);
+              char sign = s.toCharArray()[6];
+
+              if (currInputTerm[8].equals("isOccupied")) {
+                // AND second term eval based on line number w first term eval
+                switchInputEval.set(j,t2 & isOccupied(sign, checkBlocks, currInputTerm[6], myLine.getBlock(currSwitch.getNextBlock2())));
+              } else if (currInputTerm[8].equals("notOccupied")) {
+                switchInputEval.set(j,t2 & !isOccupied(sign, checkBlocks, currInputTerm[6], myLine.getBlock(currSwitch.getNextBlock2())));
+              } else {
+                //Invalid function name
+              }
+            } else if (currInputTerm[8].contains("Broken")) {
+
+              //BROKEN
+              if (currInputTerm[8].equals("isBroken")) {
+
+              } else if (currInputTerm[8].equals("notBroken")) {
+
+              } else {
+                //Invalid function name
+              }
+            } else if (currInputTerm[8].contains("Freezing")) {
+
+              //FREEZING
+              if (currInputTerm[8].equals("isFreezing")) {
+
+              } else if (currInputTerm[8].equals("notFreezing")) {
+
+              } else {
+                //Invalid function name
+              }
+            } else if (currInputTerm[8].contains("moving")) {
+
+              //MOVING
+              if (currInputTerm[8].equals("movingTo")) {
+
+              } else if (currInputTerm[8].equals("movingFrom")) {
+
+              } else {
+                //Invalid function name
+              }
+            } else if (currInputTerm[8].equals("ignore")) {
+              switchInputEval.set(j,t2 & true);
+            } else {
+              //Unknown input
+              System.out.println("Error: unknown input function detected in PLC");
+              switchInputEval.add(j,t2 & false);
+            }
+        } // J iteration through switchInputTerms
+
+
+
+
+
+
+
+      } //--------------------END IS SWITCH---------------------------------------------
 
 
       //DEBUG: is it smart to ignore block logic on a switch? time will tell
       if (currBlock.isSwitch()) {
         //apply switch logic
+
+
 
         //******************************************************************
 
@@ -733,6 +897,7 @@ public class TrackController implements TrackControllerInterface {
       if (prevBlock == null) {
         //initialize first prev block
         if (myLine.getBlock(currBlock.getNextBlock1()) != null) {
+
           prevBlock = myLine.getBlock(currBlock.getNextBlock1());
         } else if (myLine.getBlock(currBlock.getPreviousBlock()) != null) {
           prevBlock = myLine.getBlock(currBlock.getPreviousBlock());
@@ -741,6 +906,7 @@ public class TrackController implements TrackControllerInterface {
         }
       } else {
         prevBlock = currBlock;
+        System.out.println("curr block: " + currBlock.getNumber());
         currBlock = myLine.getNextBlock(currBlock.getNumber(), prevBlock.getNumber());
         if (currBlock == null) {
           //DEBUG

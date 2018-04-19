@@ -1,3 +1,1 @@
-<# of tracks remaining>,,,,
-<line color>,<color>,<# of controllers>,,<ctrlr id>,<ctrlr start block>,<ctrlr end block>,<ctrlr fork segment start>,<ctrlr fork segment end>
-0,,,,Green,,8,0,1,59,72,,2,73,79,101,1013,80,100,,4,102,133,,5,134,140,,6,21,32,141,1507,1,20,,8,33,58,,
+<# of tracks remaining>,,,,<line color>,<color>,<# of controllers>,,<ctrlr id>,<ctrlr start block>,<ctrlr end block>,<ctrlr fork segment start>,<ctrlr fork segment end>0,,,,Green,,8,0,1,59,72,,2,73,79,101,1013,80,100,,4,102,125,,5,126,140,,6,21,32,141,1507,1,20,,8,33,58,,
