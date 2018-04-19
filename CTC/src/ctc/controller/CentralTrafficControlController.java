@@ -998,6 +998,9 @@ public class CentralTrafficControlController {
       Route route = new Route(location, end, line, train);
       train.setRoute(route);
 
+      // let the TrainTracker know that it has a new authority
+      train.setWaitingForAuthority(false);
+
       // get new authority that is set inside of setRoute
       Authority authority = train.getAuthority();
 

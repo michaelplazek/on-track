@@ -26,6 +26,7 @@ public class TrainTracker {
   private String departure;
   private boolean isDispatched;
   private boolean isStopped;
+  private boolean isWaitingForAuthority;
   private boolean isDone;
   private float speed;
   private int passengers;
@@ -84,7 +85,7 @@ public class TrainTracker {
     // update the user interface
     updateDisplay();
 
-    if (!isStopped) {
+    if (!isStopped && !isWaitingForAuthority) {
 
       // update the position of the train
       updatePosition();
@@ -167,7 +168,15 @@ public class TrainTracker {
     if (route.getCurrent().getNumber() == -1) {
       isDispatched = false;
       isDone = true;
+
+      // set the occupied blocks false when train leaves the track
       route.getCurrent().setOccupied(false);
+      route.getBlockOnRoute(route.getCurrentIndex() - 1).setOccupied(false);
+      route.getBlockOnRoute(route.getCurrentIndex() - 2).setOccupied(false);
+    }
+
+    if (route.getCurrent() == route.getLast()) {
+      isWaitingForAuthority = true;
     }
   }
 
@@ -365,5 +374,9 @@ public class TrainTracker {
 
   public Route getRoute() {
     return route;
+  }
+
+  public void setWaitingForAuthority(boolean waitingForAuthority) {
+    isWaitingForAuthority = waitingForAuthority;
   }
 }
