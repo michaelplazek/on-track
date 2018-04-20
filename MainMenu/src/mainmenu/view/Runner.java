@@ -50,10 +50,10 @@ public class Runner extends Application {
 
                 if (ctc.isActive()) {
                   clk.tick();
-                  ctcc.run();
                   TrackControllerLineManager.runTrackControllers();
-                  TrainControllerManager.runTrainControllers();
                   TrainModel.runAllInstances();
+                  TrainControllerManager.runTrainControllers();
+                  ctcc.run();
                 }
               }
             }

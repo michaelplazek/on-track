@@ -5,7 +5,6 @@ public class ScheduleRow {
   private String stop;
   private String dwell;
   private String time;
-  private int numberOfStops;
 
   /**
    * Default constructor.
@@ -21,7 +20,6 @@ public class ScheduleRow {
     this.stop = stop;
     this.dwell = dwell;
     this.time = time;
-    this.numberOfStops = 0;
   }
 
   public String getStop() {

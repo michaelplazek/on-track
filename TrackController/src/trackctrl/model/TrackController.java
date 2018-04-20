@@ -105,6 +105,8 @@ public class TrackController implements TrackControllerInterface {
   @Override
   public boolean sendTrackSignals(int block, Authority authority, float speed) {
     if (myLine != null) {
+      //myLine.getBlock(block).setAuthority(authority);
+      //myLine.getBlock(block).setSetPointSpeed(Math.abs(speed));
 
       //Take snapshot of CTC suggestions
       if ((block - trackOffset >= 0) && (block - trackOffset < getZone().size())) {

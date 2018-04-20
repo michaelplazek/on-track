@@ -3,7 +3,14 @@ package trainmodel.model;
 import java.util.HashMap;
 import java.util.Random;
 
-import javafx.beans.property.*;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import mainmenu.Clock;
@@ -36,7 +43,7 @@ public class TrainModel implements TrainModelInterface {
             40.9t = 40900kg
   ============================================ */
 
-//  Train Dimensions
+  // Train Dimensions
   private DoubleProperty height
       = new SimpleDoubleProperty(TrainData.HEIGHT_OF_TRAIN * UnitConversions.METERS_TO_FT);
   private DoubleProperty width
@@ -120,6 +127,7 @@ public class TrainModel implements TrainModelInterface {
     this.id = id;
     this.line = line;
     this.activeTrack = Track.getTrack(line);
+    this.activeTrackName.set(line);
     this.currentBlock = activeTrack.getStartBlock();
     this.previousBlock = activeTrack.getBlock(-1);
   }
@@ -209,9 +217,11 @@ public class TrainModel implements TrainModelInterface {
       positionInBlock = positionInBlock + changeInDist;
     }
 
-//    System.out.println("Change in position: " + changeInDist);
-//    System.out.println("Location in block: " + positionInBlock);
-//    System.out.println("Current block: " + currentBlock.getSize());
+    currentBlockName.set(currentBlock.getSection() + currentBlock.getNumber());
+
+    //    System.out.println("Change in position: " + changeInDist);
+    //    System.out.println("Location in block: " + positionInBlock);
+    //    System.out.println("Current block: " + currentBlock.getSize());
   }
 
   /**
@@ -257,11 +267,13 @@ public class TrainModel implements TrainModelInterface {
    * Updates velocity.
    */
   private void updateVelocity() {
-    if (acceleration == 0 && !isMoving) {
-      velocity.set(0.001);
-    } else {
-      double v = velocity.get() + (acceleration * (clock.getChangeInTime() / 1000.0));
+
+    double v = velocity.get() + (acceleration * (clock.getChangeInTime() / 1000.0));
+
+    if (v > 0) {
       velocity.set(v);
+    } else {
+      velocity.set(0);
     }
 
     velocityMph.set(velocity.getValue() * UnitConversions.MPS_TO_MPH);
@@ -271,25 +283,33 @@ public class TrainModel implements TrainModelInterface {
    * Updates acceleration.
    */
   private void updateAcceleration() {
-//    if (velocity.get() == 0) {
-//      acceleration = 1;
-//    } else {
-    acceleration = force / mass.get();
-//    }
+    if (emergencyBrakeStatus.getValue() == OnOffStatus.ON) {
+      acceleration = TrainData.EMERGENCY_BRAKE_ACCELERATION;
+    } else if (serviceBrakeStatus.getValue() == OnOffStatus.ON) {
+      acceleration = TrainData.SERVICE_BRAKE_ACCELERATION;
+    } else {
+      acceleration = force / mass.get();
+    }
   }
 
   /**
    * Updates force.
    */
   private void updateForce() {
-    double tempForce = (powerCommand.get() * 1000) / velocity.get(); // power is sent in kW
+    double tempForce;
+    if (velocity.get() == 0) {
+      tempForce = powerCommand.get() * 1000 / 0.001;
+    } else {
+      tempForce = powerCommand.get() * 1000 / velocity.get();
+    }
+
     force = tempForce;
 
-//    if (tempForce - frictionForce < 0) {
-//      force = 0;
-//    } else {
-//      force = tempForce - frictionForce;
-//    }
+    //    if (tempForce - frictionForce < 0) {
+    //      force = 0;
+    //    } else {
+    //      force = tempForce - frictionForce;
+    //    }
   }
 
   /**
@@ -315,14 +335,14 @@ public class TrainModel implements TrainModelInterface {
       updatePosition();
       updateOccupancy();
       updateSpeedAuth();
-      checkBrakes();
+//      checkBrakes();
       changeTemperature();
 
-//      System.out.println("Block: " + currentBlock.getSection() + currentBlock.getNumber());
-//      System.out.println("Acceleration: " + acceleration);
-//      System.out.println("Velocity: " + velocity.get());
-//      System.out.println("Force: " + force);
-//      System.out.println("Power: " + powerCommand.get());
+      //      System.out.println("Block: " + currentBlock.getSection() + currentBlock.getNumber());
+      //      System.out.println("Acceleration: " + acceleration);
+      //      System.out.println("Velocity: " + velocity.get());
+      //      System.out.println("Force: " + force);
+      //      System.out.println("Power: " + powerCommand.get());
     }
   }
 
@@ -353,13 +373,12 @@ public class TrainModel implements TrainModelInterface {
    */
   private void checkBrakes() {
     double deceleration;
-    if (emergencyBrakeStatus.toString().equals(OnOffStatus.ON.toString())) {
-      deceleration = TrainData.EMERGENCY_BRAKE_ACCELERATION * clock.getChangeInTime();
-      velocity.set(velocity.get() - deceleration);
-    } else if (emergencyBrakeStatus.toString().equals(OnOffStatus.OFF.toString())
-        && serviceBrakeStatus.toString().equals(OnOffStatus.ON.toString())) {
-      deceleration = TrainData.SERVICE_BRAKE_ACCELERATION * clock.getChangeInTime();
-      velocity.set(velocity.get() - deceleration);
+    if (emergencyBrakeStatus.getValue() == OnOffStatus.ON) {
+      deceleration = TrainData.EMERGENCY_BRAKE_ACCELERATION * (clock.getChangeInTime() / 1000);
+      velocity.set(velocity.get() + deceleration);
+    } else if (serviceBrakeStatus.getValue() == OnOffStatus.ON) {
+      deceleration = TrainData.SERVICE_BRAKE_ACCELERATION * (clock.getChangeInTime() / 1000);
+      velocity.set(velocity.get() + deceleration);
     }
   }
 
@@ -689,7 +708,6 @@ public class TrainModel implements TrainModelInterface {
   public ObjectProperty<Failure> engineFailureStatusProperty() {
     return engineFailureStatus;
   }
-
 
   public ObjectProperty<Failure> brakeFailureStatusProperty() {
     return brakeFailureStatus;

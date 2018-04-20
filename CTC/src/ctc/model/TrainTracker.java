@@ -101,6 +101,7 @@ public class TrainTracker {
       currentDwell = currentDwell - clock.getChangeInTime();
       if (currentDwell < 0) {
         isStopped = false;
+        updateTrackSignals();
       }
     }
   }
@@ -174,10 +175,10 @@ public class TrainTracker {
     ScheduleRow stop = route.getNextStop();
 
     // check to see if we have reached a station
-    if ((location.isLeftStation() || location.isLeftStation())
+    if ((location.isLeftStation() || location.isRightStation())
         && location.getStationName().compareTo(stop.getStop()) == 0) {
       isStopped = true;
-      currentDwell = convertTimeToMilliseconds(stop.getTime());
+      currentDwell = convertTimeToMilliseconds(stop.getDwell());
       route.incrementNextStationIndex();
     }
 
@@ -187,16 +188,18 @@ public class TrainTracker {
       speed = location.getSpeedLimit();
     }
 
-    String nextStationOnSchedule = stop.getStop();
+    String nextStationOnSchedule = stop != null ? stop.getStop() : null;
 
     // determine next authority
     String nextStationOnRoute = route.getNextStation();
     if (!isStopped) {
-      if (nextStationOnSchedule != null
+      if ((nextStationOnSchedule != null && nextStationOnSchedule.compareTo("") != 0)
           && nextStationOnRoute != null) {
 
         if (nextStationOnRoute.compareTo(nextStationOnSchedule) == 0) {
           authority = Authority.STOP_AT_NEXT_STATION;
+        } else {
+          authority = Authority.SEND_POWER;
         }
       } else {
         authority = Authority.SEND_POWER;
@@ -218,7 +221,7 @@ public class TrainTracker {
 
   private void computeDisplayAuthority() {
 
-    String stop = route.getNextStop().getStop();
+    String stop = route.getNextStop() != null ? route.getNextStop().getStop() : null;
     if (stop == null || stop.compareTo("") == 0) {
       if (route.getLast().getNumber() != -1) {
         stop = route.getLast().getSection() + route.getLast().getNumber();
@@ -243,12 +246,32 @@ public class TrainTracker {
     }
   }
 
+  /**
+   * Give the train a new route.
+   * @param route new Route
+   */
+  public void setRoute(Route route) {
+    this.route = route;
+
+    updateDisplay();
+  }
+
   public Schedule getSchedule() {
     return schedule;
   }
 
   public void setSchedule(Schedule schedule) {
     this.schedule = schedule;
+  }
+
+  /**
+   * Sets the location of the train.
+   * @param location Block object
+   */
+  public void setLocation(Block location) {
+
+    this.location = location;
+    this.locationId = location.getSection() + location.getNumber();
   }
 
   public String getId() {
@@ -295,16 +318,6 @@ public class TrainTracker {
     return location;
   }
 
-  /**
-   * Sets the location of the train.
-   * @param location Block object
-   */
-  public void setLocation(Block location) {
-
-    this.location = location;
-    this.locationId = location.getSection() + location.getNumber();
-  }
-
   public Track getTrack() {
     return track;
   }
@@ -337,25 +350,11 @@ public class TrainTracker {
     this.line = line;
   }
 
-  public boolean isDone() {
+  boolean isDone() {
     return isDone;
-  }
-
-  public void setDone(boolean done) {
-    isDone = done;
   }
 
   public Route getRoute() {
     return route;
-  }
-
-  /**
-   * Give the train a new route.
-   * @param route new Route
-   */
-  public void setRoute(Route route) {
-    this.route = route;
-
-    updateDisplay();
   }
 }

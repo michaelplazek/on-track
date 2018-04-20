@@ -59,7 +59,7 @@ public class TrackMaintenance {
     }
   }
 
-  protected void makeTrackList() {
+  void makeTrackList() {
 
     HashMap<String,Track> track = Track.getListOfTracks();
     for (Map.Entry<String, Track> entry : track.entrySet()) {
@@ -84,23 +84,11 @@ public class TrackMaintenance {
     return blockList;
   }
 
-  public void setBlockList(ObservableList<String> blockList) {
-    this.blockList = blockList;
-  }
-
   public ObservableList<String> getTrackList() {
     return trackList;
   }
 
-  public void setTrackList(ObservableList<String> trackList) {
-    this.trackList = trackList;
-  }
-
   public ObservableList<String> getActionsList() {
     return actionsList;
-  }
-
-  public void setActionsList(ObservableList<String> actionsList) {
-    this.actionsList = actionsList;
   }
 }
