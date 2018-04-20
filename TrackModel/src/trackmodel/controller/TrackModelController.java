@@ -77,7 +77,7 @@ public class TrackModelController {
 
     trackSelection.getSelectionModel().selectedItemProperty()
         .addListener((observableValue, oldValue, newValue) -> {
-          if (!newValue.equals("")) {
+          if (newValue != null && !newValue.equals("")) {
             currentTrack = Track.getListOfTracks().get(newValue);
 
             this.makeBlockList(currentTrack);
@@ -105,7 +105,7 @@ public class TrackModelController {
 
           int blockId = extractBlock(blockSelection);
 
-          if (currentTrack != null) {
+          if (currentTrack != null && newValue != null) {
             Block block = currentTrack.getBlock(blockId);
             updateUi(block);
           } else {
