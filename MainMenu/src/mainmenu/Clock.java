@@ -78,7 +78,7 @@ public class Clock implements ClockInterface {
    */
   public long getChangeInTime() {
     return timeSinceLastTick;
-//    return 20;
+//    return 40;
   }
 
   /**
