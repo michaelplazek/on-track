@@ -75,12 +75,20 @@ public class Route {
     return null;
   }
 
+  Block getBlockOnRoute(int index) {
+    return index < route.size() ? route.get(index) : null;
+  }
+
   public Block getFirst() {
     return this.start;
   }
 
   Block getLast() {
     return this.end;
+  }
+
+  int getSize() {
+    return route.size();
   }
 
   void incrementCurrentIndex() {
@@ -181,6 +189,10 @@ public class Route {
     }
 
     return valid;
+  }
+
+  int getCurrentIndex() {
+    return currentIndex;
   }
 
   /**

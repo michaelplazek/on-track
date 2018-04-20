@@ -26,6 +26,7 @@ public class TrainTracker {
   private String departure;
   private boolean isDispatched;
   private boolean isStopped;
+  private boolean isWaitingForAuthority;
   private boolean isDone;
   private float speed;
   private int passengers;
@@ -84,7 +85,7 @@ public class TrainTracker {
     // update the user interface
     updateDisplay();
 
-    if (!isStopped) {
+    if (!isStopped && !isWaitingForAuthority) {
 
       // update the position of the train
       updatePosition();
@@ -164,10 +165,15 @@ public class TrainTracker {
   private void updateLifecycle() {
 
     // check if train has reached the yard
-    if (route.getCurrent().getNumber() == -1) {
+    if (route.getCurrent()  == route.getLast()) {
       isDispatched = false;
       isDone = true;
-      route.getCurrent().setOccupied(false);
+
+      if (route.getLast().getNumber() == -1) {
+        route.getLast().setOccupied(false);
+      } else {
+        isWaitingForAuthority = true;
+      }
     }
   }
 
@@ -183,6 +189,8 @@ public class TrainTracker {
       isStopped = true;
       currentDwell = convertTimeToMilliseconds(stop.getDwell());
       route.incrementNextStationIndex();
+    } else if (location == route.getLast()) {
+      isWaitingForAuthority = true;
     }
 
     // when we reach a switch, we check the next fork
@@ -202,6 +210,9 @@ public class TrainTracker {
         } else {
           authority = Authority.SEND_POWER;
         }
+      } else if (((route.getSize() - 1) - route.getCurrentIndex() < 3)
+          && route.getLast().getNumber() != -1) {
+        authority = Authority.STOP_IN_THREE_BLOCKS;
       } else {
         authority = Authority.SEND_POWER;
       }
@@ -365,5 +376,9 @@ public class TrainTracker {
 
   public Route getRoute() {
     return route;
+  }
+
+  public void setWaitingForAuthority(boolean waitingForAuthority) {
+    isWaitingForAuthority = waitingForAuthority;
   }
 }

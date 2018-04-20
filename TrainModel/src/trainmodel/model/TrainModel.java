@@ -277,6 +277,11 @@ public class TrainModel implements TrainModelInterface {
   private void updateOccupancy() {
     if (currentBlock != null) {
       currentBlock.setOccupied(true);
+
+      if (currentBlock.getNumber() == -1) {
+        previousBlock.setOccupied(false);
+        trailingBlock.setOccupied(false);
+      }
     }
   }
 
