@@ -832,14 +832,28 @@ public class CentralTrafficControlController {
 
       // create schedule
       Schedule schedule =  new Schedule(line);
+      int numberOfStops = 0;
       for (int i = 0; i < addScheduleTable.getItems().size(); i++) {
         schedule.addStop(new ScheduleRow(stopData.get(i), dwellData.get(i), ""));
+        if (stopData.get(i).compareTo("") != 0) {
+          numberOfStops++;
+        }
       }
 
       String name = trainNameField.getText();
       String departingTime = departingTimeField.getText();
 
-      if (!(name.compareTo("") == 0) && departingTime.length() == 8) {
+
+
+      if (numberOfStops == 1) {
+        AlertWindow alert = new AlertWindow();
+
+        alert.setTitle("Error Submitting");
+        alert.setHeader("Invalid Number Of Stops");
+        alert.setContent("Schedule needs to include more than one stop");
+
+        alert.show();
+      } else if (!(name.compareTo("") == 0) && departingTime.length() == 8) {
 
         TrainTracker train = new TrainTracker(name, departingTime, line, schedule);
         train.setLine(ctc.getLine()); // set the track that is current set
