@@ -3,5 +3,5 @@ IF (block |+6| notOccupied) THEN (blocks |+6| auto)
 IF (crossing |+6| isOccupied) THEN (crossing /19/ closed)
 IF (crossing |-6| isOccupied) THEN (crossing /19/ closed)
 SWITCH LOGIC
-IF (pblock |0| ignore) AND (n1block |+8| notOccupied) AND (n2block |0| ignore) AND (preferred |0| switchN1) THEN (switch /57/ switchN1)
-IF (pblock |0| ignore) AND (n1block |+8| notOccupied) AND (n2block |0| ignore) AND (preferred |0| switchN2) THEN (switch /57/ switchN2)
+IF (pblock57 |+0| ignore) AND (n1block |+8| notOccupied) AND (n2block |+0| ignore) THEN (switch /57/ switchN1)
+IF (pblock57 |+0| ignore) AND (n1block |+8| notOccupied) AND (n2block |+0| ignore) THEN (switch /57/ switchN2)

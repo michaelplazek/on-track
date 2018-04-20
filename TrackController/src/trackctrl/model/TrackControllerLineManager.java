@@ -132,6 +132,7 @@ public class TrackControllerLineManager implements TrackControllerLineManagerInt
       for (TrackController tc : lineControllers) {
         if (tc.hasBlock(id)) {
           tc.closeBlock(id);
+          break;
         }
       }
     }
@@ -149,6 +150,7 @@ public class TrackControllerLineManager implements TrackControllerLineManagerInt
       for (TrackController tc : lineControllers) {
         if (tc.hasBlock(id)) {
           tc.repairBlock(id);
+          break;
           }
         }
       }
