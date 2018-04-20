@@ -329,15 +329,7 @@ public class Track {
    */
   public ArrayList<String> getStationList() {
 
-    ArrayList<Block> list =  new ArrayList<>(track.values());
-    ArrayList<String> stations = new ArrayList<>();
-    Block block;
-    for (int i = 0; i < list.size(); i++) {
-      block = list.get(i);
-      if (block.isLeftStation() || block.isRightStation()) {
-        stations.add(block.getStationName());
-      }
-    }
+    ArrayList<String> stations = new ArrayList<>(trackStations.values());
 
     return stations;
   }
@@ -420,6 +412,11 @@ public class Track {
 
   }
 
+  /**
+   * This method will allow for the user to toggle a failure on a block.
+   * @param block The block that is to be edited
+   * @param failureType The type of failure being edited
+   */
   public void toggleFailure(Block block, String failureType) {
     if (failureType.equals("POWER")) {
       block.setPowerStatus(!block.getPowerStatus());
@@ -430,6 +427,10 @@ public class Track {
     }
   }
 
+  /**
+   * This method will update get the list of occupied blocks on a track.
+   * @return A string with a list of the occupied blocks
+   */
   public String getOccupiedBlocks() {
     String blocksOccupied = "";
 
@@ -445,12 +446,16 @@ public class Track {
     return blocksOccupied;
   }
 
+  /**
+   * This method wil allow the user to get a string with a list of closed blocks.
+   * @return A string with a list of the closed blocks
+   */
   public String getClosedBlocks() {
     String blocksClosed = "";
 
     for (Block b: track.values()) {
-      if (b.isClosedForMaintenance() || b.getPowerStatus() ||
-          b.getTrackCircuitStatus() || b.getBrokenRailStatus()) {
+      if (b.isClosedForMaintenance() || b.getPowerStatus()
+          || b.getTrackCircuitStatus() || b.getBrokenRailStatus()) {
         if (blocksClosed.equals("")) {
           blocksClosed = blocksClosed + b.getSection() + b.getNumber();
         } else {

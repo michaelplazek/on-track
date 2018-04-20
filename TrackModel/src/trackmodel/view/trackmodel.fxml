@@ -38,6 +38,7 @@
                            </font>
                         </Label>
                         <ChoiceBox fx:id="blockSelection" layoutX="290.0" layoutY="13.0" prefHeight="25.0" prefWidth="112.0" />
+                        <ChoiceBox fx:id="blockSelection" layoutX="290.0" layoutY="13.0" prefHeight="25.0" prefWidth="112.0" />
                             </children>
                         </AnchorPane>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
@@ -101,15 +102,15 @@
                                                       <CheckMenuItem id="trackFailure" fx:id="trackFailureSelect" mnemonicParsing="false" text="Track Circuit" />
                                                   </items>
                                                 </MenuButton>
-                                                <Circle fx:id="railStatus" fill="WHITE" layoutX="52.0" layoutY="138.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
-                                                <Circle fx:id="powerStatus" fill="WHITE" layoutX="52.0" layoutY="155.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
-                                                <Circle fx:id="circuitStatus" fill="WHITE" layoutX="52.0" layoutY="172.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
-                                                <Circle fx:id="beaconStatus" fill="WHITE" layoutX="295.0" layoutY="60.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
-                                                <Circle fx:id="crossingStatus" fill="WHITE" layoutX="295.0" layoutY="43.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
-                                                <Circle fx:id="undergroundStatus" fill="WHITE" layoutX="295.0" layoutY="26.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
-                                                <Circle fx:id="occupiedStatus" fill="WHITE" layoutX="295.0" layoutY="9.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
-                                                <Circle fx:id="trackHeating" fill="WHITE" layoutX="295.0" layoutY="77.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
-                                                <Circle fx:id="stationStatus" fill="WHITE" layoutX="295.0" layoutY="94.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
+                                                <Circle fx:id="railStatus" fill="WHITE" layoutX="52.0" layoutY="138.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
+                                                <Circle fx:id="powerStatus" fill="WHITE" layoutX="52.0" layoutY="155.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
+                                                <Circle fx:id="circuitStatus" fill="WHITE" layoutX="52.0" layoutY="172.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
+                                                <Circle fx:id="beaconStatus" fill="WHITE" layoutX="295.0" layoutY="60.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
+                                                <Circle fx:id="crossingStatus" fill="WHITE" layoutX="295.0" layoutY="43.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
+                                                <Circle fx:id="undergroundStatus" fill="WHITE" layoutX="295.0" layoutY="26.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
+                                                <Circle fx:id="occupiedStatus" fill="WHITE" layoutX="295.0" layoutY="9.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
+                                                <Circle fx:id="trackHeating" fill="WHITE" layoutX="295.0" layoutY="77.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
+                                                <Circle fx:id="stationStatus" fill="WHITE" layoutX="295.0" layoutY="94.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
                                              </children>
                                           </AnchorPane>
                                        </children>
