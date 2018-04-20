@@ -93,8 +93,6 @@ public class TrackModelController {
                 blockSelection.setValue(blockList.get(0));
               }
 
-              System.out.println(currentTrack.getStationList());
-
             }
 
             updateOccupiedBlock();
