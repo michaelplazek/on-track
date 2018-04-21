@@ -1,4 +1,4 @@
 SWITCH LOGIC
-IF (pblock77 |+2| notOccupied) AND (n1block77 |+4| notOccupied) AND (n2block77 |+0| ignore) THEN (switch /77/ switchN1)
-IF (pblock77 |+6| isOccupied) AND (n1block77 |+6| notOccupied) AND (n2block77 |+0| ignore) THEN (switch /77/ switchN2)
-IF (pblock77 |+6| isOccupied) AND (n1block77 |+6| isOccupied) AND (n2block77 |+0| notOccupied) THEN (n1block |+6| brake)
+IF (pblock77 |+7| notOccupied) AND (n1block77 |-3| notOccupied) AND (n2block77 |+0| ignore) THEN (switch /77/ switchN1)
+IF (pblock77 |+7| movingTo) AND (n1block77 |-3| isOccupied) AND (n2block77 |+0| ignore) THEN (switch /77/ switchN2)
+IF (pblock77 |+7| movingFrom) AND (n1block77 |-3| isOccupied) AND (n2block77 |+0| notOccupied) THEN (switch /77/ switchN1)

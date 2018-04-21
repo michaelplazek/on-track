@@ -66,7 +66,7 @@ public class TrackControllerInitializer {
             tc.setEndBlock(endBlock);
           }
 
-          if (splitLine.length > 3) {
+          if (!splitLine[3].equals("0") && !splitLine[4].equals("0") ) {
             offset = Integer.parseInt(splitLine[3]);
             endBlock = Integer.parseInt(splitLine[4]);
             if (offset == endBlock) {
@@ -76,8 +76,19 @@ public class TrackControllerInitializer {
                 tc.addBlock(track.getBlock(j));
               }
             }
-            //tc.setEndBlock(endBlock);
           }
+
+//          if (!splitLine[5].equals("0") && !splitLine[6].equals("0") ) {
+//            offset = Integer.parseInt(splitLine[5]);
+//            endBlock = Integer.parseInt(splitLine[6]);
+//            if (offset == endBlock) {
+//              tc.addBlock(track.getBlock(offset));
+//            } else {
+//              for (int j = offset; j <= endBlock; j++) {
+//                tc.addBlock(track.getBlock(j));
+//              }
+//            }
+//          }
 
           tc.setBlockNumber();
 
