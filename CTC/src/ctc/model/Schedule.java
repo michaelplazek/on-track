@@ -6,7 +6,6 @@ import javafx.collections.ObservableList;
 public class Schedule {
 
   private String line;
-  private String departingTime;
   private String destination;
 
   private ObservableList<ScheduleRow> stops;
@@ -18,7 +17,6 @@ public class Schedule {
   public Schedule(String line) {
 
     this.line = line;
-    this.departingTime = "12:00:00";
     this.destination = "Yard";
     this.stops = FXCollections.observableArrayList();
   }
@@ -26,15 +24,12 @@ public class Schedule {
   /**
    * Constructor.
    * @param line String for the name of the line
-   * @param departingTime String for the departing time
    * @param destination String for the block name of the destination
    */
   public Schedule(String line,
-                  String departingTime,
                   String destination) {
 
     this.line = line;
-    this.departingTime = departingTime;
     this.destination = destination;
     this.stops = FXCollections.observableArrayList();
   }
@@ -49,14 +44,6 @@ public class Schedule {
 
   public void setLine(String line) {
     this.line = line;
-  }
-
-  public String getDepartingTime() {
-    return departingTime;
-  }
-
-  public void setDepartingTime(String departingTime) {
-    this.departingTime = departingTime;
   }
 
   public String getDestination() {
