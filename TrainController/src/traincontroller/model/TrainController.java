@@ -2,7 +2,9 @@
 package traincontroller.model;
 
 import java.util.HashMap;
+
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -24,7 +26,7 @@ public class TrainController implements TrainControllerInterface {
 
   public static final double FORCE_BRAKE_TRAIN_EMPTY = 123436.2;
 
-  private boolean automatic;
+  private SimpleBooleanProperty automatic;
   private Mode mode;
   private boolean underground;
   private Block currentBlock;
@@ -40,17 +42,25 @@ public class TrainController implements TrainControllerInterface {
   private SimpleStringProperty id;
   private SimpleStringProperty line;
   private boolean running;
-  private SimpleDoubleProperty currentSpeed;
-  private SimpleDoubleProperty setSpeed;
+  private SimpleDoubleProperty currentSpeedMph;
+  private double currentSpeed;
+  private SimpleDoubleProperty setSpeedMph;
+  private double setSpeed;
   private ObjectProperty<Authority> authority;
+  private ObjectProperty<OnOffStatus> serviceBrakeStatus;
+  private ObjectProperty<OnOffStatus> emergencyBrakeStatus;
+  private ObjectProperty<OnOffStatus> lightStatus;
   private SimpleDoubleProperty powerCommand;
-  private SimpleDoubleProperty driverSetSpeed;
+  private SimpleDoubleProperty driverSetSpeedMph;
+  private double driverSetSpeed;
   private SimpleDoubleProperty setTemperature;
   private SimpleDoubleProperty currentTemperature;
   private SimpleDoubleProperty kp;
   private SimpleDoubleProperty ki;
   private SimpleStringProperty currentStation;
   private SimpleStringProperty nextStation;
+  private ObjectProperty<DoorStatus> rightDoorStatus;
+  private ObjectProperty<DoorStatus> leftDoorStatus;
 
   /**
    * Base constructor for TrainController.
@@ -59,16 +69,23 @@ public class TrainController implements TrainControllerInterface {
    */
   TrainController(String id, String line) {
     this.trainModel = TrainModelFactory.createTrainModel(this, id, line);
+    this.automatic = new SimpleBooleanProperty(true);
+    this.underground = false;
 
     this.id = new SimpleStringProperty(id);
     this.line = new SimpleStringProperty(line);
-    this.currentSpeed = new SimpleDoubleProperty(0);
+    this.currentSpeedMph = new SimpleDoubleProperty(0);
+    this.currentSpeed = 0;
     this.authority = new SimpleObjectProperty<>(Authority.SERVICE_BRAKE_STOP);
-    this.setSpeed = new SimpleDoubleProperty(0);
+    this.serviceBrakeStatus = new SimpleObjectProperty<>(trainModel.getServiceBrakeStatus());
+    this.emergencyBrakeStatus = new SimpleObjectProperty<>(trainModel.getEmergencyBrakeStatus());
+    this.setSpeedMph = new SimpleDoubleProperty(0);
+    this.setSpeed = 0;
     this.powerCommand = new SimpleDoubleProperty(0);
-    this.driverSetSpeed = new SimpleDoubleProperty(0);
+    this.driverSetSpeedMph = new SimpleDoubleProperty(0);
+    this.driverSetSpeed = 0;
     this.setTemperature = new SimpleDoubleProperty(68);
-    this.currentTemperature = new SimpleDoubleProperty(68);
+    this.currentTemperature = new SimpleDoubleProperty(trainModel.getCurrentTemp());
     this.kp = new SimpleDoubleProperty(50);
     this.ki = new SimpleDoubleProperty(50);
     this.currentStation = new SimpleStringProperty("N/A");
@@ -80,6 +97,9 @@ public class TrainController implements TrainControllerInterface {
     this.beacons = new HashMap<>();
     this.weight = TrainData.EMPTY_WEIGHT * TrainData.NUMBER_OF_CARS
         + TrainData.MAX_PASSENGERS * 2 * 150 * UnitConversions.LBS_TO_KGS;
+    this.rightDoorStatus = new SimpleObjectProperty<>(trainModel.getRightDoorStatus());
+    this.leftDoorStatus = new SimpleObjectProperty<>(trainModel.getLeftDoorStatus());
+    this.lightStatus = new SimpleObjectProperty<>(trainModel.getLightStatus());
   }
 
   /**
@@ -87,6 +107,9 @@ public class TrainController implements TrainControllerInterface {
    * @param signal Beacon signal from track.
    */
   public void setBeaconSignal(Beacon signal) {
+    if (signal.isUnderground()) {
+      this.underground = !this.underground;
+    }
     if (beacons.get(signal.getBlockId()) == null) {
       beacon = new Beacon(signal);
       beacons.put(signal.getBlockId(), beacon);
@@ -109,7 +132,10 @@ public class TrainController implements TrainControllerInterface {
   public void setTrackCircuitSignal(float setSpeed, Authority authority) {
     double speed = setSpeed * UnitConversions.MPH_TO_KPH * 1000.0 / 3600.0;
     if (speed != this.getSetSpeed() && speed != 0) {
-      this.setSpeed.set(speed);
+      setSetSpeed(speed);
+      if (speed < driverSetSpeed) {
+        setDriverSetSpeed(speed);
+      }
     }
     if (authority != null && getAuthority() != authority) {
       this.authority.set(authority);
@@ -139,11 +165,11 @@ public class TrainController implements TrainControllerInterface {
     return line.getValue();
   }
 
-  Mode getMode() {
+  public Mode getMode() {
     return mode;
   }
 
-  void setMode(Mode mode) {
+  public void setMode(Mode mode) {
     this.mode = mode;
   }
 
@@ -168,15 +194,16 @@ public class TrainController implements TrainControllerInterface {
   }
 
   public SimpleDoubleProperty getCurrentSpeedProperty() {
-    return currentSpeed;
+    return currentSpeedMph;
   }
 
   public Double getCurrentSpeed() {
-    return currentSpeed.getValue();
+    return currentSpeed;
   }
 
   public void setCurrentSpeed(Double currentSpeed) {
-    this.currentSpeed.set(currentSpeed);
+    this.currentSpeed = currentSpeed;
+    this.currentSpeedMph.set(currentSpeed * UnitConversions.MPS_TO_MPH);
   }
 
   public SimpleDoubleProperty getPowerCommandProperty() {
@@ -193,27 +220,29 @@ public class TrainController implements TrainControllerInterface {
   }
 
   public SimpleDoubleProperty getSetSpeedProperty() {
-    return setSpeed;
+    return setSpeedMph;
   }
 
   public Double getSetSpeed() {
-    return setSpeed.getValue();
+    return setSpeed;
   }
 
   public void setSetSpeed(Double setSpeed) {
-    this.setSpeed.set(setSpeed);
+    this.setSpeed = setSpeed;
+    this.setSpeedMph.set(setSpeed * UnitConversions.MPS_TO_MPH);
   }
 
   public SimpleDoubleProperty getDriverSetSpeedProperty() {
-    return driverSetSpeed;
+    return driverSetSpeedMph;
   }
 
   public Double getDriverSetSpeed() {
-    return driverSetSpeed.getValue();
+    return driverSetSpeed;
   }
 
   public void setDriverSetSpeed(Double driverSetSpeed) {
-    this.driverSetSpeed.set(driverSetSpeed);
+    this.driverSetSpeed = driverSetSpeed;
+    this.driverSetSpeedMph.set(driverSetSpeed * UnitConversions.MPS_TO_MPH);
   }
 
   public SimpleDoubleProperty getSetTemperatureProperty() {
@@ -289,21 +318,26 @@ public class TrainController implements TrainControllerInterface {
   }
 
   public boolean isAutomatic() {
-    return automatic;
+    return automatic.getValue();
   }
 
+  /**
+   * Set train operation mode.
+   * @param automatic Boolean to set mode of train operation
+   */
   public void setAutomatic(boolean automatic) {
-    this.automatic = automatic;
+    this.automatic.setValue(automatic);
+    if (automatic) {
+      if (mode == Mode.DRIVER_BRAKE) {
+        setTrackCircuitSignal(0, authority.getValue());
+      }
+    } else {
+      setDriverSetSpeed(getSetSpeed());
+    }
   }
 
-  public void setServiceBrake(OnOffStatus brakeStatus) {
-    this.integral = 0;
-    trainModel.setServiceBrakeStatus(brakeStatus);
-  }
-
-  public void setEmergencyBrake(OnOffStatus brakeStatus) {
-    this.integral = 0;
-    trainModel.setEmergencyBrakeStatus(brakeStatus);
+  public SimpleBooleanProperty automaticProperty() {
+    return automatic;
   }
 
   public Block getCurrentBlock() {
@@ -326,11 +360,13 @@ public class TrainController implements TrainControllerInterface {
   public void activateEmergencyBrake() {
     setPowerCommand(0);
     setAutomatic(false);
+    this.mode = Mode.CTC_EMERGENCY_BRAKE;
     this.setEmergencyBrake(OnOffStatus.ON);
   }
 
   public void setRightDoorStatus(DoorStatus doorStatus) {
     trainModel.setRightDoorStatus(doorStatus);
+    rightDoorStatus.setValue(doorStatus);
   }
 
   public DoorStatus getRightDoorStatus() {
@@ -339,14 +375,28 @@ public class TrainController implements TrainControllerInterface {
 
   public void setLeftDoorStatus(DoorStatus doorStatus) {
     trainModel.setLeftDoorStatus(doorStatus);
+    leftDoorStatus.setValue(doorStatus);
   }
 
   public DoorStatus getLeftDoorStatus() {
-    return trainModel.getLeftDoorStatus();
+    return leftDoorStatus.get();
+  }
+
+  public ObjectProperty<DoorStatus> rightDoorStatusProperty() {
+    return rightDoorStatus;
+  }
+
+  public ObjectProperty<DoorStatus> leftDoorStatusProperty() {
+    return leftDoorStatus;
   }
 
   public void setLightStatus(OnOffStatus lightStatus) {
     trainModel.setLightStatus(lightStatus);
+    this.lightStatus.setValue(lightStatus);
+  }
+
+  public ObjectProperty<OnOffStatus> lightStatusProperty() {
+    return lightStatus;
   }
 
   public OnOffStatus getLightStatus() {
@@ -407,5 +457,41 @@ public class TrainController implements TrainControllerInterface {
 
   public void setWeight(double weight) {
     this.weight = weight;
+  }
+
+  public OnOffStatus getServiceBrakeStatus() {
+    return serviceBrakeStatus.get();
+  }
+
+  public ObjectProperty<OnOffStatus> serviceBrakeStatusProperty() {
+    return serviceBrakeStatus;
+  }
+
+  public OnOffStatus getEmergencyBrakeStatus() {
+    return emergencyBrakeStatus.get();
+  }
+
+  public ObjectProperty<OnOffStatus> emergencyBrakeStatusProperty() {
+    return emergencyBrakeStatus;
+  }
+
+  /**
+   * Set service brake status.
+   * @param brakeStatus brake status
+   */
+  public void setServiceBrake(OnOffStatus brakeStatus) {
+    this.integral = 0;
+    trainModel.setServiceBrakeStatus(brakeStatus);
+    this.serviceBrakeStatus.set(brakeStatus);
+  }
+
+  /**
+   * Set emergency brake status.
+   * @param brakeStatus brake status
+   */
+  public void setEmergencyBrake(OnOffStatus brakeStatus) {
+    this.integral = 0;
+    trainModel.setEmergencyBrakeStatus(brakeStatus);
+    this.emergencyBrakeStatus.set(brakeStatus);
   }
 }

@@ -4,6 +4,7 @@ import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ResourceBundle;
 
+import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -12,10 +13,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
+import traincontroller.enums.Mode;
 import traincontroller.model.TrainController;
 import traincontroller.model.TrainControllerManager;
+import utils.alerts.AlertWindow;
 import utils.train.DoorStatus;
 import utils.train.OnOffStatus;
+import utils.unitconversion.UnitConversions;
 
 
 public class TrainControllerController implements Initializable {
@@ -29,6 +34,8 @@ public class TrainControllerController implements Initializable {
   @FXML
   private TextField setTemperatureField;
 
+  @FXML
+  private ToggleGroup mode;
   @FXML
   private ToggleButton emergencyBrakeButton;
   @FXML
@@ -76,13 +83,24 @@ public class TrainControllerController implements Initializable {
   @FXML
   private void setSpeedAction(ActionEvent event) {
     try {
-      double newSetSpeed = Double.parseDouble(setSpeedField.getText());
-      if (newSetSpeed <= trainController.getSetSpeed()) {
+      double newSetSpeed = Double.parseDouble(setSpeedField.getText())
+          * UnitConversions.MPH_TO_KPH * 1000 / 3600;
+      if (newSetSpeed <= trainController.getSetSpeed() && newSetSpeed >= 0) {
         trainController.setDriverSetSpeed(newSetSpeed);
+      } else {
+
+        AlertWindow alert = new AlertWindow();
+
+        alert.setTitle("Error Submitting");
+        alert.setHeader("Please Enter a Proper Value");
+        alert.setContent("Please enter a value less than or equal to CTC Set Speed.");
+
+        alert.show();
       }
       setSpeedField.setText("");
     } catch (Exception e) {
       setSpeedField.setText("");
+      validNumber();
     }
   }
 
@@ -90,74 +108,111 @@ public class TrainControllerController implements Initializable {
   private void setTemperatureAction(ActionEvent event) {
     try {
       double newTemperature = Double.parseDouble(setTemperatureField.getText());
-      trainController.setSetTemperature(newTemperature);
+      if (newTemperature >= 60 && newTemperature <= 80) {
+        trainController.setSetTemperature(newTemperature);
+      } else {
+
+        AlertWindow alert = new AlertWindow();
+
+        alert.setTitle("Error Submitting");
+        alert.setHeader("Please Enter a Proper Value");
+        alert.setContent("Please enter a number between 60 and 80.");
+
+        alert.show();
+
+      }
       setTemperatureField.setText("");
     } catch (Exception e) {
       setTemperatureField.setText("");
+      validNumber();
     }
+  }
+
+  private void validNumber() {
+
+    AlertWindow alert = new AlertWindow();
+
+    alert.setTitle("Error Submitting");
+    alert.setHeader("Please Enter a Proper Value");
+    alert.setContent("Please enter a valid number.");
+
+    alert.show();
+
   }
 
   @FXML
   private void toggleEmergencyBrakes(ActionEvent event) {
     if (!emergencyBrakeButton.isSelected()) {
-      emergencyBrakeButton.textProperty().setValue("EMERGENCY BRAKE OFF");
       trainController.setEmergencyBrake(OnOffStatus.OFF);
+      trainController.setMode(Mode.NORMAL);
+      trainController.setTrackCircuitSignal(0, trainController.getAuthority());
     } else {
-      emergencyBrakeButton.textProperty().setValue("EMERGENCY BRAKE ON");
-      trainController.setEmergencyBrake(OnOffStatus.ON);
+      trainController.activateEmergencyBrake();
     }
   }
 
   @FXML
   private void toggleServiceBrakes(ActionEvent event) {
     if (!serviceBrakeButton.isSelected()) {
-      serviceBrakeButton.textProperty().setValue("OFF");
+      trainController.setMode(Mode.NORMAL);
       trainController.setServiceBrake(OnOffStatus.OFF);
+      trainController.setTrackCircuitSignal(0, trainController.getAuthority());
     } else {
-      serviceBrakeButton.textProperty().setValue("ON");
       trainController.setServiceBrake(OnOffStatus.ON);
+      if (trainController.getMode() == Mode.NORMAL
+          || trainController.getMode() == Mode.STATION_BRAKE) {
+        trainController.setMode(Mode.DRIVER_BRAKE);
+      }
     }
   }
 
   @FXML
   private void toggleLights(ActionEvent event) {
     if (!lightsButton.isSelected()) {
-      lightsButton.textProperty().setValue("OFF");
       trainController.setLightStatus(OnOffStatus.OFF);
     } else {
-      lightsButton.textProperty().setValue("ON");
       trainController.setLightStatus(OnOffStatus.ON);
     }
   }
 
   @FXML
   private void toggleRightDoors(ActionEvent event) {
-    if (trainController.getCurrentSpeed() != 0) {
+    if (trainController.getCurrentSpeed() != 0
+        || trainController.getCurrentBlock().getStationName() == null) {
       rightDoorButton.setSelected(false);
+      errorDoorOpen();
       return;
     }
     if (trainController.getTrainModel().getRightDoorStatus() == DoorStatus.OPEN) {
-      rightDoorButton.textProperty().setValue("CLOSE");
       trainController.setRightDoorStatus(DoorStatus.CLOSED);
     } else {
-      rightDoorButton.textProperty().setValue("OPEN");
       trainController.setRightDoorStatus(DoorStatus.OPEN);
     }
   }
 
   @FXML
   private void toggleLeftDoors(ActionEvent event) {
-    if (trainController.getCurrentSpeed() != 0) {
+    if (trainController.getCurrentSpeed() != 0
+        || trainController.getCurrentBlock().getStationName() == null) {
       leftDoorButton.setSelected(false);
+      errorDoorOpen();
       return;
     }
     if (!leftDoorButton.isSelected()) {
-      leftDoorButton.textProperty().setValue("CLOSE");
       trainController.setLeftDoorStatus(DoorStatus.CLOSED);
     } else {
-      leftDoorButton.textProperty().setValue("OPEN");
       trainController.setLeftDoorStatus(DoorStatus.OPEN);
     }
+  }
+
+  private void errorDoorOpen() {
+    AlertWindow alert = new AlertWindow();
+
+    alert.setTitle("Error Submitting");
+    alert.setHeader("Invalid Action");
+    alert.setContent("Train must be stopped and at a station to open doors.");
+
+    alert.show();
   }
 
   @FXML
@@ -188,6 +243,11 @@ public class TrainControllerController implements Initializable {
    * This function initalizes Status Labels on UI.
    */
   private void initializeStatusLabels() {
+    if (trainController.isAutomatic()) {
+      automatic.setSelected(true);
+    } else {
+      manual.setSelected(true);
+    }
     authority.textProperty().bind(trainController.getAuthorityProperty().asString());
     powerCommand.textProperty().bindBidirectional(trainController.getPowerCommandProperty(),
         new DecimalFormat("#0.00"));
@@ -205,8 +265,40 @@ public class TrainControllerController implements Initializable {
         new DecimalFormat("#0.00"));
     ki.textProperty().bindBidirectional(trainController.getKiProperty(),
         new DecimalFormat("#0.00"));
+    lightsButton.textProperty().bind(trainController.lightStatusProperty().asString());
+    lightsButton.setSelected(trainController.getLightStatus() == OnOffStatus.ON);
+    trainController.lightStatusProperty().addListener(
+        (o, oldVal, newVal) -> lightsButton.setSelected(newVal == OnOffStatus.ON));
     currentStation.textProperty().bindBidirectional(trainController.getCurrentStationProperty());
     nextStation.textProperty().bindBidirectional(trainController.getNextStationProperty());
+    serviceBrakeButton.textProperty().bind(trainController.serviceBrakeStatusProperty().asString());
+    serviceBrakeButton.setSelected(trainController.getServiceBrakeStatus() == OnOffStatus.ON);
+    trainController.serviceBrakeStatusProperty().addListener(
+        (o, oldVal, newVal) -> serviceBrakeButton.setSelected(newVal == OnOffStatus.ON));
+    emergencyBrakeButton.textProperty().bind(Bindings.concat("Emergency Brake ",
+        trainController.emergencyBrakeStatusProperty()));
+    emergencyBrakeButton.setSelected(trainController.getEmergencyBrakeStatus() == OnOffStatus.ON);
+    trainController.emergencyBrakeStatusProperty().addListener(
+        (o, oldVal, newVal) -> emergencyBrakeButton.setSelected(newVal == OnOffStatus.ON));
+    rightDoorButton.textProperty().bind(trainController.rightDoorStatusProperty().asString());
+    rightDoorButton.setSelected(trainController.getRightDoorStatus() == DoorStatus.OPEN);
+    trainController.rightDoorStatusProperty().addListener(
+        (o, oldVal, newVal) -> rightDoorButton.setSelected(newVal == DoorStatus.OPEN));
+    leftDoorButton.textProperty().bind(trainController.leftDoorStatusProperty().asString());
+    leftDoorButton.setSelected(trainController.getLeftDoorStatus() == DoorStatus.OPEN);
+    trainController.leftDoorStatusProperty().addListener(
+        (o, oldVal, newVal) -> leftDoorButton.setSelected(newVal == DoorStatus.OPEN));
+    trainController.automaticProperty().addListener((observable, oldValue, newValue) -> {
+      if(newValue) {
+        manual.selectedProperty().setValue(!newValue);
+        automatic.selectedProperty().setValue(newValue);
+      } else {
+        automatic.selectedProperty().setValue(newValue);
+        manual.selectedProperty().setValue(!newValue);
+      }
+      toggleMode(null);
+    });
+    toggleMode(null);
   }
 
   private void checkRunning() {

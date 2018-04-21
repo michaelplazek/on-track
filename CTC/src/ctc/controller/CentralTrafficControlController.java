@@ -28,12 +28,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
@@ -140,6 +135,19 @@ public class CentralTrafficControlController {
   }
 
   private void updateDisplays() {
+
+    // update train status light
+    TrainTracker train = dispatchTable.getSelectionModel().getSelectedItem();
+    if (train != null) {
+      if (train.isStopped()) {
+        trainStatus.setFill(Paint.valueOf("Red"));
+      } else {
+        trainStatus.setFill(Paint.valueOf("#24c51b"));
+      }
+    } else {
+      trainStatus.setFill(Paint.valueOf("Grey"));
+    }
+
     dispatchTable.refresh();
   }
 
@@ -203,9 +211,31 @@ public class CentralTrafficControlController {
     dispatchAuthorityColumn.setCellValueFactory(
         new PropertyValueFactory<TrainTracker, String>("displayAuthority"));
     dispatchSpeedColumn.setCellValueFactory(
-        new PropertyValueFactory<TrainTracker, String>("speed"));
+        new PropertyValueFactory<TrainTracker, String>("displaySpeed"));
     dispatchPassengersColumn.setCellValueFactory(
         new PropertyValueFactory<TrainTracker, String>("passengers"));
+
+    dispatchTable.setRowFactory(row -> new TableRow<TrainTracker>() {
+      @Override
+      public void updateItem(TrainTracker train, boolean empty) {
+        super.updateItem(train, empty);
+        TrainTracker tracker;
+        for (int i = 0; i < row.getItems().size(); i++) {
+          tracker = row.getItems().get(i);
+          if (tracker == null) {
+            setStyle("");
+          } else {
+            if (tracker.isStopped()) {
+              row.setStyle("-fx-selection-bar-non-focused: salmon;"
+                  + "-fx-selection-bar: salmon;");
+            } else {
+              row.setStyle("-fx-selection-bar-non-focused: #cdee83;"
+                  + "-fx-selection-bar: #cdee83;");
+            }
+          }
+        }
+      }
+    });
 
     // set dropdown menu for stations
     stopColumn.setCellFactory(ComboBoxTableCell.forTableColumn(
@@ -819,14 +849,28 @@ public class CentralTrafficControlController {
 
       // create schedule
       Schedule schedule =  new Schedule(line);
+      int numberOfStops = 0;
       for (int i = 0; i < addScheduleTable.getItems().size(); i++) {
         schedule.addStop(new ScheduleRow(stopData.get(i), dwellData.get(i), ""));
+        if (stopData.get(i).compareTo("") != 0) {
+          numberOfStops++;
+        }
       }
 
       String name = trainNameField.getText();
       String departingTime = departingTimeField.getText();
 
-      if (!(name.compareTo("") == 0) && departingTime.length() == 8) {
+
+
+      if (numberOfStops == 1) {
+        AlertWindow alert = new AlertWindow();
+
+        alert.setTitle("Error Submitting");
+        alert.setHeader("Invalid Number Of Stops");
+        alert.setContent("Schedule needs to include more than one stop");
+
+        alert.show();
+      } else if (!(name.compareTo("") == 0) && departingTime.length() == 8) {
 
         TrainTracker train = new TrainTracker(name, departingTime, line, schedule);
         train.setLine(ctc.getLine()); // set the track that is current set
@@ -883,6 +927,12 @@ public class CentralTrafficControlController {
 
         // create train
         ctc.addTrain(train);
+
+        // automatically select the first item if one hasn't been selected
+        TrainTracker queued = trainQueueTable.getSelectionModel().getSelectedItem();
+        if (queued == null) {
+          trainQueueTable.getSelectionModel().selectFirst();
+        }
       } else {
 
         AlertWindow alert = new AlertWindow();
@@ -953,6 +1003,8 @@ public class CentralTrafficControlController {
         if (ctc.getTrainQueueTable().size() == 0) {
           selectedScheduleTable.setItems(FXCollections.observableArrayList());
         }
+
+        dispatchTable.getSelectionModel().select(selected);
       }
     } else if (ctc.isActive()) {
 
@@ -985,6 +1037,9 @@ public class CentralTrafficControlController {
       Route route = new Route(location, end, line, train);
       train.setRoute(route);
 
+      // let the TrainTracker know that it has a new authority
+      train.setWaitingForAuthority(false);
+
       // get new authority that is set inside of setRoute
       Authority authority = train.getAuthority();
 
@@ -1013,6 +1068,7 @@ public class CentralTrafficControlController {
 
       // get the signals
       float speed = Float.parseFloat(suggestedSpeedField.getText());
+      speed  = speed * (float)UnitConversions.MPH_TO_KPH;
       Authority authority = train.getAuthority();
 
       // check the new speed
@@ -1066,5 +1122,7 @@ public class CentralTrafficControlController {
     if (ctc.getTrainQueueTable().size() == 0) {
       selectedScheduleTable.setItems(FXCollections.observableArrayList());
     }
+
+    dispatchTable.getSelectionModel().select(train);
   }
 }

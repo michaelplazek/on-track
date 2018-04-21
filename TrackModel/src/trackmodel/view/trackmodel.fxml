@@ -5,7 +5,6 @@
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.MenuButton?>
-<?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.image.Image?>
@@ -15,7 +14,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<SplitPane dividerPositions="0.3965744400527009" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="393.0" prefWidth="749.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="trackmodel.controller.TrackModelController">
+<SplitPane dividerPositions="0.3965744400527009" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="393.0" prefWidth="749.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="trackmodel.controller.TrackModelController">
     <items>
         <AnchorPane prefHeight="391.0" prefWidth="195.0">
             <children>
@@ -32,32 +31,40 @@
                     <items>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                             <children>
-                                <Button fx:id="uploadButton" layoutX="83.0" layoutY="6.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="112.0" text="UPLOAD TRACK">
+                        <ChoiceBox fx:id="trackSelection" layoutX="31.0" layoutY="13.0" prefWidth="150.0" />
+                        <Label layoutX="236.0" layoutY="13.0" prefHeight="25.0" prefWidth="48.0" text="BLOCK:">
                            <font>
                               <Font size="13.0" />
-                           </font></Button>
-                        <ChoiceBox fx:id="trackSelection" layoutX="249.0" layoutY="13.0" prefWidth="150.0" />
+                           </font>
+                        </Label>
+                        <ChoiceBox fx:id="blockSelection" layoutX="290.0" layoutY="13.0" prefHeight="25.0" prefWidth="112.0" />
+                        <ChoiceBox fx:id="blockSelection" layoutX="290.0" layoutY="13.0" prefHeight="25.0" prefWidth="112.0" />
                             </children>
                         </AnchorPane>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                      <children>
-                        <SplitPane dividerPositions="0.22822822822822822" orientation="VERTICAL" prefHeight="335.0" prefWidth="450.0">
+                        <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="327.0" prefWidth="450.0">
                            <items>
-                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-                                 <children>
-                                    <Label layoutX="17.0" layoutY="24.0" prefHeight="25.0" prefWidth="60.0" text="SECTION: ">
-                                       <font>
-                                          <Font size="13.0" />
-                                       </font>
-                                    </Label>
-                                    <Label layoutX="226.0" layoutY="24.0" prefHeight="25.0" prefWidth="48.0" text="BLOCK:">
-                                       <font>
-                                          <Font size="13.0" />
-                                       </font>
-                                    </Label>
-                                    <Spinner fx:id="blockNumber" editable="true" layoutX="284.0" layoutY="24.0" prefHeight="25.0" prefWidth="99.0" />
-                                    <ChoiceBox fx:id="blockSelection" layoutX="77.0" layoutY="24.0" prefHeight="25.0" prefWidth="130.0" />
-                                 </children></AnchorPane>
+                              <TitledPane collapsible="false" prefHeight="100.0" prefWidth="448.0" text="TRACK STATUS">
+                                 <content>
+                                    <AnchorPane minHeight="-Infinity" minWidth="0.0" prefHeight="77.0" prefWidth="446.0">
+                                       <children>
+                                          <Label layoutX="24.0" layoutY="12.0" prefHeight="25.0" prefWidth="69.0" text="OCCUPIED:">
+                                             <font>
+                                                <Font size="13.0" />
+                                             </font>
+                                          </Label>
+                                          <Label layoutX="24.0" layoutY="37.0" prefHeight="25.0" prefWidth="69.0" text="CLOSED:">
+                                             <font>
+                                                <Font size="13.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="occupiedList" layoutX="93.0" layoutY="16.0" prefHeight="17.0" prefWidth="337.0" />
+                                          <Label fx:id="closedList" layoutX="93.0" layoutY="41.0" prefHeight="17.0" prefWidth="337.0" />
+                                       </children>
+                                    </AnchorPane>
+                                 </content>
+                              </TitledPane>
                               <TitledPane collapsible="false" prefHeight="254.0" prefWidth="325.0" text="BLOCK INFO">
                                  <content>
                                     <HBox prefHeight="100.0" prefWidth="200.0">
@@ -67,13 +74,13 @@
                                                 <Label prefHeight="17.0" prefWidth="99.0" text="Length (yd):" />
                                                 <Label layoutY="17.0" prefHeight="17.0" prefWidth="99.0" text="Grade (%):" />
                                                 <Label layoutX="1.0" layoutY="34.0" prefHeight="17.0" prefWidth="99.0" text="Elevation (yd): " />
-                                                <Label layoutX="1.0" layoutY="51.0" prefHeight="17.0" prefWidth="112.0" text="Cum Elev (m):" />
+                                                <Label layoutX="1.0" layoutY="51.0" prefHeight="17.0" prefWidth="112.0" text="Cum Elev (yd):" />
                                                 <Label layoutX="1.0" layoutY="67.0" prefHeight="17.0" prefWidth="130.0" text="Speed Limit (MPH):" />
-                                                <Label fx:id="blockSize" alignment="CENTER_RIGHT" layoutX="118.0" prefHeight="17.0" prefWidth="72.0" text="100" textAlignment="RIGHT" />
-                                                <Label fx:id="blockGrade" alignment="CENTER_RIGHT" layoutX="119.0" layoutY="17.0" prefHeight="17.0" prefWidth="69.0" text="2.5" />
-                                                <Label fx:id="blockElevation" alignment="CENTER_RIGHT" layoutX="119.0" layoutY="34.0" prefHeight="17.0" prefWidth="69.0" text="3.28" />
-                                                <Label fx:id="blockCumElevation" alignment="CENTER_RIGHT" layoutX="119.0" layoutY="51.0" prefHeight="17.0" prefWidth="69.0" text=".70" />
-                                                <Label fx:id="blockSpeedLimit" alignment="CENTER_RIGHT" layoutX="119.0" layoutY="67.0" prefHeight="17.0" prefWidth="69.0" text="35" />
+                                                <Label fx:id="blockSize" alignment="CENTER_RIGHT" layoutX="118.0" prefHeight="17.0" prefWidth="72.0" textAlignment="RIGHT" />
+                                                <Label fx:id="blockGrade" alignment="CENTER_RIGHT" layoutX="119.0" layoutY="17.0" prefHeight="17.0" prefWidth="69.0" />
+                                                <Label fx:id="blockElevation" alignment="CENTER_RIGHT" layoutX="119.0" layoutY="34.0" prefHeight="17.0" prefWidth="69.0" />
+                                                <Label fx:id="blockCumElevation" alignment="CENTER_RIGHT" layoutX="119.0" layoutY="51.0" prefHeight="17.0" prefWidth="69.0" />
+                                                <Label fx:id="blockSpeedLimit" alignment="CENTER_RIGHT" layoutX="119.0" layoutY="67.0" prefHeight="17.0" prefWidth="69.0" />
                                                 <Label layoutX="2.0" layoutY="84.0" prefHeight="17.0" prefWidth="130.0" text="Switch Status: " />
                                                 <Label layoutX="309.0" prefHeight="17.0" prefWidth="77.0" text="Occupied" />
                                                 <Label layoutX="309.0" layoutY="17.0" prefHeight="17.0" prefWidth="99.0" text="Underground" />
@@ -86,8 +93,8 @@
                                                 <Label layoutX="64.0" layoutY="146.0" prefHeight="17.0" prefWidth="77.0" text="Power" />
                                                 <Label layoutX="64.0" layoutY="163.0" prefHeight="17.0" prefWidth="77.0" text="Track Circuit" />
                                                 <Label layoutX="227.0" layoutY="112.0" prefHeight="17.0" prefWidth="112.0" text="SIMULATE FAILURES" />
-                                                <Button fx:id="start" layoutX="225.0" layoutY="159.0" mnemonicParsing="false" text="START" />
-                                                <Label fx:id="blockSwitch" alignment="CENTER_RIGHT" layoutX="119.0" layoutY="83.0" prefHeight="17.0" prefWidth="69.0" text="None" />
+                                                <Button fx:id="start" layoutX="253.0" layoutY="159.0" mnemonicParsing="false" text="TOGGLE" />
+                                                <Label fx:id="blockSwitch" alignment="CENTER_RIGHT" layoutX="119.0" layoutY="83.0" prefHeight="17.0" prefWidth="69.0" />
                                                 <MenuButton fx:id="failures" layoutX="232.0" layoutY="132.0" mnemonicParsing="false" text="Select Failure">
                                                   <items>
                                                       <CheckMenuItem id="railFailure" fx:id="railFailureSelect" mnemonicParsing="false" text="Rail" />
@@ -95,16 +102,15 @@
                                                       <CheckMenuItem id="trackFailure" fx:id="trackFailureSelect" mnemonicParsing="false" text="Track Circuit" />
                                                   </items>
                                                 </MenuButton>
-                                                <Circle fx:id="railStatus" fill="WHITE" layoutX="52.0" layoutY="138.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
-                                                <Circle fx:id="powerStatus" fill="WHITE" layoutX="52.0" layoutY="155.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
-                                                <Circle fx:id="circuitStatus" fill="WHITE" layoutX="52.0" layoutY="172.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
-                                                <Circle fx:id="beaconStatus" fill="WHITE" layoutX="295.0" layoutY="60.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
-                                                <Circle fx:id="crossingStatus" fill="WHITE" layoutX="295.0" layoutY="43.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
-                                                <Circle fx:id="undergroundStatus" fill="WHITE" layoutX="295.0" layoutY="26.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
-                                                <Circle fx:id="occupiedStatus" fill="WHITE" layoutX="295.0" layoutY="9.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
-                                                <Circle fx:id="trackHeating" fill="WHITE" layoutX="295.0" layoutY="77.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
-                                                <Circle fx:id="stationStatus" fill="WHITE" layoutX="295.0" layoutY="94.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
-                                                <Button fx:id="end" layoutX="295.0" layoutY="159.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="48.0" text="END" />
+                                                <Circle fx:id="railStatus" fill="WHITE" layoutX="52.0" layoutY="138.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
+                                                <Circle fx:id="powerStatus" fill="WHITE" layoutX="52.0" layoutY="155.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
+                                                <Circle fx:id="circuitStatus" fill="WHITE" layoutX="52.0" layoutY="172.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
+                                                <Circle fx:id="beaconStatus" fill="WHITE" layoutX="295.0" layoutY="60.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
+                                                <Circle fx:id="crossingStatus" fill="WHITE" layoutX="295.0" layoutY="43.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
+                                                <Circle fx:id="undergroundStatus" fill="WHITE" layoutX="295.0" layoutY="26.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
+                                                <Circle fx:id="occupiedStatus" fill="WHITE" layoutX="295.0" layoutY="9.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
+                                                <Circle fx:id="trackHeating" fill="WHITE" layoutX="295.0" layoutY="77.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
+                                                <Circle fx:id="stationStatus" fill="WHITE" layoutX="295.0" layoutY="94.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
                                              </children>
                                           </AnchorPane>
                                        </children>

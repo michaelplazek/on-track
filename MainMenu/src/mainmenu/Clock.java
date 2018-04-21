@@ -78,7 +78,7 @@ public class Clock implements ClockInterface {
    */
   public long getChangeInTime() {
     return timeSinceLastTick;
-    //return 40;
+//    return 40;
   }
 
   /**
@@ -86,7 +86,7 @@ public class Clock implements ClockInterface {
    * @param mult is the multiplier used for each clock tick
    */
   public void setMultiplier(int mult) {
-    if (mult > 0) {
+    if (mult > 0 && mult < 11) {
       multiplier = mult;
     }
   }

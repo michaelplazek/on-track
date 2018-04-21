@@ -1,5 +1,9 @@
 package traincontroller.model;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import mainmenu.Clock;
 import mainmenu.ClockInterface;
 import trackmodel.model.Beacon;
@@ -17,6 +21,8 @@ import utils.unitconversion.UnitConversions;
 public class PowerCalculator {
   private static ClockInterface clock = Clock.getInstance();
 
+  private static SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+
   /**
    * Updates and runs the train controller.
    * @param tc pass train controller to update
@@ -27,6 +33,7 @@ public class PowerCalculator {
       updateFailures(tc);
       executeAction(tc);
       updateTemperature(tc);
+      updateLights(tc);
       updateModelValues(tc);
     }
   }
@@ -38,22 +45,42 @@ public class PowerCalculator {
     double distanceTraveled = currentSpeed * delta;
     double distanceIntoCurrentBlock = tc.getDistanceIntoCurrentBlock() + distanceTraveled;
     Block currentBlock = tc.getCurrentBlock();
-    if (distanceIntoCurrentBlock >= currentBlock.getSize()) {
-      Track track = Track.getTrack(tc.getLine());
-      Block temp = tc.getCurrentBlock();
-      tc.setCurrentBlock(nextBlock(temp, tc.getLastBlock(), track));
-      tc.setLastBlock(temp);
-    }
-    Beacon current = tc.getBeacon();
-    if (current != null) {
-      tc.setDistanceToStation(tc.getDistanceToStation() - distanceTraveled);
-    }
-    if (tc.getTrainModel().getServiceBrakeStatus() == OnOffStatus.ON) {
-      double lastSpeed = tc.getCurrentSpeed();
-      double acceleration = Math.abs(currentSpeed - lastSpeed) / delta;
-      if (acceleration != 0 && delta != 0) {
-        tc.setWeight(TrainController.FORCE_BRAKE_TRAIN_EMPTY / acceleration);
+    if (currentBlock != null) {
+      if (distanceIntoCurrentBlock >= currentBlock.getSize()) {
+        distanceIntoCurrentBlock -= currentBlock.getSize();
+        Track track = Track.getTrack(tc.getLine());
+        Block temp = tc.getCurrentBlock();
+        tc.setCurrentBlock(nextBlock(temp, tc.getLastBlock(), track));
+        tc.setLastBlock(temp);
       }
+      tc.setDistanceIntoCurrentBlock(distanceIntoCurrentBlock);
+      Beacon current = tc.getBeacon();
+      if (current != null) {
+        tc.setDistanceToStation(tc.getDistanceToStation() - distanceTraveled);
+      }
+      if (tc.getTrainModel().getServiceBrakeStatus() == OnOffStatus.ON) {
+        double lastSpeed = tc.getCurrentSpeed();
+        double acceleration = Math.abs(currentSpeed - lastSpeed) / delta;
+        if (acceleration != 0 && delta != 0) {
+          tc.setWeight(TrainController.FORCE_BRAKE_TRAIN_EMPTY / acceleration);
+        }
+      }
+    }
+  }
+
+  static void updateLights(TrainController tc) {
+    try {
+      Date date = sdf.parse(clock.getFormattedTime());
+      Date dawn = sdf.parse("06:00:00");
+      Date dusk = sdf.parse("18:59:59");
+      if (tc.isUnderground() || date.compareTo(dawn) <= 0 || date.compareTo(dusk) >= 0) {
+        tc.setLightStatus(OnOffStatus.ON);
+      } else if (tc.isAutomatic()) {
+        tc.setLightStatus(OnOffStatus.OFF);
+      }
+    } catch (ParseException e) {
+      System.out.println(e);
+      tc.setLightStatus(OnOffStatus.ON);
     }
   }
 
@@ -91,6 +118,20 @@ public class PowerCalculator {
     if (mode == Mode.FAILURE || mode == Mode.CTC_EMERGENCY_BRAKE)  {
       activateEmergencyBrake(tc);
     } else if (mode == Mode.CTC_BRAKE || mode == Mode.DRIVER_BRAKE) {
+      if (tc.isAutomatic() && (tc.getCurrentBlock().getStationName() != null
+          || nextBlock(tc.getCurrentBlock(), tc.getLastBlock(),
+              Track.getTrack(tc.getLine())).getStationName() != null)
+          && tc.getCurrentSpeed() == 0) {
+        tc.setWeight(TrainData.EMPTY_WEIGHT * TrainData.NUMBER_OF_CARS
+            + TrainData.MAX_PASSENGERS * 2 * 150 * UnitConversions.LBS_TO_KGS);
+        TrainModelInterface tm = tc.getTrainModel();
+        Beacon beacon = tc.getBeacon();
+        if (beacon.isRight() && tm.getRightDoorStatus() != DoorStatus.OPEN) {
+          tm.setRightDoorStatus(DoorStatus.OPEN);
+        } else if (!beacon.isRight() && tm.getLeftDoorStatus() != DoorStatus.OPEN) {
+          tm.setLeftDoorStatus(DoorStatus.OPEN);
+        }
+      }
       activateServiceBrake(tc);
     } else if (mode == Mode.AT_STATION) {
       executeAtStation(tc);
@@ -121,10 +162,15 @@ public class PowerCalculator {
     TrainModelInterface tm = tc.getTrainModel();
     double currentTemp = tm.getCurrentTemp();
     double setTemperature = tc.getSetTemperature();
-    if (currentTemp <= setTemperature - 0.1) {
+    if (currentTemp <= setTemperature) {
       tm.setHeaterStatus(OnOffStatus.ON);
-    } else if (currentTemp >= setTemperature + 0.1) {
       tm.setAcStatus(OnOffStatus.OFF);
+    } else if (currentTemp >= setTemperature) {
+      tm.setAcStatus(OnOffStatus.ON);
+      tm.setHeaterStatus(OnOffStatus.OFF);
+    } else {
+      tm.setAcStatus(OnOffStatus.OFF);
+      tm.setHeaterStatus(OnOffStatus.OFF);
     }
   }
 
@@ -155,17 +201,18 @@ public class PowerCalculator {
     } else {
       executeNormal(tc);
     }
+    closeDoors(tc);
   }
 
   static void executeNormal(TrainController tc) {
     double currentSpeed = tc.getTrainModel().getCurrentSpeed();
-    double setSpeed = tc.getSetSpeed();
+    double setSpeed = tc.isAutomatic() ? tc.getSetSpeed() : tc.getDriverSetSpeed();
     double lastIntegral = tc.getIntegral();
     double lastSpeed = tc.getCurrentSpeed();
     double kp = tc.getKp();
     double ki = tc.getKi();
     double integral;
-    double speedLimit = getSpeedLimit(tc, getSafeStopDistance(tc));
+    double speedLimit = getSpeedLimit(tc, getSafeStopDistance(tc)) * 1000.0 / 3600.0;
 
     if (currentSpeed > setSpeed || currentSpeed > speedLimit) {
       activateServiceBrake(tc);
@@ -187,6 +234,7 @@ public class PowerCalculator {
       tc.setIntegral(integral);
       tc.setPowerCommand(power / 100);
     }
+    closeDoors(tc);
   }
 
   static double getSpeedLimit(TrainController tc, double safeStopDistance) {
@@ -201,22 +249,22 @@ public class PowerCalculator {
     } else if (Double.isNaN(remainingDistance)) {
       return currentBlock.getSpeedLimit();
     }
-    double max;
+    double min;
     Track track = Track.getTrack(currentBlock.getLine());
     remainingDistance -= (double)currentBlock.getSize();
     if (remainingDistance <= 0) {
-      max = currentBlock.getSpeedLimit();
+      min = currentBlock.getSpeedLimit();
     } else {
-      max = Math.max(currentBlock.getSpeedLimit(), recursiveSpeedLimit(
+      min = Math.min(currentBlock.getSpeedLimit(), recursiveSpeedLimit(
         nextBlock(currentBlock, lastBlock, track),
         currentBlock, remainingDistance));
       if (currentBlock.isSwitch()) {
-        max = Math.max(max, recursiveSpeedLimit(
+        min = Math.min(min, recursiveSpeedLimit(
           track.getNextBlock2(currentBlock.getNumber(), currentBlock.getPreviousBlock()),
           currentBlock, remainingDistance));
       }
     }
-    return max;
+    return min;
   }
 
   static void activateEmergencyBrake(TrainController tc) {
@@ -224,6 +272,7 @@ public class PowerCalculator {
     if (tm.getEmergencyBrakeStatus() != OnOffStatus.ON) {
       tc.activateEmergencyBrake();
     }
+    closeDoors(tc);
     tc.setPowerCommand(0);
   }
 
@@ -240,5 +289,14 @@ public class PowerCalculator {
       tc.setServiceBrake(OnOffStatus.ON);
     }
     tc.setPowerCommand(0);
+  }
+
+  static void closeDoors(TrainController tc) {
+    if (tc.getLeftDoorStatus() == DoorStatus.OPEN) {
+      tc.setLeftDoorStatus(DoorStatus.CLOSED);
+    }
+    if (tc.getRightDoorStatus() == DoorStatus.OPEN) {
+      tc.setRightDoorStatus(DoorStatus.CLOSED);
+    }
   }
 }
