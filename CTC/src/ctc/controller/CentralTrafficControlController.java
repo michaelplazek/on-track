@@ -858,7 +858,23 @@ public class CentralTrafficControlController {
       String name = trainNameField.getText();
       String departingTime = departingTimeField.getText();
 
+      // compare name to queued and dispatched trains
+      boolean hasSameName = false;
+      for (TrainTracker train : ctc.getTrainQueueTable()) {
+        if (train.getId().compareTo(name) == 0) {
+          hasSameName = true;
+          break;
+        }
+      }
 
+      if (!hasSameName) {
+        for (TrainTracker train : ctc.getDispatchTable()) {
+          if (train.getId().compareTo(name) == 0) {
+            hasSameName = true;
+            break;
+          }
+        }
+      }
 
       if (numberOfStops == 1) {
         AlertWindow alert = new AlertWindow();
@@ -866,6 +882,15 @@ public class CentralTrafficControlController {
         alert.setTitle("Error Submitting");
         alert.setHeader("Invalid Number Of Stops");
         alert.setContent("Schedule needs to include more than one stop");
+
+        alert.show();
+      } else if (hasSameName) {
+        AlertWindow alert = new AlertWindow();
+
+        alert.setTitle("Error Submitting");
+        alert.setHeader("Invalid Train Name");
+        alert.setContent("Train cannot have the same name as other "
+            + "currently queued or dispatched trains.");
 
         alert.show();
       } else if (!(name.compareTo("") == 0) && departingTime.length() == 8) {
@@ -977,7 +1002,15 @@ public class CentralTrafficControlController {
 
     // first check that initial block isn't occupied
     Track line = Track.getListOfTracks().get(trackSelect.getValue());
-    if (!line.getStartBlock().isOccupied() && ctc.isActive()) {
+    if (!ctc.isActive()) {
+      AlertWindow alert = new AlertWindow();
+
+      alert.setTitle("Error Dispatching");
+      alert.setHeader("Problem Dispatching Train");
+      alert.setContent("Clock needs to be running to dispatch train.");
+
+      alert.show();
+    } else if (!line.getStartBlock().isOccupied()) {
 
     // TODO: hook this up once the Track Controller is ready
 //    if (!controller.getOccupancy(line.getStartBlock().getNumber())) {
@@ -1004,7 +1037,7 @@ public class CentralTrafficControlController {
 
         dispatchTable.getSelectionModel().select(selected);
       }
-    } else if (ctc.isActive()) {
+    } else {
 
       AlertWindow alert = new AlertWindow();
       alert.setTitle("Error");
