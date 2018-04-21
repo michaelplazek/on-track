@@ -251,7 +251,6 @@ public class TrackController implements TrackControllerInterface {
       boolean inSwitch = true;
 
       line = br.readLine();
-      System.out.println("Line 1: " + line);
 
       if (line.equals("BLOCK LOGIC")) {
         inSwitch = false;
@@ -292,8 +291,11 @@ public class TrackController implements TrackControllerInterface {
         } else {
 
           //Parsing SWITCH SECTION
-          System.out.println("Parsing SWITCH SECTION");
-          System.out.println("line: " + line);
+          //System.out.println("Parsing SWITCH SECTION");
+          //System.out.println("line: `" + line + "`");
+
+          if (line.equals("")) break;
+
 
           String funct = line.split(" THEN ")[0];
           String output = line.split(" THEN ")[1];
@@ -620,7 +622,7 @@ public class TrackController implements TrackControllerInterface {
 
     //TODO: use loop here to check block iteration for Debugging
     //DEBUG
-    ArrayList<Integer> activeSectionIds = new ArrayList<>();
+    /*ArrayList<Integer> activeSectionIds = new ArrayList<>();
 
     if (this.id == 2) {
       System.out.println("ID 2");
@@ -710,7 +712,7 @@ public class TrackController implements TrackControllerInterface {
         testCurr = myLine.getNextBlock(temp.getNumber(), testPrev.getNumber());
         testPrev = temp;
       }
-    }
+    }*/
 
     //System.out.println("Curr Controller: " + this.id);
     //System.out.println("endBlock: " + endBlock);
@@ -944,8 +946,6 @@ public class TrackController implements TrackControllerInterface {
 
           //---------------------------------------------------------
 
-
-
           // NextBlock2 term [6-8]
           if (!currInputTerm[6].contains("n2block")) System.out.println("Invalid PLC detected");
 
@@ -1008,10 +1008,10 @@ public class TrackController implements TrackControllerInterface {
             }
         } // J iteration through switchInputTerms
 
-        System.out.println("Ctrlrl id: " + this.id);
+        //System.out.println("Ctrlrl id: " + this.id);
         for (int k = 0; k < switchInputEval.size(); k++) {
 
-          System.out.println("Term: " + switchOutputTerms.get(k)[2]);
+          //System.out.println("Term: " + switchOutputTerms.get(k)[2]);
 
           if (switchInputEval.get(k)) {
             //evaluate switchOutputTerm at k

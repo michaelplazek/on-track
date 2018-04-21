@@ -9,7 +9,7 @@ preferred -
 
 IF/THEN - used for BLOCK section code
 
-IF/AND/THEN - used for SWITCH section code
+IF/AND/THEN - used for SWITCH section code (limited to the three possible directions of the switch)
 
 [ |+/-N| ] - relative block traversal direction and distance (in logical blocks)
 
@@ -60,3 +60,17 @@ IF (pblock |+6| notOccupied) AND (n1block |0| ignore) AND (n2block |+6| notOccup
 Track Heater example:
 IF (station |0| isFreezing) THEN (station |0| heaterOn)
 IF (station |0| notFreezing) THEN (station |0| heaterOff)
+
+
+NEW PLC ENFORCEMENTS:
+
+- Possibly: always have switches to yard be in the last track controller and under the same track controller's jurisdiction
+          : in turn - this means the first track controller will be placed at the first block from the yard
+          : prone to change - for Red line starting loop. May add the whole loop into a controller? Controlled by switches
+
+
+
+- MovingTo/MovingFrom and isOccupied/notOccupied behavior around switches:
+    - Should continue in direction UNTIL a block is no longer in the track controllers jurisdiction [return occupancy]
+    - Should continue through switches through Track nextBlock call (TODO: MAYBE)
+        -- edge case: switch is in invalid state from current traversal (Have plc programmer specify correct number of blocks? - doesn't work because of distrubuted application of plc code)
