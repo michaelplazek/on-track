@@ -2,7 +2,11 @@ package trackctrl.control;
 
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
+
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -19,6 +23,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import mainmenu.Clock;
 import mainmenu.ClockInterface;
 import trackctrl.model.TrackController;
@@ -133,16 +138,19 @@ public class TrackControllerController implements Initializable {
   ToggleGroup switchGroup = new ToggleGroup();
   ToggleGroup repairGroup = new ToggleGroup();
 
-
+  private static ArrayList<TrackControllerController> ctrlrControllers = new ArrayList<>();
   private TrackController myController;
   private Track myLine;
-  private ClockInterface theClock;
   private boolean isManual = false;
+  private boolean crossingClosed = false;
+  private boolean crossingLeft = false;
   private Block selBlock;
+  private int blink = 0;
 
   public TrackControllerController(String ctrlrId) {
     myController = TrackControllerLineManager.getController(ctrlrId);
     myLine = Track.getTrack(myController.getLine());
+    ctrlrControllers.add(this);
   }
 
   private void populateDropDowns() {
@@ -231,8 +239,14 @@ public class TrackControllerController implements Initializable {
       //Check that crossing signal is still functional
 
       //If functional, assert flashing red light
+      if (selBlock.isCrossing()) {
+        selBlock.setCrossingStatus(true);
+      }
       setClosed();
     } else {
+      if (selBlock.isCrossing()) {
+        selBlock.setCrossingStatus(false);
+      }
       setOpen();
     }
   }
@@ -280,8 +294,7 @@ public class TrackControllerController implements Initializable {
   //TODO
   private void handleCheckLogic(ActionEvent event) {
     if (!(myController.checkLogic())) {
-      //DEMO this is an update button for the demo...
-      run();
+
     }
   }
 
@@ -456,8 +469,16 @@ public class TrackControllerController implements Initializable {
     /**
      * Set our crossing to the closed position
      */
-    crossLeft.setFill(Paint.valueOf("Red"));
-    crossRight.setFill(Paint.valueOf("Gray"));
+
+    if (crossingLeft) {
+      crossingLeft = false;
+      crossLeft.setFill(Paint.valueOf("Gray"));
+      crossRight.setFill(Paint.valueOf("Red"));
+    } else {
+      crossingLeft = true;
+      crossLeft.setFill(Paint.valueOf("Red"));
+      crossRight.setFill(Paint.valueOf("Gray"));
+    }
   }
 
   private void setOpen() {
@@ -466,6 +487,7 @@ public class TrackControllerController implements Initializable {
      */
     crossLeft.setFill(Paint.valueOf("Gray"));
     crossRight.setFill(Paint.valueOf("Gray"));
+    crossingClosed = false;
   }
 
   private void setSwitchInactive() {
@@ -588,6 +610,7 @@ public class TrackControllerController implements Initializable {
     Block update = myController.getBlock(id);
 
     updateBlockStatus(update);
+    updateCrossingStatus();
     updateSwitchState(update);
     checkRadios();
   }
@@ -604,6 +627,19 @@ public class TrackControllerController implements Initializable {
     } else {
       blockStatus.setFill(Paint.valueOf(Constants.GREEN));
     }
+  }
+
+  private void updateCrossingStatus() {
+
+    if (selBlock.isCrossing()) {
+      if (selBlock.getCrossingStatus()) {
+        //true - closed
+        setClosed();
+      } else {
+        setOpen();
+      }
+    }
+
   }
 
   private void updateSwitchState(Block update) {
@@ -657,10 +693,19 @@ public class TrackControllerController implements Initializable {
   public void run() {
     //Update UI based on changes in Selected block
     //Take snapshot of current block and pass int in
+
     String curr = (String) blockChoice.getSelectionModel().getSelectedItem();
     curr = curr.split(" ")[1];
 
     updateControllerUI(Integer.parseInt(curr));
+  }
+
+  public static void runCtrlrControllers() {
+    if (ctrlrControllers != null) {
+      for (TrackControllerController tcc : ctrlrControllers) {
+        tcc.run();
+      }
+    }
   }
 
   /**
@@ -668,9 +713,6 @@ public class TrackControllerController implements Initializable {
    */
   @Override
   public void initialize(URL location, ResourceBundle resources) {
-
-    theClock = Clock.getInstance();
-
     //Init UI
     populateDropDowns();
     groupComponents();
