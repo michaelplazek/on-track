@@ -22,7 +22,7 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
   private ClockInterface clock;
 
   private StringProperty displayTime = new SimpleStringProperty();
-  private StringProperty displayThroughput = new SimpleStringProperty("0.00 passengers/hr");
+  private StringProperty displayThroughput = new SimpleStringProperty("0.0 passengers/hr");
 
   private boolean isActive = false;
   private String line;

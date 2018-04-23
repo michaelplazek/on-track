@@ -14,7 +14,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<SplitPane dividerPositions="0.3965744400527009" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="393.0" prefWidth="749.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="trackmodel.controller.TrackModelController">
+<SplitPane id="root" dividerPositions="0.3965744400527009" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="393.0" prefWidth="749.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="trackmodel.controller.TrackModelController">
     <items>
         <AnchorPane prefHeight="391.0" prefWidth="195.0">
             <children>
@@ -31,14 +31,14 @@
                     <items>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                             <children>
-                        <ChoiceBox fx:id="trackSelection" layoutX="31.0" layoutY="13.0" prefWidth="150.0" />
+                        <ChoiceBox fx:id="trackSelection" layoutX="31.0" layoutY="13.0" prefWidth="150.0" styleClass="dropdown" stylesheets="@../../../../Utils/src/utils/ctc_style.css" />
                         <Label layoutX="236.0" layoutY="13.0" prefHeight="25.0" prefWidth="48.0" text="BLOCK:">
                            <font>
                               <Font size="13.0" />
                            </font>
                         </Label>
                         <ChoiceBox fx:id="blockSelection" layoutX="290.0" layoutY="13.0" prefHeight="25.0" prefWidth="112.0" />
-                        <ChoiceBox fx:id="blockSelection" layoutX="290.0" layoutY="13.0" prefHeight="25.0" prefWidth="112.0" />
+                        <ChoiceBox fx:id="blockSelection" layoutX="290.0" layoutY="13.0" prefHeight="25.0" prefWidth="112.0" styleClass="dropdown" />
                             </children>
                         </AnchorPane>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
@@ -95,7 +95,7 @@
                                                 <Label layoutX="227.0" layoutY="112.0" prefHeight="17.0" prefWidth="112.0" text="SIMULATE FAILURES" />
                                                 <Button fx:id="start" layoutX="253.0" layoutY="159.0" mnemonicParsing="false" text="TOGGLE" />
                                                 <Label fx:id="blockSwitch" alignment="CENTER_RIGHT" layoutX="119.0" layoutY="83.0" prefHeight="17.0" prefWidth="69.0" />
-                                                <MenuButton fx:id="failures" layoutX="232.0" layoutY="132.0" mnemonicParsing="false" text="Select Failure">
+                                                <MenuButton fx:id="failures" layoutX="232.0" layoutY="132.0" mnemonicParsing="false" styleClass="button" text="Select Failure">
                                                   <items>
                                                       <CheckMenuItem id="railFailure" fx:id="railFailureSelect" mnemonicParsing="false" text="Rail" />
                                                       <CheckMenuItem id="powerFailure" fx:id="powerFailureSelect" mnemonicParsing="false" text="Power" />
