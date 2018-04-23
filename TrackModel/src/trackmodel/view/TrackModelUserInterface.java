@@ -46,6 +46,7 @@ public class TrackModelUserInterface {
 
     Stage stage = new Stage();
     stage.setScene(scene);
+    scene.getStylesheets().add("utils/ctc_style.css");
     stage.show();
 
   }

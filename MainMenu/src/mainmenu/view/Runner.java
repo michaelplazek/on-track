@@ -67,7 +67,9 @@ public class Runner extends Application {
     loader.setController(mmc);
     Parent root = loader.load();
     primaryStage.setTitle("On-Track Train Simulator");
-    primaryStage.setScene(new Scene(root, 450, 442));
+    Scene scene = new Scene(root, 450, 520);
+    scene.getStylesheets().add("utils/ctc_style.css");
+    primaryStage.setScene(scene);
     primaryStage.show();
   }
 

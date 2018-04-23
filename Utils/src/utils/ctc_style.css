@@ -1,0 +1,17 @@
+.root {
+    -fx-base: #333;
+    -fx-background: #333;
+}
+
+.button {
+	-fx-border-color: #C8782A;
+	-fx-border-radius: 2;
+}
+
+.dropdown {
+	-fx-border-color: #C8782A;
+	-fx-border-radius: 2;
+}
+
+
+
