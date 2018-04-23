@@ -197,7 +197,7 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
     throughput = (double) totalPassengers / hours;
 
     if (refresh++ > 500) {
-      NumberFormat formatter = new DecimalFormat("#0.00");
+      NumberFormat formatter = new DecimalFormat("#0.0");
       displayThroughput.setValue(formatter.format(throughput) + " passengers/hr");
       this.refresh = 0; // reset count
     }
