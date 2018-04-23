@@ -57,6 +57,9 @@
                                        </children>
                                     </AnchorPane>
                                  </content>
+                                 <font>
+                                    <Font name="System Bold" size="13.0" />
+                                 </font>
                               </TitledPane>
                               <TitledPane collapsible="false" prefHeight="281.0" prefWidth="448.0" text="BLOCK INFO">
                                  <content>
