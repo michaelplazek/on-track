@@ -7,20 +7,26 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="619.0" prefWidth="442.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="619.0" prefWidth="442.0" styleClass="root" stylesheets="@../../../../Utils/src/utils/ctc_style.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <VBox alignment="TOP_CENTER" layoutY="38.0" prefHeight="563.0" prefWidth="417.0" spacing="20.0" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="40.0">
          <children>
-            <Label text="On-Track Train Simulator">
-               <font>
-                  <Font name="Thonburi" size="24.0" />
-               </font>
-            </Label>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <ImageView fitHeight="126.0" fitWidth="392.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@on-track-logo.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </HBox>
             <HBox prefHeight="195.0" prefWidth="392.0">
                <children>
                   <Button mnemonicParsing="false" onAction="#openCentralTrafficControl" prefHeight="138.0" prefWidth="392.0" text="Central Traffic Control">
@@ -39,8 +45,8 @@
                   </Button>
                   <VBox prefHeight="95.0" prefWidth="145.0">
                      <children>
-                        <ChoiceBox fx:id="trackControllerLineChoiceBox" prefHeight="35.0" prefWidth="145.0" translateY="-3.0" />
-                        <ChoiceBox fx:id="trackControllerIdChoiceBox" disable="true" prefHeight="35.0" prefWidth="145.0" translateY="4.0" />
+                        <ChoiceBox fx:id="trackControllerLineChoiceBox" prefHeight="35.0" prefWidth="145.0" styleClass="dropdown" translateY="-3.0" />
+                        <ChoiceBox fx:id="trackControllerIdChoiceBox" disable="true" prefHeight="35.0" prefWidth="145.0" styleClass="dropdown" translateY="4.0" />
                      </children>
                   </VBox>
                </children>
@@ -52,7 +58,7 @@
                         <Font size="18.0" />
                      </font>
                   </Button>
-                  <ChoiceBox fx:id="trainControllerChoiceBox" disable="true" prefHeight="35.0" prefWidth="145.0" />
+                  <ChoiceBox fx:id="trainControllerChoiceBox" disable="true" prefHeight="35.0" prefWidth="145.0" styleClass="dropdown" />
                </children>
             </HBox>
             <HBox prefHeight="195.0">
@@ -71,7 +77,7 @@
                         <Font size="18.0" />
                      </font>
                   </Button>
-                  <ChoiceBox fx:id="trainModelChoiceBox" disable="true" prefHeight="35.0" prefWidth="145.0" />
+                  <ChoiceBox fx:id="trainModelChoiceBox" disable="true" prefHeight="35.0" prefWidth="145.0" styleClass="dropdown" />
                </children>
             </HBox>
             <Label text="On-Track Development | 2018">

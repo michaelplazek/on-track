@@ -22,6 +22,7 @@ public class CentralTrafficControlUserInterface {
       this.root = loader.load();
       this.controller = loader.getController();
       this.scene = new Scene(root);
+      scene.getStylesheets().add("utils/ctc_style.css");
     } catch (IOException e) {
       e.printStackTrace();
     }
