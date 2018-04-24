@@ -44,16 +44,8 @@ public class TrackController implements TrackControllerInterface {
   private HashMap<Integer, Boolean> occPrevious = new HashMap<Integer, Boolean>();
   private HashMap<Integer, Boolean> occCurrent = new HashMap<Integer, Boolean>();
 
-  private HashMap<Integer, Authority> ctcAuthPrevious = new HashMap<Integer, Authority>();
-  private HashMap<Integer, Authority> ctcAuthCurrent = new HashMap<Integer, Authority>();
-  private HashMap<Integer, Authority> ctcAuthTemp = new HashMap<Integer, Authority>();
-
-  private HashMap<Integer, Float> ctcSpeedPrevious = new HashMap<Integer, Float>();
-  private HashMap<Integer, Float> ctcSpeedCurrent = new HashMap<Integer, Float>();
-  private HashMap<Integer, Float> ctcSpeedTemp = new HashMap<Integer, Float>();
-
   private boolean loaded = false;
-  private int switches = 0;
+  private int ctcManual = 0;
 
   //States populate from Boolean Logic
   //private boolean[]
@@ -99,25 +91,33 @@ public class TrackController implements TrackControllerInterface {
    *
    */
   public void run() {
+//    if (ctcManual < 450 && ctcManual >= 0) {
+//      ctcManual++;
+//      isManual = true;
+//    } else if (ctcManual == 450) {
+//      ctcManual = -1;
+//      isManual = false;
+//    }
+
     readOccupancy();
-    readSuggestion();
+    //readSuggestion();
     assertLogic();
   }
 
   @Override
   public boolean sendTrackSignals(int block, Authority authority, float speed) {
     if (myLine != null) {
-      //myLine.getBlock(block).setAuthority(authority);
-      //myLine.getBlock(block).setSetPointSpeed(Math.abs(speed));
+      myLine.getBlock(block).setAuthority(authority);
+      myLine.getBlock(block).setSetPointSpeed(Math.abs(speed));
 
       //Take snapshot of CTC suggestions
-      if ((block - trackOffset >= 0) && (block - trackOffset < getZone().size())) {
-        ctcAuthTemp.replace(block, authority);
-        ctcSpeedTemp.replace(block,speed);
-        return true;
-      } else {
-        return false;
-      }
+//      if ((block - trackOffset >= 0) && (block - trackOffset < getZone().size())) {
+//        ctcAuthTemp.replace(block, authority);
+//        ctcSpeedTemp.replace(block,speed);
+//        return true;
+//      } else {
+//        return false;
+//      }
     }
     return false;
   }
@@ -184,9 +184,6 @@ public class TrackController implements TrackControllerInterface {
   public boolean addBlock(Block newBlock) {
 
     myZone.put(newBlock.getNumber(), newBlock);
-    if (newBlock.isSwitch()) {
-      switches++;
-    }
     return myZone.containsValue(newBlock);
   }
 
@@ -211,6 +208,7 @@ public class TrackController implements TrackControllerInterface {
   public boolean toggleSwitch(int id) {
     Block toggle = myLine.getBlock(id);
     if (toggle.isSwitch()) {
+      ctcManual = 0;
       Switch toggleSwitch = (Switch) toggle;
       toggleSwitch.toggle();
       return toggleSwitch.getSwitchState();
@@ -378,20 +376,20 @@ public class TrackController implements TrackControllerInterface {
     isManual = opMode;
   }
 
-  private void readSuggestion() {
-
-    //Reads in current suggestion array into previous
-    //Sets current to the temp (set by calls from ctc)
-
-    for (Block b : myZone.values()) {
-      int index = b.getNumber();
-      ctcAuthPrevious.replace(index,ctcAuthCurrent.get(index));
-      ctcAuthCurrent.replace(index, ctcAuthTemp.get(index));
-
-      ctcSpeedPrevious.replace(index,ctcSpeedCurrent.get(index));
-      ctcSpeedCurrent.replace(index,ctcSpeedTemp.get(index));
-    }
-  }
+//  private void readSuggestion() {
+//
+//    //Reads in current suggestion array into previous
+//    //Sets current to the temp (set by calls from ctc)
+//
+//    for (Block b : myZone.values()) {
+//      int index = b.getNumber();
+//      ctcAuthPrevious.replace(index,ctcAuthCurrent.get(index));
+//      ctcAuthCurrent.replace(index, ctcAuthTemp.get(index));
+//
+//      ctcSpeedPrevious.replace(index,ctcSpeedCurrent.get(index));
+//      ctcSpeedCurrent.replace(index,ctcSpeedTemp.get(index));
+//    }
+//  }
 
   /** This is called after Controller initialization
    * to set occupancy and ctc suggestions.
@@ -404,19 +402,11 @@ public class TrackController implements TrackControllerInterface {
 
       //initialize array values to  number of blocks
       for (Integer i : myZone.keySet()) {
+
+        //initializes occupancies to false
         occCurrent.put(i, false);
         occPrevious.put(i, false);
 
-        ctcAuthCurrent.put(i, Authority.SEND_POWER);
-        ctcAuthPrevious.put(i, Authority.SEND_POWER);
-        ctcAuthTemp.put(i, Authority.SEND_POWER);
-
-        //ctcSpeedCurrent.put(i, 15.0f);
-        //ctcSpeedPrevious.put(i, 15.0f);
-        //ctcSpeedTemp.put(i, 15.0f);
-        ctcSpeedCurrent.put(i, null);
-        ctcSpeedPrevious.put(i, null);
-        ctcSpeedTemp.put(i, null);
       }
 
       loaded = true;
@@ -894,21 +884,21 @@ public class TrackController implements TrackControllerInterface {
 
     } //-------------- END CURRBLOCK ITERATION
     //TODO these will be voted upon or updated prior to asserting on the track based on above logic
-    for (Integer index : myZone.keySet()) {
-
-      if (myZone.get(index) != null) {
-        Block update = myZone.get(index);
-
-        if (ctcAuthCurrent.get(index) != null) {
-          update.setAuthority(ctcAuthCurrent.get(index));
-        }
-        if (ctcSpeedCurrent.get(index) != null) {
-          update.setSetPointSpeed(ctcSpeedCurrent.get(index));
-        }
-      }
-
-      //myLine.getBlock(index).setAuthority(ctcAuthCurrent.get(index));
-      //myLine.getBlock(index).setSetPointSpeed(Math.abs(ctcSpeedCurrent.get(index)));
-    }
+//    for (Integer index : myZone.keySet()) {
+//
+//      if (myZone.get(index) != null) {
+//        Block update = myZone.get(index);
+//
+//        if (ctcAuthCurrent.get(index) != null) {
+//          update.setAuthority(ctcAuthCurrent.get(index));
+//          System.out.println("Auth " + index + ": " + ctcAuthCurrent.get(index));
+//        }
+//        if (ctcSpeedCurrent.get(index) != null) {
+//          update.setSetPointSpeed(Math.abs(ctcSpeedCurrent.get(index)));
+//          System.out.println("Speed " + index + ": " + ctcSpeedCurrent.get(index));
+//
+//        }
+//      }
+//    }
   }
 }
