@@ -49,10 +49,12 @@ public class TrackModelController {
   @FXML private Circle powerStatus;
   @FXML private Circle circuitStatus;
   @FXML private Circle beaconStatus;
+  @FXML private Label beaconLabel;
   @FXML private Circle crossingStatus;
   @FXML private Circle undergroundStatus;
   @FXML private Circle occupiedStatus;
   @FXML private Circle trackHeating;
+  @FXML private Label stationLabel;
   @FXML private Circle stationStatus;
 
   //FAILURE OBJECTS
@@ -81,7 +83,8 @@ public class TrackModelController {
         Block block = currentTrack.getBlock(blockId);
 
         String content = "Distance to Station:\t\t" + block.getBeacon().getDistance();
-        content += "\nStation Identified:\t\t" + currentTrack.getStationList().get(block.getBeacon().getStationId() - 1);
+        content += "\nStation Identified:\t\t"
+            + currentTrack.getStationList().get(block.getBeacon().getStationId() - 1);
         content += "\nToggle Underground:\t" + block.getBeacon().isUnderground();
         content += "\nRight Side Station:\t\t" + block.getBeacon().isRight();
         content += "\nUser Message:\t\t\t" + block.getBeacon().getUserMessage();
@@ -158,9 +161,6 @@ public class TrackModelController {
           if (currentTrack != null && newValue != null) {
             Block block = currentTrack.getBlock(blockId);
 
-            if (!block.getStationName().equals("")){
-
-            }
             updateUi(block);
           } else {
             blankBlock();
@@ -212,6 +212,8 @@ public class TrackModelController {
 
     beaconStatus.removeEventFilter(MouseEvent.MOUSE_CLICKED, alertBeaconData);
     stationStatus.removeEventFilter(MouseEvent.MOUSE_CLICKED, alertStationData);
+    beaconLabel.removeEventFilter(MouseEvent.MOUSE_CLICKED, alertBeaconData);
+    stationLabel.removeEventFilter(MouseEvent.MOUSE_CLICKED, alertStationData);
 
     this.updateOccupiedBlock();
     this.updateClosedBlocks();
@@ -258,9 +260,11 @@ public class TrackModelController {
     if (block.hasBeacon()) {
       beaconStatus.setFill(Color.GREEN);
       beaconStatus.addEventFilter(MouseEvent.MOUSE_CLICKED, alertBeaconData);
+      beaconLabel.addEventFilter(MouseEvent.MOUSE_CLICKED, alertBeaconData);
     } else {
       beaconStatus.setFill(Color.WHITE);
       beaconStatus.removeEventFilter(MouseEvent.MOUSE_CLICKED, alertBeaconData);
+      beaconLabel.removeEventFilter(MouseEvent.MOUSE_CLICKED, alertBeaconData);
     }
 
     if (block.isCrossing()) {
@@ -290,9 +294,11 @@ public class TrackModelController {
     if ((block.getStationName().equals(""))) {
       stationStatus.setFill(Color.WHITE);
       stationStatus.removeEventFilter(MouseEvent.MOUSE_CLICKED, alertStationData);
+      stationLabel.removeEventFilter(MouseEvent.MOUSE_CLICKED, alertStationData);
     } else {
       stationStatus.setFill(Color.GREEN);
       stationStatus.addEventFilter(MouseEvent.MOUSE_CLICKED, alertStationData);
+      stationLabel.addEventFilter(MouseEvent.MOUSE_CLICKED, alertStationData);
     }
 
     this.updateOccupiedBlock();

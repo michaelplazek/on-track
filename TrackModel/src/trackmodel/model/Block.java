@@ -230,6 +230,9 @@ public class Block {
     return passengersWaiting;
   }
 
+  /**
+   * This method will set the number of passengers at a station.
+   */
   public void setRandomPassengers() {
     Random randomPassengers = new Random();
     int passengers = randomPassengers.nextInt(200) + 100;
