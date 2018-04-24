@@ -57,7 +57,7 @@ public class Track {
     int stationId = 1;
 
     try {
-      for(String s : new String[]{"red.csv", "green.csv"}) {
+      for (String s : new String[]{"green.csv"}) {
         f = new File(Track.class.getResource(s).toURI());
 
         try {

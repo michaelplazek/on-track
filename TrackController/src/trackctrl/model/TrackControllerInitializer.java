@@ -18,7 +18,7 @@ public class TrackControllerInitializer {
 
   private int lineNum = 0;
   private TrackControllerLineManager[] lms;
-  private String path = "Utils/src/utils/general/";
+  private String path = "Utils/src/utils/plc/";
   private final String track = "trackCtrlrList.csv";
 
 
@@ -34,8 +34,11 @@ public class TrackControllerInitializer {
 
       //Read twice to ignore comments
       String line = br.readLine();
-      line = br.readLine();;
-      int i = 0;
+      line = br.readLine();
+      line = br.readLine();
+      line = br.readLine();
+      Integer tracksRemaining = Integer.parseInt(line.split(",")[0]);
+      lms = new TrackControllerLineManager[tracksRemaining + 1];
 
       while ((line = br.readLine()) != null) {
         String[] splitLine = line.split(",");
@@ -47,8 +50,9 @@ public class TrackControllerInitializer {
 
         //Create new Line manager based on first line info
         TrackControllerLineManager addManager = new TrackControllerLineManager(track.getLine());
+        lms[tracksRemaining] = addManager;
 
-        for (i = 0; i < controllers; i++) {
+        for (int i = 0; i < controllers; i++) {
           line = br.readLine();
           splitLine = line.split(",");
 
@@ -59,18 +63,38 @@ public class TrackControllerInitializer {
 
           for (int j = offset; j <= endBlock; j++) {
             tc.addBlock(track.getBlock(j));
+            tc.setEndBlock(endBlock);
           }
 
-          if (splitLine.length > 3) {
+          if (!splitLine[3].equals("0") && !splitLine[4].equals("0")) {
             offset = Integer.parseInt(splitLine[3]);
             endBlock = Integer.parseInt(splitLine[4]);
-            for (int j = offset; j <= endBlock; j++) {
-              tc.addBlock(track.getBlock(j));
+            if (offset == endBlock) {
+              tc.addBlock(track.getBlock(offset));
+            } else {
+              for (int j = offset; j <= endBlock; j++) {
+                tc.addBlock(track.getBlock(j));
+              }
             }
           }
 
+//          if (!splitLine[5].equals("0") && !splitLine[6].equals("0") ) {
+//            offset = Integer.parseInt(splitLine[5]);
+//            endBlock = Integer.parseInt(splitLine[6]);
+//            if (offset == endBlock) {
+//              tc.addBlock(track.getBlock(offset));
+//            } else {
+//              for (int j = offset; j <= endBlock; j++) {
+//                tc.addBlock(track.getBlock(j));
+//              }
+//            }
+//          }
+
+          tc.setBlockNumber();
+
           addManager.addController(tc);
         }
+        tracksRemaining--;
       }
 
     } catch (FileNotFoundException ex) {
@@ -83,6 +107,20 @@ public class TrackControllerInitializer {
       System.out.println("Controller Config File Found");
     } else {
       System.out.println("Controller Config File Not Found");
+    }
+  }
+
+  /** This function uses track controller naming conventions
+   * to search for a default file name for that controller.
+   */
+  public void initializeLogic() {
+    for (TrackControllerLineManager lm : lms) {
+      String line = lm.getLine();
+      line = line.toLowerCase();
+      for (TrackController tc : lm.getControllersList()) {
+        File plc = new File(path + line + tc.getId() + ".plc");
+        tc.importLogic(plc);
+      }
     }
   }
 }

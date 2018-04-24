@@ -14,6 +14,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
+
 <SplitPane id="root" dividerPositions="0.3965744400527009" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="420.0" prefWidth="749.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="trackmodel.controller.TrackModelController">
     <items>
         <AnchorPane prefHeight="391.0" prefWidth="195.0">
@@ -52,7 +53,7 @@
                                                 <Font size="13.0" />
                                              </font>
                                           </Label>
-                                          <Label fx:id="occupiedList" layoutX="93.0" layoutY="16.0" prefHeight="17.0" prefWidth="337.0" />
+                                          <Label fx:id="occupiedList" layoutX="104.0" layoutY="16.0" prefHeight="17.0" prefWidth="326.0" />
                                           <Label fx:id="closedList" layoutX="93.0" layoutY="41.0" prefHeight="17.0" prefWidth="337.0" />
                                        </children>
                                     </AnchorPane>

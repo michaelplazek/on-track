@@ -16,7 +16,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<SplitPane dividerPositions="0.1806020066889632" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="600.0" prefWidth="1360.0" styleClass="root" stylesheets="@ctc_style.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ctc.controller.CentralTrafficControlController">
+<SplitPane dividerPositions="0.1806020066889632" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="600.0" prefWidth="1360.0" styleClass="root" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ctc.controller.CentralTrafficControlController">
   <items>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="50.0" prefWidth="798.0">
          <children>
@@ -75,7 +75,7 @@
                                       <content>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="401.0" prefWidth="318.0">
                                              <children>
-                                                <Button id="import" fx:id="importScheduleButton" layoutX="90.0" layoutY="22.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="135.0" text="Import Schedule" />
+                                                <Button fx:id="importScheduleButton" layoutX="90.0" layoutY="22.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="135.0" text="Import Schedule" />
                                                 <Label layoutX="145.0" layoutY="69.0" text="- or -">
                                                    <font>
                                                       <Font size="12.0" />

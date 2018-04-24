@@ -1,0 +1,3 @@
+SWITCH LOGIC
+IF (pblock28 |+6| notOccupied) AND (n1block28 |-5| isOccupied) AND (n2block28 |+0| ignore) THEN (switch /28/ switchN1)
+IF (pblock28 |+6| isOccupied) AND (n1block28 |-5| ignore) AND (n2block28 |+5| notOccupied) THEN (switch /28/ switchN2)

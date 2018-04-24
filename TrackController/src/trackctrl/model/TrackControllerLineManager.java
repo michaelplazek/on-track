@@ -132,6 +132,7 @@ public class TrackControllerLineManager implements TrackControllerLineManagerInt
       for (TrackController tc : lineControllers) {
         if (tc.hasBlock(id)) {
           tc.closeBlock(id);
+          break;
         }
       }
     }
@@ -149,6 +150,7 @@ public class TrackControllerLineManager implements TrackControllerLineManagerInt
       for (TrackController tc : lineControllers) {
         if (tc.hasBlock(id)) {
           tc.repairBlock(id);
+          break;
         }
       }
     }
@@ -188,10 +190,15 @@ public class TrackControllerLineManager implements TrackControllerLineManagerInt
   /** This iterates through all controllers of the current line and runs the
    * respective run function within the controller.
    */
-  public void runControllers() {
-    if (lineControllers != null) {
-      for (TrackController tc : lineControllers) {
-        tc.run();
+  public static void runControllers() {
+    if (lines != null) {
+
+      for (TrackControllerLineManager lm : lines) {
+        if (lm.getControllersList().size() != 0) {
+          for (TrackController tc : lm.getControllersList()) {
+            tc.run();
+          }
+        }
       }
     }
   }
