@@ -1056,7 +1056,7 @@ public class CentralTrafficControlController {
       Block location = train.getLocation();
 
       // make new route with the new authority
-      Route route = new Route(location, end, line, train);
+      Route route = train.getRoute().reroute(location, end);
       train.setRoute(route);
 
       // let the TrainTracker know that it has a new authority

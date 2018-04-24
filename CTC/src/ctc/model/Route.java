@@ -57,6 +57,11 @@ public class Route {
     createRoute(start, end);
   }
 
+  public Route reroute(Block start, Block end) {
+    createRoute(start, end);
+    return this;
+  }
+
   Block getNext() {
     if (currentIndex < route.size() - 1) {
       return route.get(currentIndex + 1);
@@ -236,6 +241,10 @@ public class Route {
 
       // add next block - switch - to path
       path.add(next);
+
+      if (next == end) {
+        return;
+      }
 
       Block fork = line.getNextBlock2(next.getNumber(), current.getNumber());
       Block straight = line.getNextBlock(next.getNumber(), current.getNumber());
