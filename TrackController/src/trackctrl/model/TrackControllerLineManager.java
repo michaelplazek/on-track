@@ -151,9 +151,9 @@ public class TrackControllerLineManager implements TrackControllerLineManagerInt
         if (tc.hasBlock(id)) {
           tc.repairBlock(id);
           break;
-          }
         }
       }
+    }
     return false;
   }
 
@@ -194,7 +194,7 @@ public class TrackControllerLineManager implements TrackControllerLineManagerInt
     if (lines != null) {
 
       for (TrackControllerLineManager lm : lines) {
-        if(lm.getControllersList().size() != 0) {
+        if (lm.getControllersList().size() != 0) {
           for (TrackController tc : lm.getControllersList()) {
             tc.run();
           }
