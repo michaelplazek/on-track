@@ -19,9 +19,10 @@ import javafx.util.Duration;
 import mainmenu.Clock;
 import mainmenu.controller.MainMenuController;
 import trackctrl.model.TrackControllerInitializer;
-import trackmodel.view.TrackModelUserInterface;
 import trackctrl.model.TrackControllerLineManager;
 import trackmodel.model.Track;
+import trackmodel.view.TrackModelUserInterface;
+
 import traincontroller.model.TrainControllerManager;
 import trainmodel.model.TrainModel;
 
