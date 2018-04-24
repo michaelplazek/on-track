@@ -289,7 +289,7 @@ public class TrainControllerController implements Initializable {
     trainController.leftDoorStatusProperty().addListener(
         (o, oldVal, newVal) -> leftDoorButton.setSelected(newVal == DoorStatus.OPEN));
     trainController.automaticProperty().addListener((observable, oldValue, newValue) -> {
-      if(newValue) {
+      if (newValue) {
         manual.selectedProperty().setValue(!newValue);
         automatic.selectedProperty().setValue(newValue);
       } else {
