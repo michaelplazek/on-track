@@ -21,6 +21,8 @@ public class Block {
   private float elevation;
   private float cumElevation;
   private int temp;
+  private int passengersWaiting;
+  private int numberToExit;
 
   //Infrastructure
   private String stationName = "";
@@ -99,6 +101,7 @@ public class Block {
     setRightStation(rightStation);
     setBeaconValues(blockBeacon);
     setTemperature(temp);
+    setRandomPassengers();
   }
 
   public void setTemperature(int temp) {
@@ -211,10 +214,30 @@ public class Block {
     Random randomPassengers = new Random();
     int passengers = randomPassengers.nextInt(availableSeats);
 
+    if (passengers > passengersWaiting) {
+      passengers = passengersWaiting;
+    }
+
+    this.passengersWaiting = this.passengersWaiting - passengers;
+
     // set passengers for train in CTC
     CentralTrafficControl.getInstance().addPassengers(this, passengers);
 
     return passengers; // return number of passenger to TrainModel
+  }
+
+  public int getPassengersWaiting() {
+    return passengersWaiting;
+  }
+
+  public void setRandomPassengers() {
+    Random randomPassengers = new Random();
+    int passengers = randomPassengers.nextInt(200) + 100;
+
+    if (this.stationName.equals("")) {
+      passengers = 0;
+    }
+    this.passengersWaiting = passengers;
   }
 
   public String getStationName() {
