@@ -234,7 +234,11 @@ public class TrainModel implements TrainModelInterface {
     }
 
     if (currentBlock != null) {
-      currentBlockName.set(currentBlock.getSection() + currentBlock.getNumber());
+      if (currentBlock.getNumber() != -1) {
+        currentBlockName.set(currentBlock.getSection() + currentBlock.getNumber());
+      } else {
+        currentBlockName.set("Yard");
+      }
     }
   }
 
