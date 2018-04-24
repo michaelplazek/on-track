@@ -102,7 +102,7 @@ public class CentralTrafficControl implements CentralTrafficControlInterface {
   private void cleanup() {
     for (int i = 0; i < trainList.size(); i++) {
       TrainTracker train = trainList.get(i);
-      if (train.isDone()) {
+      if (train.isDone() && !train.isWaitingForAuthority()) {
         removeTrain(train);
         TrainControllerFactory.delete(train.getId());
       }

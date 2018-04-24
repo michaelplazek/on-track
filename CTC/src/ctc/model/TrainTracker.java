@@ -168,11 +168,11 @@ public class TrainTracker {
 
     // check if train has reached the yard
     if (route.getCurrent()  == route.getLast()) {
-      isDispatched = false;
       isDone = true;
 
       if (route.getLast().getNumber() == -1) {
         route.getLast().setOccupied(false);
+        isDispatched = false;
       } else {
         isWaitingForAuthority = true;
       }
@@ -212,7 +212,7 @@ public class TrainTracker {
         } else {
           authority.setAuthorityCommand(AuthorityCommand.SEND_POWER);
         }
-      } else if (((route.getSize() - 1) - route.getCurrentIndex() < 3)
+      } else if (((route.getSize() - 1) - route.getCurrentIndex() < 6)
           && route.getLast().getNumber() != -1) {
         authority.setAuthorityCommand(AuthorityCommand.STOP_AT_END_OF_ROUTE);
       } else {
@@ -222,7 +222,8 @@ public class TrainTracker {
       authority.setAuthorityCommand(AuthorityCommand.SERVICE_BRAKE_STOP);
     }
 
-    authority.setBlocksLeft(this.route.getSize() > 31 ? 31 : (byte) this.route.getSize());
+    authority.setBlocksLeft(((this.route.getSize() - 1) - this.route.getCurrentIndex()) > 31
+        ? 31 : (byte) ((this.route.getSize() - 1) - this.route.getCurrentIndex()));
 
     // TODO: use this call once the Track Controller is ready
 //    controller.sendTrackSignals(location.getNumber(), authority, speed);
@@ -384,5 +385,9 @@ public class TrainTracker {
 
   public void setWaitingForAuthority(boolean waitingForAuthority) {
     isWaitingForAuthority = waitingForAuthority;
+  }
+
+  boolean isWaitingForAuthority() {
+    return isWaitingForAuthority;
   }
 }
