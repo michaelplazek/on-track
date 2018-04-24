@@ -1105,7 +1105,7 @@ public class CentralTrafficControlController {
       if (trains.get(i).getDeparture().equals(clock.getFormattedTime())
           && !ctc.getDispatchTable().contains(trains.get(i))
           && ctc.isActive()
-          && controller.getOccupancy(track.getStartBlock().getNumber())) {
+          && !controller.getOccupancy(track.getStartBlock().getNumber())) {
         autoDispatchTrain(i);
       }
     }
