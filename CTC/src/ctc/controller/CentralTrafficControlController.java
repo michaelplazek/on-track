@@ -746,10 +746,14 @@ public class CentralTrafficControlController {
         list.add(trainStop);
       }
 
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      e.printStackTrace();
+    } catch (Exception e) {
+      AlertWindow alert = new AlertWindow();
+
+      alert.setTitle("File Error");
+      alert.setHeader("Issue Loading Schedule");
+      alert.setContent("Could not import the file. Please try again.");
+
+      alert.show();
     } finally {
 
       // set the image
