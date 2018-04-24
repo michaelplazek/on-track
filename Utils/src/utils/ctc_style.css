@@ -26,5 +26,10 @@
 	-fx-text-fill: #C8782A;
 }
 
+#lineTitle {
+
+	-fx-text-fill: black;
+}
+
 
 
