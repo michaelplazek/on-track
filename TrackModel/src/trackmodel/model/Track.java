@@ -66,7 +66,7 @@ public class Track {
 
     int temp;
 
-    if (!listOfTracks.isEmpty()){
+    if (!listOfTracks.isEmpty()) {
       return;
     }
 
@@ -80,7 +80,7 @@ public class Track {
       fileChooser.setTitle("Choose a track file");
       File f = fileChooser.showOpenDialog(null);
 
-      if (f == null){
+      if (f == null) {
         break;
       }
 
@@ -184,124 +184,119 @@ public class Track {
                 blockBeacon = new Beacon(distance, station,
                   right, number, underground, message);
               } else if (splitLine.length == 20) {
-                  float distance = Float.parseFloat(splitLine[16]);
-                  byte station = Byte.parseByte(splitLine[17]);
-                  boolean right = Integer.parseInt(splitLine[18]) == 1;
-                  boolean underground = Integer.parseInt(splitLine[19]) == 1;
+                float distance = Float.parseFloat(splitLine[16]);
+                byte station = Byte.parseByte(splitLine[17]);
+                boolean right = Integer.parseInt(splitLine[18]) == 1;
+                boolean underground = Integer.parseInt(splitLine[19]) == 1;
 
-                  if(splitLine.length == 21) {
-                    if(splitLine[20].length() <= 6){
-                      userMessage = splitLine[20];
-                   }
+                if (splitLine.length == 21) {
+                  if (splitLine[20].length() <= 6) {
+                    userMessage = splitLine[20];
                   }
+                }
 
-                  blockBeacon = new Beacon(distance, station,
-                      right, number, underground, "");
+                blockBeacon = new Beacon(distance, station,
+                      right, number, underground, userMessage);
               }
               b = new Switch(lineId, section, number, len, grade, speedLimit,
                   infra, elevation, cumEle, biDirectional, previous, next1,
                   next2, leftStation, rightStation, blockBeacon, temp);
 
               if (splitLine[6].contains("YARD") && splitLine[6].contains("FROM")) {
-                 newTrack.setStartBlock(b.getNumber());
-
-                 Block yard = new Block(lineId, "", -1, 0, 0, 0, "",
+                newTrack.setStartBlock(b.getNumber());
+                Block yard = new Block(lineId, "", -1, 0, 0, 0, "",
                       0, 0, false, -2, number, false, false, null, 0);
 
-                 newTrack.addBlock(yard);
+                newTrack.addBlock(yard);
               }
               newTrack.addBlock(b);
+            } else {
+              //Create a Block for the Track
+              final String lineId = splitLine[0];
+              final String section = splitLine[1];
+              final int number = Integer.parseInt(splitLine[2]);
+              final float len = Float.parseFloat(splitLine[3]);
+              final float grade = Float.parseFloat(splitLine[4]);
+              final int speedLimit = Integer.parseInt(splitLine[5]);
+              final String infra = splitLine[6];
+              final float elevation = Float.parseFloat(splitLine[7]);
+              final float cumEle = Float.parseFloat(splitLine[8]);
+              boolean biDirectional;
+              if (splitLine[9].equals("")) {
+                biDirectional = false;
               } else {
-                //Create a Block for the Track
-                final String lineId = splitLine[0];
-                final String section = splitLine[1];
-                final int number = Integer.parseInt(splitLine[2]);
-                final float len = Float.parseFloat(splitLine[3]);
-                final float grade = Float.parseFloat(splitLine[4]);
-                final int speedLimit = Integer.parseInt(splitLine[5]);
-                final String infra = splitLine[6];
-                final float elevation = Float.parseFloat(splitLine[7]);
-                final float cumEle = Float.parseFloat(splitLine[8]);
-                boolean biDirectional;
-                if (splitLine[9].equals("")) {
-                  biDirectional = false;
+                biDirectional = true;
+              }
+              final int previous = Integer.parseInt(splitLine[10]);
+              final int next1 = Integer.parseInt(splitLine[11]);
+              boolean rightStation = false;
+              if (splitLine.length > 13) {
+                if (splitLine[13].equals("")) {
+                  rightStation = false;
                 } else {
-                  biDirectional = true;
+                  rightStation = true;
                 }
-                final int previous = Integer.parseInt(splitLine[10]);
-                final int next1 = Integer.parseInt(splitLine[11]);
-                boolean rightStation = false;
-                if (splitLine.length > 13) {
-                  if (splitLine[13].equals("")) {
-                    rightStation = false;
-                  } else {
-                    rightStation = true;
-                  }
+              }
+              boolean leftStation = false;
+              if (splitLine.length > 14) {
+                if (splitLine[14].equals("")) {
+                  leftStation = false;
+                } else {
+                  leftStation = true;
                 }
-                boolean leftStation = false;
-                if (splitLine.length > 14) {
-                  if (splitLine[14].equals("")) {
-                    leftStation = false;
-                  } else {
-                    leftStation = true;
-                  }
-                }
-                Beacon blockBeacon = null;
+              }
+              Beacon blockBeacon = null;
+              if (splitLine.length == 21) {
+                float distance = Float.parseFloat(splitLine[16]);
+                byte station = Byte.parseByte(splitLine[17]);
+                boolean right = Integer.parseInt(splitLine[18]) == 1;
+                boolean underground = Integer.parseInt(splitLine[19]) == 1;
+                String message = splitLine[20];
+
+                blockBeacon = new Beacon(distance, station,
+                    right, number, underground, message);
+              } else if (splitLine.length == 20) {
+                float distance = Float.parseFloat(splitLine[16]);
+                byte station = Byte.parseByte(splitLine[17]);
+                boolean right = Integer.parseInt(splitLine[18]) == 1;
+                boolean underground = Integer.parseInt(splitLine[19]) == 1;
                 if (splitLine.length == 21) {
-                  float distance = Float.parseFloat(splitLine[16]);
-                  byte station = Byte.parseByte(splitLine[17]);
-                  boolean right = Integer.parseInt(splitLine[18]) == 1;
-                  boolean underground = Integer.parseInt(splitLine[19]) == 1;
-                  String message = splitLine[20];
-
-                  blockBeacon = new Beacon(distance, station,
-                      right, number, underground, message);
-                } else if (splitLine.length == 20) {
-                  float distance = Float.parseFloat(splitLine[16]);
-                  byte station = Byte.parseByte(splitLine[17]);
-                  boolean right = Integer.parseInt(splitLine[18]) == 1;
-                  boolean underground = Integer.parseInt(splitLine[19]) == 1;
-
-                  if(splitLine.length == 21) {
-                    if(splitLine[20].length() <= 6){
-                      userMessage = splitLine[20];
-                    }
+                  if (splitLine[20].length() <= 6) {
+                    userMessage = splitLine[20];
                   }
-
-                  blockBeacon = new Beacon(distance, station,
-                      right, number, underground, userMessage);
                 }
 
-                b = new Block(lineId, section, number, len, grade,
-                    speedLimit, infra, elevation, cumEle, biDirectional,
-                    previous, next1, leftStation, rightStation, blockBeacon, temp);
-
-                newTrack.addBlock(b);
+                blockBeacon = new Beacon(distance, station,
+                    right, number, underground, userMessage);
               }
 
-              line = br.readLine();
+              b = new Block(lineId, section, number, len, grade,
+                  speedLimit, infra, elevation, cumEle, biDirectional,
+                  previous, next1, leftStation, rightStation, blockBeacon, temp);
+
+              newTrack.addBlock(b);
             }
+
+            line = br.readLine();
           }
-
-          sectionsId.put(lineName, sections);
-          blockNumbers.put(lineName, blocks);
-
-
-          newTrack.addStations(stations);
-
-        } catch (Exception e) {
-
-          listOfTracks.remove(lineName);
-
-          AlertWindow alert = new AlertWindow();
-
-          alert.setTitle("File Error");
-          alert.setHeader("File Issue");
-          alert.setContent("Could not import the file.  Please try again.");
-
-          alert.show();
         }
+
+        sectionsId.put(lineName, sections);
+        blockNumbers.put(lineName, blocks);
+
+        newTrack.addStations(stations);
+      } catch (Exception e) {
+
+        listOfTracks.remove(lineName);
+        AlertWindow alert = new AlertWindow();
+
+        alert.setTitle("File Error");
+        alert.setHeader("File Issue");
+        alert.setContent("Could not import the file.  Please try again.");
+
+        alert.show();
       }
+    }
   }
 
   public static HashMap<String, Track> getListOfTracks() {
