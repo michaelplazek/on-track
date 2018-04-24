@@ -91,7 +91,7 @@ public class TrainTracker {
       updatePosition();
 
       // simulate the track controller
-      simulateController();
+      //simulateController();
 
       // update the speed and authority
       updateTrackSignals();
@@ -111,17 +111,17 @@ public class TrainTracker {
   // TODO: remove this once the Track Controller is connected
   private void simulateController() {
 
-    if (location.isSwitch() && route.getPrevious().getNumber() == location.getPreviousBlock()) {
-
-      Switch sw = (Switch) location;
-      Block nextBlock = route.getNext();
-
-      if (nextBlock != null) {
-        sw.setStatus(nextBlock.getNumber());
-      } else {
-        sw.setStatus(-1);
-      }
-    }
+//    if (location.isSwitch() && route.getPrevious().getNumber() == location.getPreviousBlock()) {
+//
+//      Switch sw = (Switch) location;
+//      Block nextBlock = route.getNext();
+//
+//      if (nextBlock != null) {
+//        sw.setStatus(nextBlock.getNumber());
+//      } else {
+//        sw.setStatus(-1);
+//      }
+//    }
   }
 
   private void updateDisplay() {
@@ -131,11 +131,11 @@ public class TrainTracker {
 
   private void updatePosition() {
 
-    // TODO: use this call once the Track Controller is connected
-//    if (controller.getOccupancy(route.getNext().getNumber())) {
-//      this.location = route.getNext();
-//      this.route.incrementCurrentIndex();
-//    }
+    //TODO: use this call once the Track Controller is connected
+    if (controller.getOccupancy(route.getNext().getNumber())) {
+      this.location = route.getNext();
+      this.route.incrementCurrentIndex();
+    }
 
     Block next = route.getNext();
 
@@ -221,10 +221,10 @@ public class TrainTracker {
     }
 
     // TODO: use this call once the Track Controller is ready
-//    controller.sendTrackSignals(location.getNumber(), authority, speed);
+    controller.sendTrackSignals(location.getNumber(), authority, speed);
 
-    location.setAuthority(authority);
-    location.setSetPointSpeed(speed);
+    //location.setAuthority(authority);
+    //location.setSetPointSpeed(speed);
   }
 
   private void computeDisplayLocation() {

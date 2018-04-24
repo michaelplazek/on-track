@@ -1,0 +1,5 @@
+SWITCH LOGIC
+IF (pblock57 |-6| isOccupied) AND (n1block57 |+4| notOccupied) AND (n2block57 |+0| ignore) THEN (switch /57/ switchN2)
+IF (pblock57 |-6| notOccupied) AND (n1block57 |+4| isOccupied) AND (n2block57 |+0| ignore) THEN (switch /57/ switchN2)
+IF (pblock62 |+6| notOccupied) AND (n1block62 |+0| ignore) AND (n2block62 |-4| isOccupied) THEN (switch /62/ switchN2)
+IF (pblock62 |+6| notOccupied) AND (n1block62 |+0| ignore) AND (n2block62 |-4| notOccupied) THEN (switch /62/ switchN1)
