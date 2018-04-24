@@ -252,20 +252,17 @@ public class TrackControllerController implements Initializable {
   }
 
   private void handleSwitchGroup(ActionEvent event) {
-    //String blockString = (String) blockChoice.getSelectionModel().getSelectedItem();
-    //blockString = blockString.split(" ")[1];
-    //Block update = myLine.getBlock(Integer.parseInt(blockString));
 
     if ( selBlock.isSwitch()) {
       Switch s = (Switch) selBlock;
       if (switchGroup.getSelectedToggle().equals(stayRad)) {
         s.toggle();
-        updateSwitchState(selBlock);
+        updateSwitchState();
       } else {
         //setSwitchAlter();
         s.toggle();
         alterRad.setSelected(true);
-        updateSwitchState(selBlock);
+        updateSwitchState();
       }
     }
   }
@@ -277,7 +274,7 @@ public class TrackControllerController implements Initializable {
     } else {
       selBlock.setClosedForMaintenance(false);
     }
-    updateBlockStatus(selBlock);
+    updateBlockStatus();
   }
 
   private void handleImportLogic(ActionEvent event) {
@@ -517,7 +514,7 @@ public class TrackControllerController implements Initializable {
     block = block.split(" ")[1];
     int id = Integer.parseInt(block);
 
-    if( selBlock.isSwitch()) {
+    if (selBlock.isSwitch()) {
       Switch s = (Switch) myLine.getBlock(id);
 
       Block n1 = myLine.getBlock(s.getNextBlock1());
@@ -543,7 +540,7 @@ public class TrackControllerController implements Initializable {
 
     } else {
       //disable lights
-
+      disableLights();
 
     }
   }
@@ -590,7 +587,7 @@ public class TrackControllerController implements Initializable {
           }
         }
 
-        if(selBlock.isClosedForMaintenance()) {
+        if (selBlock.isClosedForMaintenance()) {
           blockBrokenRad.setSelected(true);
         } else {
           blockRepairedRad.setSelected(true);
@@ -605,24 +602,21 @@ public class TrackControllerController implements Initializable {
 
   }
 
-  private void updateControllerUI(int id) {
-
-    Block update = myController.getBlock(id);
-
-    updateBlockStatus(update);
+  private void updateControllerUI() {
+    updateBlockStatus();
     updateCrossingStatus();
-    updateSwitchState(update);
+    updateSwitchState();
     checkRadios();
   }
 
-  private void updateBlockStatus(Block update) {
-    if (update.isOccupied()) {
+  private void updateBlockStatus() {
+    if (selBlock.isOccupied()) {
       blockOccupancy.setFill(Paint.valueOf(Constants.GREEN));
     } else {
       blockOccupancy.setFill(Paint.valueOf("Gray"));
     }
 
-    if (update.isClosedForMaintenance()) {
+    if (selBlock.isClosedForMaintenance()) {
       blockStatus.setFill(Paint.valueOf(Constants.RED));
     } else {
       blockStatus.setFill(Paint.valueOf(Constants.GREEN));
@@ -642,10 +636,10 @@ public class TrackControllerController implements Initializable {
 
   }
 
-  private void updateSwitchState(Block update) {
+  private void updateSwitchState() {
 
-    if (update.isSwitch()) {
-      Switch updateSwitch = (Switch) update;
+    if (selBlock.isSwitch()) {
+      Switch updateSwitch = (Switch) selBlock;
       int p = updateSwitch.getPreviousBlock();
       int n1 = updateSwitch.getNextBlock1();
       int n2 = updateSwitch.getNextBlock2();
@@ -691,13 +685,7 @@ public class TrackControllerController implements Initializable {
    * concerning the UI.
    */
   public void run() {
-    //Update UI based on changes in Selected block
-    //Take snapshot of current block and pass int in
-
-    String curr = (String) blockChoice.getSelectionModel().getSelectedItem();
-    curr = curr.split(" ")[1];
-
-    updateControllerUI(Integer.parseInt(curr));
+    updateControllerUI();
   }
 
   public static void runCtrlrControllers() {
@@ -720,7 +708,7 @@ public class TrackControllerController implements Initializable {
     setSwitchInactive();
     resetLightSwitch();
 
-    updateBlockStatus(selBlock);
+    updateBlockStatus();
 
     importLogic.setOnAction(this::handleImportLogic);
     checkLogic.setOnAction(this::handleCheckLogic);
