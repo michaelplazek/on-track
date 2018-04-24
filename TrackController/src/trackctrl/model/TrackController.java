@@ -21,6 +21,7 @@ public class TrackController implements TrackControllerInterface {
   private int id;
   private int trackOffset;
   private final int capacity = 32;
+  private boolean isManual = false;
   private HashMap<Integer, Block> myZone = new HashMap<Integer, Block>(capacity);
   private ArrayList<String> blockList = new ArrayList<>();
   private TrackController neighborCtrlr1;
@@ -320,7 +321,6 @@ public class TrackController implements TrackControllerInterface {
             withLength[j] = functTokens[j];
           }
 
-          //String block = functTokens[0].split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)")[0];
           String num = functTokens[0].split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)")[1];
 
           withLength[withLength.length - 1] = num;
@@ -372,6 +372,10 @@ public class TrackController implements TrackControllerInterface {
       occPrevious.replace(b.getNumber(),occCurrent.get(b.getNumber()));
       occCurrent.replace(b.getNumber(), b.isOccupied());
     }
+  }
+
+  public void setManual(boolean opMode) {
+    isManual = opMode;
   }
 
   private void readSuggestion() {
@@ -670,6 +674,10 @@ public class TrackController implements TrackControllerInterface {
 
         // DEBUG: when a train is still on a switch, don't change the switch
         if (currSwitch.isOccupied()) {
+          continue;
+        }
+
+        if (isManual) {
           continue;
         }
 

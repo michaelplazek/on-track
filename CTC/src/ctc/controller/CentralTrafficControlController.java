@@ -689,7 +689,7 @@ public class CentralTrafficControlController {
 
         Switch sw = (Switch) block;
 
-        if (sw.getSwitchState()) {
+        if (!sw.getSwitchState()) {
           stateOne.setOpacity(100);
           stateTwo.setOpacity(0);
           stateZero.setOpacity(0);
