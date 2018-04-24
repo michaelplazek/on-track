@@ -90,9 +90,6 @@ public class TrainTracker {
       // update the position of the train
       updatePosition();
 
-      // simulate the track controller
-      //simulateController();
-
       // update the speed and authority
       updateTrackSignals();
 
@@ -108,22 +105,6 @@ public class TrainTracker {
     }
   }
 
-  // TODO: remove this once the Track Controller is connected
-  private void simulateController() {
-
-//    if (location.isSwitch() && route.getPrevious().getNumber() == location.getPreviousBlock()) {
-//
-//      Switch sw = (Switch) location;
-//      Block nextBlock = route.getNext();
-//
-//      if (nextBlock != null) {
-//        sw.setStatus(nextBlock.getNumber());
-//      } else {
-//        sw.setStatus(-1);
-//      }
-//    }
-  }
-
   private void updateDisplay() {
     computeDisplayAuthority();
     computeDisplayLocation();
@@ -131,7 +112,6 @@ public class TrainTracker {
 
   private void updatePosition() {
 
-    //TODO: use this call once the Track Controller is connected
     if (controller.getOccupancy(route.getNext().getNumber())) {
       this.location = route.getNext();
       this.route.incrementCurrentIndex();
@@ -197,6 +177,9 @@ public class TrainTracker {
     if (location.isSwitch()) {
 //      speed = route.getNextDirection() ? (-1 * speed) : speed;
       speed = location.getSpeedLimit();
+
+    } else {
+      speed = location.getSpeedLimit();
     }
 
     // determine next authority
@@ -220,11 +203,7 @@ public class TrainTracker {
       authority = Authority.SERVICE_BRAKE_STOP;
     }
 
-    // TODO: use this call once the Track Controller is ready
     controller.sendTrackSignals(location.getNumber(), authority, speed);
-
-    //location.setAuthority(authority);
-    //location.setSetPointSpeed(speed);
   }
 
   private void computeDisplayLocation() {
@@ -303,7 +282,7 @@ public class TrainTracker {
   }
 
   public float getSpeed() {
-    return speed;
+    return Math.abs(speed);
   }
 
   public void setSpeed(float speed) {
@@ -311,7 +290,7 @@ public class TrainTracker {
   }
 
   public String getDisplaySpeed() {
-    return String.format("%.1f", (speed * (float) UnitConversions.KPH_TO_MPH));
+    return String.format("%.1f", (Math.abs(speed) * (float) UnitConversions.KPH_TO_MPH));
   }
 
   public boolean isStopped() {
