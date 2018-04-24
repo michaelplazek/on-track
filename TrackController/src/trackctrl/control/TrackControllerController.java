@@ -5,8 +5,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -23,17 +21,12 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.util.Duration;
-import mainmenu.Clock;
-import mainmenu.ClockInterface;
 import trackctrl.model.TrackController;
 import trackctrl.model.TrackControllerLineManager;
 import trackmodel.model.Block;
 import trackmodel.model.Switch;
 import trackmodel.model.Track;
 import utils.general.Constants;
-
-import javax.swing.*;
 
 public class TrackControllerController implements Initializable {
 
@@ -147,6 +140,11 @@ public class TrackControllerController implements Initializable {
   private Block selBlock;
   private int blink = 0;
 
+  /** This is a constructor which will initialize some data as well
+   * as set the controller for this instance.
+   *
+   * @param ctrlrId - Id of the controller being displayed by this UI
+   */
   public TrackControllerController(String ctrlrId) {
     myController = TrackControllerLineManager.getController(ctrlrId);
     myLine = Track.getTrack(myController.getLine());
@@ -177,7 +175,7 @@ public class TrackControllerController implements Initializable {
             selBlock = myController.getBlock(Integer.parseInt(sel));
 
             //TODO: this may be redundant, remove later
-            if ( !selBlock.isCrossing() ) {
+            if (!selBlock.isCrossing()) {
               closedRad.setDisable(true);
               openRad.setDisable(true);
             } else {
@@ -190,7 +188,7 @@ public class TrackControllerController implements Initializable {
               disableLights();
             }
 
-            //updateControllerUI(Integer.parseInt(sel));
+            //updateControllerInterface(Integer.parseInt(sel));
             //TODO this should get connected to the clock
             checkRadios();
             disableLights();
@@ -253,7 +251,7 @@ public class TrackControllerController implements Initializable {
 
   private void handleSwitchGroup(ActionEvent event) {
 
-    if ( selBlock.isSwitch()) {
+    if (selBlock.isSwitch()) {
       Switch s = (Switch) selBlock;
       if (switchGroup.getSelectedToggle().equals(stayRad)) {
         s.toggle();
@@ -364,7 +362,7 @@ public class TrackControllerController implements Initializable {
   }
 
   private void disableLights() {
-    if(!selBlock.isSwitch()) {
+    if (!selBlock.isSwitch()) {
       fromLight0.setFill(Paint.valueOf("GRAY"));
       fromLight1.setFill(Paint.valueOf("GRAY"));
       mainLight0.setFill(Paint.valueOf("GRAY"));
@@ -582,7 +580,7 @@ public class TrackControllerController implements Initializable {
           closedRad.setDisable(true);
           openRad.setDisable(true);
 
-          if ( ((Switch) selBlock).getSwitchState() ) {
+          if (((Switch) selBlock).getSwitchState()) {
             //true - nextblock1 (main)
             stayRad.setSelected(true);
           } else {
@@ -605,7 +603,7 @@ public class TrackControllerController implements Initializable {
 
   }
 
-  private void updateControllerUI() {
+  private void updateControllerInterface() {
     updateBlockStatus();
     updateCrossingStatus();
     updateSwitchState();
@@ -651,19 +649,19 @@ public class TrackControllerController implements Initializable {
       Block next1 = myLine.getBlock(n1);
       Block next2 = myLine.getBlock(n2);
 
-      if( p == -1) {
+      if (p == -1) {
         switchFrom.setText("Yard");
       } else {
         switchFrom.setText(previous.getSection() + p);
       }
 
-      if( n1 == -1) {
+      if (n1 == -1) {
         switchMain.setText("Yard");
       } else {
         switchMain.setText(next1.getSection() + n1);
       }
 
-      if( n2 == -1) {
+      if (n2 == -1) {
         switchFork.setText("Yard");
       } else {
         switchFork.setText(next2.getSection() + n2);
@@ -688,9 +686,12 @@ public class TrackControllerController implements Initializable {
    * concerning the UI.
    */
   public void run() {
-    updateControllerUI();
+    updateControllerInterface();
   }
 
+  /**
+   * This static method will call each UI to be updated.
+   */
   public static void runCtrlrControllers() {
     if (ctrlrControllers != null) {
       for (TrackControllerController tcc : ctrlrControllers) {

@@ -66,7 +66,7 @@ public class TrackControllerInitializer {
             tc.setEndBlock(endBlock);
           }
 
-          if (!splitLine[3].equals("0") && !splitLine[4].equals("0") ) {
+          if (!splitLine[3].equals("0") && !splitLine[4].equals("0")) {
             offset = Integer.parseInt(splitLine[3]);
             endBlock = Integer.parseInt(splitLine[4]);
             if (offset == endBlock) {
