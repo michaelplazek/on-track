@@ -15,6 +15,7 @@ import traincontroller.enums.Mode;
 import trainmodel.model.TrainModelFactory;
 import trainmodel.model.TrainModelInterface;
 import utils.general.Authority;
+import utils.general.AuthorityCommand;
 import utils.train.DoorStatus;
 import utils.train.OnOffStatus;
 import utils.train.TrainData;
@@ -37,6 +38,7 @@ public class TrainController implements TrainControllerInterface {
   private Beacon beacon;
   private HashMap<Integer, Beacon> beacons;
   private double weight;
+  private byte blocksLeft;
 
   private TrainModelInterface trainModel;
   private SimpleStringProperty id;
@@ -46,7 +48,7 @@ public class TrainController implements TrainControllerInterface {
   private double currentSpeed;
   private SimpleDoubleProperty setSpeedMph;
   private double setSpeed;
-  private ObjectProperty<Authority> authority;
+  private ObjectProperty<AuthorityCommand> authority;
   private ObjectProperty<OnOffStatus> serviceBrakeStatus;
   private ObjectProperty<OnOffStatus> emergencyBrakeStatus;
   private ObjectProperty<OnOffStatus> lightStatus;
@@ -76,7 +78,7 @@ public class TrainController implements TrainControllerInterface {
     this.line = new SimpleStringProperty(line);
     this.currentSpeedMph = new SimpleDoubleProperty(0);
     this.currentSpeed = 0;
-    this.authority = new SimpleObjectProperty<>(Authority.SERVICE_BRAKE_STOP);
+    this.authority = new SimpleObjectProperty<>(AuthorityCommand.SERVICE_BRAKE_STOP);
     this.serviceBrakeStatus = new SimpleObjectProperty<>(trainModel.getServiceBrakeStatus());
     this.emergencyBrakeStatus = new SimpleObjectProperty<>(trainModel.getEmergencyBrakeStatus());
     this.setSpeedMph = new SimpleDoubleProperty(0);
@@ -113,7 +115,7 @@ public class TrainController implements TrainControllerInterface {
     if (beacons.get(signal.getBlockId()) == null) {
       beacon = new Beacon(signal);
       beacons.put(signal.getBlockId(), beacon);
-      if (signal.getStationId() >= 0 && authority.getValue() == Authority.STOP_AT_NEXT_STATION) {
+      if (signal.getStationId() >= 0 && authority.getValue() == AuthorityCommand.STOP_AT_NEXT_STATION) {
         distanceToStation = signal.getDistance();
         setCurrentStation(Track.getListOfTracks().get(getLine())
             .getStationList().get(signal.getStationId()));
@@ -130,22 +132,25 @@ public class TrainController implements TrainControllerInterface {
    * @param authority authority of the train
    */
   public void setTrackCircuitSignal(float setSpeed, Authority authority) {
-    double speed = setSpeed * UnitConversions.MPH_TO_KPH * 1000.0 / 3600.0;
+    double speed = setSpeed * 1000.0 / 3600.0;
     if (speed != this.getSetSpeed() && speed != 0) {
       setSetSpeed(speed);
       if (speed < driverSetSpeed) {
         setDriverSetSpeed(speed);
       }
     }
-    if (authority != null && getAuthority() != authority) {
-      this.authority.set(authority);
-      switch (authority) {
+    if (authority != null && getAuthority() != authority.getAuthorityCommand()) {
+      this.authority.set(authority.getAuthorityCommand());
+      this.blocksLeft = authority.getBlocksLeft();
+      switch (authority.getAuthorityCommand()) {
         case SERVICE_BRAKE_STOP:
           setMode(Mode.CTC_BRAKE);
           break;
+        case STOP_AT_END_OF_ROUTE:
         case SEND_POWER:
           setMode(Mode.NORMAL);
           break;
+        case STOP_AT_LAST_STATION:
         case STOP_AT_NEXT_STATION:
           setMode(Mode.STATION_BRAKE);
           break;
@@ -181,15 +186,15 @@ public class TrainController implements TrainControllerInterface {
     return running;
   }
 
-  public ObjectProperty<Authority> getAuthorityProperty() {
+  public ObjectProperty<AuthorityCommand> getAuthorityProperty() {
     return authority;
   }
 
-  public Authority getAuthority() {
+  public AuthorityCommand getAuthority() {
     return authority.getValue();
   }
 
-  public void setAuthority(Authority authority) {
+  public void setAuthority(AuthorityCommand authority) {
     this.authority.set(authority);
   }
 
@@ -329,7 +334,7 @@ public class TrainController implements TrainControllerInterface {
     this.automatic.setValue(automatic);
     if (automatic) {
       if (mode == Mode.DRIVER_BRAKE) {
-        setTrackCircuitSignal(0, authority.getValue());
+        setTrackCircuitSignal(0, new Authority(authority.getValue(), blocksLeft));
       }
     } else {
       setDriverSetSpeed(getSetSpeed());
@@ -493,5 +498,9 @@ public class TrainController implements TrainControllerInterface {
     this.integral = 0;
     trainModel.setEmergencyBrakeStatus(brakeStatus);
     this.emergencyBrakeStatus.set(brakeStatus);
+  }
+
+  public byte getBlocksLeft() {
+    return blocksLeft;
   }
 }

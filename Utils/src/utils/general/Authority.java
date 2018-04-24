@@ -1,10 +1,32 @@
 package utils.general;
 
-public enum Authority {
-  SERVICE_BRAKE_STOP,
-  STOP_AT_NEXT_STATION,
-  SEND_POWER,
-  EMERGENCY_BRAKE_STOP,
-  STOP_AT_LAST_STATION,
-  STOP_IN_THREE_BLOCKS // for non-station authority
+public class Authority {
+  private AuthorityCommand authorityCommand;
+  private byte blocksLeft;
+
+  public Authority() {
+    this.authorityCommand = AuthorityCommand.EMERGENCY_BRAKE_STOP;
+    this.blocksLeft = 0;
+  }
+
+  public Authority(AuthorityCommand authorityCommand, byte blocksLeft) {
+    this.authorityCommand = authorityCommand;
+    this.blocksLeft = blocksLeft;
+  }
+
+  public AuthorityCommand getAuthorityCommand() {
+    return authorityCommand;
+  }
+
+  public void setAuthorityCommand(AuthorityCommand authorityCommand) {
+    this.authorityCommand = authorityCommand;
+  }
+
+  public byte getBlocksLeft() {
+    return blocksLeft;
+  }
+
+  public void setBlocksLeft(byte blocksLeft) {
+    this.blocksLeft = blocksLeft;
+  }
 }
