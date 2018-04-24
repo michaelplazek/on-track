@@ -396,10 +396,10 @@ public class CentralTrafficControlController {
 
           updateMaintenance();
 
-          if (action.equals("Toggle switch") && !block.isSwitch()) {
-            submitMaintenance.setDisable(true);
-          } else {
+          if (action.equals("Toggle switch") && block.isSwitch() && ctc.isActive()) {
             submitMaintenance.setDisable(false);
+          } else {
+            submitMaintenance.setDisable(true);
           }
         });
 
