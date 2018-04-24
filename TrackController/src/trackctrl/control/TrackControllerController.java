@@ -206,9 +206,11 @@ public class TrackControllerController implements Initializable {
 
       //Assert that all radios are disabled when in automatic mode
       isManual = false;
+      myController.setManual(false);
       disableRadios();
     } else {
       //Manual mode: all other radios should be enabled
+      myController.setManual(true);
       isManual = true;
       enableRadios();
       checkRadios();
