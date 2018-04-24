@@ -20,7 +20,7 @@
   <items>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="50.0" prefWidth="798.0">
          <children>
-            <Label fx:id="time" layoutX="644.0" layoutY="20.0" text="00:00:00">
+            <Label fx:id="time" layoutX="644.0" layoutY="18.0" text="00:00:00">
                <font>
                   <Font size="20.0" />
                </font>
@@ -35,17 +35,17 @@
                   <Font size="12.0" />
                </font>
             </Button>
-            <Button fx:id="decrementButton" layoutX="638.0" layoutY="71.0" mnemonicParsing="false" text="&lt;&lt;">
+            <Button fx:id="decrementButton" layoutX="638.0" layoutY="72.0" mnemonicParsing="false" text="&lt;&lt;">
                <font>
                   <Font size="8.0" />
                </font>
             </Button>
-            <Button fx:id="incrementButton" layoutX="705.0" layoutY="71.0" mnemonicParsing="false" text="&gt;&gt;">
+            <Button fx:id="incrementButton" layoutX="705.0" layoutY="72.0" mnemonicParsing="false" text="&gt;&gt;">
                <font>
                   <Font size="8.0" />
                </font>
             </Button>
-            <Label fx:id="multiplier" layoutX="675.0" layoutY="68.0" text="1x">
+            <Label fx:id="multiplier" layoutX="675.0" layoutY="70.0" text="1x">
                <font>
                   <Font size="14.0" />
                </font>
