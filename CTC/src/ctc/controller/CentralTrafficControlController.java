@@ -985,7 +985,6 @@ public class CentralTrafficControlController {
 
     trainQueueTable.setItems(ctc.getTrainQueueTable());
     selectedScheduleTable.setItems(FXCollections.observableArrayList());
-
   }
 
   private void dispatchTrain() {
