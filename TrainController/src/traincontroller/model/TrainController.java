@@ -146,6 +146,7 @@ public class TrainController implements TrainControllerInterface {
         case SEND_POWER:
           setMode(Mode.NORMAL);
           break;
+        case STOP_AT_LAST_STATION:
         case STOP_AT_NEXT_STATION:
           setMode(Mode.STATION_BRAKE);
           break;
