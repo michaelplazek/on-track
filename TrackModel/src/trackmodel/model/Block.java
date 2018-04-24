@@ -20,6 +20,7 @@ public class Block {
   private int speedLimit;
   private float elevation;
   private float cumElevation;
+  private int temp;
 
   //Infrastructure
   private String stationName = "";
@@ -76,7 +77,7 @@ public class Block {
   public Block(String line, String section, int number, float length,
                float grade, int speedLimit, String infrastructure, float elevation,
                float cumElevation, boolean isBiDirectional, int previous, int next1,
-               boolean leftStation, boolean rightStation, Beacon blockBeacon) {
+               boolean leftStation, boolean rightStation, Beacon blockBeacon, int temp) {
 
     setLine(line);
     setSection(section);
@@ -97,6 +98,19 @@ public class Block {
     setLeftStation(leftStation);
     setRightStation(rightStation);
     setBeaconValues(blockBeacon);
+    setTemperature(temp);
+  }
+
+  public void setTemperature(int temp) {
+    this.temp = temp;
+  }
+
+  public int getTemperature() {
+    return this.temp;
+  }
+
+  public boolean isFreezing() {
+    return this.temp <= 38;
   }
 
   public String getLine() {
