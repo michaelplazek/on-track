@@ -214,7 +214,7 @@ public class TrainTracker {
         }
       } else if (((route.getSize() - 1) - route.getCurrentIndex() < 3)
           && route.getLast().getNumber() != -1) {
-        authority.setAuthorityCommand(AuthorityCommand.STOP_IN_THREE_BLOCKS);
+        authority.setAuthorityCommand(AuthorityCommand.STOP_AT_END_OF_ROUTE);
       } else {
         authority.setAuthorityCommand(AuthorityCommand.SEND_POWER);
       }

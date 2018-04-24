@@ -6,6 +6,5 @@ public enum AuthorityCommand {
   SEND_POWER,
   EMERGENCY_BRAKE_STOP,
   STOP_AT_LAST_STATION,
-  STOP_IN_THREE_BLOCKS, // for non-station authority
-  STOP_AT_END_OF_ROUTE
+  STOP_AT_END_OF_ROUTE // for non-station authority
 }
