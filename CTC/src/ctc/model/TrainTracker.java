@@ -13,6 +13,7 @@ import trackmodel.model.Switch;
 import trackmodel.model.Track;
 import traincontroller.model.TrainControllerFactory;
 import utils.general.Authority;
+import utils.general.AuthorityCommand;
 import utils.unitconversion.UnitConversions;
 
 /**
@@ -62,13 +63,14 @@ public class TrainTracker {
     this.departure = departure;
     this.schedule = schedule;
     this.passengers = 0;
-    this.authority = Authority.SEND_POWER;
     this.currentDwell = 0;
     this.line = line;
     this.track = Track.getListOfTracks().get(line);
     this.location = track.getStartBlock();
     this.locationId = location.getSection() + location.getNumber();
     this.route = new Route(line, this);
+    this.authority = new Authority(AuthorityCommand.SEND_POWER,
+        this.route.getSize() > 31 ? 31 : (byte) this.route.getSize());
     this.speed = location.getSpeedLimit();
     this.controller = TrackControllerLineManager.getInstance(line);
     this.ctc = CentralTrafficControl.getInstance();
@@ -146,11 +148,11 @@ public class TrainTracker {
 
     // check if train has reached the yard
     if (route.getCurrent()  == route.getLast()) {
-      isDispatched = false;
       isDone = true;
 
       if (route.getLast().getNumber() == -1) {
         route.getLast().setOccupied(false);
+        isDispatched = false;
       } else {
         isWaitingForAuthority = true;
       }
@@ -189,19 +191,22 @@ public class TrainTracker {
           && nextStationOnRoute != null) {
 
         if (nextStationOnRoute.compareTo(nextStationOnSchedule) == 0) {
-          authority = Authority.STOP_AT_NEXT_STATION;
+          authority.setAuthorityCommand(AuthorityCommand.STOP_AT_NEXT_STATION);
         } else {
-          authority = Authority.SEND_POWER;
+          authority.setAuthorityCommand(AuthorityCommand.SEND_POWER);
         }
-      } else if (((route.getSize() - 1) - route.getCurrentIndex() < 3)
+      } else if (((route.getSize() - 1) - route.getCurrentIndex() < 6)
           && route.getLast().getNumber() != -1) {
-        authority = Authority.STOP_IN_THREE_BLOCKS;
+        authority.setAuthorityCommand(AuthorityCommand.STOP_AT_END_OF_ROUTE);
       } else {
-        authority = Authority.SEND_POWER;
+        authority.setAuthorityCommand(AuthorityCommand.SEND_POWER);
       }
     } else {
-      authority = Authority.SERVICE_BRAKE_STOP;
+      authority.setAuthorityCommand(AuthorityCommand.SERVICE_BRAKE_STOP);
     }
+
+    authority.setBlocksLeft(((this.route.getSize() - 1) - this.route.getCurrentIndex()) > 31
+        ? 31 : (byte) ((this.route.getSize() - 1) - this.route.getCurrentIndex()));
 
     controller.sendTrackSignals(location.getNumber(), authority, speed);
   }
@@ -359,5 +364,9 @@ public class TrainTracker {
 
   public void setWaitingForAuthority(boolean waitingForAuthority) {
     isWaitingForAuthority = waitingForAuthority;
+  }
+
+  boolean isWaitingForAuthority() {
+    return isWaitingForAuthority;
   }
 }
