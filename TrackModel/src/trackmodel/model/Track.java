@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 import trackmodel.model.Beacon;
 import trackmodel.view.TrackModelUserInterface;
@@ -55,6 +56,10 @@ public class Track {
     File f = null;
 
     int stationId = 1;
+
+    Random rand = new Random();
+
+    int temp = rand.nextInt(101);
 
     try {
       for (String s : new String[]{"green.csv"}) {
@@ -168,13 +173,13 @@ public class Track {
                 }
                 b = new Switch(lineId, section, number, len, grade, speedLimit,
                     infra, elevation, cumEle, biDirectional, previous, next1,
-                    next2, leftStation, rightStation, blockBeacon);
+                    next2, leftStation, rightStation, blockBeacon, temp);
 
                 if (splitLine[6].contains("YARD") && splitLine[6].contains("FROM")) {
                   newTrack.setStartBlock(b.getNumber());
 
                   Block yard = new Block(lineId, "", -1, 0, 0, 0, "",
-                      0, 0, false, -2, number, false, false, null);
+                      0, 0, false, -2, number, false, false, null, 0);
 
                   newTrack.addBlock(yard);
                 }
@@ -239,7 +244,7 @@ public class Track {
 
                 b = new Block(lineId, section, number, len, grade,
                     speedLimit, infra, elevation, cumEle, biDirectional,
-                    previous, next1, leftStation, rightStation, blockBeacon);
+                    previous, next1, leftStation, rightStation, blockBeacon, temp);
 
                 newTrack.addBlock(b);
               }
