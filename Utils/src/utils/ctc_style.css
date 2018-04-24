@@ -13,5 +13,18 @@
 	-fx-border-radius: 2;
 }
 
+.box {
+
+	-fx-fill: #333;
+	-fx-stroke: #C8782A;
+	-fx-border-color: #C8782A;
+	-fx-border-radius: 2;
+}
+
+#operation {
+
+	-fx-text-fill: #C8782A;
+}
+
 
 
