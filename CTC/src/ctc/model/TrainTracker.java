@@ -368,7 +368,7 @@ public class TrainTracker {
     isWaitingForAuthority = waitingForAuthority;
   }
 
-  boolean isWaitingForAuthority() {
+  public boolean isWaitingForAuthority() {
     return isWaitingForAuthority;
   }
 }

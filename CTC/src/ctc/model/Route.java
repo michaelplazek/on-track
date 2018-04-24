@@ -304,10 +304,13 @@ public class Route {
       Block current = line.getNextBlock(start.getNumber(), -1);
       traverse(current, line.getBlock(current.getPreviousBlock()), path);
     } else {
-      traverse(start, line.getBlock(start.getPreviousBlock()), path);
+//      traverse(line.getNextBlock(start.getNumber(), getPrevious().getNumber()), start,  path);
+      traverse(start, getPrevious(), path);
     }
 
     nextStationIndex = 0; // reset index
+    currentIndex = 0;
+
     path.add(end);
     this.route = path;
   }

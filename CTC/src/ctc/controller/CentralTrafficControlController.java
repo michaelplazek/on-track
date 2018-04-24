@@ -139,7 +139,7 @@ public class CentralTrafficControlController {
     // update train status light
     TrainTracker train = dispatchTable.getSelectionModel().getSelectedItem();
     if (train != null) {
-      if (train.isStopped()) {
+      if (train.isStopped() || train.isWaitingForAuthority()) {
         trainStatus.setFill(Paint.valueOf("Red"));
       } else {
         trainStatus.setFill(Paint.valueOf("#24c51b"));
@@ -225,7 +225,7 @@ public class CentralTrafficControlController {
           if (tracker == null) {
             setStyle("");
           } else {
-            if (tracker.isStopped()) {
+            if (tracker.isStopped() || tracker.isWaitingForAuthority()) {
               row.setStyle("-fx-selection-bar-non-focused: salmon;"
                   + "-fx-selection-bar: salmon;");
             } else {
