@@ -467,7 +467,10 @@ public class TrackControllerController implements Initializable {
      * Set our crossing to the closed position
      */
 
-    if (crossingLeft) {
+    crossLeft.setFill(Paint.valueOf("Red"));
+    crossRight.setFill(Paint.valueOf("Gray"));
+
+    /*if (crossingLeft) {
       crossingLeft = false;
       crossLeft.setFill(Paint.valueOf("Gray"));
       crossRight.setFill(Paint.valueOf("Red"));
@@ -475,7 +478,7 @@ public class TrackControllerController implements Initializable {
       crossingLeft = true;
       crossLeft.setFill(Paint.valueOf("Red"));
       crossRight.setFill(Paint.valueOf("Gray"));
-    }
+    }*/
   }
 
   private void setOpen() {
