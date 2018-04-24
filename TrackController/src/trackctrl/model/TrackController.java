@@ -404,9 +404,12 @@ public class TrackController implements TrackControllerInterface {
         ctcAuthPrevious.put(i, Authority.SEND_POWER);
         ctcAuthTemp.put(i, Authority.SEND_POWER);
 
-        ctcSpeedCurrent.put(i, 15.0f);
-        ctcSpeedPrevious.put(i, 15.0f);
-        ctcSpeedTemp.put(i, 15.0f);
+        //ctcSpeedCurrent.put(i, 15.0f);
+        //ctcSpeedPrevious.put(i, 15.0f);
+        //ctcSpeedTemp.put(i, 15.0f);
+        ctcSpeedCurrent.put(i, null);
+        ctcSpeedPrevious.put(i, null);
+        ctcSpeedTemp.put(i, null);
       }
 
       loaded = true;
@@ -871,8 +874,16 @@ public class TrackController implements TrackControllerInterface {
     } //-------------- END CURRBLOCK ITERATION
     //TODO these will be voted upon or updated prior to asserting on the track based on above logic
     for(Integer index : myZone.keySet()) {
-      myLine.getBlock(index).setAuthority(ctcAuthCurrent.get(index));
-      myLine.getBlock(index).setSetPointSpeed(Math.abs(index));
+
+      if (myZone.get(index) != null) {
+        Block update = myZone.get(index);
+
+        if (ctcAuthCurrent.get(index) != null) update.setAuthority(ctcAuthCurrent.get(index));
+        if (ctcSpeedCurrent.get(index) != null) update.setSetPointSpeed(ctcSpeedCurrent.get(index));
+      }
+
+      //myLine.getBlock(index).setAuthority(ctcAuthCurrent.get(index));
+      //myLine.getBlock(index).setSetPointSpeed(Math.abs(ctcSpeedCurrent.get(index)));
     }
   }
 }
