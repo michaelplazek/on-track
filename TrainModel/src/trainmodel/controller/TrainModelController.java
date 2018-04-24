@@ -29,7 +29,7 @@ import utils.general.Constants;
 import utils.train.DoorStatus;
 import utils.train.Failure;
 import utils.train.OnOffStatus;
-
+import utils.train.TrainData;
 
 
 public class TrainModelController implements Initializable {
@@ -49,6 +49,11 @@ public class TrainModelController implements Initializable {
   private Button removePassenger;
   @FXML
   private Button demoHeatTrain;
+  @FXML
+  private Button demoAds;
+  //Demo Pane
+  @FXML
+  private TitledPane demoPane;
 
 
   //Main Buttons
@@ -136,6 +141,8 @@ public class TrainModelController implements Initializable {
   private Label acStatus;
   @FXML
   private Label degrees;
+  @FXML
+  private Label adLabel;
 
   @FXML
   private TitledPane trainSpec;
@@ -151,9 +158,7 @@ public class TrainModelController implements Initializable {
   private TitledPane failuresPane;
 
 
-  //Demo
-  @FXML
-  private TitledPane demoPane;
+
 
   /**
    * Train model && controller associated with UI (use for testing as of 3/11/18).
@@ -245,9 +250,11 @@ public class TrainModelController implements Initializable {
         trainModel.heightProperty(), formatter);
     Bindings.bindBidirectional(numberOfCars.textProperty(),
         trainModel.numberOfCarsProperty(), numberStringConverter);
+    Bindings.bindBidirectional(adLabel.textProperty(), trainModel.advertisementProperty());
 
     capacity.setText(String.valueOf(trainModel.getCapacityOfTrain()));
     degrees.setText(Constants.DEGREES);
+
 
     time.textProperty().setValue(Clock.getInstance().getFormattedTime());
     beaconStatus.textProperty().bind(trainModel.trackLineFailureStatusProperty().asString());
@@ -261,7 +268,7 @@ public class TrainModelController implements Initializable {
     currentBlockStatus.textProperty().bind(trainModel.currentBlockProperty());
     currentTrack.textProperty().bind(trainModel.activeTrackProperty());
 
-    demoPane.setVisible(false);
+    demoPane.setVisible(true);
   }
 
   private void initializeWindowSize() {
@@ -312,6 +319,26 @@ public class TrainModelController implements Initializable {
 
   }
 
+  @FXML
+  private void changeAd(ActionEvent event){
+    if (this.adLabel.getText().equals(TrainData.advertisements.get(0))) {
+      adLabel.setText(TrainData.advertisements.get(1));
+    } else if (this.adLabel.getText().equals(TrainData.advertisements.get(1))) {
+      adLabel.setText(TrainData.advertisements.get(2));
+    }
+    else if (this.adLabel.getText().equals(TrainData.advertisements.get(2))) {
+      adLabel.setText(TrainData.advertisements.get(3));
+    }
+    else if (this.adLabel.getText().equals(TrainData.advertisements.get(3))) {
+      adLabel.setText(TrainData.advertisements.get(1));
+    }
+  }
+
+  private void signalLastStop(ActionEvent event){
+    adLabel.setText(TrainData.advertisements.get(0));
+  }
+
+
   /**
    * Initializes Status icons for failure modes.
    */
@@ -330,6 +357,9 @@ public class TrainModelController implements Initializable {
     addPassenger.setOnAction(this::addPassenger);
     removePassenger.setOnAction(this::removePassenger);
     emergencyBrakeButton.setOnAction(this::emergency_Brake_Engaged);
+
+    demoAds.setOnAction(this::changeAd);
+    demoButton.setOnAction(this::signalLastStop);
   }
 
   private void startEngineFailure() {
