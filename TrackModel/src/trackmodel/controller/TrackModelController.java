@@ -106,7 +106,8 @@ public class TrackModelController {
       if (currentTrack != null) {
         Block block = currentTrack.getBlock(blockId);
 
-        String content = "Station Temperature:\t\t" + block.getTemperature();
+        String content = block.getStationName() + " STATION";
+        content += "\nStation Temperature:\t\t" + block.getTemperature();
         content += "\nPassengers Waiting:\t\t" + block.getPassengersWaiting();
 
         alert.setContent(content);
