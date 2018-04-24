@@ -105,6 +105,10 @@ public class Block {
     this.temp = temp;
   }
 
+  public int getTemperature() {
+    return this.temp;
+  }
+
   public boolean isFreezing() {
     return this.temp <= 38;
   }
