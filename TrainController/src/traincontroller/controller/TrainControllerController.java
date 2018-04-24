@@ -18,6 +18,7 @@ import traincontroller.enums.Mode;
 import traincontroller.model.TrainController;
 import traincontroller.model.TrainControllerManager;
 import utils.alerts.AlertWindow;
+import utils.general.Authority;
 import utils.train.DoorStatus;
 import utils.train.OnOffStatus;
 import utils.unitconversion.UnitConversions;
@@ -145,7 +146,8 @@ public class TrainControllerController implements Initializable {
     if (!emergencyBrakeButton.isSelected()) {
       trainController.setEmergencyBrake(OnOffStatus.OFF);
       trainController.setMode(Mode.NORMAL);
-      trainController.setTrackCircuitSignal(0, trainController.getAuthority());
+      trainController.setTrackCircuitSignal(0,
+          new Authority(trainController.getAuthority(), trainController.getBlocksLeft()));
     } else {
       trainController.activateEmergencyBrake();
     }
@@ -156,7 +158,8 @@ public class TrainControllerController implements Initializable {
     if (!serviceBrakeButton.isSelected()) {
       trainController.setMode(Mode.NORMAL);
       trainController.setServiceBrake(OnOffStatus.OFF);
-      trainController.setTrackCircuitSignal(0, trainController.getAuthority());
+      trainController.setTrackCircuitSignal(0,
+          new Authority(trainController.getAuthority(), trainController.getBlocksLeft()));
     } else {
       trainController.setServiceBrake(OnOffStatus.ON);
       if (trainController.getMode() == Mode.NORMAL
