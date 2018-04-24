@@ -377,10 +377,11 @@ public class CentralTrafficControlController {
             int blockId = extractBlock(maintenanceBlocks);
             Block block = Track.getListOfTracks().get(line).getBlock(blockId);
 
-            if (action.equals("Toggle switch") && !block.isSwitch()) {
-              submitMaintenance.setDisable(true);
-            } else {
+            if (action.equals("Toggle switch") && block.isSwitch()
+                && ctc.isActive() && controller != null) {
               submitMaintenance.setDisable(false);
+            } else {
+              submitMaintenance.setDisable(true);
             }
           }
         });
@@ -396,10 +397,11 @@ public class CentralTrafficControlController {
 
           updateMaintenance();
 
-          if (action.equals("Toggle switch") && !block.isSwitch()) {
-            submitMaintenance.setDisable(true);
-          } else {
+          if (action.equals("Toggle switch") && block.isSwitch()
+              && ctc.isActive() && controller != null) {
             submitMaintenance.setDisable(false);
+          } else {
+            submitMaintenance.setDisable(true);
           }
         });
 
@@ -623,31 +625,23 @@ public class CentralTrafficControlController {
 
   private void submitMaintenance() {
 
-    String line = maintenanceTracks.getSelectionModel().getSelectedItem();
-    TrackControllerLineManagerInterface manager = TrackControllerLineManager.getInstance(line);
-    Track track = Track.getListOfTracks().get(line);
     int blockId = extractBlock(maintenanceBlocks);
     String action = maintenanceActions.getSelectionModel().getSelectedItem();
 
-    // TODO: hook up Track Controller once it's ready
-    switch (action) {
-      case "Close block":
-        track.setClosedForMaintenance(blockId,true);
-        updateMaintenance();
-//        manager.closeBlock(blockId);
-        break;
-      case "Repair block":
-        track.setClosedForMaintenance(blockId,false);
-        updateMaintenance();
-//        manager.repairBlock(blockId);
-        break;
-      case "Toggle switch":
-        Switch sw = (Switch) track.getBlock(blockId);
-        sw.toggle();
-//        manager.toggleSwitch(blockId);
-        break;
-      default:
-        break;
+    if (controller != null) {
+      switch (action) {
+        case "Close block":
+          controller.closeBlock(blockId);
+          break;
+        case "Repair block":
+          controller.repairBlock(blockId);
+          break;
+        case "Toggle switch":
+          controller.toggleSwitch(blockId);
+          break;
+        default:
+          break;
+      }
     }
 
     updateMaintenance();
@@ -687,7 +681,7 @@ public class CentralTrafficControlController {
 
         Switch sw = (Switch) block;
 
-        if (sw.getSwitchState()) {
+        if (!sw.getSwitchState()) {
           stateOne.setOpacity(100);
           stateTwo.setOpacity(0);
           stateZero.setOpacity(0);
@@ -995,7 +989,6 @@ public class CentralTrafficControlController {
 
     trainQueueTable.setItems(ctc.getTrainQueueTable());
     selectedScheduleTable.setItems(FXCollections.observableArrayList());
-
   }
 
   private void dispatchTrain() {
@@ -1010,10 +1003,7 @@ public class CentralTrafficControlController {
       alert.setContent("Clock needs to be running to dispatch train.");
 
       alert.show();
-    } else if (!line.getStartBlock().isOccupied()) {
-
-    // TODO: hook this up once the Track Controller is ready
-//    if (!controller.getOccupancy(line.getStartBlock().getNumber())) {
+    } else if (!controller.getOccupancy(line.getStartBlock().getNumber())) {
 
       // remove selected train from queue
       TrainTracker selected = trainQueueTable.getSelectionModel().getSelectedItem();
@@ -1056,7 +1046,6 @@ public class CentralTrafficControlController {
 
       // get selected track
       String line = trackSelect.getSelectionModel().getSelectedItem();
-      TrackControllerLineManager control = TrackControllerLineManager.getInstance(line);
 
       // get block of of authority
       Track track = Track.getListOfTracks().get(line);
@@ -1078,11 +1067,7 @@ public class CentralTrafficControlController {
       float speed = train.getSpeed();
 
       // send speed
-      // TODO: set this once the Track Controller is ready
-//    control.sendTrackSignals(train.getLocation().getNumber(),
-//        authority, speed);
-
-      train.getLocation().setAuthority(authority);
+      controller.sendTrackSignals(train.getLocation().getNumber(), authority, speed);
     }
   }
 
@@ -1092,10 +1077,6 @@ public class CentralTrafficControlController {
     TrainTracker train = dispatchTable.getSelectionModel().getSelectedItem();
 
     if (train != null) {
-
-      // get selected track
-      String line = trackSelect.getSelectionModel().getSelectedItem();
-      TrackControllerLineManager control = TrackControllerLineManager.getInstance(line);
 
       // get the signals
       float speed = Float.parseFloat(suggestedSpeedField.getText());
@@ -1111,24 +1092,20 @@ public class CentralTrafficControlController {
       }
 
       // send signals
-      // TODO: set this once the Track Controller is ready
-//    control.sendTrackSignals(train.getLocation().getNumber(),
-//        authority, speed);
-
-      train.getLocation().setSetPointSpeed(speed);
+      controller.sendTrackSignals(train.getLocation().getNumber(), authority, speed);
     }
   }
 
   private void dispatch() {
 
-    // TODO: change this to a call to the Track Controller ot check occupancy of the first block
+    Track track = Track.getListOfTracks().get(trackSelect.getSelectionModel().getSelectedItem());
+
     ObservableList<TrainTracker> trains = ctc.getTrainQueueTable();
     for (int i = 0; i < trains.size(); i++) {
       if (trains.get(i).getDeparture().equals(clock.getFormattedTime())
           && !ctc.getDispatchTable().contains(trains.get(i))
           && ctc.isActive()
-          && !Track.getListOfTracks()
-          .get(trackSelect.getSelectionModel().getSelectedItem()).getStartBlock().isOccupied()) {
+          && controller.getOccupancy(track.getStartBlock().getNumber())) {
         autoDispatchTrain(i);
       }
     }

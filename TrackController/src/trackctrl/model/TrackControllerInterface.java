@@ -17,8 +17,6 @@ public interface TrackControllerInterface {
   //To be called by TrackControllerLineManager
   boolean setId(int id);
 
-  void setZone(HashMap<Integer, Block> blocks);
-
   boolean setLine(String lineName);
 
   int getBlockCount();

@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import mainmenu.Clock;
 import mainmenu.controller.MainMenuController;
+import trackctrl.control.TrackControllerController;
 import trackctrl.model.TrackControllerInitializer;
 import trackctrl.model.TrackControllerLineManager;
 import trackmodel.model.Track;
@@ -54,12 +55,14 @@ public class Runner extends Application {
                   tmc.getController().run();
                   TrainModel.runAllInstances();
                   TrainControllerManager.runTrainControllers();
+                  TrackControllerLineManager.runTrackControllers();
+                  TrackControllerController.runCtrlrControllers();
                   ctcc.run();
                 }
               }
             }
         ),
-        new KeyFrame(Duration.millis(5))
+        new KeyFrame(Duration.millis(20))
     );
     timeline.setCycleCount(Animation.INDEFINITE);
     timeline.play(); // initialize feedback loop
@@ -85,5 +88,6 @@ public class Runner extends Application {
     clk.tick();
     ctc.initialize();
     init.parseConfig();
+    init.initializeLogic();
   }
 }
