@@ -426,7 +426,7 @@ public class TrainModel implements TrainModelInterface {
     }
 
     //If the advertisement is last Stop kick all passengers off
-    if (advertisement.get().equals(TrainData.advertisements.get(0))){
+    if (advertisement.get().equals(TrainData.advertisements.get(0))) {
       removePassengers(this.numPassengers.get());
     }
   }
@@ -442,7 +442,7 @@ public class TrainModel implements TrainModelInterface {
     }
 
     //If the advertisement is last Stop kick all passengers off
-    if (advertisement.get().equals(TrainData.advertisements.get(0))){
+    if (advertisement.get().equals(TrainData.advertisements.get(0))) {
       removePassengers(this.numPassengers.get());
     }
   }
@@ -537,7 +537,7 @@ public class TrainModel implements TrainModelInterface {
   }
 
   @Override
-  public void changeAdvertisement(int index){
+  public void changeAdvertisement(int index) {
     advertisement.set(TrainData.advertisements.get(index));
   }
 

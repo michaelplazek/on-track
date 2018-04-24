@@ -15,11 +15,8 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.util.StringConverter;
 import javafx.util.converter.NumberStringConverter;
 import mainmenu.Clock;
@@ -320,21 +317,19 @@ public class TrainModelController implements Initializable {
   }
 
   @FXML
-  private void changeAd(ActionEvent event){
+  private void changeAd(ActionEvent event) {
     if (this.adLabel.getText().equals(TrainData.advertisements.get(0))) {
       adLabel.setText(TrainData.advertisements.get(1));
     } else if (this.adLabel.getText().equals(TrainData.advertisements.get(1))) {
       adLabel.setText(TrainData.advertisements.get(2));
-    }
-    else if (this.adLabel.getText().equals(TrainData.advertisements.get(2))) {
+    } else if (this.adLabel.getText().equals(TrainData.advertisements.get(2))) {
       adLabel.setText(TrainData.advertisements.get(3));
-    }
-    else if (this.adLabel.getText().equals(TrainData.advertisements.get(3))) {
+    } else if (this.adLabel.getText().equals(TrainData.advertisements.get(3))) {
       adLabel.setText(TrainData.advertisements.get(1));
     }
   }
 
-  private void signalLastStop(ActionEvent event){
+  private void signalLastStop(ActionEvent event) {
     adLabel.setText(TrainData.advertisements.get(0));
   }
 
