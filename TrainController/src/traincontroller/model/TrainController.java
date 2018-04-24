@@ -115,8 +115,8 @@ public class TrainController implements TrainControllerInterface {
     if (beacons.get(signal.getBlockId()) == null) {
       beacon = new Beacon(signal);
       beacons.put(signal.getBlockId(), beacon);
-      if (signal.getStationId() >= 0 &&
-          authority.getValue() == AuthorityCommand.STOP_AT_NEXT_STATION) {
+      if (signal.getStationId() >= 0
+          && authority.getValue() == AuthorityCommand.STOP_AT_NEXT_STATION) {
         distanceToStation = signal.getDistance();
         setCurrentStation(Track.getListOfTracks().get(getLine())
             .getStationList().get(signal.getStationId() - 1));
