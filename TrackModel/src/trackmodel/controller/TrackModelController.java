@@ -9,6 +9,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckMenuItem;
@@ -16,16 +17,15 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.stage.Stage;
 
 import trackmodel.model.Block;
 import trackmodel.model.Switch;
 import trackmodel.model.Track;
-import trackmodel.view.TrackModelUserInterface;
+
+import utils.alerts.AlertWindow;
 
 public class TrackModelController {
   //DROPDOWNS
@@ -49,10 +49,12 @@ public class TrackModelController {
   @FXML private Circle powerStatus;
   @FXML private Circle circuitStatus;
   @FXML private Circle beaconStatus;
+  @FXML private Label beaconLabel;
   @FXML private Circle crossingStatus;
   @FXML private Circle undergroundStatus;
   @FXML private Circle occupiedStatus;
   @FXML private Circle trackHeating;
+  @FXML private Label stationLabel;
   @FXML private Circle stationStatus;
 
   //FAILURE OBJECTS
@@ -66,6 +68,57 @@ public class TrackModelController {
   private Track currentTrack = null;
   private boolean running;
   private static HashMap<String, Track> listOfTracks = new HashMap<>();
+
+  EventHandler<MouseEvent> alertBeaconData = new EventHandler<MouseEvent>() {
+    @Override
+    public void handle(MouseEvent e) {
+      AlertWindow alert = new AlertWindow();
+
+      alert.setTitle("Beacon Data");
+      alert.setHeader("Data for the Beacon at Block");
+
+      int blockId = extractBlock(blockSelection);
+
+      if (currentTrack != null) {
+        Block block = currentTrack.getBlock(blockId);
+
+        String content = "Distance to Station:\t\t" + block.getBeacon().getDistance();
+        content += "\nStation Identified:\t\t"
+            + currentTrack.getStationList().get(block.getBeacon().getStationId() - 1);
+        content += "\nToggle Underground:\t" + block.getBeacon().isUnderground();
+        content += "\nRight Side Station:\t\t" + block.getBeacon().isRight();
+        content += "\nUser Message:\t\t\t" + block.getBeacon().getUserMessage();
+
+        alert.setContent(content);
+
+        alert.show();
+      }
+    }
+  };
+
+  EventHandler<MouseEvent> alertStationData = new EventHandler<MouseEvent>() {
+    @Override
+    public void handle(MouseEvent e) {
+      AlertWindow alert = new AlertWindow();
+
+      alert.setTitle("Station Data");
+      alert.setHeader("Data for the Station Block");
+
+      int blockId = extractBlock(blockSelection);
+
+      if (currentTrack != null) {
+        Block block = currentTrack.getBlock(blockId);
+
+        String content = block.getStationName() + " STATION";
+        content += "\nStation Temperature:\t\t" + block.getTemperature();
+        content += "\nPassengers Waiting:\t\t" + block.getPassengersWaiting();
+
+        alert.setContent(content);
+
+        alert.show();
+      }
+    }
+  };
 
   /**
    * This method initializes many of the fields.
@@ -107,6 +160,7 @@ public class TrackModelController {
 
           if (currentTrack != null && newValue != null) {
             Block block = currentTrack.getBlock(blockId);
+
             updateUi(block);
           } else {
             blankBlock();
@@ -156,6 +210,11 @@ public class TrackModelController {
     trackHeating.setFill(Color.WHITE);
     stationStatus.setFill(Color.WHITE);
 
+    beaconStatus.removeEventFilter(MouseEvent.MOUSE_CLICKED, alertBeaconData);
+    stationStatus.removeEventFilter(MouseEvent.MOUSE_CLICKED, alertStationData);
+    beaconLabel.removeEventFilter(MouseEvent.MOUSE_CLICKED, alertBeaconData);
+    stationLabel.removeEventFilter(MouseEvent.MOUSE_CLICKED, alertStationData);
+
     this.updateOccupiedBlock();
     this.updateClosedBlocks();
   }
@@ -200,8 +259,12 @@ public class TrackModelController {
 
     if (block.hasBeacon()) {
       beaconStatus.setFill(Color.GREEN);
+      beaconStatus.addEventFilter(MouseEvent.MOUSE_CLICKED, alertBeaconData);
+      beaconLabel.addEventFilter(MouseEvent.MOUSE_CLICKED, alertBeaconData);
     } else {
       beaconStatus.setFill(Color.WHITE);
+      beaconStatus.removeEventFilter(MouseEvent.MOUSE_CLICKED, alertBeaconData);
+      beaconLabel.removeEventFilter(MouseEvent.MOUSE_CLICKED, alertBeaconData);
     }
 
     if (block.isCrossing()) {
@@ -230,8 +293,12 @@ public class TrackModelController {
 
     if ((block.getStationName().equals(""))) {
       stationStatus.setFill(Color.WHITE);
+      stationStatus.removeEventFilter(MouseEvent.MOUSE_CLICKED, alertStationData);
+      stationLabel.removeEventFilter(MouseEvent.MOUSE_CLICKED, alertStationData);
     } else {
       stationStatus.setFill(Color.GREEN);
+      stationStatus.addEventFilter(MouseEvent.MOUSE_CLICKED, alertStationData);
+      stationLabel.addEventFilter(MouseEvent.MOUSE_CLICKED, alertStationData);
     }
 
     this.updateOccupiedBlock();
