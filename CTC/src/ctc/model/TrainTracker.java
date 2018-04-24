@@ -360,6 +360,10 @@ public class TrainTracker {
     return isDone;
   }
 
+  public void setDone(boolean isDone) {
+    this.isDone = isDone;
+  }
+
   public Route getRoute() {
     return route;
   }

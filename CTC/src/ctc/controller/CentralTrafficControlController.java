@@ -1050,7 +1050,9 @@ public class CentralTrafficControlController {
       // get block of of authority
       Track track = Track.getListOfTracks().get(line);
       String blockId = setAuthorityBlocks.getSelectionModel().getSelectedItem();
-      Block end = track.getBlock(Integer.parseInt(blockId.replaceAll("[\\D]", "")));
+
+      Block end = blockId.compareTo("Yard") == 0 ? track.getBlock(-1)
+          : track.getBlock(Integer.parseInt(blockId.replaceAll("[\\D]", "")));
       Block location = train.getLocation();
 
       // make new route with the new authority
@@ -1059,6 +1061,7 @@ public class CentralTrafficControlController {
 
       // let the TrainTracker know that it has a new authority
       train.setWaitingForAuthority(false);
+      train.setDone(false);
 
       // get new authority that is set inside of setRoute
       Authority authority = train.getAuthority();
