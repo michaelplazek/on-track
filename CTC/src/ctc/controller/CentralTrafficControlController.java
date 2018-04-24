@@ -635,13 +635,11 @@ public class CentralTrafficControlController {
         manager.closeBlock(blockId);
         //track.setClosedForMaintenance(blockId,true);
         updateMaintenance();
-//        manager.closeBlock(blockId);
         break;
       case "Repair block":
         manager.repairBlock(blockId);
         //track.setClosedForMaintenance(blockId,false);
         updateMaintenance();
-//        manager.repairBlock(blockId);
         break;
       case "Toggle switch":
         //Switch sw = (Switch) track.getBlock(blockId);
