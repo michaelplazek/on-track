@@ -434,7 +434,7 @@
                <children>
                   <VBox spacing="5.0">
                      <children>
-                        <Button fx:id="demoButton" mnemonicParsing="false" text="Demo Acceleration" />
+                        <Button fx:id="demoButton" mnemonicParsing="false" text="Demo Last Stop" />
                         <Button fx:id="toggleLights" mnemonicParsing="false" text="Toggle Lights" />
                      </children>
                   </VBox>

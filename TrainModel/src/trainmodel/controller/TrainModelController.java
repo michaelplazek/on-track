@@ -268,7 +268,7 @@ public class TrainModelController implements Initializable {
     currentBlockStatus.textProperty().bind(trainModel.currentBlockProperty());
     currentTrack.textProperty().bind(trainModel.activeTrackProperty());
 
-    demoPane.setVisible(true);
+    demoPane.setVisible(false);
   }
 
   private void initializeWindowSize() {
