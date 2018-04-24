@@ -14,12 +14,13 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <SplitPane dividerPositions="0.3417085427135678" layoutX="220.0" layoutY="100.0" orientation="VERTICAL" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <SplitPane dividerPositions="0.3489010989010989" layoutX="220.0" layoutY="34.0" orientation="VERTICAL" prefHeight="366.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="34.0">
         <items>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="113.0" prefWidth="598.0">
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="110.0" prefWidth="598.0">
                <children>
                   <SplitPane dividerPositions="0.24664429530201343" layoutX="173.0" layoutY="-32.0" prefHeight="96.0" prefWidth="598.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <items>
@@ -42,13 +43,22 @@
                                                 <RadioButton fx:id="automatic" mnemonicParsing="false" onAction="#toggleMode" text="Automatic Mode">
                                                    <toggleGroup>
                                                       <ToggleGroup fx:id="mode" />
-                                                   </toggleGroup></RadioButton>
-                                                <RadioButton fx:id="manual" mnemonicParsing="false" onAction="#toggleMode" selected="true" text="Manual Mode" toggleGroup="$mode" GridPane.rowIndex="1" />
+                                                   </toggleGroup>
+                                                   <font>
+                                                      <Font size="12.0" />
+                                                   </font></RadioButton>
+                                                <RadioButton fx:id="manual" mnemonicParsing="false" onAction="#toggleMode" selected="true" text="Manual Mode" toggleGroup="$mode" GridPane.rowIndex="1">
+                                                   <font>
+                                                      <Font size="12.0" />
+                                                   </font></RadioButton>
                                              </children>
                                           </GridPane>
                                        </children>
                                     </AnchorPane>
                                 </content>
+                                 <font>
+                                    <Font name="System Bold" size="13.0" />
+                                 </font>
                               </TitledPane>
                            </children>
                         </AnchorPane>
@@ -84,19 +94,25 @@
                                                 </GridPane>
                                                 <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                   <columnConstraints>
-                                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="131.0" minWidth="10.0" prefWidth="123.0" />
-                                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="90.0" minWidth="10.0" prefWidth="70.0" />
+                                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="131.0" minWidth="10.0" prefWidth="119.0" />
+                                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="90.0" minWidth="10.0" prefWidth="82.0" />
                                                   </columnConstraints>
                                                   <rowConstraints>
                                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                   </rowConstraints>
                                                    <children>
-                                                      <TextField fx:id="setSpeedField" alignment="CENTER_RIGHT" prefHeight="25.0" prefWidth="96.0">
+                                                      <TextField fx:id="setSpeedField" alignment="CENTER_RIGHT" prefHeight="25.0" prefWidth="105.0">
                                                          <padding>
                                                             <Insets right="5.0" />
                                                          </padding>
                                                       </TextField>
-                                                      <Button fx:id="setSpeedButton" mnemonicParsing="false" onAction="#setSpeedAction" prefHeight="25.0" prefWidth="134.0" text="Set Speed" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
+                                                      <Button fx:id="setSpeedButton" mnemonicParsing="false" onAction="#setSpeedAction" prefHeight="23.0" prefWidth="79.0" text="Set Speed" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
+                                                         <font>
+                                                            <Font size="12.0" />
+                                                         </font>
+                                                         <GridPane.margin>
+                                                            <Insets left="1.0" />
+                                                         </GridPane.margin></Button>
                                                    </children>
                                                 </GridPane>
                                                 <GridPane GridPane.columnIndex="1">
@@ -108,7 +124,10 @@
                                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                   </rowConstraints>
                                                    <children>
-                                                      <Label text="Driver Set Speed (MPH):" />
+                                                      <Label text="Driver Set Speed, MPH:">
+                                                         <font>
+                                                            <Font size="12.0" />
+                                                         </font></Label>
                                                       <Label id="driverSetSpeed" fx:id="driverSetSpeed" text="15" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
                                                    </children>
                                                 </GridPane>
@@ -121,33 +140,36 @@
                                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                   </rowConstraints>
                                                    <children>
-                                                      <Label text="Set Speed (MPH):" />
+                                                      <Label text="Set Speed, MPH:" />
                                                       <Label id="setSpeed" fx:id="setSpeed" text="20" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
                                                    </children>
                                                 </GridPane>
                                                 <GridPane GridPane.rowIndex="2">
                                                   <columnConstraints>
-                                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="171.99999237060547" minWidth="10.0" prefWidth="56.00000762939453" />
-                                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="145.99999237060547" minWidth="10.0" prefWidth="145.99999237060547" />
+                                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="171.99999237060547" minWidth="10.0" prefWidth="64.5" />
+                                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="145.99999237060547" minWidth="8.0" prefWidth="136.0" />
                                                   </columnConstraints>
                                                   <rowConstraints>
                                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                   </rowConstraints>
                                                    <children>
                                                       <Label id="authority" fx:id="authority" text="528" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
-                                                      <Label text="Authority:" />
+                                                      <Label prefHeight="16.0" prefWidth="70.0" text="Authority:" />
                                                    </children>
                                                 </GridPane>
                                                 <GridPane GridPane.columnIndex="1" GridPane.rowIndex="2">
                                                   <columnConstraints>
-                                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="138.0" minWidth="10.0" prefWidth="124.0" />
-                                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="92.0" minWidth="10.0" prefWidth="70.0" />
+                                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="138.0" minWidth="10.0" prefWidth="120.0" />
+                                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="92.0" minWidth="10.0" prefWidth="81.0" />
                                                   </columnConstraints>
                                                   <rowConstraints>
                                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                   </rowConstraints>
                                                    <children>
-                                                      <ToggleButton fx:id="serviceBrakeButton" mnemonicParsing="false" onAction="#toggleServiceBrakes" prefHeight="25.0" prefWidth="100.0" text="OFF" GridPane.columnIndex="1" />
+                                                      <ToggleButton fx:id="serviceBrakeButton" mnemonicParsing="false" onAction="#toggleServiceBrakes" prefHeight="23.0" prefWidth="89.0" text="OFF" GridPane.columnIndex="1">
+                                                         <font>
+                                                            <Font size="12.0" />
+                                                         </font></ToggleButton>
                                                       <Label text="Service Brake:" />
                                                    </children>
                                                 </GridPane>
@@ -156,6 +178,9 @@
                                        </children>
                                     </AnchorPane>
                                 </content>
+                                 <font>
+                                    <Font name="System Bold" size="13.0" />
+                                 </font>
                               </TitledPane>
                            </children>
                         </AnchorPane>
@@ -171,12 +196,12 @@
                            <children>
                               <TitledPane animated="false" collapsible="false" layoutX="-13.0" prefHeight="257.0" prefWidth="175.0" text="Train Peripherals" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                 <content>
-                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="204.0" prefWidth="151.0">
                                        <children>
-                                          <GridPane layoutX="-13.0" layoutY="41.0" prefHeight="231.0" prefWidth="173.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                          <GridPane layoutY="3.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="219.0" prefWidth="213.0" AnchorPane.bottomAnchor="2.8000000000000114" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-0.19999999999998863" AnchorPane.topAnchor="3.0">
                                             <columnConstraints>
-                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="104.0" minWidth="10.0" prefWidth="86.0" />
-                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="72.0" minWidth="10.0" prefWidth="68.0" />
+                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="104.0" minWidth="10.0" prefWidth="99.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="75.0" minWidth="10.0" prefWidth="73.0" />
                                             </columnConstraints>
                                             <rowConstraints>
                                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -188,23 +213,44 @@
                                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                             </rowConstraints>
                                              <children>
-                                                <Label text="Lights:" />
+                                                <Label prefHeight="16.0" prefWidth="44.0" text="Lights:" />
                                                 <Label text="Right Doors:" GridPane.rowIndex="1" />
                                                 <Label text="Left Doors:" GridPane.rowIndex="2" />
-                                                <Label text="Temperature (°F):" GridPane.rowIndex="3" />
-                                                <ToggleButton fx:id="lightsButton" mnemonicParsing="false" onAction="#toggleLights" prefHeight="25.0" prefWidth="78.0" text="OFF" GridPane.columnIndex="1" />
-                                                <ToggleButton fx:id="rightDoorButton" mnemonicParsing="false" onAction="#toggleRightDoors" prefHeight="25.0" prefWidth="132.0" text="CLOSED" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                <ToggleButton fx:id="leftDoorButton" mnemonicParsing="false" onAction="#toggleLeftDoors" prefHeight="25.0" prefWidth="78.0" text="CLOSED" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                <Label prefHeight="16.0" prefWidth="116.0" text="Temperature,°F:" GridPane.rowIndex="3" />
+                                                <ToggleButton fx:id="lightsButton" mnemonicParsing="false" onAction="#toggleLights" prefHeight="25.0" prefWidth="78.0" text="OFF" GridPane.columnIndex="1">
+                                                   <font>
+                                                      <Font size="12.0" />
+                                                   </font></ToggleButton>
+                                                <ToggleButton fx:id="rightDoorButton" mnemonicParsing="false" onAction="#toggleRightDoors" prefHeight="25.0" prefWidth="132.0" text="CLOSED" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                   <font>
+                                                      <Font size="12.0" />
+                                                   </font></ToggleButton>
+                                                <ToggleButton fx:id="leftDoorButton" mnemonicParsing="false" onAction="#toggleLeftDoors" prefHeight="25.0" prefWidth="78.0" text="CLOSED" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                                                   <font>
+                                                      <Font size="12.0" />
+                                                   </font>
+                                                   <GridPane.margin>
+                                                      <Insets />
+                                                   </GridPane.margin></ToggleButton>
                                                 <Label id="temperature" fx:id="temperature" text="68" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
-                                                <Label text="Set Temp (°F):" GridPane.rowIndex="4" />
+                                                <Label text="Set Temp,°F:" GridPane.rowIndex="4" />
                                                 <Label id="setTemperature" fx:id="setTemperature" text="68" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
                                                 <TextField fx:id="setTemperatureField" alignment="CENTER_RIGHT" GridPane.rowIndex="5" />
-                                                <Button fx:id="setTemperatureButton" mnemonicParsing="false" onAction="#setTemperatureAction" prefHeight="25.0" prefWidth="113.0" text="Set Temp" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                                <Button fx:id="setTemperatureButton" layoutX="2.0" mnemonicParsing="false" onAction="#setTemperatureAction" prefHeight="24.0" prefWidth="89.0" text="Set Temp" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                                                   <font>
+                                                      <Font size="12.0" />
+                                                   </font>
+                                                   <GridPane.margin>
+                                                      <Insets left="2.0" />
+                                                   </GridPane.margin></Button>
                                              </children>
                                           </GridPane>
                                        </children>
                                     </AnchorPane>
                                 </content>
+                                 <font>
+                                    <Font name="System Bold" size="13.0" />
+                                 </font>
                               </TitledPane>
                            </children>
                         </AnchorPane>
@@ -234,6 +280,9 @@
                                                    </children>
                                                 </GridPane>
                                             </content>
+                                             <font>
+                                                <Font name="System Bold" size="13.0" />
+                                             </font>
                                           </TitledPane>
                                        </children>
                                     </AnchorPane>
@@ -249,8 +298,8 @@
                                                                <children>
                                                                   <GridPane layoutX="-9.0" layoutY="14.0" prefHeight="229.0" prefWidth="191.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                     <columnConstraints>
-                                                                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="129.99999237060547" minWidth="10.0" prefWidth="123.0" />
-                                                                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="80.0" minWidth="10.0" prefWidth="49.0" />
+                                                                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="131.00000762939453" minWidth="10.0" prefWidth="129.00000762939453" />
+                                                                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="80.0" minWidth="10.0" prefWidth="38.99999237060547" />
                                                                     </columnConstraints>
                                                                     <rowConstraints>
                                                                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -263,13 +312,19 @@
                                                                         <Label id="kP" fx:id="kp" text="5" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
                                                                         <Label text="Ki:" GridPane.rowIndex="2" />
                                                                         <Label id="kI" fx:id="ki" text="5" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
-                                                                        <Label text="Power Command (kW):" />
+                                                                        <Label text="Power Command, kW:">
+                                                                           <font>
+                                                                              <Font size="12.0" />
+                                                                           </font></Label>
                                                                         <Label id="powerCommand" fx:id="powerCommand" text="10" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
                                                                      </children>
                                                                   </GridPane>
                                                                </children>
                                                             </AnchorPane>
                                                         </content>
+                                                         <font>
+                                                            <Font name="System Bold" size="13.0" />
+                                                         </font>
                                                       </TitledPane>
                                                    </children>
                                                 </AnchorPane>
@@ -291,7 +346,10 @@
                                                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                     </rowConstraints>
                                                                      <children>
-                                                                        <ToggleButton fx:id="emergencyBrakeButton" mnemonicParsing="false" onAction="#toggleEmergencyBrakes" prefHeight="25.0" prefWidth="167.0" text="EMERGENCY BRAKE OFF" GridPane.rowIndex="3" />
+                                                                        <ToggleButton fx:id="emergencyBrakeButton" mnemonicParsing="false" onAction="#toggleEmergencyBrakes" prefHeight="25.0" prefWidth="167.0" text="EMERGENCY BRAKE OFF" GridPane.rowIndex="3">
+                                                                           <font>
+                                                                              <Font size="12.0" />
+                                                                           </font></ToggleButton>
                                                                         <GridPane>
                                                                           <columnConstraints>
                                                                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="15.0" minWidth="6.0" prefWidth="12.0" />
@@ -336,6 +394,9 @@
                                                                </children>
                                                             </AnchorPane>
                                                         </content>
+                                                         <font>
+                                                            <Font name="System Bold" size="13.0" />
+                                                         </font>
                                                       </TitledPane>
                                                    </children>
                                                 </AnchorPane>
@@ -353,5 +414,10 @@
             </AnchorPane>
         </items>
       </SplitPane>
+      <Label layoutX="237.0" layoutY="6.0" text="Train Controller">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>
