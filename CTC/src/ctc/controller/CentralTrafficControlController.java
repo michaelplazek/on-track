@@ -377,10 +377,11 @@ public class CentralTrafficControlController {
             int blockId = extractBlock(maintenanceBlocks);
             Block block = Track.getListOfTracks().get(line).getBlock(blockId);
 
-            if (action.equals("Toggle switch") && !block.isSwitch()) {
-              submitMaintenance.setDisable(true);
-            } else {
+            if (action.equals("Toggle switch") && block.isSwitch()
+                && ctc.isActive() && controller != null) {
               submitMaintenance.setDisable(false);
+            } else {
+              submitMaintenance.setDisable(true);
             }
           }
         });
@@ -396,7 +397,8 @@ public class CentralTrafficControlController {
 
           updateMaintenance();
 
-          if (action.equals("Toggle switch") && block.isSwitch() && ctc.isActive()) {
+          if (action.equals("Toggle switch") && block.isSwitch()
+              && ctc.isActive() && controller != null) {
             submitMaintenance.setDisable(false);
           } else {
             submitMaintenance.setDisable(true);
@@ -626,18 +628,20 @@ public class CentralTrafficControlController {
     int blockId = extractBlock(maintenanceBlocks);
     String action = maintenanceActions.getSelectionModel().getSelectedItem();
 
-    switch (action) {
-      case "Close block":
-        controller.closeBlock(blockId);
-        break;
-      case "Repair block":
-        controller.repairBlock(blockId);
-        break;
-      case "Toggle switch":
-        controller.toggleSwitch(blockId);
-        break;
-      default:
-        break;
+    if (controller != null) {
+      switch (action) {
+        case "Close block":
+          controller.closeBlock(blockId);
+          break;
+        case "Repair block":
+          controller.repairBlock(blockId);
+          break;
+        case "Toggle switch":
+          controller.toggleSwitch(blockId);
+          break;
+        default:
+          break;
+      }
     }
 
     updateMaintenance();
