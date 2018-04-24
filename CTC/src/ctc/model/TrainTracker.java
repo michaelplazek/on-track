@@ -147,12 +147,14 @@ public class TrainTracker {
   private void updateLifecycle() {
 
     // check if train has reached the yard
-    if (route.getCurrent()  == route.getLast()) {
+    if (route.getCurrent() == route.getLast()) {
       isDone = true;
+      isWaitingForAuthority = true;
 
       if (route.getLast().getNumber() == -1) {
         route.getLast().setOccupied(false);
         isDispatched = false;
+        isWaitingForAuthority = false;
       } else {
         isWaitingForAuthority = true;
       }
