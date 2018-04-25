@@ -25,6 +25,7 @@ public class TrackController implements TrackControllerInterface {
   private boolean isManual = false;
   private Authority stop = new Authority();
   private HashMap<Integer, Block> myZone = new HashMap<Integer, Block>(capacity);
+  private HashMap<Integer, Boolean> overrideCTC = new HashMap<>();
   private ArrayList<String> blockList = new ArrayList<>();
   private TrackController neighborCtrlr1;
   private TrackController neighborCtrlr2;
@@ -59,6 +60,7 @@ public class TrackController implements TrackControllerInterface {
     //Zero Id indicates Controller is not initialized
     this.id = 0;
     stop.setAuthorityCommand(AuthorityCommand.SERVICE_BRAKE_STOP);
+    stop.setBlocksLeft(Byte.MAX_VALUE);
     //neighborCtrlr1 = new TrackController();
     //neighborCtrlr2 = new TrackController();
   }
@@ -74,6 +76,7 @@ public class TrackController implements TrackControllerInterface {
   public TrackController(int id, int offset, String line) {
     this.id = id;
     stop.setAuthorityCommand(AuthorityCommand.SERVICE_BRAKE_STOP);
+    stop.setBlocksLeft(Byte.MAX_VALUE);
     this.trackOffset = offset;
     neighborCtrlr1 = new TrackController();
     neighborCtrlr2 = new TrackController();
@@ -87,6 +90,7 @@ public class TrackController implements TrackControllerInterface {
   public TrackController(TrackController tc) {
     this.id = tc.id;
     stop.setAuthorityCommand(AuthorityCommand.SERVICE_BRAKE_STOP);
+    stop.setBlocksLeft(Byte.MAX_VALUE);
     this.myZone = tc.myZone;
     this.neighborCtrlr1 = tc.neighborCtrlr1;
     this.neighborCtrlr2 = tc.neighborCtrlr2;
@@ -111,9 +115,14 @@ public class TrackController implements TrackControllerInterface {
 
   @Override
   public boolean sendTrackSignals(int block, Authority authority, float speed) {
-    if (myLine != null) {
-      myLine.getBlock(block).setAuthority(authority);
-      myLine.getBlock(block).setSetPointSpeed(Math.abs(speed));
+    if (myZone.get(block) != null) {
+
+      if (overrideCTC.get(block) != null) {
+        if (!overrideCTC.get(block)) {
+          myLine.getBlock(block).setAuthority(authority);
+          myLine.getBlock(block).setSetPointSpeed(Math.abs(speed));
+        }
+      }
 
       //Take snapshot of CTC suggestions
 //      if ((block - trackOffset >= 0) && (block - trackOffset < getZone().size())) {
@@ -189,6 +198,7 @@ public class TrackController implements TrackControllerInterface {
   public boolean addBlock(Block newBlock) {
 
     myZone.put(newBlock.getNumber(), newBlock);
+    overrideCTC.put(newBlock.getNumber(), false);
     return myZone.containsValue(newBlock);
   }
 
@@ -526,58 +536,60 @@ public class TrackController implements TrackControllerInterface {
     return false;
   }
 
-  private void overrideAuthority(int start, char sign, int until, boolean andStart) {
-
-    Block currBlock = myZone.get(start);
-    Block next1Block = myZone.get(currBlock.getNextBlock1());
-    Block prevBlock = myZone.get(currBlock.getPreviousBlock());
-    Block next2Block = null;
-
-    if (currBlock.isSwitch()) {
-      Switch currSwitch = (Switch) currBlock;
-      next2Block = myZone.get(currSwitch.getNextBlock2());
-    }
-
-    if (currBlock != null) {
-      if (andStart) {
-        currBlock.setAuthority(stop);
-      }
-    }
-
-    while (currBlock != null) {
-
-      if (currBlock.getNumber() == until) {
-        break;
-      }
-
-      next1Block = myZone.get(currBlock.getNextBlock1());
-      prevBlock = myZone.get(currBlock.getPreviousBlock());
-      next2Block = null;
-
-      if (currBlock.isSwitch()) {
-        Switch currSwitch = (Switch) currBlock;
-        next2Block = myZone.get(currSwitch.getNextBlock2());
-      }
-
-      currBlock.setAuthority(stop);
-
-      // Continue
-      if (myLine.getNextBlock(currBlock.getNumber(), next1Block.getNumber()) != null) {
-        currBlock = myLine.getNextBlock(currBlock.getNumber(), next1Block.getNumber());
-      } else if (myLine.getNextBlock(currBlock.getNumber(), prevBlock.getNumber()) != null) {
-        currBlock = myLine.getNextBlock(currBlock.getNumber(), prevBlock.getNumber());
-      } else if (next2Block != null) {
-        if (myLine.getNextBlock2(currBlock.getNumber(), next2Block.getNumber()) != null) {
-          //this switch can be taken in this way
-           currBlock = myLine.getNextBlock2(currBlock.getNumber(), next2Block.getNumber());
-        } else {
-          //not allowed to take this fork
-          break;
-        }
-      }
-
-    }
-  }
+//  private void overrideAuthority(int start, char sign, int until, boolean andStart) {
+//
+//    Block currBlock = myZone.get(start);
+//    Block next1Block = myZone.get(currBlock.getNextBlock1());
+//    Block prevBlock = myZone.get(currBlock.getPreviousBlock());
+//    Block next2Block = null;
+//
+//    if (currBlock.isSwitch()) {
+//      Switch currSwitch = (Switch) currBlock;
+//      next2Block = myZone.get(currSwitch.getNextBlock2());
+//    }
+//
+//    if (currBlock != null) {
+//      if (andStart) {
+//        currBlock.setAuthority(stop);
+//        overrideCTC.replace(currBlock.getNumber(), true);
+//      }
+//    }
+//
+//    while (currBlock != null) {
+//
+//      if (currBlock.getNumber() == until) {
+//        break;
+//      }
+//
+//      next1Block = myZone.get(currBlock.getNextBlock1());
+//      prevBlock = myZone.get(currBlock.getPreviousBlock());
+//      next2Block = null;
+//
+//      if (currBlock.isSwitch()) {
+//        Switch currSwitch = (Switch) currBlock;
+//        next2Block = myZone.get(currSwitch.getNextBlock2());
+//      }
+//
+//      currBlock.setAuthority(stop);
+//      overrideCTC.replace(currBlock.getNumber(), true);
+//
+//      // Continue
+//      if (myLine.getNextBlock(currBlock.getNumber(), next1Block.getNumber()) != null) {
+//        currBlock = myLine.getNextBlock(currBlock.getNumber(), next1Block.getNumber());
+//      } else if (myLine.getNextBlock(currBlock.getNumber(), prevBlock.getNumber()) != null) {
+//        currBlock = myLine.getNextBlock(currBlock.getNumber(), prevBlock.getNumber());
+//      } else if (next2Block != null) {
+//        if (myLine.getNextBlock2(currBlock.getNumber(), next2Block.getNumber()) != null) {
+//          //this switch can be taken in this way
+//           currBlock = myLine.getNextBlock2(currBlock.getNumber(), next2Block.getNumber());
+//        } else {
+//          //not allowed to take this fork
+//          break;
+//        }
+//      }
+//
+//    }
+//  }
 
   //-----------------------------------------------------------------------------------------------
 
@@ -688,32 +700,57 @@ public class TrackController implements TrackControllerInterface {
                 if (sign == '+') {
 
                   boolean occupancy = prevBlock.isOccupied();
+                  Block temp;
                   nextBlock = myLine.getBlock(prevBlock.getNumber() + 1);
 
                   int[] apply = new int[checkBlocks];
                   apply[0] = prevBlock.getNumber();
+                  System.out.println("adding at 1 apply[0]: " + prevBlock.getNumber());
                   apply[1] = nextBlock.getNumber();
+                  System.out.println("adding at 1 apply[1]: " + nextBlock.getNumber());
+
 
                   for (int i = 2; i < checkBlocks; i++) {
+                    temp = nextBlock;
                     nextBlock = myLine.getNextBlock(nextBlock.getNumber(), prevBlock.getNumber());
                     if (nextBlock != null) {
+                      System.out.println("Occ: " + occupancy + " nB" + nextBlock.getNumber() + ": " + nextBlock.isOccupied());
                       occupancy = occupancy | nextBlock.isOccupied();
+                      prevBlock = temp;
                       apply[i] = nextBlock.getNumber();
+                      System.out.println("adding at 1 apply[" + i + "]: " + nextBlock.getNumber());
                     } else if (nextBlock.isSwitch()) {
                       nextBlock = myLine.getNextBlock2(nextBlock.getNumber(), prevBlock.getNumber());
                       if (currBlock != null) {
+                        System.out.println("Occ: " + occupancy + " nB" + nextBlock.getNumber() + ": " + nextBlock.isOccupied());
                         occupancy = occupancy | nextBlock.isOccupied();
+                        prevBlock = temp;
                         apply[i] = nextBlock.getNumber();
+                        System.out.println("adding at 2 apply[" + i + "]: " + nextBlock.getNumber());
                       }
+                    } else {
+                      System.out.println("Why am I here?");
                     }
                   }
 
+                  System.out.println("ENTERING w/ OCCUPANCY: " + occupancy);
                   if (occupancy) {
                     if (currOut[2].equals("stop")) {
                       for (int k = 0; k < apply.length; k++) {
                         System.out.println(apply[k]);
+                        // set ignore variable to ignore updating authority from ctc here
+                        // something with ids?
+                        overrideCTC.replace(apply[k], true);
                         myLine.getBlock(apply[k]).setAuthority(stop);
                       }
+                    }
+                  } else {
+                    //no occupancy has been found around the station,
+                    for (int k = 0; k < apply.length; k++) {
+                      System.out.println(apply[k]);
+                      // set ignore variable to ignore updating authority from ctc here
+                      // reset override to false
+                      overrideCTC.replace(apply[k], false);
                     }
                   }
 
@@ -768,19 +805,6 @@ public class TrackController implements TrackControllerInterface {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
               }
             }
           }
@@ -812,7 +836,49 @@ public class TrackController implements TrackControllerInterface {
           }
         }
 
-      } else {
+      } else if (currBlock.isLeftStation() || currBlock.isRightStation()) {
+        //IMPLIED not occupied
+        //Somehow need to traverse this backwards and find block values that are set in override to true.
+        //
+
+        for (int j = 0; j < blockInputTerms.size(); j++) {
+
+          // Check stored Logic terms
+          String[] currTerm = blockInputTerms.get(j);
+          String[] currOut = blockOutputTerms.get(j);
+
+          String[] blockParts = currTerm[0].split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+          Block prevBlock = myLine.getBlock(Integer.parseInt(blockParts[1]));
+          Block nextBlock;
+          int currStation = Integer.parseInt(currOut[1].substring(1, currTerm[1].length() - 1));
+
+          if (currStation != currBlock.getNumber()) {
+            // do not apply to this station, wrong block #
+            continue;
+          }
+
+          // Continue parsing this line of plc
+          String s = currTerm[1].substring(1, 2);
+          String bstring = currTerm[1].substring(2, currTerm[1].length() - 1);
+
+          int checkBlocks = Integer.parseInt(bstring);
+          char sign = s.toCharArray()[0];
+
+          if (overrideCTC.get(prevBlock.getNumber())) {
+            overrideCTC.replace(prevBlock.getNumber(), false);
+          }
+
+          if (sign == '+') {
+            for (int k = 1; k < checkBlocks; k++) {
+              overrideCTC.replace(prevBlock.getNumber() + k, false);
+            }
+          } else if (sign == '-') {
+            for (int k = 1; k < checkBlocks; k++) {
+              overrideCTC.replace(prevBlock.getNumber() - k, false);
+            }
+          }
+
+        }
 
 
       }

@@ -1,4 +1,4 @@
 BLOCK LOGIC
-IF (block109 |+5| isOccupied) THEN (station /114/ stop)
-IF (block118 |+5| isOccupied) THEN (station /123/ stop)
+IF (block109 |+4| isOccupied) THEN (station /114/ stop)
+IF (block118 |+4| isOccupied) THEN (station /118/ stop)
 SWITCH LOGIC
