@@ -120,7 +120,8 @@ public class TrainController implements TrainControllerInterface {
       beacon = new Beacon(signal);
       beacons.put(signal.getBlockId(), beacon);
       if (signal.getStationId() >= 0
-          && authority.getValue() == AuthorityCommand.STOP_AT_NEXT_STATION) {
+          && (authority.getValue() == AuthorityCommand.STOP_AT_NEXT_STATION
+          || authority.getValue() == AuthorityCommand.STOP_AT_LAST_STATION)) {
         distanceToStation = signal.getDistance();
         setCurrentStation(Track.getListOfTracks().get(getLine())
             .getStationList().get(signal.getStationId() - 1));

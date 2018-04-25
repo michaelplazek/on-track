@@ -14,6 +14,7 @@ public class Route {
   private TrainTracker train;
   private String nextStation;
   private int currentIndex = 0;
+  private int numberOfStations;
   private int nextStationIndex = 0;
 
   /**
@@ -36,6 +37,7 @@ public class Route {
     this.line = Track.getListOfTracks().get(line);
     this.train = train;
     createRoute(this.line.getStartBlock(), end);
+    this.numberOfStations = this.nextStationIndex - 1;
     this.nextStationIndex = 0;
   }
 
@@ -171,6 +173,10 @@ public class Route {
     return this.route;
   }
 
+  public int getNextStationIndex() {
+    return nextStationIndex;
+  }
+
   private boolean checkPath(Block current) {
 
     boolean valid;
@@ -193,6 +199,10 @@ public class Route {
 
   int getCurrentIndex() {
     return currentIndex;
+  }
+
+  public int getNumberOfStations() {
+    return numberOfStations;
   }
 
   /**
