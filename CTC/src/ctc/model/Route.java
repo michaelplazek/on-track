@@ -147,24 +147,17 @@ public class Route {
    */
   boolean getNextDirection() {
 
-    Switch sw = getNextSwitch(currentIndex);
+    Switch sw = getNextSwitch(currentIndex + 1);
     if (sw == null) {
       return true;
     }
 
-    int index = route.indexOf(sw);
-    if (index > 0) {
-      while (sw.getPreviousBlock() != route.get(index - 1).getNumber()) {
-        index = route.indexOf(sw);
-        sw = getNextSwitch(index);
-      }
-
-      // nextBlock2 == LEFT && nextBlock1 == RIGHT
-      return sw.getNextBlock1() == route.get(index - 1).getNumber();
+    int switchIndex = route.indexOf(sw);
+    if (route.get(switchIndex).getNextBlock1() == route.get(switchIndex + 1).getNumber()) {
+      return true;
+    } else {
+      return false;
     }
-
-    return true; // doesn't matter
-
   }
 
   public LinkedList<Block> getPath() {

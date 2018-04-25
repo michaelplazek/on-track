@@ -23,6 +23,7 @@ public class TrackController implements TrackControllerInterface {
   private final int capacity = 32;
   private boolean isManual = false;
   private HashMap<Integer, Block> myZone = new HashMap<Integer, Block>(capacity);
+  private HashMap<Integer, Float> yardSpeed = new HashMap<>();
   private ArrayList<String> blockList = new ArrayList<>();
   private TrackController neighborCtrlr1;
   private TrackController neighborCtrlr2;
@@ -47,17 +48,12 @@ public class TrackController implements TrackControllerInterface {
   private boolean loaded = false;
   private int ctcManual = 0;
 
-  //States populate from Boolean Logic
-  //private boolean[]
-
   /**
    * Constructor for a new TrackController that is uninitialized.
    */
   public TrackController() {
     //Zero Id indicates Controller is not initialized
     this.id = 0;
-    //neighborCtrlr1 = new TrackController();
-    //neighborCtrlr2 = new TrackController();
   }
 
   /** This constructor accepts some common arguments used when creating
@@ -91,33 +87,34 @@ public class TrackController implements TrackControllerInterface {
    *
    */
   public void run() {
-//    if (ctcManual < 450 && ctcManual >= 0) {
-//      ctcManual++;
-//      isManual = true;
-//    } else if (ctcManual == 450) {
-//      ctcManual = -1;
-//      isManual = false;
-//    }
 
     readOccupancy();
-    //readSuggestion();
     assertLogic();
   }
 
   @Override
   public boolean sendTrackSignals(int block, Authority authority, float speed) {
     if (myLine != null) {
+
+      Block currBlock = myLine.getBlock(block);
+
+      if (currBlock.isSwitch()) {
+
+        Switch currSwitch = (Switch) currBlock;
+
+        if (currSwitch.getNextBlock1() == -1 || currSwitch.getNextBlock2() == -1) {
+          //yard speed detected
+
+          if (yardSpeed.containsKey(currSwitch.getNumber())) {
+            yardSpeed.replace(currSwitch.getNumber(), speed);
+          } else {
+            yardSpeed.put(currSwitch.getNumber(), speed);
+          }
+        }
+      }
+
       myLine.getBlock(block).setAuthority(authority);
       myLine.getBlock(block).setSetPointSpeed(Math.abs(speed));
-
-      //Take snapshot of CTC suggestions
-//      if ((block - trackOffset >= 0) && (block - trackOffset < getZone().size())) {
-//        ctcAuthTemp.replace(block, authority);
-//        ctcSpeedTemp.replace(block,speed);
-//        return true;
-//      } else {
-//        return false;
-//      }
     }
     return false;
   }
@@ -334,9 +331,6 @@ public class TrackController implements TrackControllerInterface {
         }
       }
 
-
-      // Overwrite
-
       // Initialize arrays to lineNum value
       blockInputEval = new ArrayList<>(lineNum);
       switchInputEval = new ArrayList<>(lineNum);
@@ -375,21 +369,6 @@ public class TrackController implements TrackControllerInterface {
   public void setManual(boolean opMode) {
     isManual = opMode;
   }
-
-//  private void readSuggestion() {
-//
-//    //Reads in current suggestion array into previous
-//    //Sets current to the temp (set by calls from ctc)
-//
-//    for (Block b : myZone.values()) {
-//      int index = b.getNumber();
-//      ctcAuthPrevious.replace(index,ctcAuthCurrent.get(index));
-//      ctcAuthCurrent.replace(index, ctcAuthTemp.get(index));
-//
-//      ctcSpeedPrevious.replace(index,ctcSpeedCurrent.get(index));
-//      ctcSpeedCurrent.replace(index,ctcSpeedTemp.get(index));
-//    }
-//  }
 
   /** This is called after Controller initialization
    * to set occupancy and ctc suggestions.
@@ -498,38 +477,6 @@ public class TrackController implements TrackControllerInterface {
     return occupancy;
   }
 
-  /** This function searches the current controller jurisdiction for a station, and
-   * if found, it will then check if the temperature reading at that station is
-   * indicating freezing levels.
-   *
-   * @return true if temperature is freezing
-   */
-  private boolean isFreezing(String item, Block start) {
-    return false;
-  }
-
-  /** This will use the previous and current readings to detect if a train is
-   * moving towards a certain block.
-   *
-   * @param sign direction to check readings
-   * @param blocks number of blocks in that direction to check
-   * @return true if train found moving in that direction.
-   */
-  private boolean movingTo(char sign, int blocks, Block start) {
-    return false;
-  }
-
-  /** This will use the previous and current readings to detect if a train is
-   * moving away from a certain block.
-   *
-   * @param sign direction to check readings
-   * @param blocks number of blocks in that direction to check
-   * @return true if train found moving in that direction.
-   */
-  private boolean movingFrom(char sign, int blocks, Block start) {
-    return false;
-  }
-
   //-----------------------------------------------------------------------------------------------
 
   /** Uses block occupancies read on this tick to safely change switches/crossings/lights.
@@ -599,9 +546,7 @@ public class TrackController implements TrackControllerInterface {
       } else if (currBlock.isOccupied() && !currBlock.isSwitch()) {
 
         if (currBlock.isLeftStation() || currBlock.isRightStation()) {
-
           for (int j = 0; j < blockInputTerms.size(); j++) {
-
             String[] currTerm = blockInputTerms.get(j);
 
             String s = currTerm[1].substring(1, 2);
@@ -621,8 +566,66 @@ public class TrackController implements TrackControllerInterface {
               }
             }
           }
+        } else {
+
+          Block prev = myLine.getBlock(currBlock.getPreviousBlock());
+          Block next = myLine.getBlock(currBlock.getNextBlock1());
+
+          if (prev.isSwitch()) {
+
+            Switch pswitch = (Switch) prev;
+
+            if (pswitch.getNextBlock1() == -1 || pswitch.getNextBlock2() == -1 || pswitch.getPreviousBlock() == -1) {
+              //next to the yard
+
+              // switch to yard found, look at ctc speed suggestion
+              if (yardSpeed.containsKey(pswitch.getNumber())) {
+                if (yardSpeed.get(pswitch.getNumber()) < 0) {
+                  //negative speed, go to yard
+                  pswitch.setStatus(-1);
+                  continue;
+                } else {
+                  if (pswitch.getNextBlock1() == -1) {
+                    pswitch.setStatus(pswitch.getNextBlock2());
+                  } else {
+                    pswitch.setStatus(pswitch.getNextBlock1());
+                  }
+                  continue;
+                }
+              }
+
+            }
+
+          } else if (next.isSwitch()) {
+
+            Switch nswitch = (Switch) next;
+
+            if (nswitch.getNextBlock1() == -1 || nswitch.getNextBlock2() == -1 || nswitch.getPreviousBlock() == -1) {
+              //next to the yard
+              // switch to yard found, look at ctc speed suggestion
+              if (yardSpeed.containsKey(nswitch.getNumber())) {
+                if (yardSpeed.get(nswitch.getNumber()) < 0) {
+                  //negative speed, go to yard
+                  nswitch.setStatus(-1);
+                  continue;
+                } else {
+                  if (nswitch.getNextBlock1() == -1) {
+                    nswitch.setStatus(nswitch.getNextBlock2());
+                  } else {
+                    nswitch.setStatus(nswitch.getNextBlock1());
+                  }
+                  continue;
+                }
+              }
+            }
+
+          } else {
+
+          }
+
 
         }
+
       } else if (currBlock.isClosedForMaintenance()) {
 
         // How to handle occupied blocks closed for maintenance
@@ -671,7 +674,25 @@ public class TrackController implements TrackControllerInterface {
           continue;
         }
 
-        //DEBUG
+        if (currSwitch.getNextBlock1() == -1 || currSwitch.getNextBlock2() == -1) {
+          // switch to yard found, look at ctc speed suggestion
+          if (yardSpeed.containsKey(currSwitch.getNumber())) {
+            if (yardSpeed.get(currSwitch.getNumber()) < 0) {
+              //negative speed, go to yard
+              currSwitch.setStatus(-1);
+              continue;
+            } else {
+              if (currSwitch.getNextBlock1() == -1) {
+                currSwitch.setStatus(currSwitch.getNextBlock2());
+              } else {
+                currSwitch.setStatus(currSwitch.getNextBlock1());
+              }
+              continue;
+            }
+          }
+
+        }
+
         switchInputEval.clear();
 
         for (int j = 0; j < switchInputTerms.size(); j++) {
@@ -721,16 +742,6 @@ public class TrackController implements TrackControllerInterface {
             } else {
               //Invalid function name
             }
-          } else if (currInputTerm[2].contains("moving")) {
-
-            //MOVING
-            if (currInputTerm[2].equals("movingTo")) {
-
-            } else if (currInputTerm[2].equals("movingFrom")) {
-
-            } else {
-              //Invalid function name
-            }
           } else if (currInputTerm[2].equals("ignore")) {
             term1 = true;
           } else {
@@ -762,16 +773,6 @@ public class TrackController implements TrackControllerInterface {
             } else {
               //Invalid function name
             }
-          } else if (currInputTerm[5].contains("moving")) {
-
-            //MOVING
-            if (currInputTerm[5].equals("movingTo")) {
-
-            } else if (currInputTerm[5].equals("movingFrom")) {
-
-            } else {
-              //Invalid function name
-            }
           } else if (currInputTerm[5].equals("ignore")) {
             term2 = true;
           } else {
@@ -800,16 +801,6 @@ public class TrackController implements TrackControllerInterface {
               term3 = isOccupied(currSwitch.getNextBlock2(), sign, checkBlocks);
             } else if (currInputTerm[8].equals("notOccupied")) {
               term3 = !isOccupied(currSwitch.getNextBlock2(), sign, checkBlocks);
-            } else {
-              //Invalid function name
-            }
-          } else if (currInputTerm[8].contains("moving")) {
-
-            //MOVING
-            if (currInputTerm[8].equals("movingTo")) {
-
-            } else if (currInputTerm[8].equals("movingFrom")) {
-
             } else {
               //Invalid function name
             }
@@ -871,34 +862,13 @@ public class TrackController implements TrackControllerInterface {
               System.out.println("Invalid switch state detected");
             }
 
-            //TODO: send CTC signals based on above input
-
-
           } else {
             //No check required
-            //TODO: send CTC signals here?
           }
 
         }
       } //--------------------END IS SWITCH---------------------------------------------
 
-    } //-------------- END CURRBLOCK ITERATION
-    //TODO these will be voted upon or updated prior to asserting on the track based on above logic
-//    for (Integer index : myZone.keySet()) {
-//
-//      if (myZone.get(index) != null) {
-//        Block update = myZone.get(index);
-//
-//        if (ctcAuthCurrent.get(index) != null) {
-//          update.setAuthority(ctcAuthCurrent.get(index));
-//          System.out.println("Auth " + index + ": " + ctcAuthCurrent.get(index));
-//        }
-//        if (ctcSpeedCurrent.get(index) != null) {
-//          update.setSetPointSpeed(Math.abs(ctcSpeedCurrent.get(index)));
-//          System.out.println("Speed " + index + ": " + ctcSpeedCurrent.get(index));
-//
-//        }
-//      }
-//    }
+    }
   }
 }

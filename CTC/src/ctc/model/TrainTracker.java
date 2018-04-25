@@ -30,6 +30,7 @@ public class TrainTracker {
   private boolean isWaitingForAuthority;
   private boolean isDone;
   private float speed;
+  private int direction;
   private int passengers;
   private double currentDwell;
   private Authority authority;
@@ -179,12 +180,10 @@ public class TrainTracker {
 
     // when we reach a switch, we check the next fork
     if (location.isSwitch()) {
-//      speed = route.getNextDirection() ? (-1 * speed) : speed;
-      speed = location.getSpeedLimit();
-
-    } else {
-      speed = location.getSpeedLimit();
+      direction = route.getNextDirection() ? -1 : 1;
     }
+
+    speed = location.getSpeedLimit() * direction;
 
     // determine next authority
     String nextStationOnRoute = route.getNextStation();
