@@ -78,6 +78,7 @@ public class Track {
 
       FileChooser fileChooser = new FileChooser();
       fileChooser.setTitle("Choose a track file");
+      fileChooser.setInitialDirectory(new File("."));
       File f = fileChooser.showOpenDialog(null);
 
       if (f == null) {
