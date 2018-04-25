@@ -24,8 +24,6 @@ public class TrackController implements TrackControllerInterface {
   private boolean isManual = false;
   private HashMap<Integer, Block> myZone = new HashMap<Integer, Block>(capacity);
   private ArrayList<String> blockList = new ArrayList<>();
-  private TrackController neighborCtrlr1;
-  private TrackController neighborCtrlr2;
   private int endBlock;
   private Track myLine;
 
@@ -47,17 +45,12 @@ public class TrackController implements TrackControllerInterface {
   private boolean loaded = false;
   private int ctcManual = 0;
 
-  //States populate from Boolean Logic
-  //private boolean[]
-
   /**
    * Constructor for a new TrackController that is uninitialized.
    */
   public TrackController() {
     //Zero Id indicates Controller is not initialized
     this.id = 0;
-    //neighborCtrlr1 = new TrackController();
-    //neighborCtrlr2 = new TrackController();
   }
 
   /** This constructor accepts some common arguments used when creating
@@ -71,8 +64,6 @@ public class TrackController implements TrackControllerInterface {
   public TrackController(int id, int offset, String line) {
     this.id = id;
     this.trackOffset = offset;
-    neighborCtrlr1 = new TrackController();
-    neighborCtrlr2 = new TrackController();
     myLine = Track.getTrack(line);
   }
 
@@ -83,24 +74,13 @@ public class TrackController implements TrackControllerInterface {
   public TrackController(TrackController tc) {
     this.id = tc.id;
     this.myZone = tc.myZone;
-    this.neighborCtrlr1 = tc.neighborCtrlr1;
-    this.neighborCtrlr2 = tc.neighborCtrlr2;
   }
 
   /** Function to update UI and assert all logic from PLC code.
    *
    */
   public void run() {
-//    if (ctcManual < 450 && ctcManual >= 0) {
-//      ctcManual++;
-//      isManual = true;
-//    } else if (ctcManual == 450) {
-//      ctcManual = -1;
-//      isManual = false;
-//    }
-
     readOccupancy();
-    //readSuggestion();
     assertLogic();
   }
 
@@ -109,22 +89,7 @@ public class TrackController implements TrackControllerInterface {
     if (myLine != null) {
       myLine.getBlock(block).setAuthority(authority);
       myLine.getBlock(block).setSetPointSpeed(Math.abs(speed));
-
-      //Take snapshot of CTC suggestions
-//      if ((block - trackOffset >= 0) && (block - trackOffset < getZone().size())) {
-//        ctcAuthTemp.replace(block, authority);
-//        ctcSpeedTemp.replace(block,speed);
-//        return true;
-//      } else {
-//        return false;
-//      }
     }
-    return false;
-  }
-
-  //TODO
-  @Override
-  public boolean setInfrastructureState(int block, boolean state) {
     return false;
   }
 
@@ -154,7 +119,6 @@ public class TrackController implements TrackControllerInterface {
         blockList.add("Block" + " " + b.getKey().toString());
       }
     }
-    //TODO sort block output here for UI
     return blockList;
   }
 
@@ -168,11 +132,6 @@ public class TrackController implements TrackControllerInterface {
 
   public String getLine() {
     return myLine.getLine();
-  }
-
-  @Override
-  public int getBlockCount() {
-    return blockList.size();
   }
 
   @Override
@@ -195,13 +154,15 @@ public class TrackController implements TrackControllerInterface {
   @Override
   public boolean closeBlock(int id) {
     myLine.getBlock(id).setClosedForMaintenance(true);
-    return myLine.getBlock(id).getBrokenRailStatus() == true;
+    isManual = true;
+    return myLine.getBlock(id).getBrokenRailStatus();
   }
 
   @Override
   public boolean repairBlock(int id) {
     myLine.getBlock(id).setClosedForMaintenance(false);
-    return myLine.getBlock(id).getBrokenRailStatus() == false;
+    isManual = true;
+    return !myLine.getBlock(id).getBrokenRailStatus();
   }
 
   @Override
@@ -298,7 +259,6 @@ public class TrackController implements TrackControllerInterface {
             break;
           }
 
-
           String funct = line.split(" THEN ")[0];
           String output = line.split(" THEN ")[1];
           String allFunct = "";
@@ -334,7 +294,6 @@ public class TrackController implements TrackControllerInterface {
         }
       }
 
-
       // Overwrite
 
       // Initialize arrays to lineNum value
@@ -355,16 +314,6 @@ public class TrackController implements TrackControllerInterface {
     return false;
   }
 
-  @Override
-  public boolean checkLogic() {
-    return false;
-  }
-
-  @Override
-  public boolean parseLogic(String logic) {
-    return false;
-  }
-
   private void readOccupancy() {
     for (Block b : myZone.values()) {
       occPrevious.replace(b.getNumber(),occCurrent.get(b.getNumber()));
@@ -376,21 +325,6 @@ public class TrackController implements TrackControllerInterface {
     isManual = opMode;
   }
 
-//  private void readSuggestion() {
-//
-//    //Reads in current suggestion array into previous
-//    //Sets current to the temp (set by calls from ctc)
-//
-//    for (Block b : myZone.values()) {
-//      int index = b.getNumber();
-//      ctcAuthPrevious.replace(index,ctcAuthCurrent.get(index));
-//      ctcAuthCurrent.replace(index, ctcAuthTemp.get(index));
-//
-//      ctcSpeedPrevious.replace(index,ctcSpeedCurrent.get(index));
-//      ctcSpeedCurrent.replace(index,ctcSpeedTemp.get(index));
-//    }
-//  }
-
   /** This is called after Controller initialization
    * to set occupancy and ctc suggestions.
    *
@@ -399,16 +333,12 @@ public class TrackController implements TrackControllerInterface {
     //Create boolean arrays based on number of blocks
 
     if (!loaded) {
-
       //initialize array values to  number of blocks
       for (Integer i : myZone.keySet()) {
-
         //initializes occupancies to false
         occCurrent.put(i, false);
         occPrevious.put(i, false);
-
       }
-
       loaded = true;
     }
   }
@@ -435,9 +365,6 @@ public class TrackController implements TrackControllerInterface {
 
     boolean occupancy = currBlock.isOccupied();
 
-    //define currBlock and
-
-    //TODO: check for off by one error defined in PLC
     for (int i = 0; i < blocks; i++) {
       Block temp;
 
@@ -498,52 +425,10 @@ public class TrackController implements TrackControllerInterface {
     return occupancy;
   }
 
-  /** This function searches the current controller jurisdiction for a station, and
-   * if found, it will then check if the temperature reading at that station is
-   * indicating freezing levels.
-   *
-   * @return true if temperature is freezing
-   */
-  private boolean isFreezing(String item, Block start) {
-    return false;
-  }
-
-  /** This will use the previous and current readings to detect if a train is
-   * moving towards a certain block.
-   *
-   * @param sign direction to check readings
-   * @param blocks number of blocks in that direction to check
-   * @return true if train found moving in that direction.
-   */
-  private boolean movingTo(char sign, int blocks, Block start) {
-    return false;
-  }
-
-  /** This will use the previous and current readings to detect if a train is
-   * moving away from a certain block.
-   *
-   * @param sign direction to check readings
-   * @param blocks number of blocks in that direction to check
-   * @return true if train found moving in that direction.
-   */
-  private boolean movingFrom(char sign, int blocks, Block start) {
-    return false;
-  }
-
-  //-----------------------------------------------------------------------------------------------
-
-  /** Uses block occupancies read on this tick to safely change switches/crossings/lights.
-   *
-   */
   public void assertLogic() {
 
     //-----------------------ONE iteration of Block ASSERTION CHECKING------------------------------
-    //while (myZone.get(currBlock.getNumber()) != null) {
     for (Block currBlock : myZone.values()) {
-
-      //System.out.println("CurrBlock: " + currBlock.getNumber());
-
-      //-------------------------------------------------------------------------------------
 
       //Check for valid blocks to apply BLOCK LOGIC to
       //-------------------------------------------------------------------------------------
@@ -572,7 +457,6 @@ public class TrackController implements TrackControllerInterface {
               block = block.substring(1, block.length() - 1);
               int blockNum = Integer.parseInt(block);
 
-              // TODO: test this method for getting occupancy
               Block crossCheck = myZone.get(blockNum);
 
               if (crossCheck != null) {
@@ -595,63 +479,14 @@ public class TrackController implements TrackControllerInterface {
             }
           }
         }
+      }
 
-      } else if (currBlock.isOccupied() && !currBlock.isSwitch()) {
-
-        if (currBlock.isLeftStation() || currBlock.isRightStation()) {
-
-          for (int j = 0; j < blockInputTerms.size(); j++) {
-
-            String[] currTerm = blockInputTerms.get(j);
-
-            String s = currTerm[1].substring(1, 2);
-            String bstring = currTerm[1].substring(2, currTerm[1].length() - 1);
-
-            int checkBlocks = Integer.parseInt(bstring);
-            char sign = s.toCharArray()[0];
-
-            // Station found, check station terms
-            if (currTerm[2].contains("Freezing")) {
-              if (currTerm[2].equals("isFreezing")) {
-
-              } else if (currTerm[2].equals("notFreezing")) {
-
-              } else {
-                //Invalid function name
-              }
-            }
-          }
-
+      if (currBlock.isLeftStation() || currBlock.isRightStation()) {
+        if (currBlock.isFreezing()) {
+          currBlock.setHeated(true);
+        } else {
+          currBlock.setHeated(false);
         }
-      } else if (currBlock.isClosedForMaintenance()) {
-
-        // How to handle occupied blocks closed for maintenance
-        // Likely just like a train/station that is occuppied, stop all
-        // things coming toward it.
-        for (int j = 0; j < blockInputTerms.size(); j++) {
-
-          String[] currTerm = blockInputTerms.get(j);
-
-          String s = currTerm[1].substring(1, 2);
-          String bstring = currTerm[1].substring(2, currTerm[1].length() - 1);
-
-          int checkBlocks = Integer.parseInt(bstring);
-          char sign = s.toCharArray()[0];
-
-          if (currTerm[2].contains("Broken")) {
-            if (currTerm[2].equals("isBroken")) {
-              //TODO
-            } else if (currTerm[2].equals("notBroken")) {
-
-            } else {
-              //Invalid function name
-            }
-          }
-        }
-
-      } else {
-
-
       }
       //-------------------------------------------------------------------------------------
 
@@ -660,7 +495,6 @@ public class TrackController implements TrackControllerInterface {
       if (currBlock.isSwitch()) {
 
         Switch currSwitch = (Switch) currBlock;
-        boolean preferred = true; //(false = nb2 true = nb1)
 
         // DEBUG: when a train is still on a switch, don't change the switch
         if (currSwitch.isOccupied()) {
@@ -721,16 +555,6 @@ public class TrackController implements TrackControllerInterface {
             } else {
               //Invalid function name
             }
-          } else if (currInputTerm[2].contains("moving")) {
-
-            //MOVING
-            if (currInputTerm[2].equals("movingTo")) {
-
-            } else if (currInputTerm[2].equals("movingFrom")) {
-
-            } else {
-              //Invalid function name
-            }
           } else if (currInputTerm[2].equals("ignore")) {
             term1 = true;
           } else {
@@ -740,7 +564,6 @@ public class TrackController implements TrackControllerInterface {
           }
 
           //---------------------------------------------------------
-
 
           // NextBlock1 term [3-5]
           if (!currInputTerm[3].contains("n1block")) {
@@ -759,16 +582,6 @@ public class TrackController implements TrackControllerInterface {
               term2 = isOccupied(currSwitch.getNextBlock1(), sign, checkBlocks);
             } else if (currInputTerm[5].equals("notOccupied")) {
               term2 = !isOccupied(currSwitch.getNextBlock1(), sign, checkBlocks);
-            } else {
-              //Invalid function name
-            }
-          } else if (currInputTerm[5].contains("moving")) {
-
-            //MOVING
-            if (currInputTerm[5].equals("movingTo")) {
-
-            } else if (currInputTerm[5].equals("movingFrom")) {
-
             } else {
               //Invalid function name
             }
@@ -800,16 +613,6 @@ public class TrackController implements TrackControllerInterface {
               term3 = isOccupied(currSwitch.getNextBlock2(), sign, checkBlocks);
             } else if (currInputTerm[8].equals("notOccupied")) {
               term3 = !isOccupied(currSwitch.getNextBlock2(), sign, checkBlocks);
-            } else {
-              //Invalid function name
-            }
-          } else if (currInputTerm[8].contains("moving")) {
-
-            //MOVING
-            if (currInputTerm[8].equals("movingTo")) {
-
-            } else if (currInputTerm[8].equals("movingFrom")) {
-
             } else {
               //Invalid function name
             }
@@ -870,35 +673,11 @@ public class TrackController implements TrackControllerInterface {
             } else {
               System.out.println("Invalid switch state detected");
             }
-
-            //TODO: send CTC signals based on above input
-
-
-          } else {
-            //No check required
-            //TODO: send CTC signals here?
           }
 
         }
       } //--------------------END IS SWITCH---------------------------------------------
 
     } //-------------- END CURRBLOCK ITERATION
-    //TODO these will be voted upon or updated prior to asserting on the track based on above logic
-//    for (Integer index : myZone.keySet()) {
-//
-//      if (myZone.get(index) != null) {
-//        Block update = myZone.get(index);
-//
-//        if (ctcAuthCurrent.get(index) != null) {
-//          update.setAuthority(ctcAuthCurrent.get(index));
-//          System.out.println("Auth " + index + ": " + ctcAuthCurrent.get(index));
-//        }
-//        if (ctcSpeedCurrent.get(index) != null) {
-//          update.setSetPointSpeed(Math.abs(ctcSpeedCurrent.get(index)));
-//          System.out.println("Speed " + index + ": " + ctcSpeedCurrent.get(index));
-//
-//        }
-//      }
-//    }
   }
 }
