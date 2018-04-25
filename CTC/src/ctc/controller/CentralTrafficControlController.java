@@ -847,8 +847,8 @@ public class CentralTrafficControlController {
       Schedule schedule =  new Schedule(line);
       int numberOfStops = 0;
       for (int i = 0; i < addScheduleTable.getItems().size(); i++) {
-        schedule.addStop(new ScheduleRow(stopData.get(i), dwellData.get(i), ""));
         if (stopData.get(i).compareTo("") != 0) {
+          schedule.addStop(new ScheduleRow(stopData.get(i), dwellData.get(i), ""));
           numberOfStops++;
         }
       }
