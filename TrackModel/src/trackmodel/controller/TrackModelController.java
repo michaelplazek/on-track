@@ -116,6 +116,7 @@ public class TrackModelController {
         String content = block.getStationName() + " STATION";
         content += "\nStation Temperature:\t\t" + block.getTemperature();
         content += "\nPassengers Waiting:\t\t" + block.getPassengersWaiting();
+        content += "\nTotal Passenger Exit Here:\t" + block.getNumberToExit();
 
         alert.setContent(content);
 
