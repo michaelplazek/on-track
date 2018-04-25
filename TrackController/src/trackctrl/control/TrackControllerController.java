@@ -43,8 +43,6 @@ public class TrackControllerController implements Initializable {
   //Buttons
   @FXML
   private Button importLogic;
-  @FXML
-  private Button checkLogic;
 
   //Radio Buttons
   @FXML
@@ -174,7 +172,6 @@ public class TrackControllerController implements Initializable {
             sel = sel.split(" ")[1];
             selBlock = myController.getBlock(Integer.parseInt(sel));
 
-            //TODO: this may be redundant, remove later
             if (!selBlock.isCrossing()) {
               closedRad.setDisable(true);
               openRad.setDisable(true);
@@ -187,9 +184,6 @@ public class TrackControllerController implements Initializable {
               resetLightSwitch();
               disableLights();
             }
-
-            //updateControllerInterface(Integer.parseInt(sel));
-            //TODO this should get connected to the clock
             checkRadios();
             disableLights();
             run();
@@ -220,7 +214,6 @@ public class TrackControllerController implements Initializable {
   private void handleLightGroup(ActionEvent event) {
 
     if (lightGroup.getSelectedToggle().equals(lightMainLtoR)) {
-      //TODO actually call track controller functions for this
       setMainLightsLtoR();
     } else if (lightGroup.getSelectedToggle().equals(lightForkLtoR)) {
       setForkLightsLtoR();
@@ -278,20 +271,15 @@ public class TrackControllerController implements Initializable {
   }
 
   private void handleImportLogic(ActionEvent event) {
-    FileChooser fileChooser = new FileChooser();
-    fileChooser.setTitle("Choose a PLC  file");
-    fileChooser.getExtensionFilters()
-        .addAll(new FileChooser.ExtensionFilter("PLC Files", ".plc", ".csv"));
 
-    File inFile = fileChooser.showOpenDialog((Stage) importLogic.getScene().getWindow());
+    // create file chooser
+    FileChooser fc = new FileChooser();
+    fc.setTitle("Choose schedule");
 
-    myController.importLogic(inFile);
-  }
-
-  //TODO
-  private void handleCheckLogic(ActionEvent event) {
-    if (!(myController.checkLogic())) {
-
+    // open file and import
+    File file = fc.showOpenDialog((Stage) importLogic.getScene().getWindow());
+    if (file != null) {
+      myController.importLogic(file);
     }
   }
 
@@ -717,6 +705,5 @@ public class TrackControllerController implements Initializable {
     updateBlockStatus();
 
     importLogic.setOnAction(this::handleImportLogic);
-    checkLogic.setOnAction(this::handleCheckLogic);
   }
 }

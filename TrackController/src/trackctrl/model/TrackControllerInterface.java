@@ -11,15 +11,10 @@ public interface TrackControllerInterface {
   //To be set by the CTC
   boolean sendTrackSignals(int blockId, Authority speed, float authority);
 
-  //To be called by TrackController and/or CTC
-  boolean setInfrastructureState(int block, boolean state);
-
   //To be called by TrackControllerLineManager
   boolean setId(int id);
 
   boolean setLine(String lineName);
-
-  int getBlockCount();
 
   boolean getOccupancy(int id);
 
@@ -43,9 +38,5 @@ public interface TrackControllerInterface {
 
   //To be called within TrackController
   boolean importLogic(File myplc);
-
-  boolean checkLogic();
-
-  boolean parseLogic(String inFile);
 
 }

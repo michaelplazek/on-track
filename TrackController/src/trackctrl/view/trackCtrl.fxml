@@ -227,8 +227,7 @@
                            </children>
                         </Group>
                         <Separator layoutX="128.0" layoutY="8.0" orientation="VERTICAL" prefHeight="155.0" prefWidth="8.0" />
-                        <Button fx:id="importLogic" layoutX="4.0" layoutY="82.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="122.0" text="Import PLC" />
-                        <Button fx:id="checkLogic" layoutX="4.0" layoutY="125.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="122.0" text="Refresh" />
+                        <Button fx:id="importLogic" layoutX="4.0" layoutY="83.0" mnemonicParsing="false" prefHeight="72.0" prefWidth="122.0" text="Import PLC" />
                         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e1e1e1" height="20.0" layoutX="294.0" layoutY="8.0" stroke="BLACK" strokeType="INSIDE" styleClass="box" width="73.0" />
                         <Label layoutX="306.0" layoutY="9.0" text="Switch ">
                            <font>
