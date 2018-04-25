@@ -139,7 +139,7 @@ public class CentralTrafficControlController {
     // update train status light
     TrainTracker train = dispatchTable.getSelectionModel().getSelectedItem();
     if (train != null) {
-      if (train.isStopped()) {
+      if (train.isStopped() || train.isWaitingForAuthority()) {
         trainStatus.setFill(Paint.valueOf("Red"));
       } else {
         trainStatus.setFill(Paint.valueOf("#24c51b"));
@@ -225,7 +225,7 @@ public class CentralTrafficControlController {
           if (tracker == null) {
             setStyle("");
           } else {
-            if (tracker.isStopped()) {
+            if (tracker.isStopped() || tracker.isWaitingForAuthority()) {
               row.setStyle("-fx-selection-bar-non-focused: salmon;"
                   + "-fx-selection-bar: salmon;");
             } else {
@@ -746,10 +746,14 @@ public class CentralTrafficControlController {
         list.add(trainStop);
       }
 
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      e.printStackTrace();
+    } catch (Exception e) {
+      AlertWindow alert = new AlertWindow();
+
+      alert.setTitle("File Error");
+      alert.setHeader("Issue Loading Schedule");
+      alert.setContent("Could not import the file. Please try again.");
+
+      alert.show();
     } finally {
 
       // set the image
@@ -1050,15 +1054,18 @@ public class CentralTrafficControlController {
       // get block of of authority
       Track track = Track.getListOfTracks().get(line);
       String blockId = setAuthorityBlocks.getSelectionModel().getSelectedItem();
-      Block end = track.getBlock(Integer.parseInt(blockId.replaceAll("[\\D]", "")));
+
+      Block end = blockId.compareTo("Yard") == 0 ? track.getBlock(-1)
+          : track.getBlock(Integer.parseInt(blockId.replaceAll("[\\D]", "")));
       Block location = train.getLocation();
 
       // make new route with the new authority
-      Route route = new Route(location, end, line, train);
+      Route route = train.getRoute().reroute(location, end);
       train.setRoute(route);
 
       // let the TrainTracker know that it has a new authority
       train.setWaitingForAuthority(false);
+      train.setDone(false);
 
       // get new authority that is set inside of setRoute
       Authority authority = train.getAuthority();
@@ -1105,7 +1112,7 @@ public class CentralTrafficControlController {
       if (trains.get(i).getDeparture().equals(clock.getFormattedTime())
           && !ctc.getDispatchTable().contains(trains.get(i))
           && ctc.isActive()
-          && controller.getOccupancy(track.getStartBlock().getNumber())) {
+          && !controller.getOccupancy(track.getStartBlock().getNumber())) {
         autoDispatchTrain(i);
       }
     }

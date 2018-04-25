@@ -60,4 +60,8 @@ public interface TrainModelInterface {
 
   void setPowerCommand(double powerCommand);
 
+  void changeAdvertisement(int index);
+
+
+
 }

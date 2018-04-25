@@ -39,6 +39,8 @@ public class TrainController implements TrainControllerInterface {
   private HashMap<Integer, Beacon> beacons;
   private double weight;
   private byte blocksLeft;
+  private long adCounter;
+  private int adIndex;
 
   private TrainModelInterface trainModel;
   private SimpleStringProperty id;
@@ -102,6 +104,8 @@ public class TrainController implements TrainControllerInterface {
     this.rightDoorStatus = new SimpleObjectProperty<>(trainModel.getRightDoorStatus());
     this.leftDoorStatus = new SimpleObjectProperty<>(trainModel.getLeftDoorStatus());
     this.lightStatus = new SimpleObjectProperty<>(trainModel.getLightStatus());
+    this.adCounter = 0;
+    this.adIndex = 0;
   }
 
   /**
@@ -115,7 +119,8 @@ public class TrainController implements TrainControllerInterface {
     if (beacons.get(signal.getBlockId()) == null) {
       beacon = new Beacon(signal);
       beacons.put(signal.getBlockId(), beacon);
-      if (signal.getStationId() >= 0 && authority.getValue() == AuthorityCommand.STOP_AT_NEXT_STATION) {
+      if (signal.getStationId() >= 0
+          && authority.getValue() == AuthorityCommand.STOP_AT_NEXT_STATION) {
         distanceToStation = signal.getDistance();
         setCurrentStation(Track.getListOfTracks().get(getLine())
             .getStationList().get(signal.getStationId() - 1));
@@ -139,25 +144,27 @@ public class TrainController implements TrainControllerInterface {
         setDriverSetSpeed(speed);
       }
     }
-    if (authority != null && getAuthority() != authority.getAuthorityCommand()) {
-      this.authority.set(authority.getAuthorityCommand());
+    if (authority != null) {
       this.blocksLeft = authority.getBlocksLeft();
-      switch (authority.getAuthorityCommand()) {
-        case SERVICE_BRAKE_STOP:
-          setMode(Mode.CTC_BRAKE);
-          break;
-        case STOP_AT_END_OF_ROUTE:
-        case SEND_POWER:
-          setMode(Mode.NORMAL);
-          break;
-        case STOP_AT_LAST_STATION:
-        case STOP_AT_NEXT_STATION:
-          setMode(Mode.STATION_BRAKE);
-          break;
-        case EMERGENCY_BRAKE_STOP:
-        default:
-          setMode(Mode.CTC_EMERGENCY_BRAKE);
-          break;
+      if (getAuthority() != authority.getAuthorityCommand()) {
+        this.authority.set(authority.getAuthorityCommand());
+        switch (authority.getAuthorityCommand()) {
+          case SERVICE_BRAKE_STOP:
+            setMode(Mode.CTC_BRAKE);
+            break;
+          case STOP_AT_END_OF_ROUTE:
+          case SEND_POWER:
+            setMode(Mode.NORMAL);
+            break;
+          case STOP_AT_LAST_STATION:
+          case STOP_AT_NEXT_STATION:
+            setMode(Mode.STATION_BRAKE);
+            break;
+          case EMERGENCY_BRAKE_STOP:
+          default:
+            setMode(Mode.CTC_EMERGENCY_BRAKE);
+            break;
+        }
       }
     }
   }
@@ -502,5 +509,21 @@ public class TrainController implements TrainControllerInterface {
 
   public byte getBlocksLeft() {
     return blocksLeft;
+  }
+
+  public long getAdCounter() {
+    return adCounter;
+  }
+
+  public void setAdCounter(long adCounter) {
+    this.adCounter = adCounter;
+  }
+
+  public int getAdIndex() {
+    return adIndex;
+  }
+
+  public void setAdIndex(int adIndex) {
+    this.adIndex = adIndex;
   }
 }

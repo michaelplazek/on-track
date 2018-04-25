@@ -207,7 +207,8 @@ public class TrainTracker {
       authority.setAuthorityCommand(AuthorityCommand.SERVICE_BRAKE_STOP);
     }
 
-    authority.setBlocksLeft(((this.route.getSize() - 1) - this.route.getCurrentIndex()) > 31
+    authority.setBlocksLeft((((this.route.getSize() - 1) - this.route.getCurrentIndex()) > 31
+        || route.getLast().getNumber() == -1)
         ? 31 : (byte) ((this.route.getSize() - 1) - this.route.getCurrentIndex()));
 
     controller.sendTrackSignals(location.getNumber(), authority, speed);
@@ -360,6 +361,10 @@ public class TrainTracker {
     return isDone;
   }
 
+  public void setDone(boolean isDone) {
+    this.isDone = isDone;
+  }
+
   public Route getRoute() {
     return route;
   }
@@ -368,7 +373,7 @@ public class TrainTracker {
     isWaitingForAuthority = waitingForAuthority;
   }
 
-  boolean isWaitingForAuthority() {
+  public boolean isWaitingForAuthority() {
     return isWaitingForAuthority;
   }
 }

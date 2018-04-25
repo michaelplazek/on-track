@@ -37,10 +37,10 @@ public class Switch extends Block {
   public Switch(String line, String section, int number, float length,
                 float grade, int speedLimit, String infrastructure, float elevation,
                 float cumElevation, boolean biDirectional, int previous, int next1,
-                int next2, boolean leftDoors, boolean rightDoors, Beacon beacon) {
+                int next2, boolean leftDoors, boolean rightDoors, Beacon beacon, int temp) {
 
     super(line, section, number, length, grade, speedLimit, infrastructure, elevation,
-        cumElevation, biDirectional, previous, next1, leftDoors, rightDoors, beacon);
+        cumElevation, biDirectional, previous, next1, leftDoors, rightDoors, beacon, temp);
     this.next2 = next2;
     this.status = next1;
     this.switchState = true;

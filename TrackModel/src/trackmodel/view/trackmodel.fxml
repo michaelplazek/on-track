@@ -14,8 +14,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-
-<SplitPane id="root" dividerPositions="0.3965744400527009" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="420.0" prefWidth="749.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="trackmodel.controller.TrackModelController">
+<SplitPane id="root" dividerPositions="0.3965744400527009" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="420.0" prefWidth="749.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="trackmodel.controller.TrackModelController">
     <items>
         <AnchorPane prefHeight="391.0" prefWidth="195.0">
             <children>
@@ -82,9 +81,9 @@
                                                 <Label layoutX="270.0" layoutY="41.0" prefHeight="17.0" prefWidth="77.0" text="Occupied" />
                                                 <Label layoutX="270.0" layoutY="58.0" prefHeight="17.0" prefWidth="99.0" text="Underground" />
                                                 <Label layoutX="270.0" layoutY="75.0" prefHeight="17.0" prefWidth="99.0" text="Rail Crossing" />
-                                                <Label layoutX="270.0" layoutY="92.0" prefHeight="17.0" prefWidth="77.0" text="Beacon" />
+                                                <Label fx:id="beaconLabel" layoutX="270.0" layoutY="92.0" prefHeight="17.0" prefWidth="77.0" text="Beacon" />
                                                 <Label layoutX="270.0" layoutY="109.0" prefHeight="17.0" prefWidth="99.0" text="Track Heating" />
-                                                <Label layoutX="270.0" layoutY="126.0" prefHeight="17.0" prefWidth="77.0" text="Station" />
+                                                <Label fx:id="stationLabel" layoutX="270.0" layoutY="126.0" prefHeight="17.0" prefWidth="77.0" text="Station" />
                                                 <Label layoutX="2.0" layoutY="115.0" prefHeight="17.0" prefWidth="77.0" text="FAILURES" />
                                                 <Label layoutX="20.0" layoutY="136.0" prefHeight="17.0" prefWidth="77.0" text="Rail" />
                                                 <Label layoutX="20.0" layoutY="153.0" prefHeight="17.0" prefWidth="77.0" text="Power" />

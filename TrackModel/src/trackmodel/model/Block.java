@@ -20,6 +20,9 @@ public class Block {
   private int speedLimit;
   private float elevation;
   private float cumElevation;
+  private int temp;
+  private int passengersWaiting;
+  private int numberToExit;
 
   //Infrastructure
   private String stationName = "";
@@ -76,7 +79,7 @@ public class Block {
   public Block(String line, String section, int number, float length,
                float grade, int speedLimit, String infrastructure, float elevation,
                float cumElevation, boolean isBiDirectional, int previous, int next1,
-               boolean leftStation, boolean rightStation, Beacon blockBeacon) {
+               boolean leftStation, boolean rightStation, Beacon blockBeacon, int temp) {
 
     setLine(line);
     setSection(section);
@@ -97,6 +100,20 @@ public class Block {
     setLeftStation(leftStation);
     setRightStation(rightStation);
     setBeaconValues(blockBeacon);
+    setTemperature(temp);
+    setRandomPassengers();
+  }
+
+  public void setTemperature(int temp) {
+    this.temp = temp;
+  }
+
+  public int getTemperature() {
+    return this.temp;
+  }
+
+  public boolean isFreezing() {
+    return this.temp <= 38;
   }
 
   public String getLine() {
@@ -197,10 +214,33 @@ public class Block {
     Random randomPassengers = new Random();
     int passengers = randomPassengers.nextInt(availableSeats);
 
+    if (passengers > passengersWaiting) {
+      passengers = passengersWaiting;
+    }
+
+    this.passengersWaiting = this.passengersWaiting - passengers;
+
     // set passengers for train in CTC
     CentralTrafficControl.getInstance().addPassengers(this, passengers);
 
     return passengers; // return number of passenger to TrainModel
+  }
+
+  public int getPassengersWaiting() {
+    return passengersWaiting;
+  }
+
+  /**
+   * This method will set the number of passengers at a station.
+   */
+  public void setRandomPassengers() {
+    Random randomPassengers = new Random();
+    int passengers = randomPassengers.nextInt(200) + 100;
+
+    if (this.stationName.equals("")) {
+      passengers = 0;
+    }
+    this.passengersWaiting = passengers;
   }
 
   public String getStationName() {

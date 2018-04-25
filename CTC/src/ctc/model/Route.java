@@ -10,11 +10,11 @@ public class Route {
   private LinkedList<Block> route;
   private Block start;
   private Block end;
-  private int currentIndex;
   private Track line;
   private TrainTracker train;
   private String nextStation;
-  private int nextStationIndex;
+  private int currentIndex = 0;
+  private int nextStationIndex = 0;
 
   /**
    * Default constructor.
@@ -23,8 +23,6 @@ public class Route {
 
     this.line = Track.getListOfTracks().get(line);
     this.train = train;
-    this.nextStationIndex = 0;
-    this.currentIndex = 0;
     this.route = new LinkedList<>();
   }
 
@@ -37,9 +35,8 @@ public class Route {
 
     this.line = Track.getListOfTracks().get(line);
     this.train = train;
-    this.nextStationIndex = 0;
-    this.currentIndex = 0;
     createRoute(this.line.getStartBlock(), end);
+    this.nextStationIndex = 0;
   }
 
   /**
@@ -52,9 +49,12 @@ public class Route {
 
     this.line = Track.getListOfTracks().get(line);
     this.train = train;
-    this.nextStationIndex = 0;
-    this.currentIndex = 0;
     createRoute(start, end);
+  }
+
+  public Route reroute(Block start, Block end) {
+    createRoute(start, end);
+    return this;
   }
 
   Block getNext() {
@@ -237,6 +237,10 @@ public class Route {
       // add next block - switch - to path
       path.add(next);
 
+      if (next == end) {
+        return;
+      }
+
       Block fork = line.getNextBlock2(next.getNumber(), current.getNumber());
       Block straight = line.getNextBlock(next.getNumber(), current.getNumber());
       Block after;
@@ -304,10 +308,11 @@ public class Route {
       Block current = line.getNextBlock(start.getNumber(), -1);
       traverse(current, line.getBlock(current.getPreviousBlock()), path);
     } else {
-      traverse(start, line.getBlock(start.getPreviousBlock()), path);
+      traverse(start, getPrevious(), path);
     }
 
-    nextStationIndex = 0; // reset index
+    currentIndex = 0;
+
     path.add(end);
     this.route = path;
   }
