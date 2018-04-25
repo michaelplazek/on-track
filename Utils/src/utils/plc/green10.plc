@@ -1,6 +1,6 @@
 BLOCK LOGIC
-IF (station52 |+5| isOccupied) THEN (station /57/ stop)
-IF (station59 |+6| isOccupied) THEN (station /65/ stop)
+IF (station52 |+4| isOccupied) THEN (station /57/ stop)
+IF (station59 |+5| isOccupied) THEN (station /65/ stop)
 SWITCH LOGIC
 IF (pblock57 |-6| isOccupied) AND (n1block57 |+4| notOccupied) AND (n2block57 |d0| ignore) THEN (switch /57/ switchN2)
 IF (pblock57 |-6| notOccupied) AND (n1block57 |+4| isOccupied) AND (n2block57 |d0| ignore) THEN (switch /57/ switchN2)
