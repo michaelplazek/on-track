@@ -12,6 +12,7 @@ import trackmodel.model.Switch;
 import trackmodel.model.Track;
 import traincontroller.enums.Mode;
 import trainmodel.model.TrainModelInterface;
+import utils.general.AuthorityCommand;
 import utils.train.DoorStatus;
 import utils.train.Failure;
 import utils.train.OnOffStatus;
@@ -35,6 +36,22 @@ public class PowerCalculator {
       updateTemperature(tc);
       updateLights(tc);
       updateModelValues(tc);
+      updateAds(tc);
+    }
+  }
+
+  static void updateAds(TrainController tc) {
+    long adCounter = tc.getAdCounter() + clock.getChangeInTime();
+    int adIndex = tc.getAdIndex();
+    if (tc.getAuthority() == AuthorityCommand.STOP_AT_LAST_STATION) {
+      tc.getTrainModel().changeAdvertisement(0);
+    } else if (adCounter > 60000) {
+      adIndex = (adIndex + 1) % (TrainData.advertisements.size() - 1);
+      tc.getTrainModel().changeAdvertisement(adIndex + 1); //since zero is get off
+      tc.setAdCounter(0);
+      tc.setAdIndex(adIndex);
+    } else {
+      tc.setAdCounter(adCounter);
     }
   }
 
@@ -162,10 +179,10 @@ public class PowerCalculator {
     TrainModelInterface tm = tc.getTrainModel();
     double currentTemp = tm.getCurrentTemp();
     double setTemperature = tc.getSetTemperature();
-    if (currentTemp <= setTemperature) {
+    if (currentTemp <= setTemperature - 0.005) {
       tm.setHeaterStatus(OnOffStatus.ON);
       tm.setAcStatus(OnOffStatus.OFF);
-    } else if (currentTemp >= setTemperature) {
+    } else if (currentTemp >= setTemperature + 0.005) {
       tm.setAcStatus(OnOffStatus.ON);
       tm.setHeaterStatus(OnOffStatus.OFF);
     } else {
@@ -212,9 +229,15 @@ public class PowerCalculator {
     double kp = tc.getKp();
     double ki = tc.getKi();
     double integral;
-    double speedLimit = getSpeedLimit(tc, getSafeStopDistance(tc)) * 1000.0 / 3600.0;
+    double safeStoppingDistance = getSafeStopDistance(tc);
+    double speedLimit = getSpeedLimit(tc, safeStoppingDistance) * 1000.0 / 3600.0;
+    double endOfRoute = Double.MAX_VALUE;
+    if (tc.getBlocksLeft() < 10) {
+      endOfRoute = getDistanceLeft(tc);
+    }
 
-    if (currentSpeed > setSpeed || currentSpeed > speedLimit) {
+    if (currentSpeed > setSpeed || currentSpeed > speedLimit
+        || endOfRoute <= safeStoppingDistance + 10) {
       activateServiceBrake(tc);
       tc.setPowerCommand(0);
     } else {
@@ -244,7 +267,7 @@ public class PowerCalculator {
 
   private static double recursiveSpeedLimit(Block currentBlock, Block lastBlock,
                                             double remainingDistance) {
-    if (currentBlock == null) {
+    if (currentBlock == null || currentBlock.getNumber() == -1) {
       return 70;
     } else if (Double.isNaN(remainingDistance)) {
       return currentBlock.getSpeedLimit();
@@ -263,6 +286,34 @@ public class PowerCalculator {
           track.getNextBlock2(currentBlock.getNumber(), currentBlock.getPreviousBlock()),
           currentBlock, remainingDistance));
       }
+    }
+    return min;
+  }
+
+  private static double getDistanceLeft(TrainController tc) {
+    double min = recursiveDistanceLeft(tc.getCurrentBlock(),
+        tc.getLastBlock(), tc.getBlocksLeft()) - tc.getDistanceIntoCurrentBlock();
+    return tc.getBlocksLeft() == 0 ? min : min + 10;
+  }
+
+  private static double recursiveDistanceLeft(Block currentBlock, Block lastBlock,
+                                            double blocksLeft) {
+    if (currentBlock == null || currentBlock.getNumber() == -1) {
+      return Double.MAX_VALUE;
+    }
+    double min;
+    Track track = Track.getTrack(currentBlock.getLine());
+    if (blocksLeft <= 0) {
+      min = 0;
+    } else {
+      min = recursiveDistanceLeft(nextBlock(currentBlock, lastBlock, track),
+          currentBlock, blocksLeft - 1);
+      if (currentBlock.isSwitch()) {
+        min = Math.min(min, recursiveDistanceLeft(
+            track.getNextBlock2(currentBlock.getNumber(), currentBlock.getPreviousBlock()),
+            currentBlock, blocksLeft - 1));
+      }
+      min += currentBlock.getSize();
     }
     return min;
   }
