@@ -12,7 +12,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="root" fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="root" fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <TitledPane fx:id="failuresPane" animated="false" collapsible="false" text="Failures" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <content>
@@ -67,7 +67,7 @@
                <content>
                   <HBox spacing="10.0">
                      <children>
-                        <VBox alignment="TOP_CENTER">
+                        <VBox alignment="TOP_CENTER" spacing="1.0">
                            <children>
                               <HBox alignment="CENTER_LEFT">
                                  <children>
@@ -165,7 +165,7 @@
                <content>
                   <HBox spacing="10.0">
                      <children>
-                        <VBox alignment="TOP_CENTER">
+                        <VBox alignment="TOP_CENTER" spacing="1.0">
                            <children>
                               <HBox alignment="CENTER_LEFT">
                                  <children>
@@ -212,7 +212,7 @@
                               <HBox alignment="CENTER_RIGHT" spacing="5.0">
                                  <children>
                                     <Label fx:id="powerOutputStatus" text="Label" />
-                                    <Label text="(watts)" />
+                                    <Label text="(kW)" />
                                  </children>
                               </HBox>
                               <HBox alignment="CENTER_RIGHT">
@@ -235,7 +235,7 @@
                <content>
                   <HBox spacing="10.0">
                      <children>
-                        <VBox alignment="TOP_CENTER">
+                        <VBox alignment="TOP_CENTER" spacing="1.0">
                            <children>
                               <HBox alignment="CENTER_LEFT">
                                  <children>
@@ -303,7 +303,7 @@
                <content>
                   <HBox spacing="10.0">
                      <children>
-                        <VBox alignment="TOP_CENTER">
+                        <VBox alignment="TOP_CENTER" spacing="1.0">
                            <children>
                               <HBox alignment="CENTER_LEFT">
                                  <children>
@@ -361,6 +361,15 @@
                                        </font></Label>
                                  </children>
                               </HBox>
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <Label text="Ad:">
+                                       <font>
+                                          <Font name="Arial Bold" size="13.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </HBox>
                            </children>
                         </VBox>
                         <VBox alignment="TOP_CENTER">
@@ -388,12 +397,12 @@
                               <HBox alignment="CENTER_RIGHT">
                                  <children>
                                     <Label fx:id="cabinTemp" text="Label" />
+                                    <Label fx:id="degrees" text="D" />
                                     <Label text="F">
                                        <HBox.margin>
                                           <Insets left="2.0" />
                                        </HBox.margin>
                                     </Label>
-                                    <Label fx:id="degrees" text="D" />
                                  </children>
                               </HBox>
                               <HBox alignment="CENTER_RIGHT">
@@ -404,6 +413,11 @@
                               <HBox alignment="CENTER_RIGHT">
                                  <children>
                                     <Label fx:id="acStatus" text="Label" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_RIGHT">
+                                 <children>
+                                    <Label fx:id="adLabel" text="Label" />
                                  </children>
                               </HBox>
                            </children>
@@ -420,7 +434,7 @@
                <children>
                   <VBox spacing="5.0">
                      <children>
-                        <Button fx:id="demoButton" mnemonicParsing="false" text="Demo Acceleration" />
+                        <Button fx:id="demoButton" mnemonicParsing="false" text="Demo Last Stop" />
                         <Button fx:id="toggleLights" mnemonicParsing="false" text="Toggle Lights" />
                      </children>
                   </VBox>
@@ -439,7 +453,7 @@
                   <VBox spacing="5.0">
                      <children>
                         <Button mnemonicParsing="false" text="Demo heatTrain()" />
-                        <Button mnemonicParsing="false" text="Demo" />
+                        <Button fx:id="demoAds" mnemonicParsing="false" text="Demo Ads" />
                      </children>
                   </VBox>
                </children>

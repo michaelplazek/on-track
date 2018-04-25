@@ -68,6 +68,8 @@ public class TrainModel implements TrainModelInterface {
   private DoubleProperty powerCommand = new SimpleDoubleProperty(0); //In kilo Watts.
   private IntegerProperty numPassengers = new SimpleIntegerProperty(0);
 
+  private StringProperty advertisement = new SimpleStringProperty(TrainData.advertisements.get(1));
+
   private ObjectProperty<OnOffStatus> lightStatus
       = new SimpleObjectProperty<>(OnOffStatus.OFF);
   private ObjectProperty<DoorStatus> rightDoorStatus
@@ -388,20 +390,6 @@ public class TrainModel implements TrainModelInterface {
   }
 
   /**
-   * Slows train down if brakes are engaged.
-   */
-  private void checkBrakes() {
-    double deceleration;
-    if (emergencyBrakeStatus.getValue() == OnOffStatus.ON) {
-      deceleration = TrainData.EMERGENCY_BRAKE_ACCELERATION * (clock.getChangeInTime() / 1000);
-      velocity.set(velocity.get() + deceleration);
-    } else if (serviceBrakeStatus.getValue() == OnOffStatus.ON) {
-      deceleration = TrainData.SERVICE_BRAKE_ACCELERATION * (clock.getChangeInTime() / 1000);
-      velocity.set(velocity.get() + deceleration);
-    }
-  }
-
-  /**
    * Helper method to return true if a change in distance crosses block boarders.
    * @return true if train crosses block boarder, false otherwise.
    */
@@ -440,6 +428,11 @@ public class TrainModel implements TrainModelInterface {
     if (currentBlock != null) {
       addPassengers(currentBlock.getPassengers(TrainData.MAX_PASSENGERS - numPassengers.get()));
     }
+
+    //If the advertisement is last Stop kick all passengers off
+    if (advertisement.get().equals(TrainData.advertisements.get(0))) {
+      removePassengers(this.numPassengers.get());
+    }
   }
 
   /**
@@ -450,6 +443,11 @@ public class TrainModel implements TrainModelInterface {
     randomPassengersLeave();
     if (currentBlock != null) {
       addPassengers(currentBlock.getPassengers(TrainData.MAX_PASSENGERS - numPassengers.get()));
+    }
+
+    //If the advertisement is last Stop kick all passengers off
+    if (advertisement.get().equals(TrainData.advertisements.get(0))) {
+      removePassengers(this.numPassengers.get());
     }
   }
 
@@ -483,6 +481,7 @@ public class TrainModel implements TrainModelInterface {
     double deltaTemp = deltaTime * TrainData.TEMPERATURE_RATE_OF_CHANGE;
     currentTemp.setValue(currentTemp.getValue() + deltaTemp);
   }
+
 
   /**
    * Setters.
@@ -539,6 +538,11 @@ public class TrainModel implements TrainModelInterface {
   @Override
   public void setPowerCommand(double powerCommand) {
     this.powerCommand.set(powerCommand);
+  }
+
+  @Override
+  public void changeAdvertisement(int index) {
+    advertisement.set(TrainData.advertisements.get(index));
   }
 
   public void setController(TrainControllerInterface controller) {
@@ -740,6 +744,10 @@ public class TrainModel implements TrainModelInterface {
 
   public ObjectProperty<OnOffStatus> acStatusProperty() {
     return acStatus;
+  }
+
+  public StringProperty advertisementProperty() {
+    return advertisement;
   }
 
   public int getCapacityOfTrain() {

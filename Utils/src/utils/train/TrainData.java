@@ -1,5 +1,8 @@
 package utils.train;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
  * Train data that will not change as the system runs.
  * Data is in metric.
@@ -30,4 +33,7 @@ public class TrainData {
   public static final double PASSENGER_AVG_MASS_LBS = 150;
   public static final double TEMPERATURE_RATE_OF_CHANGE = 0.00001666666;
   //1 degree per minute = 1/60000 degree per millisecond.
+
+  public static final ArrayList<String> advertisements = new ArrayList<String>(
+      Arrays.asList("Last Stop", "University of Pittsburgh", "UPMC", "Lets go Pens"));
 }
