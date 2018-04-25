@@ -22,7 +22,7 @@ public class TrainModelUserInterface {
       Parent root = loader.load();
       Stage stage = new Stage();
       stage.setTitle(trainId);
-      Scene scene = new Scene(root, 750, 350);
+      Scene scene = new Scene(root, 750, 370);
       scene.getStylesheets().add("utils/ctc_style.css");
       stage.setScene(scene);
       stage.show();
