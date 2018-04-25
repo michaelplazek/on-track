@@ -82,11 +82,15 @@ public class TrackModelController {
       if (currentTrack != null) {
         Block block = currentTrack.getBlock(blockId);
 
-        String content = "Distance to Station:\t\t" + block.getBeacon().getDistance();
-        content += "\nStation Identified:\t\t"
-            + currentTrack.getStationList().get(block.getBeacon().getStationId() - 1);
+        String content = "";
+
+        if (block.getBeacon().getStationId() != 0) {
+          content = "Distance to Station:\t\t" + block.getBeacon().getDistance();
+          content += "\nStation Identified:\t\t"
+              + currentTrack.getStationList().get(block.getBeacon().getStationId() - 1);
+          content += "\nRight Side Station:\t\t" + block.getBeacon().isRight();
+        }
         content += "\nToggle Underground:\t" + block.getBeacon().isUnderground();
-        content += "\nRight Side Station:\t\t" + block.getBeacon().isRight();
         content += "\nUser Message:\t\t\t" + block.getBeacon().getUserMessage();
 
         alert.setContent(content);
@@ -127,6 +131,10 @@ public class TrackModelController {
     start.setOnAction(this::toggleSelectedFailures);
 
     blockSelection.setDisable(true);
+
+    Track.initialize();
+
+    updateTracks();
 
     trackSelection.getSelectionModel().selectedItemProperty()
         .addListener((observableValue, oldValue, newValue) -> {
