@@ -135,22 +135,7 @@ public class PowerCalculator {
     AuthorityCommand authority = tc.getAuthority();
     if (mode == Mode.FAILURE || mode == Mode.CTC_EMERGENCY_BRAKE)  {
       activateEmergencyBrake(tc);
-    } else if (authority == AuthorityCommand.STOP_AT_LAST_STATION
-        || authority == AuthorityCommand.STOP_AT_NEXT_STATION) {
-      if (tc.isAutomatic() && (tc.getCurrentBlock().getStationName() != null
-          || nextBlock(tc.getCurrentBlock(), tc.getLastBlock(),
-              Track.getTrack(tc.getLine())).getStationName() != null)
-          && tc.getCurrentSpeed() == 0) {
-        tc.setWeight(TrainData.EMPTY_WEIGHT * TrainData.NUMBER_OF_CARS
-            + TrainData.MAX_PASSENGERS * 2 * 150 * UnitConversions.LBS_TO_KGS);
-        TrainModelInterface tm = tc.getTrainModel();
-        Beacon beacon = tc.getBeacon();
-        if (beacon.isRight() && tm.getRightDoorStatus() != DoorStatus.OPEN) {
-          tm.setRightDoorStatus(DoorStatus.OPEN);
-        } else if (!beacon.isRight() && tm.getLeftDoorStatus() != DoorStatus.OPEN) {
-          tm.setLeftDoorStatus(DoorStatus.OPEN);
-        }
-      }
+    } else if (mode == Mode.CTC_BRAKE) {
       activateServiceBrake(tc);
     } else if (mode == Mode.AT_STATION) {
       executeAtStation(tc);
@@ -174,7 +159,8 @@ public class PowerCalculator {
     }
     double velocity = tc.getTrainModel().getCurrentSpeed();
     double time = velocity / acceleration;
-    return velocity * time + .5 * acceleration * time * time;
+    double safeStopDistance = velocity * time + .5 * acceleration * time * time;
+    return safeStopDistance > 500 ? 500 : safeStopDistance;
   }
 
   static void updateTemperature(TrainController tc) {
@@ -212,15 +198,26 @@ public class PowerCalculator {
     if (tc.getBeacon() != null) {
       if (tc.getDistanceToStation() > 0 && tc.getDistanceToStation() - 1 <= safeStoppingDistance) {
         activateServiceBrake(tc);
-      } else if (Math.abs(tc.getDistanceToStation()) <= 1 && tc.getCurrentSpeed() == 0) {
-        tc.setMode(Mode.AT_STATION);
+        if (tc.getCurrentSpeed() == 0 && (tc.getCurrentBlock().getStationName() != null
+            || nextBlock(tc.getCurrentBlock(), tc.getLastBlock(),
+            Track.getTrack(tc.getLine())).getStationName() != null)
+            &&  tc.isAutomatic()) {
+          tc.setWeight(TrainData.EMPTY_WEIGHT * TrainData.NUMBER_OF_CARS
+              + TrainData.MAX_PASSENGERS * 2 * 150 * UnitConversions.LBS_TO_KGS);
+          TrainModelInterface tm = tc.getTrainModel();
+          Beacon beacon = tc.getBeacon();
+          if (beacon.isRight() && tc.getRightDoorStatus() != DoorStatus.OPEN) {
+            tc.setRightDoorStatus(DoorStatus.OPEN);
+          } else if (!beacon.isRight() && tc.getLeftDoorStatus() != DoorStatus.OPEN) {
+            tc.setLeftDoorStatus(DoorStatus.OPEN);
+          }
+        }
       } else {
         executeNormal(tc);
       }
     } else {
       executeNormal(tc);
     }
-    closeDoors(tc);
   }
 
   static void executeNormal(TrainController tc) {
