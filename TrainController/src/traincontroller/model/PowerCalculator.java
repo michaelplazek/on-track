@@ -12,6 +12,7 @@ import trackmodel.model.Switch;
 import trackmodel.model.Track;
 import traincontroller.enums.Mode;
 import trainmodel.model.TrainModelInterface;
+import utils.general.AuthorityCommand;
 import utils.train.DoorStatus;
 import utils.train.Failure;
 import utils.train.OnOffStatus;
@@ -35,6 +36,22 @@ public class PowerCalculator {
       updateTemperature(tc);
       updateLights(tc);
       updateModelValues(tc);
+      updateAds(tc);
+    }
+  }
+
+  static void updateAds(TrainController tc) {
+    long adCounter = tc.getAdCounter() + clock.getChangeInTime();
+    int adIndex = tc.getAdIndex();
+    if (tc.getAuthority() == AuthorityCommand.STOP_AT_LAST_STATION) {
+      tc.getTrainModel().changeAdvertisement(0);
+    } else if (adCounter > 60000) {
+      adIndex = (adIndex + 1) % (TrainData.advertisements.size() - 1);
+      tc.getTrainModel().changeAdvertisement(adIndex + 1); //since zero is get off
+      tc.setAdCounter(0);
+      tc.setAdIndex(adIndex);
+    } else {
+      tc.setAdCounter(adCounter);
     }
   }
 

@@ -39,6 +39,8 @@ public class TrainController implements TrainControllerInterface {
   private HashMap<Integer, Beacon> beacons;
   private double weight;
   private byte blocksLeft;
+  private long adCounter;
+  private int adIndex;
 
   private TrainModelInterface trainModel;
   private SimpleStringProperty id;
@@ -102,6 +104,8 @@ public class TrainController implements TrainControllerInterface {
     this.rightDoorStatus = new SimpleObjectProperty<>(trainModel.getRightDoorStatus());
     this.leftDoorStatus = new SimpleObjectProperty<>(trainModel.getLeftDoorStatus());
     this.lightStatus = new SimpleObjectProperty<>(trainModel.getLightStatus());
+    this.adCounter = 0;
+    this.adIndex = 0;
   }
 
   /**
@@ -502,5 +506,21 @@ public class TrainController implements TrainControllerInterface {
 
   public byte getBlocksLeft() {
     return blocksLeft;
+  }
+
+  public long getAdCounter() {
+    return adCounter;
+  }
+
+  public void setAdCounter(long adCounter) {
+    this.adCounter = adCounter;
+  }
+
+  public int getAdIndex() {
+    return adIndex;
+  }
+
+  public void setAdIndex(int adIndex) {
+    this.adIndex = adIndex;
   }
 }
