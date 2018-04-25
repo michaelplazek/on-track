@@ -55,6 +55,7 @@ public class CentralTrafficControlController {
   private CentralTrafficControl ctc = CentralTrafficControl.getInstance();
   private TrackMaintenance trackMaintenance = TrackMaintenance.getInstance();
   private TrackControllerLineManager controller;
+  private TrackControllerLineManager maintenanceController;
   private Clock clock = Clock.getInstance();
 
   /* MAIN COMPONENTS */
@@ -411,6 +412,7 @@ public class CentralTrafficControlController {
 
             trackMaintenance.setLine(newValue);
             trackMaintenance.makeBlockList();
+            this.maintenanceController = TrackControllerLineManager.getInstance(newValue);
 
             maintenanceBlocks.setItems(trackMaintenance.getBlockList());
 
@@ -628,16 +630,16 @@ public class CentralTrafficControlController {
     int blockId = extractBlock(maintenanceBlocks);
     String action = maintenanceActions.getSelectionModel().getSelectedItem();
 
-    if (controller != null) {
+    if (maintenanceController != null) {
       switch (action) {
         case "Close block":
-          controller.closeBlock(blockId);
+          maintenanceController.closeBlock(blockId);
           break;
         case "Repair block":
-          controller.repairBlock(blockId);
+          maintenanceController.repairBlock(blockId);
           break;
         case "Toggle switch":
-          controller.toggleSwitch(blockId);
+          maintenanceController.toggleSwitch(blockId);
           break;
         default:
           break;
