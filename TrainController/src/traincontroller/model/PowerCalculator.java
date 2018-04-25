@@ -132,9 +132,11 @@ public class PowerCalculator {
 
   static void executeAction(TrainController tc) {
     Mode mode = tc.getMode();
+    AuthorityCommand authority = tc.getAuthority();
     if (mode == Mode.FAILURE || mode == Mode.CTC_EMERGENCY_BRAKE)  {
       activateEmergencyBrake(tc);
-    } else if (mode == Mode.CTC_BRAKE || mode == Mode.DRIVER_BRAKE) {
+    } else if (authority == AuthorityCommand.STOP_AT_LAST_STATION
+        || authority == AuthorityCommand.STOP_AT_NEXT_STATION) {
       if (tc.isAutomatic() && (tc.getCurrentBlock().getStationName() != null
           || nextBlock(tc.getCurrentBlock(), tc.getLastBlock(),
               Track.getTrack(tc.getLine())).getStationName() != null)
