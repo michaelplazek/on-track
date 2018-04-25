@@ -116,6 +116,7 @@ public class TrackModelController {
         String content = block.getStationName() + " STATION";
         content += "\nStation Temperature:\t\t" + block.getTemperature();
         content += "\nPassengers Waiting:\t\t" + block.getPassengersWaiting();
+        content += "\nTotal Passenger Exit Here:\t" + block.getNumberToExit();
 
         alert.setContent(content);
 
@@ -168,6 +169,8 @@ public class TrackModelController {
 
           if (currentTrack != null && newValue != null) {
             Block block = currentTrack.getBlock(blockId);
+
+            block.setRandomPassengers();
 
             updateUi(block);
           } else {

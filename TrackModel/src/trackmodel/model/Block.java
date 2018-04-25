@@ -102,6 +102,7 @@ public class Block {
     setBeaconValues(blockBeacon);
     setTemperature(temp);
     setRandomPassengers();
+    this.numberToExit = 0;
   }
 
   public void setTemperature(int temp) {
@@ -241,6 +242,14 @@ public class Block {
       passengers = 0;
     }
     this.passengersWaiting = passengers;
+  }
+
+  public int getNumberToExit() {
+    return this.numberToExit;
+  }
+
+  public void setNumberToExit(int numberToExit) {
+    this.numberToExit += numberToExit;
   }
 
   public String getStationName() {

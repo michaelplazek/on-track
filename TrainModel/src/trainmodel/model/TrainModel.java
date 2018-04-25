@@ -178,10 +178,12 @@ public class TrainModel implements TrainModelInterface {
    * Called when train stops at a station.
    * When train is at a station a random number of passengers leave the train.
    */
-  private void randomPassengersLeave() {
+  private int randomPassengersLeave() {
     Random randomPassengerNum = new Random();
     int numPassengers = randomPassengerNum.nextInt(TrainData.MAX_PASSENGERS);
     removePassengers(numPassengers);
+
+    return numPassengers;
   }
 
   /**
@@ -424,14 +426,16 @@ public class TrainModel implements TrainModelInterface {
    */
   private void openLeftDoors() {
     leftDoorStatus.set(DoorStatus.OPEN);
-    randomPassengersLeave();
+    int passOff = randomPassengersLeave();
     if (currentBlock != null) {
+      currentBlock.setNumberToExit(passOff);
       addPassengers(currentBlock.getPassengers(TrainData.MAX_PASSENGERS - numPassengers.get()));
     }
 
     //If the advertisement is last Stop kick all passengers off
     if (advertisement.get().equals(TrainData.advertisements.get(0))) {
       removePassengers(this.numPassengers.get());
+      currentBlock.setNumberToExit(this.numPassengers.get());
     }
   }
 
@@ -440,14 +444,16 @@ public class TrainModel implements TrainModelInterface {
    */
   private void openRightDoors() {
     rightDoorStatus.setValue(DoorStatus.OPEN);
-    randomPassengersLeave();
+    int passOff = randomPassengersLeave();
     if (currentBlock != null) {
+      currentBlock.setNumberToExit(passOff);
       addPassengers(currentBlock.getPassengers(TrainData.MAX_PASSENGERS - numPassengers.get()));
     }
 
     //If the advertisement is last Stop kick all passengers off
     if (advertisement.get().equals(TrainData.advertisements.get(0))) {
       removePassengers(this.numPassengers.get());
+      currentBlock.setNumberToExit(this.numPassengers.get());
     }
   }
 
