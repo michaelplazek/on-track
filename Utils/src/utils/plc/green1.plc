@@ -1,1 +1,3 @@
+BLOCK LOGIC
+IF (station68 |+5| isOccupied) THEN (station /73/ stop)
 SWITCH LOGIC

@@ -1,3 +1,5 @@
+BLOCK LOGIC
+IF (block72 |+5| isOccupied) THEN (station /77/ stop)
 SWITCH LOGIC
 IF (pblock77 |+7| notOccupied) AND (n1block77 |-3| notOccupied) AND (n2block77 |+0| ignore) THEN (switch /77/ switchN1)
 IF (pblock77 |+7| isOccupied) AND (n1block77 |-3| ignore) AND (n2block77 |+0| notOccupied) THEN (switch /77/ switchN2)

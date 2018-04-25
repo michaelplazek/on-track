@@ -15,6 +15,7 @@ import trackmodel.model.Block;
 import trackmodel.model.Switch;
 import trackmodel.model.Track;
 import utils.general.Authority;
+import utils.general.AuthorityCommand;
 
 public class TrackController implements TrackControllerInterface {
 
@@ -22,6 +23,7 @@ public class TrackController implements TrackControllerInterface {
   private int trackOffset;
   private final int capacity = 32;
   private boolean isManual = false;
+  private Authority stop = new Authority();
   private HashMap<Integer, Block> myZone = new HashMap<Integer, Block>(capacity);
   private ArrayList<String> blockList = new ArrayList<>();
   private TrackController neighborCtrlr1;
@@ -56,6 +58,7 @@ public class TrackController implements TrackControllerInterface {
   public TrackController() {
     //Zero Id indicates Controller is not initialized
     this.id = 0;
+    stop.setAuthorityCommand(AuthorityCommand.SERVICE_BRAKE_STOP);
     //neighborCtrlr1 = new TrackController();
     //neighborCtrlr2 = new TrackController();
   }
@@ -70,6 +73,7 @@ public class TrackController implements TrackControllerInterface {
    */
   public TrackController(int id, int offset, String line) {
     this.id = id;
+    stop.setAuthorityCommand(AuthorityCommand.SERVICE_BRAKE_STOP);
     this.trackOffset = offset;
     neighborCtrlr1 = new TrackController();
     neighborCtrlr2 = new TrackController();
@@ -82,6 +86,7 @@ public class TrackController implements TrackControllerInterface {
    */
   public TrackController(TrackController tc) {
     this.id = tc.id;
+    stop.setAuthorityCommand(AuthorityCommand.SERVICE_BRAKE_STOP);
     this.myZone = tc.myZone;
     this.neighborCtrlr1 = tc.neighborCtrlr1;
     this.neighborCtrlr2 = tc.neighborCtrlr2;
@@ -376,21 +381,6 @@ public class TrackController implements TrackControllerInterface {
     isManual = opMode;
   }
 
-//  private void readSuggestion() {
-//
-//    //Reads in current suggestion array into previous
-//    //Sets current to the temp (set by calls from ctc)
-//
-//    for (Block b : myZone.values()) {
-//      int index = b.getNumber();
-//      ctcAuthPrevious.replace(index,ctcAuthCurrent.get(index));
-//      ctcAuthCurrent.replace(index, ctcAuthTemp.get(index));
-//
-//      ctcSpeedPrevious.replace(index,ctcSpeedCurrent.get(index));
-//      ctcSpeedCurrent.replace(index,ctcSpeedTemp.get(index));
-//    }
-//  }
-
   /** This is called after Controller initialization
    * to set occupancy and ctc suggestions.
    *
@@ -424,7 +414,7 @@ public class TrackController implements TrackControllerInterface {
    * @param blocks number of blocks we are applying boolean logic to
    * @return true if occupied block found, false otherwise
    */
-  private boolean isOccupied(int start, char sign, int blocks) {
+  private boolean isOccupied(int start, char sign, int blocks, boolean orStart) {
 
     Block currBlock = myZone.get(start);
 
@@ -433,7 +423,13 @@ public class TrackController implements TrackControllerInterface {
       return false;
     }
 
-    boolean occupancy = currBlock.isOccupied();
+    boolean occupancy;
+
+    if (orStart) {
+      occupancy = currBlock.isOccupied();
+    } else {
+      occupancy = false;
+    }
 
     //define currBlock and
 
@@ -442,7 +438,7 @@ public class TrackController implements TrackControllerInterface {
       Block temp;
 
       if (currBlock.isSwitch()) {
-        continue;
+        return occupancy | currBlock.isOccupied();
       }
 
       if (currBlock == null) {
@@ -471,7 +467,7 @@ public class TrackController implements TrackControllerInterface {
           }
 
         }
-      } else {
+      } else if (sign == '-'){
         if (currBlock.getNextBlock1() < currBlock.getNumber()) {
           // Continue in nextBlock1 direction
           currBlock = myZone.get(currBlock.getNextBlock1());
@@ -528,6 +524,59 @@ public class TrackController implements TrackControllerInterface {
    */
   private boolean movingFrom(char sign, int blocks, Block start) {
     return false;
+  }
+
+  private void overrideAuthority(int start, char sign, int until, boolean andStart) {
+
+    Block currBlock = myZone.get(start);
+    Block next1Block = myZone.get(currBlock.getNextBlock1());
+    Block prevBlock = myZone.get(currBlock.getPreviousBlock());
+    Block next2Block = null;
+
+    if (currBlock.isSwitch()) {
+      Switch currSwitch = (Switch) currBlock;
+      next2Block = myZone.get(currSwitch.getNextBlock2());
+    }
+
+    if (currBlock != null) {
+      if (andStart) {
+        currBlock.setAuthority(stop);
+      }
+    }
+
+    while (currBlock != null) {
+
+      if (currBlock.getNumber() == until) {
+        break;
+      }
+
+      next1Block = myZone.get(currBlock.getNextBlock1());
+      prevBlock = myZone.get(currBlock.getPreviousBlock());
+      next2Block = null;
+
+      if (currBlock.isSwitch()) {
+        Switch currSwitch = (Switch) currBlock;
+        next2Block = myZone.get(currSwitch.getNextBlock2());
+      }
+
+      currBlock.setAuthority(stop);
+
+      // Continue
+      if (myLine.getNextBlock(currBlock.getNumber(), next1Block.getNumber()) != null) {
+        currBlock = myLine.getNextBlock(currBlock.getNumber(), next1Block.getNumber());
+      } else if (myLine.getNextBlock(currBlock.getNumber(), prevBlock.getNumber()) != null) {
+        currBlock = myLine.getNextBlock(currBlock.getNumber(), prevBlock.getNumber());
+      } else if (next2Block != null) {
+        if (myLine.getNextBlock2(currBlock.getNumber(), next2Block.getNumber()) != null) {
+          //this switch can be taken in this way
+           currBlock = myLine.getNextBlock2(currBlock.getNumber(), next2Block.getNumber());
+        } else {
+          //not allowed to take this fork
+          break;
+        }
+      }
+
+    }
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -602,15 +651,27 @@ public class TrackController implements TrackControllerInterface {
 
           for (int j = 0; j < blockInputTerms.size(); j++) {
 
+            // Check stored Logic terms
             String[] currTerm = blockInputTerms.get(j);
+            String[] currOut = blockOutputTerms.get(j);
 
+            String[] blockParts = currTerm[0].split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+            Block prevBlock = myLine.getBlock(Integer.parseInt(blockParts[1]));
+            Block nextBlock;
+            int currStation = Integer.parseInt(currOut[1].substring(1, currTerm[1].length() - 1));
+
+            if (currStation != currBlock.getNumber()) {
+              // do not apply to this station, wrong block #
+              continue;
+            }
+
+            // Continue parsing this line of plc
             String s = currTerm[1].substring(1, 2);
             String bstring = currTerm[1].substring(2, currTerm[1].length() - 1);
 
             int checkBlocks = Integer.parseInt(bstring);
             char sign = s.toCharArray()[0];
 
-            // Station found, check station terms
             if (currTerm[2].contains("Freezing")) {
               if (currTerm[2].equals("isFreezing")) {
 
@@ -618,6 +679,108 @@ public class TrackController implements TrackControllerInterface {
 
               } else {
                 //Invalid function name
+              }
+            } else if (currTerm[2].contains("Occupied")) {
+              if (currTerm[2].equals("isOccupied")) {
+
+                // Check blocks next to a station
+
+                if (sign == '+') {
+
+                  boolean occupancy = prevBlock.isOccupied();
+                  nextBlock = myLine.getBlock(prevBlock.getNumber() + 1);
+
+                  int[] apply = new int[checkBlocks];
+                  apply[0] = prevBlock.getNumber();
+                  apply[1] = nextBlock.getNumber();
+
+                  for (int i = 2; i < checkBlocks; i++) {
+                    nextBlock = myLine.getNextBlock(nextBlock.getNumber(), prevBlock.getNumber());
+                    if (nextBlock != null) {
+                      occupancy = occupancy | nextBlock.isOccupied();
+                      apply[i] = nextBlock.getNumber();
+                    } else if (nextBlock.isSwitch()) {
+                      nextBlock = myLine.getNextBlock2(nextBlock.getNumber(), prevBlock.getNumber());
+                      if (currBlock != null) {
+                        occupancy = occupancy | nextBlock.isOccupied();
+                        apply[i] = nextBlock.getNumber();
+                      }
+                    }
+                  }
+
+                  if (occupancy) {
+                    if (currOut[2].equals("stop")) {
+                      for (int k = 0; k < apply.length; k++) {
+                        System.out.println(apply[k]);
+                        myLine.getBlock(apply[k]).setAuthority(stop);
+                      }
+                    }
+                  }
+
+                } else if (sign == '-') {
+
+                  boolean occupancy = prevBlock.isOccupied();
+                  nextBlock = myLine.getBlock(prevBlock.getNumber() - 1);
+
+                  int[] apply = new int[checkBlocks];
+                  apply[0] = prevBlock.getNumber();
+                  apply[1] = nextBlock.getNumber();
+
+                  for (int i = 2; i < checkBlocks; i++) {
+                    nextBlock = myLine.getNextBlock(nextBlock.getNumber(), prevBlock.getNumber());
+                    if (nextBlock != null) {
+                      occupancy = occupancy | nextBlock.isOccupied();
+                      apply[i] = nextBlock.getNumber();
+                    } else if (nextBlock.isSwitch()) {
+                      nextBlock = myLine.getNextBlock2(nextBlock.getNumber(), prevBlock.getNumber());
+                      if (currBlock != null) {
+                        occupancy = occupancy | nextBlock.isOccupied();
+                        apply[i] = nextBlock.getNumber();
+                      }
+                    }
+                  }
+
+                  if (occupancy) {
+                    if (currOut[2].equals("stop")) {
+                      for (int k = 0; k < apply.length; k++) {
+                        myLine.getBlock(apply[k]).setAuthority(stop);
+                      }
+                    }
+                  }
+
+
+
+                }
+
+
+                // Need to use the sign and pass
+                // TODO: add one to checkblocks due to orStart?
+                boolean eval = isOccupied(currBlock.getNumber(), sign, checkBlocks, false);
+
+                if (eval) {
+
+
+
+                }
+
+              } else if (currTerm[2].equals("notOccupied")) {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
               }
             }
           }
@@ -715,9 +878,9 @@ public class TrackController implements TrackControllerInterface {
 
             if (currInputTerm[2].equals("isOccupied")) {
               // ADD first term eval based on line number
-              term1 = isOccupied(currSwitch.getPreviousBlock(), sign, checkBlocks);
+              term1 = isOccupied(currSwitch.getPreviousBlock(), sign, checkBlocks, true);
             } else if (currInputTerm[2].equals("notOccupied")) {
-              term1 = !isOccupied(currSwitch.getPreviousBlock(), sign, checkBlocks);
+              term1 = !isOccupied(currSwitch.getPreviousBlock(), sign, checkBlocks, true);
             } else {
               //Invalid function name
             }
@@ -756,9 +919,9 @@ public class TrackController implements TrackControllerInterface {
             sign = s.toCharArray()[0];
 
             if (currInputTerm[5].equals("isOccupied")) {
-              term2 = isOccupied(currSwitch.getNextBlock1(), sign, checkBlocks);
+              term2 = isOccupied(currSwitch.getNextBlock1(), sign, checkBlocks, true);
             } else if (currInputTerm[5].equals("notOccupied")) {
-              term2 = !isOccupied(currSwitch.getNextBlock1(), sign, checkBlocks);
+              term2 = !isOccupied(currSwitch.getNextBlock1(), sign, checkBlocks, true);
             } else {
               //Invalid function name
             }
@@ -797,9 +960,9 @@ public class TrackController implements TrackControllerInterface {
 
             if (currInputTerm[8].equals("isOccupied")) {
               // AND second term eval based on line number w first term eval
-              term3 = isOccupied(currSwitch.getNextBlock2(), sign, checkBlocks);
+              term3 = isOccupied(currSwitch.getNextBlock2(), sign, checkBlocks, true);
             } else if (currInputTerm[8].equals("notOccupied")) {
-              term3 = !isOccupied(currSwitch.getNextBlock2(), sign, checkBlocks);
+              term3 = !isOccupied(currSwitch.getNextBlock2(), sign, checkBlocks, true);
             } else {
               //Invalid function name
             }
