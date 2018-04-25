@@ -278,14 +278,16 @@ public class TrackControllerController implements Initializable {
   }
 
   private void handleImportLogic(ActionEvent event) {
-    FileChooser fileChooser = new FileChooser();
-    fileChooser.setTitle("Choose a PLC  file");
-    fileChooser.getExtensionFilters()
-        .addAll(new FileChooser.ExtensionFilter("PLC Files", ".plc", ".csv"));
 
-    File inFile = fileChooser.showOpenDialog((Stage) importLogic.getScene().getWindow());
+    // create file chooser
+    FileChooser fc = new FileChooser();
+    fc.setTitle("Choose schedule");
 
-    myController.importLogic(inFile);
+    // open file and import
+    File file = fc.showOpenDialog((Stage) importLogic.getScene().getWindow());
+    if (file != null) {
+      myController.importLogic(file);
+    }
   }
 
   //TODO
