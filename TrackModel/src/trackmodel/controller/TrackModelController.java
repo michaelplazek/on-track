@@ -170,6 +170,8 @@ public class TrackModelController {
           if (currentTrack != null && newValue != null) {
             Block block = currentTrack.getBlock(blockId);
 
+            block.setRandomPassengers();
+
             updateUi(block);
           } else {
             blankBlock();
