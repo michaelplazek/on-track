@@ -250,7 +250,7 @@ public class PowerCalculator {
 
   private static double recursiveSpeedLimit(Block currentBlock, Block lastBlock,
                                             double remainingDistance) {
-    if (currentBlock == null) {
+    if (currentBlock == null || currentBlock.getNumber() == -1) {
       return 70;
     } else if (Double.isNaN(remainingDistance)) {
       return currentBlock.getSpeedLimit();
@@ -281,7 +281,7 @@ public class PowerCalculator {
 
   private static double recursiveDistanceLeft(Block currentBlock, Block lastBlock,
                                             double blocksLeft) {
-    if (currentBlock == null) {
+    if (currentBlock == null || currentBlock.getNumber() == -1) {
       return Double.MAX_VALUE;
     }
     double min;
