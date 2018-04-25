@@ -194,6 +194,10 @@ public class TrainTracker {
 
         if (nextStationOnRoute.compareTo(nextStationOnSchedule) == 0) {
           authority.setAuthorityCommand(AuthorityCommand.STOP_AT_NEXT_STATION);
+
+          if (route.getNextStationIndex() == schedule.getStops().size() - 1) {
+            authority.setAuthorityCommand(AuthorityCommand.STOP_AT_LAST_STATION);
+          }
         } else {
           authority.setAuthorityCommand(AuthorityCommand.SEND_POWER);
         }
@@ -203,8 +207,6 @@ public class TrainTracker {
       } else {
         authority.setAuthorityCommand(AuthorityCommand.SEND_POWER);
       }
-    } else {
-      authority.setAuthorityCommand(AuthorityCommand.SERVICE_BRAKE_STOP);
     }
 
     authority.setBlocksLeft((((this.route.getSize() - 1) - this.route.getCurrentIndex()) > 31
