@@ -323,10 +323,10 @@ public class TrainModel implements TrainModelInterface {
   /**
    * Updates force.
    */
-  private void updateForce() {
+    private void updateForce() {
     double tempForce;
-    if (velocity.get() == 0) {
-      tempForce = powerCommand.get() * 1000 / 0.001;
+    if (velocity.get() <= 0.1) {
+      tempForce = powerCommand.get() * 1000 / 0.1;
     } else {
       tempForce = powerCommand.get() * 1000 / velocity.get();
     }
