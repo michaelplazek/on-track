@@ -12,7 +12,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="root" fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="root" fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <TitledPane fx:id="failuresPane" animated="false" collapsible="false" text="Failures" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <content>
@@ -361,15 +361,7 @@
                                        </font></Label>
                                  </children>
                               </HBox>
-                              <HBox alignment="CENTER_LEFT">
-                                 <children>
-                                    <Label text="Ad:">
-                                       <font>
-                                          <Font name="Arial Bold" size="13.0" />
-                                       </font>
-                                    </Label>
-                                 </children>
-                              </HBox>
+                              <HBox alignment="CENTER_LEFT" />
                            </children>
                         </VBox>
                         <VBox alignment="TOP_CENTER">
@@ -415,11 +407,7 @@
                                     <Label fx:id="acStatus" text="Label" />
                                  </children>
                               </HBox>
-                              <HBox alignment="CENTER_RIGHT">
-                                 <children>
-                                    <Label fx:id="adLabel" text="Label" />
-                                 </children>
-                              </HBox>
+                              <HBox alignment="CENTER_RIGHT" />
                            </children>
                         </VBox>
                      </children>
@@ -463,5 +451,6 @@
             </HBox>
          </content>
       </TitledPane>
+      <Label fx:id="adLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="264.0" layoutY="346.0" prefHeight="16.0" prefWidth="173.0" text="Label" />
    </children>
 </AnchorPane>
