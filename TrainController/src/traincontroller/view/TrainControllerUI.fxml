@@ -16,7 +16,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="441.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <SplitPane dividerPositions="0.3489010989010989" layoutX="220.0" layoutY="34.0" orientation="VERTICAL" prefHeight="366.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="34.0">
         <items>
@@ -153,7 +153,7 @@
                                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                   </rowConstraints>
                                                    <children>
-                                                      <Label id="authority" fx:id="authority" text="528" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
+                                                      <Label id="authority" fx:id="authority" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
                                                       <Label prefHeight="16.0" prefWidth="70.0" text="Authority:" />
                                                    </children>
                                                 </GridPane>
@@ -256,7 +256,7 @@
                         </AnchorPane>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                            <children>
-                              <SplitPane dividerPositions="0.3568627450980392" orientation="VERTICAL" prefHeight="257.0" prefWidth="395.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <SplitPane dividerPositions="0.2918287937743191" orientation="VERTICAL" prefHeight="257.0" prefWidth="395.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                 <items>
                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                                        <children>
@@ -269,13 +269,10 @@
                                                   </columnConstraints>
                                                   <rowConstraints>
                                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                   </rowConstraints>
                                                    <children>
                                                       <Label text="Current Station:" />
                                                       <Label id="currentStation" fx:id="currentStation" text="Mt. Lebanon" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
-                                                      <Label id="nextStation" fx:id="nextStation" text="Greenview" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
-                                                      <Label text="Next Station:" GridPane.rowIndex="1" />
                                                       <Label layoutX="20.0" layoutY="22.0" text="Current Station:" />
                                                    </children>
                                                 </GridPane>
@@ -298,8 +295,8 @@
                                                                <children>
                                                                   <GridPane layoutX="-9.0" layoutY="14.0" prefHeight="229.0" prefWidth="191.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                     <columnConstraints>
-                                                                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="131.00000762939453" minWidth="10.0" prefWidth="129.00000762939453" />
-                                                                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="80.0" minWidth="10.0" prefWidth="38.99999237060547" />
+                                                                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="131.00000762939453" minWidth="10.0" prefWidth="119.99999237060547" />
+                                                                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="80.0" minWidth="10.0" prefWidth="49.00000762939453" />
                                                                     </columnConstraints>
                                                                     <rowConstraints>
                                                                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -309,14 +306,22 @@
                                                                     </rowConstraints>
                                                                      <children>
                                                                         <Label text="Kp:" GridPane.rowIndex="1" />
-                                                                        <Label id="kP" fx:id="kp" text="5" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
                                                                         <Label text="Ki:" GridPane.rowIndex="2" />
-                                                                        <Label id="kI" fx:id="ki" text="5" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
                                                                         <Label text="Power Command, kW:">
                                                                            <font>
                                                                               <Font size="12.0" />
                                                                            </font></Label>
                                                                         <Label id="powerCommand" fx:id="powerCommand" text="10" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
+                                                                        <TextField fx:id="kp" GridPane.columnIndex="1" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.vgrow="NEVER">
+                                                                           <GridPane.margin>
+                                                                              <Insets top="5.0" />
+                                                                           </GridPane.margin>
+                                                                        </TextField>
+                                                                        <TextField fx:id="ki" prefHeight="12.0" prefWidth="39.0" GridPane.columnIndex="1" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.vgrow="NEVER">
+                                                                           <GridPane.margin>
+                                                                              <Insets top="5.0" />
+                                                                           </GridPane.margin>
+                                                                        </TextField>
                                                                      </children>
                                                                   </GridPane>
                                                                </children>

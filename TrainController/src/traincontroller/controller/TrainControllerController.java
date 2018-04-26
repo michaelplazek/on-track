@@ -3,6 +3,8 @@ package traincontroller.controller;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ResourceBundle;
+import java.util.function.UnaryOperator;
+import java.util.regex.Pattern;
 
 import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
@@ -12,6 +14,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import traincontroller.enums.Mode;
@@ -34,6 +37,10 @@ public class TrainControllerController implements Initializable {
   private TextField setSpeedField;
   @FXML
   private TextField setTemperatureField;
+  @FXML
+  private TextField kp;
+  @FXML
+  private TextField ki;
 
   @FXML
   private ToggleGroup mode;
@@ -67,13 +74,7 @@ public class TrainControllerController implements Initializable {
   @FXML
   private Label currentStation;
   @FXML
-  private Label nextStation;
-  @FXML
   private Label powerCommand;
-  @FXML
-  private Label kp;
-  @FXML
-  private Label ki;
 
   private TrainController trainController;
 
@@ -251,6 +252,11 @@ public class TrainControllerController implements Initializable {
     } else {
       manual.setSelected(true);
     }
+    Pattern pattern = Pattern.compile("^\\d*\\.?\\d*$");
+    TextFormatter kpFormatter = new TextFormatter((UnaryOperator<TextFormatter.Change>) change
+        -> pattern.matcher(change.getControlNewText()).matches() ? change : null);
+    TextFormatter kiFormatter = new TextFormatter((UnaryOperator<TextFormatter.Change>) change
+        -> pattern.matcher(change.getControlNewText()).matches() ? change : null);
     authority.textProperty().bind(trainController.getAuthorityProperty().asString());
     powerCommand.textProperty().bindBidirectional(trainController.getPowerCommandProperty(),
         new DecimalFormat("#0.00"));
@@ -266,14 +272,15 @@ public class TrainControllerController implements Initializable {
         new DecimalFormat("#0.00"));
     kp.textProperty().bindBidirectional(trainController.getKpProperty(),
         new DecimalFormat("#0.00"));
+    kp.setTextFormatter(kpFormatter);
     ki.textProperty().bindBidirectional(trainController.getKiProperty(),
         new DecimalFormat("#0.00"));
+    ki.setTextFormatter(kiFormatter);
     lightsButton.textProperty().bind(trainController.lightStatusProperty().asString());
     lightsButton.setSelected(trainController.getLightStatus() == OnOffStatus.ON);
     trainController.lightStatusProperty().addListener(
         (o, oldVal, newVal) -> lightsButton.setSelected(newVal == OnOffStatus.ON));
     currentStation.textProperty().bindBidirectional(trainController.getCurrentStationProperty());
-    nextStation.textProperty().bindBidirectional(trainController.getNextStationProperty());
     serviceBrakeButton.textProperty().bind(trainController.serviceBrakeStatusProperty().asString());
     serviceBrakeButton.setSelected(trainController.getServiceBrakeStatus() == OnOffStatus.ON);
     trainController.serviceBrakeStatusProperty().addListener(
@@ -311,12 +318,16 @@ public class TrainControllerController implements Initializable {
       emergencyBrakeButton.setDisable(false);
       serviceBrakeButton.setDisable(false);
       lightsButton.setDisable(false);
+      kp.setDisable(true);
+      ki.setDisable(true);
     } else {
       rightDoorButton.setDisable(true);
       leftDoorButton.setDisable(true);
       emergencyBrakeButton.setDisable(true);
       serviceBrakeButton.setDisable(true);
       lightsButton.setDisable(true);
+      kp.setDisable(false);
+      ki.setDisable(false);
     }
   }
 
