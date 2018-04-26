@@ -46,7 +46,7 @@ public class TrainController implements TrainControllerInterface {
   private TrainModelInterface trainModel;
   private SimpleStringProperty id;
   private SimpleStringProperty line;
-  private boolean running;
+  private SimpleBooleanProperty running;
   private SimpleDoubleProperty currentSpeedMph;
   private double currentSpeed;
   private SimpleDoubleProperty setSpeedMph;
@@ -99,7 +99,7 @@ public class TrainController implements TrainControllerInterface {
     this.currentStation = new SimpleStringProperty("N/A");
     this.nextStation = new SimpleStringProperty("N/A");
     this.integral = 0;
-    this.running = false;
+    this.running = new SimpleBooleanProperty(false);
     this.currentBlock = Track.getListOfTracks().get(line).getStartBlock();
     this.lastBlock = Track.getTrack(line).getBlock(-1);
     this.beacons = new HashMap<>();
@@ -198,6 +198,10 @@ public class TrainController implements TrainControllerInterface {
   }
 
   public boolean isRunning() {
+    return running.get();
+  }
+
+  public SimpleBooleanProperty runningProperty() {
     return running;
   }
 
@@ -440,7 +444,7 @@ public class TrainController implements TrainControllerInterface {
   }
 
   protected void start() {
-    running = true;
+    running.set(true);
   }
 
   public boolean isUnderground() {

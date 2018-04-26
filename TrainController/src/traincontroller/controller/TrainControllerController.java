@@ -262,11 +262,6 @@ public class TrainControllerController implements Initializable {
     } else {
       manual.setSelected(true);
     }
-    Pattern pattern = Pattern.compile("^\\d*\\.?\\d*$");
-    TextFormatter kpFormatter = new TextFormatter((UnaryOperator<TextFormatter.Change>) change
-        -> pattern.matcher(change.getControlNewText()).matches() ? change : null);
-    TextFormatter kiFormatter = new TextFormatter((UnaryOperator<TextFormatter.Change>) change
-        -> pattern.matcher(change.getControlNewText()).matches() ? change : null);
     authority.textProperty().bind(trainController.getAuthorityProperty().asString());
     powerCommand.textProperty().bindBidirectional(trainController.getPowerCommandProperty(),
         new DecimalFormat("#0.00"));
@@ -280,12 +275,8 @@ public class TrainControllerController implements Initializable {
         new DecimalFormat("#0.00"));
     temperature.textProperty().bindBidirectional(trainController.getCurrentTemperatureProperty(),
         new DecimalFormat("#0.00"));
-    kp.textProperty().bindBidirectional(trainController.getKpProperty(),
-        new DecimalFormat("#0.00"));
-    kp.setTextFormatter(kpFormatter);
-    ki.textProperty().bindBidirectional(trainController.getKiProperty(),
-        new DecimalFormat("#0.00"));
-    ki.setTextFormatter(kiFormatter);
+    kp.textProperty().setValue(String.format("%.2f", trainController.getKp()));
+    ki.textProperty().setValue(String.format("%.2f", trainController.getKi()));
     lightsButton.textProperty().bind(trainController.lightStatusProperty().asString());
     lightsButton.setSelected(trainController.getLightStatus() == OnOffStatus.ON);
     trainController.lightStatusProperty().addListener(
@@ -324,8 +315,7 @@ public class TrainControllerController implements Initializable {
         setFailure()));
     trainController.brakeFailureProperty().addListener(((observable, oldValue, newValue) ->
         setFailure()));
-    toggleMode(null);
-    setFailure();
+    trainController.runningProperty().addListener(((observable, oldValue, newValue) -> checkRunning()));
   }
 
   private void checkRunning() {
@@ -336,7 +326,20 @@ public class TrainControllerController implements Initializable {
       serviceBrakeButton.setDisable(false);
       lightsButton.setDisable(false);
       kp.setDisable(true);
+      try {
+        double kpValue = Double.parseDouble(kp.getText());
+        kp.setText(String.format("%.2f", kpValue));
+      } catch (Exception e) {
+        kp.setText(String.format("%.2f", trainController.getKp()));
+      }
       ki.setDisable(true);
+      try {
+        double kiValue = Double.parseDouble(ki.getText());
+        ki.setText(String.format("%.2f", kiValue));
+      } catch (Exception e) {
+        ki.setText(String.format("%.2f", trainController.getKi()));
+      }
+      toggleMode(null);
     } else {
       rightDoorButton.setDisable(true);
       leftDoorButton.setDisable(true);
@@ -369,6 +372,8 @@ public class TrainControllerController implements Initializable {
   @Override
   public void initialize(URL location, ResourceBundle resources) {
     initializeStatusLabels();
+    toggleMode(null);
+    setFailure();
     checkRunning();
   }
 }
