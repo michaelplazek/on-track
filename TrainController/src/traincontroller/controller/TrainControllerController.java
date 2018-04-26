@@ -74,8 +74,6 @@ public class TrainControllerController implements Initializable {
   @FXML
   private Label currentStation;
   @FXML
-  private Label nextStation;
-  @FXML
   private Label powerCommand;
 
   private TrainController trainController;
@@ -283,7 +281,6 @@ public class TrainControllerController implements Initializable {
     trainController.lightStatusProperty().addListener(
         (o, oldVal, newVal) -> lightsButton.setSelected(newVal == OnOffStatus.ON));
     currentStation.textProperty().bindBidirectional(trainController.getCurrentStationProperty());
-    nextStation.textProperty().bindBidirectional(trainController.getNextStationProperty());
     serviceBrakeButton.textProperty().bind(trainController.serviceBrakeStatusProperty().asString());
     serviceBrakeButton.setSelected(trainController.getServiceBrakeStatus() == OnOffStatus.ON);
     trainController.serviceBrakeStatusProperty().addListener(

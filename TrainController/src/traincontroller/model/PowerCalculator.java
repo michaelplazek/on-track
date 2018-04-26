@@ -186,10 +186,10 @@ public class PowerCalculator {
         + TrainData.MAX_PASSENGERS * 2 * 150 * UnitConversions.LBS_TO_KGS);
     TrainModelInterface tm = tc.getTrainModel();
     Beacon beacon = tc.getBeacon();
-    if (beacon.isRight() && tm.getRightDoorStatus() != DoorStatus.OPEN) {
-      tm.setRightDoorStatus(DoorStatus.OPEN);
-    } else if (!beacon.isRight() && tm.getLeftDoorStatus() != DoorStatus.OPEN) {
-      tm.setLeftDoorStatus(DoorStatus.OPEN);
+    if (beacon.isRight() && tc.getRightDoorStatus() != DoorStatus.OPEN) {
+      tc.setRightDoorStatus(DoorStatus.OPEN);
+    } else if (!beacon.isRight() && tc.getLeftDoorStatus() != DoorStatus.OPEN) {
+      tc.setLeftDoorStatus(DoorStatus.OPEN);
     }
   }
 
