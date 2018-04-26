@@ -103,9 +103,7 @@ public class TrackControllerInitializer {
       System.out.println("Error reading file");
     }
 
-    if (trackFile.exists()) {
-      System.out.println("Controller Config File Found");
-    } else {
+    if (!trackFile.exists()) {
       System.out.println("Controller Config File Not Found");
     }
   }

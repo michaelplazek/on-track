@@ -306,10 +306,6 @@ public class TrackController implements TrackControllerInterface {
       System.out.println("Error reading file at:" + myplc);
     }
 
-    if (myplc.exists()) {
-      System.out.println("PLC Found at: " + myplc);
-    }
-
     assertLogic();
     return false;
   }
