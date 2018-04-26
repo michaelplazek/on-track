@@ -1,0 +1,3 @@
+SWITCH LOGIC
+IF (pblock13 |+3| isOccupied) AND (n1block |+4| notOccupied) AND (n2block |-3| ignore) THEN (switch /13/ switchN1)
+IF (pblock13 |+3| notOccupied) AND (n1block |+4| ignore) AND (n2block |-3| isOccupied) THEN (switch /13/ switchN2)

@@ -18,7 +18,7 @@ public class TrackControllerInitializer {
 
   private int lineNum = 0;
   private TrackControllerLineManager[] lms;
-  private String path = "Utils/src/utils/plc/";
+  private String path = "files/trackcontroller/";
   private final String track = "trackCtrlrList.csv";
 
 
