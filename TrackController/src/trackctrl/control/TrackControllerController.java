@@ -121,6 +121,8 @@ public class TrackControllerController implements Initializable {
   private Label switchMain;
   @FXML
   private Label switchFork;
+  @FXML
+  private Label lineLabel;
 
   //Temporary Globals
   ToggleGroup opGroup = new ToggleGroup();
@@ -215,12 +217,20 @@ public class TrackControllerController implements Initializable {
 
     if (lightGroup.getSelectedToggle().equals(lightMainLtoR)) {
       setMainLightsLtoR();
+      stayRad.setSelected(true);
+      alterRad.setSelected(false);
     } else if (lightGroup.getSelectedToggle().equals(lightForkLtoR)) {
       setForkLightsLtoR();
+      alterRad.setSelected(true);
+      stayRad.setSelected(false);
     } else if (lightGroup.getSelectedToggle().equals(lightMainRtoL)) {
       setMainLightsRtoL();
+      stayRad.setSelected(true);
+      alterRad.setSelected(false);
     } else if (lightGroup.getSelectedToggle().equals(lightForkRtoL)) {
       setForkLightsRtoL();
+      alterRad.setSelected(true);
+      stayRad.setSelected(false);
     } else {
       //Do nothing
     }
@@ -390,9 +400,13 @@ public class TrackControllerController implements Initializable {
 
   private void setMainLightsLtoR() {
     mainLight0.setFill(Paint.valueOf(Constants.GREEN));
-    mainLight1.setFill(Paint.valueOf("Red"));
+    mainLight1.setFill(Paint.valueOf(Constants.RED));
     fromLight0.setFill(Paint.valueOf(Constants.GREEN));
-    fromLight1.setFill(Paint.valueOf("Red"));
+    fromLight1.setFill(Paint.valueOf(Constants.RED));
+
+    //Set fork lights to safe state
+    forkLight0.setFill(Paint.valueOf(Constants.GREEN));
+    forkLight1.setFill(Paint.valueOf(Constants.RED));
 
     //set images
     resetLightSwitch();
@@ -407,8 +421,12 @@ public class TrackControllerController implements Initializable {
 
     mainLight0.setFill(Paint.valueOf(Constants.RED));
     mainLight1.setFill(Paint.valueOf(Constants.GREEN));
-    fromLight0.setFill(Paint.valueOf(Constants.GREEN));
-    fromLight1.setFill(Paint.valueOf(Constants.RED));
+    fromLight0.setFill(Paint.valueOf(Constants.RED));
+    fromLight1.setFill(Paint.valueOf(Constants.GREEN));
+
+    //Set fork lights to safe state
+    forkLight0.setFill(Paint.valueOf(Constants.GREEN));
+    forkLight1.setFill(Paint.valueOf(Constants.RED));
 
     //set images
     resetLightSwitch();
@@ -427,6 +445,10 @@ public class TrackControllerController implements Initializable {
     forkLight0.setFill(Paint.valueOf(Constants.GREEN));
     forkLight1.setFill(Paint.valueOf(Constants.RED));
 
+    //Set Main lights to safe state
+    mainLight0.setFill(Paint.valueOf(Constants.GREEN));
+    mainLight1.setFill(Paint.valueOf(Constants.RED));
+
     resetLightSwitch();
     lightSwitch.setOpacity(0);
     switchForkLtoR.setOpacity(100);
@@ -442,6 +464,10 @@ public class TrackControllerController implements Initializable {
     forkLight0.setFill(Paint.valueOf(Constants.RED));
     forkLight1.setFill(Paint.valueOf(Constants.GREEN));
 
+    //Set Main lights to safe state
+    mainLight0.setFill(Paint.valueOf(Constants.GREEN));
+    mainLight1.setFill(Paint.valueOf(Constants.RED));
+
     resetLightSwitch();
     lightSwitch.setOpacity(0);
     switchForkRtoL.setOpacity(100);
@@ -456,17 +482,7 @@ public class TrackControllerController implements Initializable {
      */
 
     crossLeft.setFill(Paint.valueOf("Red"));
-    crossRight.setFill(Paint.valueOf("Gray"));
-
-    /*if (crossingLeft) {
-      crossingLeft = false;
-      crossLeft.setFill(Paint.valueOf("Gray"));
-      crossRight.setFill(Paint.valueOf("Red"));
-    } else {
-      crossingLeft = true;
-      crossLeft.setFill(Paint.valueOf("Red"));
-      crossRight.setFill(Paint.valueOf("Gray"));
-    }*/
+    crossRight.setFill(Paint.valueOf("White"));
   }
 
   private void setOpen() {
@@ -696,6 +712,10 @@ public class TrackControllerController implements Initializable {
   @Override
   public void initialize(URL location, ResourceBundle resources) {
     //Init UI
+    String line = myLine.getLine();
+    line = line.substring(0, 1).toUpperCase() + line.substring(1).toLowerCase();
+    lineLabel.setText(line);
+
     populateDropDowns();
     groupComponents();
     setOpen();

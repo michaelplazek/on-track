@@ -33,7 +33,7 @@
                            <children>
                               <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e1e1e1" height="26.0" layoutX="29.0" layoutY="12.0" stroke="BLACK" strokeType="INSIDE" width="103.0" />
                               <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#c8782a" height="28.0" layoutX="22.0" layoutY="11.0" stroke="BLACK" strokeType="INSIDE" width="63.0" />
-                              <Label layoutX="33.0" layoutY="17.0" text="Green">
+                              <Label fx:id="lineLabel" layoutX="33.0" layoutY="17.0" text="Green">
                                  <font>
                                     <Font name="Arial Bold" size="14.0" />
                                  </font>
