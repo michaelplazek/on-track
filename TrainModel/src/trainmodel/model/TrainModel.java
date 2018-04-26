@@ -244,6 +244,15 @@ public class TrainModel implements TrainModelInterface {
         currentBlockName.set("Yard");
       }
     }
+
+    checkForTrackFailure();
+  }
+
+  private void checkForTrackFailure() {
+    if(currentBlock.getBrokenRailStatus() || currentBlock.getPowerStatus()
+        || currentBlock.getTrackCircuitStatus()) {
+      trackLineFailureStatus.set(Failure.FAILED);
+    }
   }
 
   private boolean isLeavingBlock() {

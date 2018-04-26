@@ -705,6 +705,7 @@ public class CentralTrafficControlController {
     // create file chooser
     FileChooser fc = new FileChooser();
     fc.setTitle("Choose schedule");
+    fc.setInitialDirectory(new File("."));
 
     // open file and import
     File file = fc.showOpenDialog((Stage) importScheduleButton.getScene().getWindow());

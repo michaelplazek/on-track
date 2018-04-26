@@ -123,6 +123,9 @@ public class PowerCalculator {
     Failure trackLineStatus = tm.getTrackLineFailureStatus();
     Failure engineStatus = tm.getEngineFailureStatus();
     Failure brakeStatus = tm.getBrakeFailureStatus();
+    tc.setTrackCircuitFailure(trackLineStatus);
+    tc.setEngineFailure(engineStatus);
+    tc.setBrakeFailure(brakeStatus);
 
     if (trackLineStatus == Failure.FAILED || engineStatus == Failure.FAILED
         || brakeStatus == Failure.FAILED) {
@@ -132,7 +135,6 @@ public class PowerCalculator {
 
   static void executeAction(TrainController tc) {
     Mode mode = tc.getMode();
-    AuthorityCommand authority = tc.getAuthority();
     if (mode == Mode.FAILURE || mode == Mode.CTC_EMERGENCY_BRAKE)  {
       activateEmergencyBrake(tc);
     } else if (mode == Mode.CTC_BRAKE) {
@@ -184,7 +186,6 @@ public class PowerCalculator {
     tc.setPowerCommand(0);
     tc.setWeight(TrainData.EMPTY_WEIGHT * TrainData.NUMBER_OF_CARS
         + TrainData.MAX_PASSENGERS * 2 * 150 * UnitConversions.LBS_TO_KGS);
-    TrainModelInterface tm = tc.getTrainModel();
     Beacon beacon = tc.getBeacon();
     if (beacon.isRight() && tc.getRightDoorStatus() != DoorStatus.OPEN) {
       tc.setRightDoorStatus(DoorStatus.OPEN);
@@ -198,19 +199,9 @@ public class PowerCalculator {
     if (tc.getBeacon() != null) {
       if (tc.getDistanceToStation() > 0 && tc.getDistanceToStation() - 1 <= safeStoppingDistance) {
         activateServiceBrake(tc);
-        if (tc.getCurrentSpeed() == 0 && (tc.getCurrentBlock().getStationName() != null
-            || nextBlock(tc.getCurrentBlock(), tc.getLastBlock(),
-            Track.getTrack(tc.getLine())).getStationName() != null)
+        if (tc.getCurrentSpeed() == 0 && tc.getDistanceToStation() < 1
             &&  tc.isAutomatic()) {
-          tc.setWeight(TrainData.EMPTY_WEIGHT * TrainData.NUMBER_OF_CARS
-              + TrainData.MAX_PASSENGERS * 2 * 150 * UnitConversions.LBS_TO_KGS);
-          TrainModelInterface tm = tc.getTrainModel();
-          Beacon beacon = tc.getBeacon();
-          if (beacon.isRight() && tc.getRightDoorStatus() != DoorStatus.OPEN) {
-            tc.setRightDoorStatus(DoorStatus.OPEN);
-          } else if (!beacon.isRight() && tc.getLeftDoorStatus() != DoorStatus.OPEN) {
-            tc.setLeftDoorStatus(DoorStatus.OPEN);
-          }
+          tc.setMode(Mode.AT_STATION);
         }
       } else {
         executeNormal(tc);
@@ -235,8 +226,14 @@ public class PowerCalculator {
       endOfRoute = getDistanceLeft(tc);
     }
 
-    if (currentSpeed > setSpeed || currentSpeed > speedLimit
-        || endOfRoute <= safeStoppingDistance + 10) {
+    if (setSpeed > speedLimit) {
+      setSpeed = speedLimit;
+    }
+    if(Math.abs(setSpeed - currentSpeed) < 0.005) {
+      setSpeed = currentSpeed;
+    }
+
+    if (currentSpeed > setSpeed || endOfRoute <= safeStoppingDistance + 10) {
       activateServiceBrake(tc);
       tc.setPowerCommand(0);
     } else {

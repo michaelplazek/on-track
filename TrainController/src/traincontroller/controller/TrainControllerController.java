@@ -17,12 +17,16 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Circle;
 import traincontroller.enums.Mode;
 import traincontroller.model.TrainController;
 import traincontroller.model.TrainControllerManager;
 import utils.alerts.AlertWindow;
 import utils.general.Authority;
+import utils.general.Constants;
 import utils.train.DoorStatus;
+import utils.train.Failure;
 import utils.train.OnOffStatus;
 import utils.unitconversion.UnitConversions;
 
@@ -58,6 +62,12 @@ public class TrainControllerController implements Initializable {
   private RadioButton automatic;
   @FXML
   private RadioButton manual;
+  @FXML
+  private Circle trackCircuitFailure;
+  @FXML
+  private Circle brakeFailure;
+  @FXML
+  private Circle engineFailure;
 
   @FXML
   private Label currentSpeed;
@@ -252,11 +262,6 @@ public class TrainControllerController implements Initializable {
     } else {
       manual.setSelected(true);
     }
-    Pattern pattern = Pattern.compile("^\\d*\\.?\\d*$");
-    TextFormatter kpFormatter = new TextFormatter((UnaryOperator<TextFormatter.Change>) change
-        -> pattern.matcher(change.getControlNewText()).matches() ? change : null);
-    TextFormatter kiFormatter = new TextFormatter((UnaryOperator<TextFormatter.Change>) change
-        -> pattern.matcher(change.getControlNewText()).matches() ? change : null);
     authority.textProperty().bind(trainController.getAuthorityProperty().asString());
     powerCommand.textProperty().bindBidirectional(trainController.getPowerCommandProperty(),
         new DecimalFormat("#0.00"));
@@ -270,12 +275,8 @@ public class TrainControllerController implements Initializable {
         new DecimalFormat("#0.00"));
     temperature.textProperty().bindBidirectional(trainController.getCurrentTemperatureProperty(),
         new DecimalFormat("#0.00"));
-    kp.textProperty().bindBidirectional(trainController.getKpProperty(),
-        new DecimalFormat("#0.00"));
-    kp.setTextFormatter(kpFormatter);
-    ki.textProperty().bindBidirectional(trainController.getKiProperty(),
-        new DecimalFormat("#0.00"));
-    ki.setTextFormatter(kiFormatter);
+    kp.textProperty().setValue(String.format("%.2f", trainController.getKp()));
+    ki.textProperty().setValue(String.format("%.2f", trainController.getKi()));
     lightsButton.textProperty().bind(trainController.lightStatusProperty().asString());
     lightsButton.setSelected(trainController.getLightStatus() == OnOffStatus.ON);
     trainController.lightStatusProperty().addListener(
@@ -308,7 +309,13 @@ public class TrainControllerController implements Initializable {
       }
       toggleMode(null);
     });
-    toggleMode(null);
+    trainController.trackCircuitFailureProperty().addListener(((observable, oldValue, newValue) ->
+        setFailure()));
+    trainController.engineFailureProperty().addListener(((observable, oldValue, newValue) ->
+        setFailure()));
+    trainController.brakeFailureProperty().addListener(((observable, oldValue, newValue) ->
+        setFailure()));
+    trainController.runningProperty().addListener(((observable, oldValue, newValue) -> checkRunning()));
   }
 
   private void checkRunning() {
@@ -319,7 +326,20 @@ public class TrainControllerController implements Initializable {
       serviceBrakeButton.setDisable(false);
       lightsButton.setDisable(false);
       kp.setDisable(true);
+      try {
+        double kpValue = Double.parseDouble(kp.getText());
+        kp.setText(String.format("%.2f", kpValue));
+      } catch (Exception e) {
+        kp.setText(String.format("%.2f", trainController.getKp()));
+      }
       ki.setDisable(true);
+      try {
+        double kiValue = Double.parseDouble(ki.getText());
+        ki.setText(String.format("%.2f", kiValue));
+      } catch (Exception e) {
+        ki.setText(String.format("%.2f", trainController.getKi()));
+      }
+      toggleMode(null);
     } else {
       rightDoorButton.setDisable(true);
       leftDoorButton.setDisable(true);
@@ -331,9 +351,29 @@ public class TrainControllerController implements Initializable {
     }
   }
 
+  private void setFailure() {
+    if (trainController.getEngineFailure() == Failure.FAILED) {
+      engineFailure.setFill(Paint.valueOf(Constants.RED));
+    } else {
+      engineFailure.setFill(Paint.valueOf(Constants.GREEN));
+    }
+    if (trainController.getBrakeFailure() == Failure.FAILED) {
+      brakeFailure.setFill(Paint.valueOf(Constants.RED));
+    } else {
+      brakeFailure.setFill(Paint.valueOf(Constants.GREEN));
+    }
+    if (trainController.getTrackCircuitFailure() == Failure.FAILED) {
+      trackCircuitFailure.setFill(Paint.valueOf(Constants.RED));
+    } else {
+      trackCircuitFailure.setFill(Paint.valueOf(Constants.GREEN));
+    }
+  }
+
   @Override
   public void initialize(URL location, ResourceBundle resources) {
     initializeStatusLabels();
+    toggleMode(null);
+    setFailure();
     checkRunning();
   }
 }

@@ -17,6 +17,7 @@ import trainmodel.model.TrainModelInterface;
 import utils.general.Authority;
 import utils.general.AuthorityCommand;
 import utils.train.DoorStatus;
+import utils.train.Failure;
 import utils.train.OnOffStatus;
 import utils.train.TrainData;
 import utils.unitconversion.UnitConversions;
@@ -45,7 +46,7 @@ public class TrainController implements TrainControllerInterface {
   private TrainModelInterface trainModel;
   private SimpleStringProperty id;
   private SimpleStringProperty line;
-  private boolean running;
+  private SimpleBooleanProperty running;
   private SimpleDoubleProperty currentSpeedMph;
   private double currentSpeed;
   private SimpleDoubleProperty setSpeedMph;
@@ -65,6 +66,9 @@ public class TrainController implements TrainControllerInterface {
   private SimpleStringProperty nextStation;
   private ObjectProperty<DoorStatus> rightDoorStatus;
   private ObjectProperty<DoorStatus> leftDoorStatus;
+  private ObjectProperty<Failure> brakeFailure;
+  private ObjectProperty<Failure> engineFailure;
+  private ObjectProperty<Failure> trackCircuitFailure;
 
   /**
    * Base constructor for TrainController.
@@ -95,7 +99,7 @@ public class TrainController implements TrainControllerInterface {
     this.currentStation = new SimpleStringProperty("N/A");
     this.nextStation = new SimpleStringProperty("N/A");
     this.integral = 0;
-    this.running = false;
+    this.running = new SimpleBooleanProperty(false);
     this.currentBlock = Track.getListOfTracks().get(line).getStartBlock();
     this.lastBlock = Track.getTrack(line).getBlock(-1);
     this.beacons = new HashMap<>();
@@ -104,6 +108,9 @@ public class TrainController implements TrainControllerInterface {
     this.rightDoorStatus = new SimpleObjectProperty<>(trainModel.getRightDoorStatus());
     this.leftDoorStatus = new SimpleObjectProperty<>(trainModel.getLeftDoorStatus());
     this.lightStatus = new SimpleObjectProperty<>(trainModel.getLightStatus());
+    this.brakeFailure = new SimpleObjectProperty<>(trainModel.getBrakeFailureStatus());
+    this.trackCircuitFailure = new SimpleObjectProperty<>(trainModel.getTrackLineFailureStatus());
+    this.engineFailure = new SimpleObjectProperty<>(trainModel.getEngineFailureStatus());
     this.adCounter = 0;
     this.adIndex = 0;
   }
@@ -122,7 +129,7 @@ public class TrainController implements TrainControllerInterface {
       if (signal.getStationId() >= 0
           && (authority.getValue() == AuthorityCommand.STOP_AT_NEXT_STATION
           || authority.getValue() == AuthorityCommand.STOP_AT_LAST_STATION)) {
-        distanceToStation = signal.getDistance();
+        distanceToStation = signal.getDistance() + TrainData.LENGTH_OF_CAR;
         setCurrentStation(Track.getListOfTracks().get(getLine())
             .getStationList().get(signal.getStationId() - 1));
       }
@@ -191,6 +198,10 @@ public class TrainController implements TrainControllerInterface {
   }
 
   public boolean isRunning() {
+    return running.get();
+  }
+
+  public SimpleBooleanProperty runningProperty() {
     return running;
   }
 
@@ -433,7 +444,7 @@ public class TrainController implements TrainControllerInterface {
   }
 
   protected void start() {
-    running = true;
+    running.set(true);
   }
 
   public boolean isUnderground() {
@@ -526,5 +537,41 @@ public class TrainController implements TrainControllerInterface {
 
   public void setAdIndex(int adIndex) {
     this.adIndex = adIndex;
+  }
+
+  public Failure getBrakeFailure() {
+    return brakeFailure.get();
+  }
+
+  public ObjectProperty<Failure> brakeFailureProperty() {
+    return brakeFailure;
+  }
+
+  public void setBrakeFailure(Failure brakeFailure) {
+    this.brakeFailure.set(brakeFailure);
+  }
+
+  public Failure getEngineFailure() {
+    return engineFailure.get();
+  }
+
+  public ObjectProperty<Failure> engineFailureProperty() {
+    return engineFailure;
+  }
+
+  public void setEngineFailure(Failure engineFailure) {
+    this.engineFailure.set(engineFailure);
+  }
+
+  public Failure getTrackCircuitFailure() {
+    return trackCircuitFailure.get();
+  }
+
+  public ObjectProperty<Failure> trackCircuitFailureProperty() {
+    return trackCircuitFailure;
+  }
+
+  public void setTrackCircuitFailure(Failure trackCircuitFailure) {
+    this.trackCircuitFailure.set(trackCircuitFailure);
   }
 }
