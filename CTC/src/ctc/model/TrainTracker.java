@@ -64,7 +64,7 @@ public class TrainTracker {
     this.departure = departure;
     this.schedule = schedule;
     this.passengers = 0;
-    this.currentDwell = 0;
+    this.currentDwell = 6;
     this.line = line;
     this.track = Track.getListOfTracks().get(line);
     this.location = track.getStartBlock();
@@ -115,14 +115,17 @@ public class TrainTracker {
 
   private void updatePosition() {
 
-    Block next = route.getNext();
-
-    if (next != null
-        && controller.getOccupancy(next.getNumber())
-        && checkNeighboringTrains()) {
-      this.location = next;
+    if (controller.getOccupancy(route.getNext().getNumber())) {
+      this.location = route.getNext();
       this.route.incrementCurrentIndex();
       counter++;
+    }
+
+    Block next = route.getNext();
+
+    if (next != null && next.isOccupied() && checkNeighboringTrains()) {
+      this.location = next;
+      this.route.incrementCurrentIndex();
     }
   }
 
@@ -381,6 +384,6 @@ public class TrainTracker {
   }
 
   public void startCounter() {
-    this.counter = 5;
+    this.counter = 0;
   }
 }
