@@ -123,6 +123,9 @@ public class PowerCalculator {
     Failure trackLineStatus = tm.getTrackLineFailureStatus();
     Failure engineStatus = tm.getEngineFailureStatus();
     Failure brakeStatus = tm.getBrakeFailureStatus();
+    tc.setTrackCircuitFailure(trackLineStatus);
+    tc.setEngineFailure(engineStatus);
+    tc.setBrakeFailure(brakeStatus);
 
     if (trackLineStatus == Failure.FAILED || engineStatus == Failure.FAILED
         || brakeStatus == Failure.FAILED) {

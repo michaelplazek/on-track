@@ -17,6 +17,7 @@ import trainmodel.model.TrainModelInterface;
 import utils.general.Authority;
 import utils.general.AuthorityCommand;
 import utils.train.DoorStatus;
+import utils.train.Failure;
 import utils.train.OnOffStatus;
 import utils.train.TrainData;
 import utils.unitconversion.UnitConversions;
@@ -65,6 +66,9 @@ public class TrainController implements TrainControllerInterface {
   private SimpleStringProperty nextStation;
   private ObjectProperty<DoorStatus> rightDoorStatus;
   private ObjectProperty<DoorStatus> leftDoorStatus;
+  private ObjectProperty<Failure> brakeFailure;
+  private ObjectProperty<Failure> engineFailure;
+  private ObjectProperty<Failure> trackCircuitFailure;
 
   /**
    * Base constructor for TrainController.
@@ -104,6 +108,9 @@ public class TrainController implements TrainControllerInterface {
     this.rightDoorStatus = new SimpleObjectProperty<>(trainModel.getRightDoorStatus());
     this.leftDoorStatus = new SimpleObjectProperty<>(trainModel.getLeftDoorStatus());
     this.lightStatus = new SimpleObjectProperty<>(trainModel.getLightStatus());
+    this.brakeFailure = new SimpleObjectProperty<>(trainModel.getBrakeFailureStatus());
+    this.trackCircuitFailure = new SimpleObjectProperty<>(trainModel.getTrackLineFailureStatus());
+    this.engineFailure = new SimpleObjectProperty<>(trainModel.getEngineFailureStatus());
     this.adCounter = 0;
     this.adIndex = 0;
   }
@@ -526,5 +533,41 @@ public class TrainController implements TrainControllerInterface {
 
   public void setAdIndex(int adIndex) {
     this.adIndex = adIndex;
+  }
+
+  public Failure getBrakeFailure() {
+    return brakeFailure.get();
+  }
+
+  public ObjectProperty<Failure> brakeFailureProperty() {
+    return brakeFailure;
+  }
+
+  public void setBrakeFailure(Failure brakeFailure) {
+    this.brakeFailure.set(brakeFailure);
+  }
+
+  public Failure getEngineFailure() {
+    return engineFailure.get();
+  }
+
+  public ObjectProperty<Failure> engineFailureProperty() {
+    return engineFailure;
+  }
+
+  public void setEngineFailure(Failure engineFailure) {
+    this.engineFailure.set(engineFailure);
+  }
+
+  public Failure getTrackCircuitFailure() {
+    return trackCircuitFailure.get();
+  }
+
+  public ObjectProperty<Failure> trackCircuitFailureProperty() {
+    return trackCircuitFailure;
+  }
+
+  public void setTrackCircuitFailure(Failure trackCircuitFailure) {
+    this.trackCircuitFailure.set(trackCircuitFailure);
   }
 }

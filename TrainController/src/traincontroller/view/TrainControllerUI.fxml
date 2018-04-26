@@ -364,7 +364,7 @@
                                                                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                           </rowConstraints>
                                                                            <children>
-                                                                              <Circle fill="#199015" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
+                                                                              <Circle fx:id="brakeFailure" fill="#199015" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
                                                                               <Label prefHeight="17.0" prefWidth="72.0" text="Brakes" GridPane.columnIndex="1" />
                                                                            </children>
                                                                         </GridPane>
@@ -377,7 +377,7 @@
                                                                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                           </rowConstraints>
                                                                            <children>
-                                                                              <Circle fill="#199015" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
+                                                                              <Circle fx:id="trackCircuitFailure" fill="#199015" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
                                                                               <Label text="Track Circuit" GridPane.columnIndex="1" />
                                                                            </children>
                                                                         </GridPane>
@@ -390,7 +390,7 @@
                                                                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                           </rowConstraints>
                                                                            <children>
-                                                                              <Circle fill="#199015" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
+                                                                              <Circle fx:id="engineFailure" fill="#199015" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
                                                                               <Label text="Engine" GridPane.columnIndex="1" />
                                                                            </children>
                                                                         </GridPane>
