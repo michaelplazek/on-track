@@ -226,8 +226,14 @@ public class PowerCalculator {
       endOfRoute = getDistanceLeft(tc);
     }
 
-    if (currentSpeed > setSpeed || currentSpeed > speedLimit
-        || endOfRoute <= safeStoppingDistance + 10) {
+    if (setSpeed > speedLimit) {
+      setSpeed = speedLimit;
+    }
+    if(Math.abs(setSpeed - currentSpeed) < 0.005) {
+      setSpeed = currentSpeed;
+    }
+
+    if (currentSpeed > setSpeed || endOfRoute <= safeStoppingDistance + 10) {
       activateServiceBrake(tc);
       tc.setPowerCommand(0);
     } else {
