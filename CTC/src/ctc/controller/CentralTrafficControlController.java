@@ -1099,6 +1099,7 @@ public class CentralTrafficControlController {
         train.setSpeed(speedLimit);
       } else {
         train.setSpeed(speed);
+        train.startCounter();
       }
 
       // send signals
