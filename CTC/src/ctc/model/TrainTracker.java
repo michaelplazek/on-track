@@ -31,6 +31,7 @@ public class TrainTracker {
   private boolean isDone;
   private float speed;
   private int passengers;
+  private int counter;
   private double currentDwell;
   private Authority authority;
   private float distanceTravelled;
@@ -114,16 +115,14 @@ public class TrainTracker {
 
   private void updatePosition() {
 
-    if (controller.getOccupancy(route.getNext().getNumber())) {
-      this.location = route.getNext();
-      this.route.incrementCurrentIndex();
-    }
-
     Block next = route.getNext();
 
-    if (next != null && next.isOccupied() && checkNeighboringTrains()) {
+    if (next != null
+        && controller.getOccupancy(next.getNumber())
+        && checkNeighboringTrains()) {
       this.location = next;
       this.route.incrementCurrentIndex();
+      counter++;
     }
   }
 
@@ -178,12 +177,14 @@ public class TrainTracker {
     }
 
     // when we reach a switch, we check the next fork
-    if (location.isSwitch()) {
+    if (counter > 5) {
+      if (location.isSwitch()) {
 //      speed = route.getNextDirection() ? (-1 * speed) : speed;
-      speed = location.getSpeedLimit();
+        speed = location.getSpeedLimit();
 
-    } else {
-      speed = location.getSpeedLimit();
+      } else {
+        speed = location.getSpeedLimit();
+      }
     }
 
     // determine next authority
@@ -377,5 +378,9 @@ public class TrainTracker {
 
   public boolean isWaitingForAuthority() {
     return isWaitingForAuthority;
+  }
+
+  public void startCounter() {
+    this.counter = 5;
   }
 }
