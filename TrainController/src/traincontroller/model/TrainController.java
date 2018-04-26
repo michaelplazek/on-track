@@ -129,7 +129,7 @@ public class TrainController implements TrainControllerInterface {
       if (signal.getStationId() >= 0
           && (authority.getValue() == AuthorityCommand.STOP_AT_NEXT_STATION
           || authority.getValue() == AuthorityCommand.STOP_AT_LAST_STATION)) {
-        distanceToStation = signal.getDistance();
+        distanceToStation = signal.getDistance() + TrainData.LENGTH_OF_CAR;
         setCurrentStation(Track.getListOfTracks().get(getLine())
             .getStationList().get(signal.getStationId() - 1));
       }
