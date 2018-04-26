@@ -204,12 +204,7 @@ public class TrainModelController implements Initializable {
 
   @FXML
   private void emergency_Brake_Engaged(ActionEvent event) {
-    if (emergencyBrakeStatus.textProperty().getValue().equals(Constants.ON)) {
-      trainModel.setEmergencyBrakeStatus(OnOffStatus.OFF);
-    } else {
-      trainModel.setEmergencyBrakeStatus(OnOffStatus.ON);
-    }
-
+    trainController.activateEmergencyBrake();
   }
 
   @Override
