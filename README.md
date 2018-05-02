@@ -1,8 +1,7 @@
 ![on-track logo](https://i.imgur.com/yW6pl11.png)
-   _A real-time train line management and simulation suite._
 
 ## About
-This software is responsible simulating and managing various trains around track circuits.
+This software is responsible simulating and managing various trains around a track circuit in real time.
 
 ## Includes modules
 ### Central Traffic Controller
