@@ -1,4 +1,4 @@
-[on-track logo](https://i.imgur.com/yW6pl11.png)
+![on-track logo](https://i.imgur.com/yW6pl11.png)
 A real-time train line management and simulation suite.
 
 ## About
