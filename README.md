@@ -4,7 +4,7 @@
 This software is responsible simulating and managing various trains around a track circuit in real time.
 
 ## Includes modules
-### Central Traffic Controller
+### Central Traffic Control
 The main command center of the platform. Responsible for creating, dispatching, scheduling, and routing trains.
 ### Track Controller
 The wayside modules to be installed on the track itself. Controlled by PLC logic.
