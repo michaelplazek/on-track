@@ -1,4 +1,4 @@
-# On-Track Train Simulator
+![on-track logo][https://imgur.com/yW6pl11]
 A real-time train line management and simulation suite.
 
 ## About
